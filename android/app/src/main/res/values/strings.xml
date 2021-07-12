@@ -1,0 +1,7 @@
+
+<resources>
+    <string name="app_name">pet-Shop</string>
+    <string name="facebook_app_id">796764041228994</string>
+    <string name="fb_login_protocol_scheme">fb796764041228994</string>
+</resources>
+

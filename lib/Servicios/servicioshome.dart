@@ -1,0 +1,770 @@
+import 'package:pet_shop/Config/config.dart';
+import 'package:pet_shop/Models/alidados.dart';
+import 'package:pet_shop/Models/location.dart';
+import 'package:pet_shop/Models/service.dart';
+import 'package:pet_shop/Servicios/serviciopage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:pet_shop/Models/pet.dart';
+import 'package:flutter/material.dart';
+import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
+import 'package:pet_shop/Widgets/navbar.dart';
+import '../Widgets/myDrawer.dart';
+import 'detalleservicio.dart';
+
+double width;
+
+class ServiciosHome extends StatefulWidget {
+  final PetModel petModel;
+  ServiciosHome({this.petModel});
+
+  @override
+  _ServiciosHomeState createState() => _ServiciosHomeState();
+}
+
+class _ServiciosHomeState extends State<ServiciosHome> {
+  PetModel model;
+  ServiceModel servicio;
+  TextEditingController _searchTextEditingController =
+      new TextEditingController();
+  List _allResults = [];
+  List _resultsList = [];
+  static List<ServiceModel> finalServicesList = [];
+  Future resultsLoaded;
+
+  @override
+  void initState() {
+    super.initState();
+    MastersList();
+    _searchTextEditingController.addListener(_onSearchChanged);
+    _allResults = [];
+    finalServicesList = [];
+    changePet(widget.petModel);
+  }
+
+  @override
+  void dispose() {
+    _searchTextEditingController.removeListener(_onSearchChanged);
+    _searchTextEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  MastersList() async {
+    List list_of_locations = await FirebaseFirestore.instance
+        .collection("Localidades")
+        .where("serviciosContiene", isEqualTo: true)
+        .where("pais",
+            isEqualTo:
+                PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
+        .get()
+        .then((val) => val.docs);
+
+    for (int i = 0; i < list_of_locations.length; i++) {
+      FirebaseFirestore.instance
+          .collection("Localidades")
+          .doc(list_of_locations[i].documentID.toString())
+          .collection("Servicios")
+          .snapshots()
+          .listen(CreateListofServices);
+    }
+    return list_of_locations;
+  }
+
+  CreateListofServices(QuerySnapshot snapshot) async {
+    var docs = snapshot.docs;
+    for (var Doc in docs) {
+      setState(() {
+        finalServicesList.add(ServiceModel.fromFireStore(Doc));
+        _allResults.add(ServiceModel.fromFireStore(Doc));
+        print(_allResults);
+      });
+    }
+    searchResultsList();
+  }
+
+  searchResultsList() {
+    var showResults = [];
+
+    if (_searchTextEditingController.text != "") {
+      for (ServiceModel tituloSnapshot in _allResults) {
+        var titulo = tituloSnapshot.titulo.toLowerCase();
+
+        if (titulo.contains(_searchTextEditingController.text.toLowerCase())) {
+          showResults.add(tituloSnapshot);
+        }
+      }
+    } else {
+      showResults = List.from(_allResults);
+    }
+    setState(() {
+      _resultsList = showResults;
+    });
+  }
+
+  _onSearchChanged() {
+    searchResultsList();
+    print(_searchTextEditingController.text);
+  }
+
+  ScrollController controller = ScrollController();
+  String userImageUrl = "";
+
+  final db = FirebaseFirestore.instance;
+
+  @override
+  Widget build(BuildContext context) {
+    double _screenWidth = MediaQuery.of(context).size.width,
+        _screenHeight = MediaQuery.of(context).size.height;
+
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBarCustomAvatar(context, widget.petModel),
+        drawer: MyDrawer(),
+        bottomNavigationBar: CustomBottomNavigationBar(),
+        body: _fondo(),
+      ),
+    );
+  }
+
+  Widget _fondo() {
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      decoration: new BoxDecoration(
+        image: new DecorationImage(
+          image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+          fit: BoxFit.cover,
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16.0,
+      ),
+      child: SingleChildScrollView(
+        child: Stack(
+          children: <Widget>[
+            _fondoImagen(),
+            _cuerpo(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _titulo() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        IconButton(
+            icon: Icon(Icons.arrow_back_ios, color: Color(0xFF57419D)),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+        Padding(
+          padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+          child: Text(
+            "Servicios",
+            style: TextStyle(
+              color: Color(0xFF57419D),
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _fondoImagen() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20, 50, 20, 20),
+      child: SizedBox(
+        height: 220.0,
+        width: double.infinity,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Image(
+            image: AssetImage('diseñador/drawable/Servicios/pruebafondo.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _menu() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 60.0, 0, 10.0),
+      child: Column(
+        children: [
+          Text(
+            'Servicios de primera calidad',
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold),
+          ),
+          Text(
+            'Consiente a tu mascota',
+            style: TextStyle(color: Colors.white, fontSize: 16.0),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Stack(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Color(0xFF7f9d9D),
+                                width: 1.0,
+                              ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(25.0)),
+                            ),
+                            padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                            margin: EdgeInsets.all(5.0),
+                            child: TextField(
+                              controller: _searchTextEditingController,
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+                                hintText: '¿Qué buscas?',
+                                border: InputBorder.none,
+                                hintStyle: TextStyle(
+                                    fontSize: 15.0, color: Color(0xFF7f9d9D)),
+                              ),
+                              onChanged: (text) {
+                                text = text.toLowerCase();
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.fromLTRB(220, 15, 0, 0),
+                            margin: EdgeInsets.all(5.0),
+                            child: Icon(
+                              Icons.search,
+                              color: Color(0xFF7f9d9D),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _iconos() {
+    return Column(
+      children: [
+        SizedBox(
+          height: 15.0,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 150.0,
+              height: 115.0,
+              child: RaisedButton(
+                onPressed: () {
+                  String tituloDetalle = "Exámenes y Estudios";
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ServicioPage(
+                              petModel: model,
+                              tituloDetalle: tituloDetalle,
+                            )),
+                  );
+                },
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                color: Color(0xFFF4F6F8),
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 50.0,
+                      child: Image.asset(
+                        'assets/images/examen.png',
+                        color: Color(0xFF57419D),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    Text("Exámenes y Estudios",
+                        style: TextStyle(
+                            fontFamily: 'Product Sans',
+                            color: Color(0xFF57419D),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13.0),
+                        textAlign: TextAlign.center),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 10.0,
+            ),
+            SizedBox(
+              width: 150.0,
+              height: 115.0,
+              child: RaisedButton(
+                onPressed: () {
+                  String tituloDetalle = "Cuidado de Mascotas";
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ServicioPage(
+                              petModel: model,
+                              tituloDetalle: tituloDetalle,
+                            )),
+                  );
+                },
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                color: Color(0xFFF4F6F8),
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 50.0,
+                      child: Image.asset(
+                        'assets/images/cuidado.png',
+                        color: Color(0xFF57419D),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    Text("Cuidado de Mascotas",
+                        style: TextStyle(
+                            fontFamily: 'Product Sans',
+                            color: Color(0xFF57419D),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13.0),
+                        textAlign: TextAlign.center),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 10.0,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 150.0,
+              height: 115.0,
+              child: RaisedButton(
+                onPressed: () {
+                  String tituloDetalle = "Entrenamiento";
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ServicioPage(
+                              petModel: model,
+                              tituloDetalle: tituloDetalle,
+                            )),
+                  );
+                },
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                color: Color(0xFFF4F6F8),
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 50.0,
+                      child: Image.asset(
+                        'assets/images/entrenamiento.png',
+                        color: Color(0xFF57419D),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    Text("Entrenamiento",
+                        style: TextStyle(
+                            fontFamily: 'Product Sans',
+                            color: Color(0xFF57419D),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13.0),
+                        textAlign: TextAlign.center),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 10.0,
+            ),
+            SizedBox(
+              width: 150.0,
+              height: 115.0,
+              child: RaisedButton(
+                onPressed: () {
+                  String tituloDetalle = "Recreación";
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ServicioPage(
+                              petModel: model,
+                              tituloDetalle: tituloDetalle,
+                            )),
+                  );
+                },
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                color: Color(0xFFF4F6F8),
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 50.0,
+                      child: Image.asset(
+                        'assets/images/recreacion.png',
+                        color: Color(0xFF57419D),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    Text("Recreación",
+                        style: TextStyle(
+                            fontFamily: 'Product Sans',
+                            color: Color(0xFF57419D),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13.0),
+                        textAlign: TextAlign.center),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 10.0,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 10.0,
+            ),
+            SizedBox(
+              width: 150.0,
+              height: 115.0,
+              child: RaisedButton(
+                onPressed: () {
+                  String tituloDetalle = "Otros servicios";
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ServicioPage(
+                              petModel: model,
+                              tituloDetalle: tituloDetalle,
+                            )),
+                  );
+                },
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                color: Color(0xFFF4F6F8),
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 50.0,
+                      child: Image.asset(
+                        'assets/images/otro.png',
+                        color: Color(0xFF57419D),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    Text("Otros servicios",
+                        style: TextStyle(
+                            fontFamily: 'Product Sans',
+                            color: Color(0xFF57419D),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13.0),
+                        textAlign: TextAlign.center),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _cuerpo() {
+    return Column(
+      children: <Widget>[
+        _titulo(),
+        _menu(),
+        _searchTextEditingController.text.isEmpty
+            ? _iconos()
+            : Container(
+                height: 102 * double.parse(_resultsList.length.toString()),
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 25,
+                    ),
+                    Expanded(
+                      child: Container(
+                        height:
+                            102 * double.parse(_resultsList.length.toString()),
+                        child: ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: _resultsList.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              return sourceInfo2(_resultsList[index], context);
+                            }),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+      ],
+    );
+  }
+
+  Widget _search() {
+    Container(
+      height: 102 * double.parse(_resultsList.length.toString()),
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        children: [
+          Expanded(
+            child: Container(
+              height: 102 * double.parse(_resultsList.length.toString()),
+              child: ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: _resultsList.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return sourceInfo2(_resultsList[index], context);
+                  }),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget sourceInfo2(ServiceModel servicio, BuildContext context) {
+    return InkWell(
+      child: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection("Localidades")
+              .where("localidadId", isEqualTo: servicio.localidadId)
+              .snapshots(),
+          builder: (context, dataSnapshot) {
+            if (!dataSnapshot.hasData) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: 1,
+                shrinkWrap: true,
+                itemBuilder: (
+                  context,
+                  index,
+                ) {
+                  LocationModel location = LocationModel.fromJson(
+                      dataSnapshot.data.docs[index].data());
+                  return StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection("Aliados")
+                          .where("aliadoId", isEqualTo: location.aliadoId)
+                          .snapshots(),
+                      builder: (context, dataSnapshot) {
+                        if (!dataSnapshot.hasData) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: 1,
+                            shrinkWrap: true,
+                            itemBuilder: (
+                              context,
+                              index,
+                            ) {
+                              AliadoModel aliado = AliadoModel.fromJson(
+                                  dataSnapshot.data.docs[index].data());
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => DetallesServicio(
+                                            petModel: model,
+                                            serviceModel: servicio,
+                                            aliadoModel: aliado,
+                                            locationModel: location)),
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          height: 70,
+                                          width: 70,
+                                          decoration: BoxDecoration(
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey,
+                                                blurRadius: 1.0,
+                                                spreadRadius: 0.0,
+                                                offset: Offset(2.0,
+                                                    2.0), // shadow direction: bottom right
+                                              )
+                                            ],
+                                          ),
+                                          child: Image.network(
+                                            aliado.avatar,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 15.0,
+                                        ),
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.62,
+                                          height: 70,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Text(aliado.nombreComercial,
+                                                      style: TextStyle(
+                                                          fontSize: 15,
+                                                          color:
+                                                              Color(0xFF57419D),
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                      textAlign:
+                                                          TextAlign.left),
+                                                  Text(
+                                                      location
+                                                          .direccionLocalidad,
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                      ),
+                                                      textAlign:
+                                                          TextAlign.left),
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                      (aliado.totalRatings /
+                                                                      aliado
+                                                                          .countRatings)
+                                                                  .toString() !=
+                                                              'NaN'
+                                                          ? (aliado.totalRatings /
+                                                                  aliado
+                                                                      .countRatings)
+                                                              .toStringAsPrecision(
+                                                                  2)
+                                                          : '0',
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Colors.orange),
+                                                      textAlign:
+                                                          TextAlign.left),
+                                                  SizedBox(
+                                                    width: 8,
+                                                  ),
+                                                  Icon(
+                                                    Icons.star,
+                                                    color: Colors.orange,
+                                                    size: 16,
+                                                  )
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            });
+                      });
+                });
+          }),
+    );
+  }
+
+  changePet(otro) {
+    setState(() {
+      model = otro;
+    });
+
+    return otro;
+  }
+}

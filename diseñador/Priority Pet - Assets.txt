@@ -1,0 +1,16 @@
+*** Paleta de colores
+
+#7F9D9D
+#BDD7D6
+#F4F6F8
+#EB9448
+#1A3E4D
+#57419D
+#277EB6
+
+*** Tipografía
+
+Product Sans
+- Regular
+- Bold
+

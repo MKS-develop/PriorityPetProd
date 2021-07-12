@@ -1,0 +1,337 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+
+import 'package:pet_shop/Config/config.dart';
+
+import 'package:pet_shop/Models/Producto.dart';
+import 'package:pet_shop/Models/Cart.dart';
+import 'package:pet_shop/Models/alidados.dart';
+import 'package:pet_shop/Models/ordenes.dart';
+import 'package:pet_shop/Models/pet.dart';
+import 'package:flutter/material.dart';
+import 'package:pet_shop/Store/storehome.dart';
+import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
+import 'package:pet_shop/Widgets/myDrawer.dart';
+import 'package:pet_shop/Widgets/navbar.dart';
+
+class NotificacionesPage extends StatefulWidget {
+  final PetModel petModel;
+  final Producto productoModel;
+  final CartModel cartModel;
+
+  NotificacionesPage({this.petModel, this.productoModel, this.cartModel});
+
+  @override
+  _NotificacionesPageState createState() => _NotificacionesPageState();
+}
+
+class _NotificacionesPageState extends State<NotificacionesPage> {
+  PetModel model;
+  CartModel cart;
+  Producto producto;
+  AliadoModel ali;
+  List allResults = [];
+  List ordenes = [];
+  int ratingC = 0;
+  bool noti = true;
+  bool home = false;
+  bool carrito = false;
+
+  final db = FirebaseFirestore.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _getOrderStatus();
+    // initState calificarAliado();
+
+    // try{
+    //   var json = '{"first_name": "${_nameTextEditingController.text.trim()}","last_name": "${_lastnameTextEditingController.text.trim()}","address": "${_addressTextEditingController.text.trim()}","phone_number": "${_tlfTextEditingController.text.trim()}","email": "${PetshopApp.sharedPreferences.getString(PetshopApp.userEmail)}", "address_city": "Lima", "country_code": "PE"}'
+    //   ;
+    //   var url = ("https://api.culqi.com/v2/customers?email=jesus.salazar@capas360.com");
+    //   Map<String, String> headers = {"Content-type": "application/json", 'Authorization': 'Bearer sk_test_7c6b926b8a7d65eb'};
+    //   Response res = await http.get(url, headers: headers);
+    //   var statusCode = await res.body;
+    //   setState((){
+    //     // response = statusCode.toString();
+    //     print(statusCode);
+    //   });
+    // } catch (e){
+    //   print(e.message);
+    //   return null;
+    // }
+  }
+
+  // calificarAliado() {
+  //
+  //   StreamBuilder<QuerySnapshot>(
+  //       stream: FirebaseFirestore.instance.collection('Ordenes').where('uid', isEqualTo: PetshopApp.sharedPreferences.getString(PetshopApp.userUID)).where('date', isLessThan: DateTime.now()).where('calificacion', isEqualTo: false).snapshots(),
+  //       builder: (context, dataSnapshot) {
+  //         if (!dataSnapshot.hasData) {
+  //           return Center(
+  //             child: CircularProgressIndicator(),
+  //           );
+  //         }
+  //         return ListView.builder(
+  //             physics: NeverScrollableScrollPhysics(),
+  //             itemCount: dataSnapshot.data.docs.length,
+  //             shrinkWrap: true,
+  //             itemBuilder: (context, index,) {
+  //               OrderModel order = OrderModel.fromJson(
+  //                   dataSnapshot.data.docs[index].data());
+  //               return showDialog(
+  //                   context: context,
+  //                   child: new ChoosePetAlertDialog(
+  //                     message:
+  //                     "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
+  //                   ));
+  //
+  //             }
+  //         );
+  //       }
+  //   );
+  // }
+
+  Future<List<dynamic>> _getOrderStatus() async {
+    List list = await FirebaseFirestore.instance
+        .collection('Ordenes')
+        .where("uid",
+            isEqualTo:
+                PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
+        .where("calificacion", isEqualTo: false)
+        .getDocuments()
+        .then((val) => val.documents);
+
+    for (int i = 0; i < list.length; i++) {
+      FirebaseFirestore.instance
+          .collection('Ordenes')
+          .where('oid', isEqualTo: list[i].documentID.toString())
+          .where('date', isLessThan: DateTime.now())
+          .snapshots()
+          .listen(CreateList);
+    }
+    return list;
+  }
+
+  CreateList(QuerySnapshot snapshot) async {
+    ordenes = [];
+    var docs = snapshot.documents;
+    for (var Doc in docs) {
+      setState(() {
+        allResults.add(OrderModel.fromJson(Doc.data()));
+        OrderModel order = OrderModel.fromJson(Doc.data());
+        ordenes.add(order);
+      });
+    }
+    search();
+  }
+
+  search() {
+    for (int i = 0; i < ordenes.length; i++) {
+      var nombreComercial = ordenes[i].nombreComercial;
+      var usuario = PetshopApp.sharedPreferences.getString(PetshopApp.userName);
+      //   for(OrderModel order in allResults){
+      showDialog(
+        context: context,
+        barrierColor: Colors.white.withOpacity(0),
+        child: AlertDialog(
+          // title: Text('Su pago ha sido aprobado.'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                  '$usuario,',
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(
+                  height: 18,
+                ),
+                Text(
+                  'Nos gustaría que calificaras tu último servicio con $nombreComercial, tu opinión nos importa.',
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(
+                  height: 14,
+                ),
+                RatingBar.builder(
+                  initialRating: 3,
+                  minRating: 1,
+                  direction: Axis.horizontal,
+                  allowHalfRating: false,
+                  itemCount: 5,
+                  itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                  itemBuilder: (context, _) => Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
+                  onRatingUpdate: (rating) {
+                    setState(() {
+                      ratingC = int.parse(rating.toStringAsFixed(0));
+                    });
+
+                    print(ratingC.toStringAsFixed(0));
+                  },
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  child: RaisedButton(
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop();
+                      updateFields(ordenes[i].aliadoId, ordenes[i].oid);
+                    },
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    color: Color(0xFF57419D),
+                    padding: EdgeInsets.all(10.0),
+                    child: Text("Enviar calificación",
+                        style: TextStyle(
+                            fontFamily: 'Product Sans',
+                            color: Colors.white,
+                            fontSize: 18.0)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
+  updateFields(aliadoId, oid) async {
+    var ratingSum = await db.collection('Aliados').doc(aliadoId);
+    ratingSum.updateData({
+      'totalRatings':
+          FieldValue.increment(int.parse(ratingC.toStringAsFixed(0))),
+      'countRatings': FieldValue.increment(1),
+    });
+
+    var checkRef = await db.collection('Ordenes').doc(oid);
+    checkRef.updateData({
+      'calificacion': true,
+    });
+  }
+  // showDialog(context: context, child:
+  // AlertDialog(
+  //   // title: Text('Su pago ha sido aprobado.'),
+  //   content: SingleChildScrollView(
+  //     child: ListBody(
+  //       children: <Widget>[
+  //     Text(PetshopApp.sharedPreferences.getString(PetshopApp.userName)),
+  //         Text('Nos gustaría que calificaras tu último servicio con'),
+  //
+  //
+  //
+  //     RatingBar.builder(
+  //     initialRating: 3,
+  //       minRating: 1,
+  //       direction: Axis.horizontal,
+  //       allowHalfRating: true,
+  //       itemCount: 5,
+  //       itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+  //       itemBuilder: (context, _) => Icon(
+  //         Icons.star,
+  //         color: Colors.amber,
+  //       ),
+  //       onRatingUpdate: (rating) {
+  //         print(rating);
+  //       },
+  //     ),
+  //       ],
+  //     ),
+  //   ),),);
+
+  // Future<List<dynamic>> _getOrderStatus() async {
+  //   ordenes = []
+  //   try{
+  //     await FirebaseFirestore.instance.collection('Ordenes').where("uid", isEqualTo: widget.order.orderId).where("calificacion", isEqualTo: false).get().then((QuerySnapshot querySnapshot) => {
+  //     querySnapshot.data.docs((orden){
+  //     setState((){
+  //     OrderModel order = OrderModel.fromJson(order.data);
+  //     ordenes.add(order);
+  //     });
+  //     });
+  //     });
+  //   }catch(e){
+  //     print(e);
+  //   }
+  //   if(ordenes.length > 0){
+  //     for(int i = 0; i < ordenes.length; i++){
+  //       var dialog = Dialog(
+  //           context,
+  //           child: Text(
+  //               ordenes[i].titulo
+  //           )
+  //       );
+  //       scaffoldKey.currentState.showDialog(dialog);
+  //     }
+  //   }
+  //   return ordenes;
+  // }
+  //
+
+  @override
+  Widget build(BuildContext context) {
+    double _screenWidth = MediaQuery.of(context).size.width,
+        _screenHeight = MediaQuery.of(context).size.height;
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBarCustomAvatar(context, widget.petModel),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          noti: noti,
+          home: home,
+          cart: carrito,
+        ),
+        drawer: MyDrawer(),
+        body: Container(
+          height: _screenHeight,
+          decoration: new BoxDecoration(
+            image: new DecorationImage(
+              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16.0,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    IconButton(
+                        icon: Icon(Icons.arrow_back_ios,
+                            color: Color(0xFF57419D)),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => StoreHome()),
+                          );
+                          // Navigator.pop(context);
+                        }),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                      child: Text(
+                        "Notificaciones",
+                        style: TextStyle(
+                          color: Color(0xFF57419D),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
