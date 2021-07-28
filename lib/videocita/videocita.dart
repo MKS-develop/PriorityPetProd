@@ -62,8 +62,9 @@
 //       debugShowCheckedModeBanner:false,
 //       home: Scaffold(
 //
-//         appBar: AppBarCustomAvatar(context, widget.petModel),
-//         drawer: MyDrawer(),
+//         appBar: AppBarCustomAvatar(
+//             context, widget.petModel, widget.defaultChoiceIndex),
+//         drawer: MyDrawer(petModel: model, defaultChoiceIndex: _defaultChoiceIndex,),
 //         body: Container(
 //           // decoration: new BoxDecoration(
 //           //   image: new DecorationImage(

@@ -1,5 +1,6 @@
 import 'package:pet_shop/Authentication/autenticacion.dart';
 import 'package:pet_shop/Config/config.dart';
+import 'package:pet_shop/Models/pet.dart';
 import 'package:pet_shop/Ordenes/newordeneshome.dart';
 import 'package:pet_shop/Payment/payment.dart';
 import 'package:pet_shop/Petpoints/petpointshome.dart';
@@ -12,6 +13,11 @@ import 'package:pet_shop/mascotas/mascotashome.dart';
 import 'package:pet_shop/usuario/usuarioinfo.dart';
 
 class MyDrawer extends StatelessWidget {
+  final PetModel petModel;
+  final int defaultChoiceIndex;
+
+  MyDrawer({this.petModel, this.defaultChoiceIndex});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -67,7 +73,7 @@ class MyDrawer extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => UsuarioInfo()),
+                      builder: (context) => UsuarioInfo(petModel: petModel, defaultChoiceIndex: defaultChoiceIndex,)),
                 );
               },
             ),
@@ -90,7 +96,7 @@ class MyDrawer extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => MascotasHome()),
+                      builder: (context) => MascotasHome(petModel: petModel, defaultChoiceIndex: defaultChoiceIndex)),
                 );
               },
             ),
@@ -112,7 +118,7 @@ class MyDrawer extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => NewOrdenesHome()),
+                      builder: (context) => NewOrdenesHome(petModel: petModel, defaultChoiceIndex: defaultChoiceIndex,)),
                 );
               },
             ),
@@ -148,7 +154,7 @@ class MyDrawer extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => PetPointsHome()),
+                      builder: (context) => PetPointsHome(petModel: petModel, defaultChoiceIndex: defaultChoiceIndex,)),
                 );
               },
             ),
@@ -165,7 +171,7 @@ class MyDrawer extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => PaymentPage()),
+                      builder: (context) => PaymentPage(petModel: petModel, defaultChoiceIndex: defaultChoiceIndex,)),
                 );
               },
             ),
@@ -187,7 +193,7 @@ class MyDrawer extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => NotificacionesPage()),
+                      builder: (context) => NotificacionesPage(petModel: petModel, defaultChoiceIndex: defaultChoiceIndex,)),
                 );
               },
             ),
@@ -210,7 +216,7 @@ class MyDrawer extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ReferidosPage()),
+                      builder: (context) => ReferidosPage(petModel: petModel, defaultChoiceIndex: defaultChoiceIndex,)),
                 );
               },
             ),
@@ -263,7 +269,7 @@ class MyDrawer extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ReclamosPage()),
+                      builder: (context) => ReclamosPage(petModel: petModel, defaultChoiceIndex: defaultChoiceIndex,)),
                 );
               },
             ),

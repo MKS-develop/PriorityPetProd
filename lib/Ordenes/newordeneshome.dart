@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:pet_shop/Chat/ChatPage.dart';
 import 'package:pet_shop/Config/config.dart';
 
 import 'package:pet_shop/Models/Producto.dart';
@@ -23,8 +24,13 @@ class NewOrdenesHome extends StatefulWidget {
   final PetModel petModel;
   final Producto productoModel;
   final CartModel cartModel;
+  final int defaultChoiceIndex;
 
-  NewOrdenesHome({this.petModel, this.productoModel, this.cartModel});
+  NewOrdenesHome(
+      {this.petModel,
+      this.productoModel,
+      this.cartModel,
+      this.defaultChoiceIndex});
 
   @override
   _NewOrdenesHomeState createState() => _NewOrdenesHomeState();
@@ -42,9 +48,13 @@ class _NewOrdenesHomeState extends State<NewOrdenesHome> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(
@@ -139,7 +149,10 @@ class _NewOrdenesHomeState extends State<NewOrdenesHome> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => NewOrdenesDetalle(orderModel: order)),
+                builder: (context) => NewOrdenesDetalle(
+                    orderModel: order,
+                    petModel: widget.petModel,
+                    defaultChoiceIndex: widget.defaultChoiceIndex)),
           );
         },
         child: Padding(
@@ -343,6 +356,23 @@ class _NewOrdenesHomeState extends State<NewOrdenesHome> {
                                             fontSize: 14.0)),
                                   ],
                                 ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ChatPage(
+                                            petModel: widget.petModel,
+                                            aliado: order.aliadoId,
+                                          )),
+                                );
+                              },
+                              child: Image.asset(
+                                'images/msg1.png',
+                                fit: BoxFit.contain,
+                                height: 40,
                               ),
                             ),
                           ],

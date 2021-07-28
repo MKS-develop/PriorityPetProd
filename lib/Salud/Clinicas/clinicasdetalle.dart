@@ -36,13 +36,15 @@ class ClinicasDetalle extends StatefulWidget {
   final AliadoModel aliadoModel;
   final LocationModel locationModel;
   final ClinicasModel clinicasModel;
+  final int defaultChoiceIndex;
 
   ClinicasDetalle(
       {this.petModel,
       this.serviceModel,
       this.aliadoModel,
       this.locationModel,
-      this.clinicasModel});
+      this.clinicasModel,
+      this.defaultChoiceIndex});
 
   @override
   _ClinicasDetalleState createState() => _ClinicasDetalleState();
@@ -112,9 +114,13 @@ class _ClinicasDetalleState extends State<ClinicasDetalle> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(

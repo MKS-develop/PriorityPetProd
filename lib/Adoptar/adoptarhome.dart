@@ -12,8 +12,9 @@ import 'package:pet_shop/mascotas/registromascota.dart';
 
 class AdoptarHome extends StatefulWidget {
   final PetModel petModel;
+  final int defaultChoiceIndex;
 
-  AdoptarHome({this.petModel});
+  AdoptarHome({this.petModel, this.defaultChoiceIndex});
 
   @override
   _AdoptarHomeState createState() => _AdoptarHomeState();
@@ -35,9 +36,14 @@ class _AdoptarHomeState extends State<AdoptarHome> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
-        bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
+        bottomNavigationBar:
+            CustomBottomNavigationBar(petmodel: widget.petModel),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(
@@ -107,7 +113,7 @@ class _AdoptarHomeState extends State<AdoptarHome> {
                                     SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 3,
                                         crossAxisSpacing: 10,
-                                        mainAxisSpacing: 5,
+                                        mainAxisSpacing: 10,
                                         childAspectRatio: 0.7),
                                 physics: BouncingScrollPhysics(),
                                 itemBuilder: (
@@ -141,7 +147,7 @@ class _AdoptarHomeState extends State<AdoptarHome> {
         padding: EdgeInsets.all(0),
         child: Container(
           // color: Colors.grey,
-          height: 96.0,
+          height: 98.0,
           width: 75.0,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -158,8 +164,9 @@ class _AdoptarHomeState extends State<AdoptarHome> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                AdoptarDetalles(petModel: model)),
+                            builder: (context) => AdoptarDetalles(
+                                petModel: model,
+                                defaultChoiceIndex: widget.defaultChoiceIndex)),
                       );
                     },
                     child: Column(
@@ -177,7 +184,8 @@ class _AdoptarHomeState extends State<AdoptarHome> {
                           height: 3,
                         ),
                         Text(model.nombre,
-                            style: TextStyle(color: Color(0xFF57419D))),
+                            style: TextStyle(
+                                color: Color(0xFF57419D), fontSize: 12)),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [

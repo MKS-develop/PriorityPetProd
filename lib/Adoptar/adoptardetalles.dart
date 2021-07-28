@@ -1,31 +1,27 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_shop/Adoptar/adoptarconfirmar.dart';
 import 'package:pet_shop/Adoptar/apadrinarconfirmar.dart';
 import 'package:pet_shop/Adoptar/historiaadopcion.dart';
-import 'package:pet_shop/DialogBox/errorDialog.dart';
+import 'package:pet_shop/Chat/ChatPage.dart';
 import 'package:pet_shop/Models/pet.dart';
-import 'package:pet_shop/Payment/payment.dart';
-import 'package:pet_shop/Widgets/customTextField.dart';
 import 'package:pet_shop/Config/config.dart';
+import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import 'package:pet_shop/mascotas/mascotashome.dart';
-import '../Widgets/loadingWidget.dart';
 import '../Widgets/myDrawer.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_shop/Store/storehome.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
 double width;
 
 class AdoptarDetalles extends StatefulWidget {
   final PetModel petModel;
+  final int defaultChoiceIndex;
 
-  AdoptarDetalles({this.petModel});
+  AdoptarDetalles({this.petModel, this.defaultChoiceIndex});
 
   @override
   _AdoptarDetallesState createState() => _AdoptarDetallesState();
@@ -111,57 +107,15 @@ class _AdoptarDetallesState extends State<AdoptarDetalles>
     double _screenWidth = MediaQuery.of(context).size.width,
         _screenHeight = MediaQuery.of(context).size.height;
     return new Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(90.0),
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 10.0,
-            top: 20,
-            right: 16.0,
-          ),
-          child: AppBar(
-            iconTheme: IconThemeData(color: Colors.black),
-            backgroundColor: Colors.transparent, //No more green
-            elevation: 0.0,
-            //Shadow gone
-
-            title: GestureDetector(
-              onTap: () {
-                Route route = MaterialPageRoute(builder: (c) => StoreHome());
-                Navigator.pushReplacement(context, route);
-              },
-              child: Image.asset(
-                'diseñador/logo.png',
-                fit: BoxFit.contain,
-                height: 40,
-              ),
-            ),
-            centerTitle: true,
-            actions: <Widget>[
-              Stack(
-                children: <Widget>[
-                  Material(
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    child: Container(
-                      height: 50,
-                      width: 50,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        backgroundImage: NetworkImage(
-                          PetshopApp.sharedPreferences
-                              .getString(PetshopApp.userAvatarUrl),
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ],
-          ),
-        ),
+      appBar: AppBarCustomAvatar(
+          context, widget.petModel, widget.defaultChoiceIndex),
+      drawer: MyDrawer(
+        petModel: widget.petModel,
+        defaultChoiceIndex: widget.defaultChoiceIndex,
       ),
-      drawer: MyDrawer(),
-      bottomNavigationBar: CustomBottomNavigationBar(),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        petmodel: widget.petModel,
+      ),
       body: Container(
         height: MediaQuery.of(context).size.height,
         // decoration: new BoxDecoration(
@@ -243,7 +197,9 @@ class _AdoptarDetallesState extends State<AdoptarDetalles>
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               ApadrinarConfirmar(
-                                                  petModel: widget.petModel)),
+                                                  petModel: widget.petModel,
+                                                  defaultChoiceIndex: widget
+                                                      .defaultChoiceIndex)),
                                     );
                                   },
                                   shape: RoundedRectangleBorder(
@@ -274,7 +230,9 @@ class _AdoptarDetallesState extends State<AdoptarDetalles>
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               AdoptarConfirmar(
-                                                  petModel: widget.petModel)),
+                                                  petModel: widget.petModel,
+                                                  defaultChoiceIndex: widget
+                                                      .defaultChoiceIndex)),
                                     );
                                   },
                                   shape: RoundedRectangleBorder(
@@ -300,13 +258,14 @@ class _AdoptarDetallesState extends State<AdoptarDetalles>
                                 width: 160,
                                 child: RaisedButton(
                                   onPressed: () {
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //       builder: (context) =>
-                                    //           AdoptarConfirmar(
-                                    //               petModel: widget.petModel)),
-                                    // );
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ChatPage(
+                                              aliado: widget.petModel.aliadoId,
+                                              defaultChoiceIndex:
+                                                  widget.defaultChoiceIndex)),
+                                    );
                                   },
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(5)),
@@ -359,7 +318,7 @@ class _AdoptarDetallesState extends State<AdoptarDetalles>
                                         .collection('Favoritos')
                                         .doc(PetshopApp.sharedPreferences
                                             .getString(PetshopApp.userUID))
-                                        .setData({
+                                        .set({
                                       'like': false,
                                       'uid': PetshopApp.sharedPreferences
                                           .getString(PetshopApp.userUID),
@@ -424,8 +383,9 @@ class _AdoptarDetallesState extends State<AdoptarDetalles>
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              HistoriaAdopcion(petModel: widget.petModel)),
+                          builder: (context) => HistoriaAdopcion(
+                              petModel: widget.petModel,
+                              defaultChoiceIndex: widget.defaultChoiceIndex)),
                     );
                   },
                   // uploading ? null : ()=> uploadImageAndSavePetInfo(),
@@ -465,7 +425,10 @@ class _AdoptarDetallesState extends State<AdoptarDetalles>
     });
 
     setState(() {
-      Route route = MaterialPageRoute(builder: (c) => MascotasHome());
+      Route route = MaterialPageRoute(
+          builder: (c) => MascotasHome(
+              petModel: widget.petModel,
+              defaultChoiceIndex: widget.defaultChoiceIndex));
       Navigator.pushReplacement(context, route);
     });
   }

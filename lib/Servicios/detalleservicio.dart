@@ -25,12 +25,14 @@ class DetallesServicio extends StatefulWidget {
   final AliadoModel aliadoModel;
   final LocationModel locationModel;
   final ServicioModel servicioModel;
+  final int defaultChoiceIndex;
   DetallesServicio(
       {this.petModel,
       this.serviceModel,
       this.aliadoModel,
       this.locationModel,
-      this.servicioModel});
+      this.servicioModel,
+      this.defaultChoiceIndex});
 
   @override
   _DetallesServicioState createState() => _DetallesServicioState();
@@ -70,8 +72,12 @@ class _DetallesServicioState extends State<DetallesServicio> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
-        drawer: MyDrawer(),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         bottomNavigationBar: CustomBottomNavigationBar(),
         body: Container(
           height: MediaQuery.of(context).size.height,
@@ -239,7 +245,9 @@ class _DetallesServicioState extends State<DetallesServicio> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda),
+                            Text(
+                                PetshopApp.sharedPreferences
+                                    .getString(PetshopApp.simboloMoneda),
                                 style: TextStyle(
                                     fontSize: 20,
                                     color: Color(0xFF57419D),
@@ -273,7 +281,9 @@ class _DetallesServicioState extends State<DetallesServicio> {
                                         petModel: model,
                                         aliadoModel: ali,
                                         serviceModel: service,
-                                        locationModel: location)),
+                                        locationModel: location,
+                                        defaultChoiceIndex:
+                                            widget.defaultChoiceIndex)),
                               );
                             },
                             shape: RoundedRectangleBorder(

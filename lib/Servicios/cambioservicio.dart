@@ -33,13 +33,15 @@ class CambioServicio extends StatefulWidget {
   final AliadoModel aliadoModel;
   final LocationModel locationModel;
   final OrderModel orderModel;
+  final int defaultChoiceIndex;
 
   CambioServicio(
       {this.petModel,
       this.serviceModel,
       this.aliadoModel,
       this.locationModel,
-      this.orderModel});
+      this.orderModel,
+      this.defaultChoiceIndex});
 
   @override
   _CambioServicioState createState() => _CambioServicioState();
@@ -128,9 +130,13 @@ class _CambioServicioState extends State<CambioServicio> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
             height: _screenHeight,
             decoration: new BoxDecoration(
@@ -742,12 +748,12 @@ class _CambioServicioState extends State<CambioServicio> {
                                                             Navigator.push(
                                                               context,
                                                               MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          EventosPendientesHome(
-                                                                            petModel:
-                                                                                model,
-                                                                          )),
+                                                                  builder: (context) => EventosPendientesHome(
+                                                                      petModel:
+                                                                          model,
+                                                                      defaultChoiceIndex:
+                                                                          widget
+                                                                              .defaultChoiceIndex)),
                                                             );
                                                           }
                                                         }

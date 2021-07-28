@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:dropdownfield/dropdownfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pet_shop/Config/config.dart';
@@ -24,13 +25,15 @@ class ServicioPage extends StatefulWidget {
   final String tituloDetalle;
   final ServicioModel servicioModel;
   final ServiceModel serviceModel;
+  final int defaultChoiceIndex;
 
   ServicioPage(
       {this.petModel,
-        this.servicioModel,
-        this.serviceModel,
-        Key key,
-        @required this.tituloDetalle})
+      this.servicioModel,
+      this.serviceModel,
+      this.defaultChoiceIndex,
+      Key key,
+      @required this.tituloDetalle})
       : super(key: key);
 
   @override
@@ -48,12 +51,10 @@ class _ServicioPageState extends State<ServicioPage> {
   DateTime selectedDate = DateTime.now();
   String _categoria;
   TextEditingController _searchTextEditingController =
-  new TextEditingController();
+      new TextEditingController();
 
   ServiceModel servicio;
   PetModel model;
-
-
 
   String productId = DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -64,7 +65,7 @@ class _ServicioPageState extends State<ServicioPage> {
     _searchTextEditingController.addListener(_onSearchChanged);
     _allResults = [];
     finalServicesList = [];
-    MastersList();
+    MastersList(ciudad);
     getCiudades(PetshopApp.sharedPreferences.getString(PetshopApp.userPais));
   }
 
@@ -80,13 +81,14 @@ class _ServicioPageState extends State<ServicioPage> {
     super.didChangeDependencies();
   }
 
-  MastersList() async {
-
+  MastersList(String categoria) async {
     List list_of_locations = await FirebaseFirestore.instance
         .collection("Localidades")
         .where("serviciosContiene", isEqualTo: true)
-        .where("pais", isEqualTo: PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
-        .where("ciudad", isEqualTo: ciudad)
+        .where("pais",
+            isEqualTo:
+                PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
+        .where("ciudad", isEqualTo: categoria)
         .get()
         .then((val) => val.docs);
 
@@ -163,9 +165,13 @@ class _ServicioPageState extends State<ServicioPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(
@@ -202,71 +208,169 @@ class _ServicioPageState extends State<ServicioPage> {
                     ),
                   ],
                 ),
-                StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection("CategoriasServicios")
-                        .doc(widget.tituloDetalle)
-                        .collection('Servicios')
-                        .where('categoriaId', isEqualTo: widget.tituloDetalle)
-                        .snapshots(),
-                    builder: (context, dataSnapshot) {
-                      if (!dataSnapshot.hasData) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else {
-                        List<String> cat = [];
-                        for (int i = 0;
-                        i < dataSnapshot.data.docs.length;
-                        i++) {
-                          DocumentSnapshot categoria =
-                          dataSnapshot.data.docs[i];
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: _screenWidth * 0.9,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            StreamBuilder<QuerySnapshot>(
+                                stream: FirebaseFirestore.instance
+                                    .collection("CategoriasServicios")
+                                    .doc(widget.tituloDetalle)
+                                    .collection('Servicios')
+                                    .where('categoriaId',
+                                        isEqualTo: widget.tituloDetalle)
+                                    // .orderBy('createdOn', descending: false)
+                                    .snapshots(),
+                                builder: (context, dataSnapshot) {
+                                  if (!dataSnapshot.hasData) {
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  } else {
+                                    List<String> list = [];
+                                    for (int i = 0;
+                                        i < dataSnapshot.data.documents.length;
+                                        i++) {
+                                      DocumentSnapshot razas =
+                                          dataSnapshot.data.documents[i];
+                                      list.add(
+                                        razas.documentID,
+                                      );
+                                    }
+                                    return Container(
+                                      height: 55,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(
+                                          color: Color(0xFF7f9d9D),
+                                          width: 1.0,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10.0)),
+                                      ),
+                                      padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                      margin: EdgeInsets.all(5.0),
+                                      child: DropdownSearch<String>(
+                                        dropdownSearchDecoration:
+                                            InputDecoration(
+                                          hintStyle: TextStyle(
+                                            fontSize: 16.0,
+                                            // color: Color(0xFF7f9d9D)
+                                          ),
+                                          disabledBorder: InputBorder.none,
+                                          focusedBorder: InputBorder.none,
+                                          enabled: true,
+                                          border: InputBorder.none,
+                                        ),
+                                        mode: Mode.BOTTOM_SHEET,
+                                        maxHeight: 300,
 
-                          cat.add(
-                            categoria.id,
-                          );
-                        }
-                        return Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(
-                                color: Color(0xFF7f9d9D),
-                                width: 1.0,
-                              ),
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                            child: DropDownField(
-                              controller: _searchTextEditingController,
-                              hintText: 'Buscar servicio',
-                              hintStyle: TextStyle(
-                                  fontSize: 15.0,
-                                  color: Color(0xFF7f9d9D),
-                                  fontWeight: FontWeight.normal),
-                              icon: Padding(
-                                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                child: Image.asset(
-                                  'diseñador/drawable/Alimento1/search1.png',
-                                ),
-                              ),
-                              enabled: true,
-                              onValueChanged: (value) {
-                                value = value.toLowerCase();
-                                setState(() {
-                                  // _searchTextEditingController = value;
-                                });
-                              },
-                              textStyle: TextStyle(
-                                  backgroundColor: Colors.transparent,
-                                  fontWeight: FontWeight.bold),
-                              items: cat,
-                            ),
-                          ),
-                        );
-                      }
-                    }),
+                                        searchBoxController:
+                                            _searchTextEditingController,
+
+                                        // popupBackgroundColor: Colors.amber,
+                                        // searchBoxDecoration: InputDecoration(
+                                        //   fillColor: Colors.blue,
+                                        // ),
+                                        hint: "Buscar servicio",
+                                        showSearchBox: true,
+                                        showSelectedItem: true,
+                                        // showClearButton: true,
+                                        items: list,
+                                        // label: "Buscar servicio",
+
+                                        popupItemDisabled: (String s) =>
+                                            s.startsWith('I'),
+                                        onChanged: (print) {
+                                          setState(() {
+                                            _searchTextEditingController.text =
+                                                print;
+                                          });
+                                        },
+                                        selectedItem:
+                                            _searchTextEditingController.text,
+                                      ),
+                                    );
+                                  }
+                                }),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // StreamBuilder<QuerySnapshot>(
+                //     stream: FirebaseFirestore.instance
+                //         .collection("CategoriasServicios")
+                //         .doc(widget.tituloDetalle)
+                //         .collection('Servicios')
+                //         .where('categoriaId', isEqualTo: widget.tituloDetalle)
+                //         .snapshots(),
+                //     builder: (context, dataSnapshot) {
+                //       if (!dataSnapshot.hasData) {
+                //         return Center(
+                //           child: CircularProgressIndicator(),
+                //         );
+                //       } else {
+                //         List<String> cat = [];
+                //         for (int i = 0;
+                //             i < dataSnapshot.data.docs.length;
+                //             i++) {
+                //           DocumentSnapshot categoria =
+                //               dataSnapshot.data.docs[i];
+                //
+                //           cat.add(
+                //             categoria.id,
+                //           );
+                //         }
+                //         return Padding(
+                //           padding: const EdgeInsets.all(10.0),
+                //           child: Container(
+                //             decoration: BoxDecoration(
+                //               color: Colors.white,
+                //               border: Border.all(
+                //                 color: Color(0xFF7f9d9D),
+                //                 width: 1.0,
+                //               ),
+                //               borderRadius:
+                //                   BorderRadius.all(Radius.circular(10.0)),
+                //             ),
+                //             child: DropDownField(
+                //               controller: _searchTextEditingController,
+                //               hintText: 'Buscar servicio',
+                //               hintStyle: TextStyle(
+                //                   fontSize: 15.0,
+                //                   color: Color(0xFF7f9d9D),
+                //                   fontWeight: FontWeight.normal),
+                //               icon: Padding(
+                //                 padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                //                 child: Image.asset(
+                //                   'diseñador/drawable/Alimento1/search1.png',
+                //                 ),
+                //               ),
+                //               enabled: true,
+                //               onValueChanged: (value) {
+                //                 value = value.toLowerCase();
+                //                 setState(() {
+                //                   // _searchTextEditingController = value;
+                //                 });
+                //               },
+                //               textStyle: TextStyle(
+                //                   backgroundColor: Colors.transparent,
+                //                   fontWeight: FontWeight.bold),
+                //               items: cat,
+                //             ),
+                //           ),
+                //         );
+                //       }
+                //     }),
 
                 // Padding(
                 //   padding: EdgeInsets.fromLTRB(0, 8, 0, 10),
@@ -339,8 +443,8 @@ class _ServicioPageState extends State<ServicioPage> {
                                   color: Color(0xFF7f9d9D),
                                   width: 1.0,
                                 ),
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(10.0)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
                               ),
                               padding: EdgeInsets.all(0.0),
                               margin: EdgeInsets.all(5.0),
@@ -349,22 +453,22 @@ class _ServicioPageState extends State<ServicioPage> {
                                   children: <Widget>[
                                     DropdownButton(
                                         hint: Padding(
-                                          padding:
-                                          const EdgeInsets.fromLTRB(
+                                          padding: const EdgeInsets.fromLTRB(
                                               50, 0, 0, 0),
                                           child: Text(
                                             'Ciudad',
                                             style: TextStyle(
                                                 color: Colors.black,
-                                                fontWeight:
-                                                FontWeight.bold),
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         ),
                                         items: ciudades.map((dynamic value) {
                                           return DropdownMenuItem<dynamic>(
                                             value: value,
                                             child: Padding(
-                                              padding: const EdgeInsets.fromLTRB(40, 0, 0, 0),
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      40, 0, 0, 0),
                                               child: Text(value),
                                             ),
                                           );
@@ -374,11 +478,12 @@ class _ServicioPageState extends State<ServicioPage> {
                                           setState(() {
                                             _categoria = value;
                                             ciudad = value;
+                                            _resultsList=[];
                                             _allResults = [];
-                                            MastersList();
+                                            MastersList(value);
                                           });
                                         },
-                                        value: _categoria),
+                                        value: ciudad),
                                     Container(
                                       width: 20,
                                       margin: EdgeInsets.symmetric(
@@ -482,26 +587,56 @@ class _ServicioPageState extends State<ServicioPage> {
                 SizedBox(
                   height: 5.0,
                 ),
-                Container(
-                  height: _screenHeight,
-                  width: _screenWidth,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          height: double.infinity,
-                          child: ListView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: _resultsList.length,
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) {
-                                return sourceInfo2(_resultsList[index], context);
-                              }),
+                _resultsList.length == 0
+                    ? Column(
+                        children: [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            height: _screenHeight * 0.3,
+                            decoration: new BoxDecoration(
+                              image: new DecorationImage(
+                                image:
+                                    new AssetImage("images/perritotriste.png"),
+                                fit: BoxFit.fitHeight,
+                              ),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                          ),
+                          Text(
+                            'No disponible',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Container(
+                        height: _screenHeight,
+                        width: _screenWidth,
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                height: double.infinity,
+                                child: ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: _resultsList.length,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) {
+                                      return sourceInfo2(
+                                          _resultsList[index], context);
+                                    }),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
               ],
             ),
           ),
@@ -509,7 +644,6 @@ class _ServicioPageState extends State<ServicioPage> {
       ),
     );
   }
-
 
   Widget sourceInfo2(ServiceModel servicio, BuildContext context) {
     return InkWell(
@@ -529,9 +663,9 @@ class _ServicioPageState extends State<ServicioPage> {
                 itemCount: 1,
                 shrinkWrap: true,
                 itemBuilder: (
-                    context,
-                    index,
-                    ) {
+                  context,
+                  index,
+                ) {
                   LocationModel location = LocationModel.fromJson(
                       dataSnapshot.data.docs[index].data());
                   return StreamBuilder<QuerySnapshot>(
@@ -550,9 +684,9 @@ class _ServicioPageState extends State<ServicioPage> {
                             itemCount: 1,
                             shrinkWrap: true,
                             itemBuilder: (
-                                context,
-                                index,
-                                ) {
+                              context,
+                              index,
+                            ) {
                               AliadoModel aliado = AliadoModel.fromJson(
                                   dataSnapshot.data.docs[index].data());
                               return GestureDetector(
@@ -564,6 +698,8 @@ class _ServicioPageState extends State<ServicioPage> {
                                             petModel: model,
                                             serviceModel: servicio,
                                             aliadoModel: aliado,
+                                            defaultChoiceIndex:
+                                                widget.defaultChoiceIndex,
                                             locationModel: location)),
                                   );
                                 },
@@ -573,7 +709,7 @@ class _ServicioPageState extends State<ServicioPage> {
                                     width: MediaQuery.of(context).size.width,
                                     child: Row(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Container(
                                           height: 70,
@@ -599,31 +735,31 @@ class _ServicioPageState extends State<ServicioPage> {
                                         ),
                                         Container(
                                           width: MediaQuery.of(context)
-                                              .size
-                                              .width *
+                                                  .size
+                                                  .width *
                                               0.62,
                                           height: 70,
                                           child: Column(
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                             mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Column(
                                                 crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                                    CrossAxisAlignment.start,
                                                 mainAxisAlignment:
-                                                MainAxisAlignment.start,
+                                                    MainAxisAlignment.start,
                                                 children: [
                                                   Text(aliado.nombreComercial,
                                                       style: TextStyle(
                                                           fontSize: 17,
                                                           color:
-                                                          Color(0xFF57419D),
+                                                              Color(0xFF57419D),
                                                           fontWeight:
-                                                          FontWeight.bold),
+                                                              FontWeight.bold),
                                                       textAlign:
-                                                      TextAlign.left),
+                                                          TextAlign.left),
                                                   Text(
                                                       location
                                                           .direccionLocalidad,
@@ -631,30 +767,30 @@ class _ServicioPageState extends State<ServicioPage> {
                                                         fontSize: 13,
                                                       ),
                                                       textAlign:
-                                                      TextAlign.left),
+                                                          TextAlign.left),
                                                 ],
                                               ),
                                               Row(
                                                 mainAxisAlignment:
-                                                MainAxisAlignment.end,
+                                                    MainAxisAlignment.end,
                                                 children: [
                                                   Text(
                                                       (aliado.totalRatings /
-                                                          aliado
-                                                              .countRatings)
-                                                          .toString() !=
-                                                          'NaN'
+                                                                      aliado
+                                                                          .countRatings)
+                                                                  .toString() !=
+                                                              'NaN'
                                                           ? (aliado.totalRatings /
-                                                          aliado
-                                                              .countRatings)
-                                                          .toStringAsPrecision(
-                                                          2)
+                                                                  aliado
+                                                                      .countRatings)
+                                                              .toStringAsPrecision(
+                                                                  2)
                                                           : '0',
                                                       style: TextStyle(
                                                           fontSize: 16,
                                                           color: Colors.orange),
                                                       textAlign:
-                                                      TextAlign.left),
+                                                          TextAlign.left),
                                                   SizedBox(
                                                     width: 8,
                                                   ),
@@ -676,7 +812,6 @@ class _ServicioPageState extends State<ServicioPage> {
                             });
                       });
                 });
-
           }),
     );
   }
@@ -695,19 +830,26 @@ class _ServicioPageState extends State<ServicioPage> {
     });
     return otro;
   }
+
   Future<List<dynamic>> getCiudades(pais) async {
     ciudades = [];
-    try{
-      await FirebaseFirestore.instance.collection('Ciudades').where("paisId", isEqualTo: PetshopApp.sharedPreferences.getString(PetshopApp.userPais)).get().then((QuerySnapshot querySnapshot) => {
-        querySnapshot.docs.forEach((paisA) {
-          setState((){
-            ciudades = paisA["ciudades"].toList();
-          });
-
-        })
-      });
+    try {
+      await FirebaseFirestore.instance
+          .collection('Ciudades')
+          .where("paisId",
+              isEqualTo:
+                  PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
+          .get()
+          .then((QuerySnapshot querySnapshot) => {
+                querySnapshot.docs.forEach((paisA) {
+                  setState(() {
+                    ciudades = paisA["ciudades"].toList();
+                  });
+                })
+              });
+      ciudades.sort();
       print(ciudades.length);
-    }catch(e){
+    } catch (e) {
       print(e);
     }
     return ciudades;
@@ -783,50 +925,50 @@ class _ServicioPageState extends State<ServicioPage> {
       ),
     );
   }
-// Widget sourceInfo(ProductModel product, BuildContext context,
-//     ) {
-//   return InkWell(
-//     child: Row(
-//       children: [
-//         Container(
-//           height: 180.0,
-//           width: 100.0,
-//           child: Column(
-//             children: [
-//               Container(
-//                 height: 80,
-//                 child: Image.network(
-//                   product.urlImagen, fit: BoxFit.cover,),
-//               ),
-//               SizedBox(height: 3.0,),
-//               Container(
-//                 height: 90.0,
-//                 width: 100.0,
-//                 child: Column(
-//                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     Flexible(child: Text(product.titulo, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold), textAlign: TextAlign.left)),
-//                     Flexible(child: Text(product.dirigido, style: TextStyle(fontSize: 12), textAlign: TextAlign.left)),
-//                     SizedBox(height: 8.0),
-//                     Row(
-//                       children: [
-//                         Text('\$', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold), textAlign: TextAlign.left),
-//                         Text(product.precio.toString(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold), textAlign: TextAlign.left),
-//                       ],
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//         SizedBox(width: 10.0),
-//       ],
-//     ),
-//   );
-// }
-//
-//
+  // Widget sourceInfo(ProductModel product, BuildContext context,
+  //     ) {
+  //   return InkWell(
+  //     child: Row(
+  //       children: [
+  //         Container(
+  //           height: 180.0,
+  //           width: 100.0,
+  //           child: Column(
+  //             children: [
+  //               Container(
+  //                 height: 80,
+  //                 child: Image.network(
+  //                   product.urlImagen, fit: BoxFit.cover,),
+  //               ),
+  //               SizedBox(height: 3.0,),
+  //               Container(
+  //                 height: 90.0,
+  //                 width: 100.0,
+  //                 child: Column(
+  //                   mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     Flexible(child: Text(product.titulo, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold), textAlign: TextAlign.left)),
+  //                     Flexible(child: Text(product.dirigido, style: TextStyle(fontSize: 12), textAlign: TextAlign.left)),
+  //                     SizedBox(height: 8.0),
+  //                     Row(
+  //                       children: [
+  //                         Text('\$', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold), textAlign: TextAlign.left),
+  //                         Text(product.precio.toString(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold), textAlign: TextAlign.left),
+  //                       ],
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //         SizedBox(width: 10.0),
+  //       ],
+  //     ),
+  //   );
+  // }
+  //
+  //
 
 }

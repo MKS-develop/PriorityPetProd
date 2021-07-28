@@ -26,8 +26,9 @@ double width;
 
 class HistoriaAdopcion extends StatefulWidget {
   final PetModel petModel;
+  final int defaultChoiceIndex;
 
-  HistoriaAdopcion({this.petModel});
+  HistoriaAdopcion({this.petModel, this.defaultChoiceIndex});
 
   @override
   _HistoriaAdopcionState createState() => _HistoriaAdopcionState();
@@ -138,966 +139,980 @@ class _HistoriaAdopcionState extends State<HistoriaAdopcion> {
     // print(age.years);
     // print(DateFormat('yyyy-MM-dd').format(widget.petModel.fechanac.toDate()));
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
-        bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          // decoration: new BoxDecoration(
-          //   image: new DecorationImage(
-          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-          //     fit: BoxFit.cover,
-          //   ),
-          // ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16.0,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    IconButton(
-                        icon: Icon(Icons.arrow_back_ios,
-                            color: Color(0xFF57419D)),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        }),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
-                      child: Text(
-                        "Expediente médico",
-                        style: TextStyle(
-                          color: Color(0xFF57419D),
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+            appBar: AppBarCustomAvatar(
+                context, widget.petModel, widget.defaultChoiceIndex),
+            bottomNavigationBar: CustomBottomNavigationBar(),
+            drawer: MyDrawer(
+              petModel: widget.petModel,
+              defaultChoiceIndex: widget.defaultChoiceIndex,
+            ),
+            body: Container(
+                height: MediaQuery.of(context).size.height,
+                // decoration: new BoxDecoration(
+                //   image: new DecorationImage(
+                //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+                //     fit: BoxFit.cover,
+                //   ),
+                // ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      child:
-
-                     Column(children: <Widget>[
-                            SizedBox(
-                              height: 10.0,
+                child: SingleChildScrollView(
+                  child: Column(children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        IconButton(
+                            icon: Icon(Icons.arrow_back_ios,
+                                color: Color(0xFF57419D)),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            }),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                          child: Text(
+                            "Expediente médico",
+                            style: TextStyle(
+                              color: Color(0xFF57419D),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: SizedBox(
-                                width: _screenWidth,
-                                child: RaisedButton(
-                                  onPressed: () {
-                                    String tituloDetalle = "Peso (Kg)";
-                                    setState(() {
-                                      peso = true;
-                                    });
-
-                                    // Navigator.push(
-                                    //   context,
-                                    //
-                                    //   MaterialPageRoute(builder: (context) => PesoDetalle(petModel: model, tituloDetalle: tituloDetalle,)),
-                                    // );
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  color: Color(0xFF57419D),
-                                  padding: EdgeInsets.all(10.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                              'diseñador/drawable/Salud/peso.png'),
-                                          SizedBox(
-                                            width: 15.0,
-                                          ),
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text("Peso",
-                                                  style: TextStyle(
-                                                      fontFamily:
-                                                          'Product Sans',
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 18.0)),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      peso == false
-                                          ? IconButton(
-                                              icon: Icon(Icons.add,
-                                                  color: Colors.white),
-                                              onPressed: () {
-                                                setState(() {
-                                                  peso = true;
-                                                });
-                                              })
-                                          : IconButton(
-                                              icon: Icon(Icons.remove_rounded,
-                                                  color: Colors.white),
-                                              onPressed: () {
-                                                setState(() {
-                                                  peso = false;
-                                                });
-                                              }),
-                                    ],
-                                  ),
-                                ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            child: Column(children: <Widget>[
+                              SizedBox(
+                                height: 10.0,
                               ),
-                            ),
-                            peso == true
-                                ? Container(
-                                    height: 200,
-                                    child: StreamBuilder<QuerySnapshot>(
-                                      stream: FirebaseFirestore.instance
-                                          .collection('Expedientes')
-                                          .doc(widget.petModel.mid)
-                                          .collection('Peso')
-                                          .snapshots(),
-                                      builder: (context, snapshot) {
-                                        if (!snapshot.hasData) {
-                                          return LinearProgressIndicator();
-                                        } else {
-                                          List<ExpedienteChart> expediente =
-                                              snapshot.data.docs
-                                                  .map((documentSnapshot) =>
-                                                      ExpedienteChart.fromMap(
-                                                          documentSnapshot
-                                                              .data()))
-                                                  .toList();
+                              Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: SizedBox(
+                                  width: _screenWidth,
+                                  child: RaisedButton(
+                                    onPressed: () {
+                                      String tituloDetalle = "Peso (Kg)";
+                                      setState(() {
+                                        peso = true;
+                                      });
 
-                                          return _buildChart(
-                                              context, expediente);
-                                        }
-                                      },
-                                    ),
-                                  )
-                                : Container(),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: SizedBox(
-                                width: _screenWidth,
-                                child: RaisedButton(
-                                  onPressed: () {
-                                    String tituloDetalle = "Temperatura (°C)";
-                                    // Navigator.push(
-                                    //   context,
-                                    //
-                                    //   MaterialPageRoute(builder: (context) => TempDetalle(petModel: model, tituloDetalle: tituloDetalle)),
-                                    // );
-                                    setState(() {
-                                      temperatura = true;
-                                    });
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  color: Color(0xFF57419D),
-                                  padding: EdgeInsets.all(10.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                              'diseñador/drawable/Salud/temperatura.png'),
-                                          SizedBox(
-                                            width: 15.0,
-                                          ),
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text("Temperatura",
-                                                  style: TextStyle(
-                                                      fontFamily:
-                                                          'Product Sans',
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 18.0)),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      temperatura == false
-                                          ? IconButton(
-                                              icon: Icon(Icons.add,
-                                                  color: Colors.white),
-                                              onPressed: () {
-                                                setState(() {
-                                                  temperatura = true;
-                                                });
-                                              })
-                                          : IconButton(
-                                              icon: Icon(Icons.remove_rounded,
-                                                  color: Colors.white),
-                                              onPressed: () {
-                                                setState(() {
-                                                  temperatura = false;
-                                                });
-                                              }),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            temperatura == true
-                                ? Container(
-                                    height: 200,
-                                    child: StreamBuilder<QuerySnapshot>(
-                                      stream: FirebaseFirestore.instance
-                                          .collection('Expedientes')
-                                          .doc(widget.petModel.mid)
-                                          .collection('Temperatura')
-                                          .snapshots(),
-                                      builder: (context, snapshot) {
-                                        if (!snapshot.hasData) {
-                                          return LinearProgressIndicator();
-                                        } else {
-                                          List<TemperaturaChart>
-                                              temperaturachart = snapshot
-                                                  .data.docs
-                                                  .map((documentSnapshot) =>
-                                                      TemperaturaChart.fromMap(
-                                                          documentSnapshot
-                                                              .data()))
-                                                  .toList();
-
-                                          return _buildChart2(
-                                              context, temperaturachart);
-                                        }
-                                      },
-                                    ),
-                                  )
-                                : Container(),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: SizedBox(
-                                width: _screenWidth,
-                                child: RaisedButton(
-                                  onPressed: () {
-                                    String tituloDetalle = "Desparasitación";
-                                    setState(() {
-                                      desparasitacion = true;
-                                    });
-
-                                    // Navigator.push(
-                                    //   context,
-                                    //
-                                    //   MaterialPageRoute(builder: (context) => ConsultaDetalle(petModel: model, tituloDetalle: tituloDetalle)),
-                                    // );
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  color: Color(0xFF57419D),
-                                  padding: EdgeInsets.all(10.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                              'diseñador/drawable/Salud/despa.png'),
-                                          SizedBox(
-                                            width: 15.0,
-                                          ),
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text("Desparasitación",
-                                                  style: TextStyle(
-                                                      fontFamily:
-                                                          'Product Sans',
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 18.0)),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      desparasitacion == false
-                                          ? IconButton(
-                                              icon: Icon(Icons.add,
-                                                  color: Colors.white),
-                                              onPressed: () {
-                                                setState(() {
-                                                  desparasitacion = true;
-                                                });
-                                              })
-                                          : IconButton(
-                                              icon: Icon(Icons.remove_rounded,
-                                                  color: Colors.white),
-                                              onPressed: () {
-                                                setState(() {
-                                                  desparasitacion = false;
-                                                });
-                                              }),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            desparasitacion == true
-                                ? Container(
-                                    child: Column(
+                                      // Navigator.push(
+                                      //   context,
+                                      //
+                                      //   MaterialPageRoute(builder: (context) => PesoDetalle(petModel: model, tituloDetalle: tituloDetalle,)),
+                                      // );
+                                    },
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    color: Color(0xFF57419D),
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                          'Fecha',
-                                          style: TextStyle(
-                                              color: Color(0xFF57419D),
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16),
+                                        Row(
+                                          children: [
+                                            Image.asset(
+                                                'diseñador/drawable/Salud/peso.png'),
+                                            SizedBox(
+                                              width: 15.0,
+                                            ),
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Peso",
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'Product Sans',
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 18.0)),
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                        StreamBuilder<QuerySnapshot>(
-                                            stream: db
-                                                .collection("Expedientes")
-                                                .doc(widget.petModel.mid)
-                                                .collection("Desparasitacion")
-                                                .snapshots(),
-                                            builder: (context, dataSnapshot) {
-                                              if (!dataSnapshot.hasData) {
-                                                return Center(
-                                                  child:
-                                                      CircularProgressIndicator(),
-                                                );
-                                              }
-                                              return ListView.builder(
-                                                  physics:
-                                                      NeverScrollableScrollPhysics(),
-                                                  itemCount: dataSnapshot
-                                                      .data.documents.length,
-                                                  shrinkWrap: true,
-                                                  itemBuilder: (
-                                                    context,
-                                                    index,
-                                                  ) {
-                                                    ExpedienteModel exp =
-                                                        ExpedienteModel
-                                                            .fromJson(
-                                                                dataSnapshot
-                                                                    .data
-                                                                    .docs[index]
-                                                                    .data());
-                                                    return Column(
-                                                      children: [
-                                                        Text(
-                                                            DateFormat(
-                                                                    'dd-MM-yyyy')
-                                                                .format(exp
-                                                                    .fechaDesparasitacion
-                                                                    .toDate()),
-                                                            style: TextStyle(
-                                                                fontSize: 16.0,
-                                                                color: Color(
-                                                                    0xFF7F9D9D))),
-                                                      ],
-                                                    );
+                                        peso == false
+                                            ? IconButton(
+                                                icon: Icon(Icons.add,
+                                                    color: Colors.white),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    peso = true;
                                                   });
-                                            }),
+                                                })
+                                            : IconButton(
+                                                icon: Icon(Icons.remove_rounded,
+                                                    color: Colors.white),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    peso = false;
+                                                  });
+                                                }),
                                       ],
                                     ),
-                                  )
-                                : Container(),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: SizedBox(
-                                width: _screenWidth,
-                                child: RaisedButton(
-                                  onPressed: () {
-                                    String tituloDetalle = "Vacunas";
-                                    setState(() {
-                                      vacunas = true;
-                                    });
-
-                                    // Navigator.push(
-                                    //   context,
-                                    //
-                                    //   MaterialPageRoute(builder: (context) => ConsultaDetalle(petModel: model, tituloDetalle: tituloDetalle)),
-                                    // );
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  color: Color(0xFF57419D),
-                                  padding: EdgeInsets.all(10.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                              'diseñador/drawable/Salud/vacunas.png'),
-                                          SizedBox(
-                                            width: 15.0,
-                                          ),
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text("Vacunas",
-                                                  style: TextStyle(
-                                                      fontFamily:
-                                                          'Product Sans',
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 18.0)),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      vacunas == false
-                                          ? IconButton(
-                                              icon: Icon(Icons.add,
-                                                  color: Colors.white),
-                                              onPressed: () {
-                                                setState(() {
-                                                  vacunas = true;
-                                                });
-                                              })
-                                          : IconButton(
-                                              icon: Icon(Icons.remove_rounded,
-                                                  color: Colors.white),
-                                              onPressed: () {
-                                                setState(() {
-                                                  vacunas = false;
-                                                });
-                                              }),
-                                    ],
                                   ),
                                 ),
                               ),
-                            ),
-                            vacunas == true
-                                ? Container(
-                                    child: Column(
+                              peso == true
+                                  ? Container(
+                                      height: 200,
+                                      child: StreamBuilder<QuerySnapshot>(
+                                        stream: FirebaseFirestore.instance
+                                            .collection('Expedientes')
+                                            .doc(widget.petModel.mid)
+                                            .collection('Peso')
+                                            .snapshots(),
+                                        builder: (context, snapshot) {
+                                          if (!snapshot.hasData) {
+                                            return LinearProgressIndicator();
+                                          } else {
+                                            List<ExpedienteChart> expediente =
+                                                snapshot.data.docs
+                                                    .map((documentSnapshot) =>
+                                                        ExpedienteChart.fromMap(
+                                                            documentSnapshot
+                                                                .data()))
+                                                    .toList();
+
+                                            return _buildChart(
+                                                context, expediente);
+                                          }
+                                        },
+                                      ),
+                                    )
+                                  : Container(),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: SizedBox(
+                                  width: _screenWidth,
+                                  child: RaisedButton(
+                                    onPressed: () {
+                                      String tituloDetalle = "Temperatura (°C)";
+                                      // Navigator.push(
+                                      //   context,
+                                      //
+                                      //   MaterialPageRoute(builder: (context) => TempDetalle(petModel: model, tituloDetalle: tituloDetalle)),
+                                      // );
+                                      setState(() {
+                                        temperatura = true;
+                                      });
+                                    },
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    color: Color(0xFF57419D),
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        StreamBuilder<QuerySnapshot>(
-                                            stream: db
-                                                .collection("Expedientes")
-                                                .doc(widget.petModel.mid)
-                                                .collection("Vacunas")
-                                                .snapshots(),
-                                            builder: (context, dataSnapshot) {
-                                              if (!dataSnapshot.hasData) {
-                                                return Center(
-                                                  child:
-                                                      CircularProgressIndicator(),
-                                                );
-                                              }
-                                              return ListView.builder(
-                                                  physics:
-                                                      NeverScrollableScrollPhysics(),
-                                                  itemCount: dataSnapshot
-                                                      .data.documents.length,
-                                                  shrinkWrap: true,
-                                                  itemBuilder: (
-                                                    context,
-                                                    index,
-                                                  ) {
-                                                    ExpedienteModel exp =
-                                                        ExpedienteModel
-                                                            .fromJson(
-                                                                dataSnapshot
-                                                                    .data
-                                                                    .docs[index]
-                                                                    .data());
-                                                    return Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Text(
-                                                          exp.vacuna,
-                                                          style: TextStyle(
-                                                              fontSize: 14.0,
-                                                              color: Color(
-                                                                  0xFF7F9D9D),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 5.0,
-                                                        ),
-                                                        Text(
-                                                            DateFormat(
-                                                                    'dd-MM-yyyy')
-                                                                .format(exp
-                                                                    .fechaVacuna
-                                                                    .toDate()),
-                                                            style: TextStyle(
-                                                                fontSize: 16.0,
-                                                                color: Color(
-                                                                    0xFF7F9D9D))),
-                                                      ],
-                                                    );
+                                        Row(
+                                          children: [
+                                            Image.asset(
+                                                'diseñador/drawable/Salud/temperatura.png'),
+                                            SizedBox(
+                                              width: 15.0,
+                                            ),
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Temperatura",
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'Product Sans',
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 18.0)),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        temperatura == false
+                                            ? IconButton(
+                                                icon: Icon(Icons.add,
+                                                    color: Colors.white),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    temperatura = true;
                                                   });
-                                            }),
+                                                })
+                                            : IconButton(
+                                                icon: Icon(Icons.remove_rounded,
+                                                    color: Colors.white),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    temperatura = false;
+                                                  });
+                                                }),
                                       ],
                                     ),
-                                  )
-                                : Container(),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: SizedBox(
-                                width: _screenWidth,
-                                child: RaisedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      alergias = true;
-                                    });
-                                    String tituloDetalle = "Alergias";
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(builder: (context) => ConsultaDetalle(petModel: model, tituloDetalle: tituloDetalle)),
-                                    // );
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  color: Color(0xFF57419D),
-                                  padding: EdgeInsets.all(10.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                              'diseñador/drawable/Salud/alergia.png'),
-                                          SizedBox(
-                                            width: 15.0,
-                                          ),
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text("Alergias",
-                                                  style: TextStyle(
-                                                      fontFamily:
-                                                          'Product Sans',
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 18.0)),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      alergias == false
-                                          ? IconButton(
-                                              icon: Icon(Icons.add,
-                                                  color: Colors.white),
-                                              onPressed: () {
-                                                setState(() {
-                                                  alergias = true;
-                                                });
-                                              })
-                                          : IconButton(
-                                              icon: Icon(Icons.remove_rounded,
-                                                  color: Colors.white),
-                                              onPressed: () {
-                                                setState(() {
-                                                  alergias = false;
-                                                });
-                                              }),
-                                    ],
                                   ),
                                 ),
                               ),
-                            ),
-                            alergias == true
-                                ? Container(
-                                    child: Column(
+                              temperatura == true
+                                  ? Container(
+                                      height: 200,
+                                      child: StreamBuilder<QuerySnapshot>(
+                                        stream: FirebaseFirestore.instance
+                                            .collection('Expedientes')
+                                            .doc(widget.petModel.mid)
+                                            .collection('Temperatura')
+                                            .snapshots(),
+                                        builder: (context, snapshot) {
+                                          if (!snapshot.hasData) {
+                                            return LinearProgressIndicator();
+                                          } else {
+                                            List<TemperaturaChart>
+                                                temperaturachart = snapshot
+                                                    .data.docs
+                                                    .map((documentSnapshot) =>
+                                                        TemperaturaChart
+                                                            .fromMap(
+                                                                documentSnapshot
+                                                                    .data()))
+                                                    .toList();
+
+                                            return _buildChart2(
+                                                context, temperaturachart);
+                                          }
+                                        },
+                                      ),
+                                    )
+                                  : Container(),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: SizedBox(
+                                  width: _screenWidth,
+                                  child: RaisedButton(
+                                    onPressed: () {
+                                      String tituloDetalle = "Desparasitación";
+                                      setState(() {
+                                        desparasitacion = true;
+                                      });
+
+                                      // Navigator.push(
+                                      //   context,
+                                      //
+                                      //   MaterialPageRoute(builder: (context) => ConsultaDetalle(petModel: model, tituloDetalle: tituloDetalle)),
+                                      // );
+                                    },
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    color: Color(0xFF57419D),
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        StreamBuilder<QuerySnapshot>(
-                                            stream: db
-                                                .collection("Expedientes")
-                                                .doc(widget.petModel.mid)
-                                                .collection("Alergias")
-                                                .snapshots(),
-                                            builder: (context, dataSnapshot) {
-                                              if (!dataSnapshot.hasData) {
-                                                return Center(
-                                                  child:
-                                                      CircularProgressIndicator(),
-                                                );
-                                              }
-                                              return ListView.builder(
-                                                  physics:
-                                                      NeverScrollableScrollPhysics(),
-                                                  itemCount: dataSnapshot
-                                                      .data.docs.length,
-                                                  shrinkWrap: true,
-                                                  itemBuilder: (
-                                                    context,
-                                                    index,
-                                                  ) {
-                                                    ExpedienteModel exp =
-                                                        ExpedienteModel
-                                                            .fromJson(
-                                                                dataSnapshot
-                                                                    .data
-                                                                    .docs[index]
-                                                                    .data());
-                                                    return Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Text(
-                                                          exp.alergia,
-                                                          style: TextStyle(
-                                                              fontSize: 14.0,
-                                                              color: Color(
-                                                                  0xFF7F9D9D),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 5.0,
-                                                        ),
-                                                        Text(
-                                                            DateFormat(
-                                                                    'dd-MM-yyyy')
-                                                                .format(exp
-                                                                    .fechaAlergia
-                                                                    .toDate()),
-                                                            style: TextStyle(
-                                                                fontSize: 16.0,
-                                                                color: Color(
-                                                                    0xFF7F9D9D))),
-                                                      ],
-                                                    );
+                                        Row(
+                                          children: [
+                                            Image.asset(
+                                                'diseñador/drawable/Salud/despa.png'),
+                                            SizedBox(
+                                              width: 15.0,
+                                            ),
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Desparasitación",
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'Product Sans',
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 18.0)),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        desparasitacion == false
+                                            ? IconButton(
+                                                icon: Icon(Icons.add,
+                                                    color: Colors.white),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    desparasitacion = true;
                                                   });
-                                            }),
+                                                })
+                                            : IconButton(
+                                                icon: Icon(Icons.remove_rounded,
+                                                    color: Colors.white),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    desparasitacion = false;
+                                                  });
+                                                }),
                                       ],
                                     ),
-                                  )
-                                : Container(),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: SizedBox(
-                                width: _screenWidth,
-                                child: RaisedButton(
-                                  onPressed: () {
-                                    String tituloDetalle = "Patologías";
-                                    setState(() {
-                                      patologias = true;
-                                    });
-
-                                    // Navigator.push(
-                                    //   context,
-                                    //
-                                    //   MaterialPageRoute(builder: (context) => ConsultaDetalle(petModel: model, tituloDetalle: tituloDetalle)),
-                                    // );
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  color: Color(0xFF57419D),
-                                  padding: EdgeInsets.all(10.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                              'diseñador/drawable/Salud/pato.png'),
-                                          SizedBox(
-                                            width: 15.0,
-                                          ),
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text("Patologías",
-                                                  style: TextStyle(
-                                                      fontFamily:
-                                                          'Product Sans',
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 18.0)),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      patologias == false
-                                          ? IconButton(
-                                              icon: Icon(Icons.add,
-                                                  color: Colors.white),
-                                              onPressed: () {
-                                                setState(() {
-                                                  patologias = true;
-                                                });
-                                              })
-                                          : IconButton(
-                                              icon: Icon(Icons.remove_rounded,
-                                                  color: Colors.white),
-                                              onPressed: () {
-                                                setState(() {
-                                                  patologias = false;
-                                                });
-                                              }),
-                                    ],
                                   ),
                                 ),
                               ),
-                            ),
-                            patologias == true
-                                ? Container(
-                                    child: Column(
-                                      children: [
-                                        StreamBuilder<QuerySnapshot>(
-                                            stream: db
-                                                .collection("Expedientes")
-                                                .doc(widget.petModel.mid)
-                                                .collection("Patologias")
-                                                .snapshots(),
-                                            builder: (context, dataSnapshot) {
-                                              if (!dataSnapshot.hasData) {
-                                                return Center(
-                                                  child:
-                                                      CircularProgressIndicator(),
-                                                );
-                                              }
-                                              return ListView.builder(
-                                                  physics:
-                                                      NeverScrollableScrollPhysics(),
-                                                  itemCount: dataSnapshot
-                                                      .data.documents.length,
-                                                  shrinkWrap: true,
-                                                  itemBuilder: (
-                                                    context,
-                                                    index,
-                                                  ) {
-                                                    ExpedienteModel exp =
-                                                        ExpedienteModel
-                                                            .fromJson(
-                                                                dataSnapshot
-                                                                    .data
-                                                                    .docs[index]
-                                                                    .data());
-                                                    return Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Text(
-                                                          exp.patologia,
-                                                          style: TextStyle(
-                                                              fontSize: 14.0,
-                                                              color: Color(
-                                                                  0xFF7F9D9D),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 5.0,
-                                                        ),
-                                                        Text(
-                                                            DateFormat(
-                                                                    'dd-MM-yyyy')
-                                                                .format(exp
-                                                                    .fechaPatologia
-                                                                    .toDate()),
-                                                            style: TextStyle(
-                                                                fontSize: 16.0,
-                                                                color: Color(
-                                                                    0xFF7F9D9D))),
-                                                      ],
-                                                    );
-                                                  });
-                                            }),
-                                      ],
-                                    ),
-                                  )
-                                : Container(),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: SizedBox(
-                                width: _screenWidth,
-                                child: RaisedButton(
-                                  onPressed: () {
-                                    String tituloDetalle =
-                                        "Esterilizado/Castrado";
-                                    // Navigator.push(
-                                    //   context,
-                                    //
-                                    //   MaterialPageRoute(builder: (context) => ConsultaDetalle(petModel: model, tituloDetalle: tituloDetalle)),
-                                    // );
-                                    setState(() {
-                                      castrado = true;
-                                    });
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  color: Color(0xFF57419D),
-                                  padding: EdgeInsets.all(10.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
+                              desparasitacion == true
+                                  ? Container(
+                                      child: Column(
                                         children: [
-                                          Image.asset(
-                                              'diseñador/drawable/Salud/castrado.png'),
-                                          SizedBox(
-                                            width: 15.0,
+                                          Text(
+                                            'Fecha',
+                                            style: TextStyle(
+                                                color: Color(0xFF57419D),
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16),
                                           ),
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text("Esterilizado/Castrado",
-                                                  style: TextStyle(
-                                                      fontFamily:
-                                                          'Product Sans',
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 18.0)),
-                                            ],
-                                          ),
+                                          StreamBuilder<QuerySnapshot>(
+                                              stream: db
+                                                  .collection("Expedientes")
+                                                  .doc(widget.petModel.mid)
+                                                  .collection("Desparasitacion")
+                                                  .snapshots(),
+                                              builder: (context, dataSnapshot) {
+                                                if (!dataSnapshot.hasData) {
+                                                  return Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  );
+                                                }
+                                                return ListView.builder(
+                                                    physics:
+                                                        NeverScrollableScrollPhysics(),
+                                                    itemCount: dataSnapshot
+                                                        .data.documents.length,
+                                                    shrinkWrap: true,
+                                                    itemBuilder: (
+                                                      context,
+                                                      index,
+                                                    ) {
+                                                      ExpedienteModel exp =
+                                                          ExpedienteModel
+                                                              .fromJson(
+                                                                  dataSnapshot
+                                                                      .data
+                                                                      .docs[
+                                                                          index]
+                                                                      .data());
+                                                      return Column(
+                                                        children: [
+                                                          Text(
+                                                              DateFormat(
+                                                                      'dd-MM-yyyy')
+                                                                  .format(exp
+                                                                      .fechaDesparasitacion
+                                                                      .toDate()),
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                      16.0,
+                                                                  color: Color(
+                                                                      0xFF7F9D9D))),
+                                                        ],
+                                                      );
+                                                    });
+                                              }),
                                         ],
                                       ),
-                                      castrado == false
-                                          ? IconButton(
-                                              icon: Icon(Icons.add,
-                                                  color: Colors.white),
-                                              onPressed: () {
-                                                setState(() {
-                                                  castrado = true;
-                                                });
-                                              })
-                                          : IconButton(
-                                              icon: Icon(Icons.remove_rounded,
-                                                  color: Colors.white),
-                                              onPressed: () {
-                                                setState(() {
-                                                  castrado = false;
-                                                });
-                                              }),
-                                    ],
+                                    )
+                                  : Container(),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: SizedBox(
+                                  width: _screenWidth,
+                                  child: RaisedButton(
+                                    onPressed: () {
+                                      String tituloDetalle = "Vacunas";
+                                      setState(() {
+                                        vacunas = true;
+                                      });
+
+                                      // Navigator.push(
+                                      //   context,
+                                      //
+                                      //   MaterialPageRoute(builder: (context) => ConsultaDetalle(petModel: model, tituloDetalle: tituloDetalle)),
+                                      // );
+                                    },
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    color: Color(0xFF57419D),
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Image.asset(
+                                                'diseñador/drawable/Salud/vacunas.png'),
+                                            SizedBox(
+                                              width: 15.0,
+                                            ),
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Vacunas",
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'Product Sans',
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 18.0)),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        vacunas == false
+                                            ? IconButton(
+                                                icon: Icon(Icons.add,
+                                                    color: Colors.white),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    vacunas = true;
+                                                  });
+                                                })
+                                            : IconButton(
+                                                icon: Icon(Icons.remove_rounded,
+                                                    color: Colors.white),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    vacunas = false;
+                                                  });
+                                                }),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            castrado == true
-                                ? Container(
-                                    child: Column(
-                                      children: [
-                                        StreamBuilder<QuerySnapshot>(
-                                            stream: db
-                                                .collection("Expedientes")
-                                                .doc(widget.petModel.mid)
-                                                .collection("Esterilizacion")
-                                                .snapshots(),
-                                            builder: (context, dataSnapshot) {
-                                              if (!dataSnapshot.hasData) {
-                                                return Center(
-                                                  child:
-                                                      CircularProgressIndicator(),
-                                                );
-                                              }
-                                              return ListView.builder(
-                                                  physics:
-                                                      NeverScrollableScrollPhysics(),
-                                                  itemCount: dataSnapshot
-                                                      .data.documents.length,
-                                                  shrinkWrap: true,
-                                                  itemBuilder: (
-                                                    context,
-                                                    index,
-                                                  ) {
-                                                    ExpedienteModel exp =
-                                                        ExpedienteModel
-                                                            .fromJson(
-                                                                dataSnapshot
-                                                                    .data
-                                                                    .docs[index]
-                                                                    .data());
-                                                    return Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Text(
-                                                          exp.esteril,
-                                                          style: TextStyle(
-                                                              fontSize: 14.0,
-                                                              color: Color(
-                                                                  0xFF7F9D9D),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 5.0,
-                                                        ),
-                                                        Text(
-                                                            DateFormat(
-                                                                    'dd-MM-yyyy')
-                                                                .format(exp
-                                                                    .fechaEsteril
-                                                                    .toDate()),
+                              vacunas == true
+                                  ? Container(
+                                      child: Column(
+                                        children: [
+                                          StreamBuilder<QuerySnapshot>(
+                                              stream: db
+                                                  .collection("Expedientes")
+                                                  .doc(widget.petModel.mid)
+                                                  .collection("Vacunas")
+                                                  .snapshots(),
+                                              builder: (context, dataSnapshot) {
+                                                if (!dataSnapshot.hasData) {
+                                                  return Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  );
+                                                }
+                                                return ListView.builder(
+                                                    physics:
+                                                        NeverScrollableScrollPhysics(),
+                                                    itemCount: dataSnapshot
+                                                        .data.documents.length,
+                                                    shrinkWrap: true,
+                                                    itemBuilder: (
+                                                      context,
+                                                      index,
+                                                    ) {
+                                                      ExpedienteModel exp =
+                                                          ExpedienteModel
+                                                              .fromJson(
+                                                                  dataSnapshot
+                                                                      .data
+                                                                      .docs[
+                                                                          index]
+                                                                      .data());
+                                                      return Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text(
+                                                            exp.vacuna,
                                                             style: TextStyle(
-                                                                fontSize: 16.0,
+                                                                fontSize: 14.0,
                                                                 color: Color(
-                                                                    0xFF7F9D9D))),
-                                                      ],
-                                                    );
+                                                                    0xFF7F9D9D),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 5.0,
+                                                          ),
+                                                          Text(
+                                                              DateFormat(
+                                                                      'dd-MM-yyyy')
+                                                                  .format(exp
+                                                                      .fechaVacuna
+                                                                      .toDate()),
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                      16.0,
+                                                                  color: Color(
+                                                                      0xFF7F9D9D))),
+                                                        ],
+                                                      );
+                                                    });
+                                              }),
+                                        ],
+                                      ),
+                                    )
+                                  : Container(),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: SizedBox(
+                                  width: _screenWidth,
+                                  child: RaisedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        alergias = true;
+                                      });
+                                      String tituloDetalle = "Alergias";
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(builder: (context) => ConsultaDetalle(petModel: model, tituloDetalle: tituloDetalle)),
+                                      // );
+                                    },
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    color: Color(0xFF57419D),
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Image.asset(
+                                                'diseñador/drawable/Salud/alergia.png'),
+                                            SizedBox(
+                                              width: 15.0,
+                                            ),
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Alergias",
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'Product Sans',
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 18.0)),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        alergias == false
+                                            ? IconButton(
+                                                icon: Icon(Icons.add,
+                                                    color: Colors.white),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    alergias = true;
                                                   });
-                                            }),
+                                                })
+                                            : IconButton(
+                                                icon: Icon(Icons.remove_rounded,
+                                                    color: Colors.white),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    alergias = false;
+                                                  });
+                                                }),
                                       ],
                                     ),
-                                  )
-                                : Container(),
-                          ]),
+                                  ),
+                                ),
+                              ),
+                              alergias == true
+                                  ? Container(
+                                      child: Column(
+                                        children: [
+                                          StreamBuilder<QuerySnapshot>(
+                                              stream: db
+                                                  .collection("Expedientes")
+                                                  .doc(widget.petModel.mid)
+                                                  .collection("Alergias")
+                                                  .snapshots(),
+                                              builder: (context, dataSnapshot) {
+                                                if (!dataSnapshot.hasData) {
+                                                  return Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  );
+                                                }
+                                                return ListView.builder(
+                                                    physics:
+                                                        NeverScrollableScrollPhysics(),
+                                                    itemCount: dataSnapshot
+                                                        .data.docs.length,
+                                                    shrinkWrap: true,
+                                                    itemBuilder: (
+                                                      context,
+                                                      index,
+                                                    ) {
+                                                      ExpedienteModel exp =
+                                                          ExpedienteModel
+                                                              .fromJson(
+                                                                  dataSnapshot
+                                                                      .data
+                                                                      .docs[
+                                                                          index]
+                                                                      .data());
+                                                      return Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text(
+                                                            exp.alergia,
+                                                            style: TextStyle(
+                                                                fontSize: 14.0,
+                                                                color: Color(
+                                                                    0xFF7F9D9D),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 5.0,
+                                                          ),
+                                                          Text(
+                                                              DateFormat(
+                                                                      'dd-MM-yyyy')
+                                                                  .format(exp
+                                                                      .fechaAlergia
+                                                                      .toDate()),
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                      16.0,
+                                                                  color: Color(
+                                                                      0xFF7F9D9D))),
+                                                        ],
+                                                      );
+                                                    });
+                                              }),
+                                        ],
+                                      ),
+                                    )
+                                  : Container(),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: SizedBox(
+                                  width: _screenWidth,
+                                  child: RaisedButton(
+                                    onPressed: () {
+                                      String tituloDetalle = "Patologías";
+                                      setState(() {
+                                        patologias = true;
+                                      });
 
-
-          ),
-          ]
-        ),
-    ]
-      ),
-    )))
-    );
+                                      // Navigator.push(
+                                      //   context,
+                                      //
+                                      //   MaterialPageRoute(builder: (context) => ConsultaDetalle(petModel: model, tituloDetalle: tituloDetalle)),
+                                      // );
+                                    },
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    color: Color(0xFF57419D),
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Image.asset(
+                                                'diseñador/drawable/Salud/pato.png'),
+                                            SizedBox(
+                                              width: 15.0,
+                                            ),
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Patologías",
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'Product Sans',
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 18.0)),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        patologias == false
+                                            ? IconButton(
+                                                icon: Icon(Icons.add,
+                                                    color: Colors.white),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    patologias = true;
+                                                  });
+                                                })
+                                            : IconButton(
+                                                icon: Icon(Icons.remove_rounded,
+                                                    color: Colors.white),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    patologias = false;
+                                                  });
+                                                }),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              patologias == true
+                                  ? Container(
+                                      child: Column(
+                                        children: [
+                                          StreamBuilder<QuerySnapshot>(
+                                              stream: db
+                                                  .collection("Expedientes")
+                                                  .doc(widget.petModel.mid)
+                                                  .collection("Patologias")
+                                                  .snapshots(),
+                                              builder: (context, dataSnapshot) {
+                                                if (!dataSnapshot.hasData) {
+                                                  return Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  );
+                                                }
+                                                return ListView.builder(
+                                                    physics:
+                                                        NeverScrollableScrollPhysics(),
+                                                    itemCount: dataSnapshot
+                                                        .data.documents.length,
+                                                    shrinkWrap: true,
+                                                    itemBuilder: (
+                                                      context,
+                                                      index,
+                                                    ) {
+                                                      ExpedienteModel exp =
+                                                          ExpedienteModel
+                                                              .fromJson(
+                                                                  dataSnapshot
+                                                                      .data
+                                                                      .docs[
+                                                                          index]
+                                                                      .data());
+                                                      return Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text(
+                                                            exp.patologia,
+                                                            style: TextStyle(
+                                                                fontSize: 14.0,
+                                                                color: Color(
+                                                                    0xFF7F9D9D),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 5.0,
+                                                          ),
+                                                          Text(
+                                                              DateFormat(
+                                                                      'dd-MM-yyyy')
+                                                                  .format(exp
+                                                                      .fechaPatologia
+                                                                      .toDate()),
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                      16.0,
+                                                                  color: Color(
+                                                                      0xFF7F9D9D))),
+                                                        ],
+                                                      );
+                                                    });
+                                              }),
+                                        ],
+                                      ),
+                                    )
+                                  : Container(),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: SizedBox(
+                                  width: _screenWidth,
+                                  child: RaisedButton(
+                                    onPressed: () {
+                                      String tituloDetalle =
+                                          "Esterilizado/Castrado";
+                                      // Navigator.push(
+                                      //   context,
+                                      //
+                                      //   MaterialPageRoute(builder: (context) => ConsultaDetalle(petModel: model, tituloDetalle: tituloDetalle)),
+                                      // );
+                                      setState(() {
+                                        castrado = true;
+                                      });
+                                    },
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    color: Color(0xFF57419D),
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Image.asset(
+                                                'diseñador/drawable/Salud/castrado.png'),
+                                            SizedBox(
+                                              width: 15.0,
+                                            ),
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Esterilizado/Castrado",
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'Product Sans',
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 18.0)),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        castrado == false
+                                            ? IconButton(
+                                                icon: Icon(Icons.add,
+                                                    color: Colors.white),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    castrado = true;
+                                                  });
+                                                })
+                                            : IconButton(
+                                                icon: Icon(Icons.remove_rounded,
+                                                    color: Colors.white),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    castrado = false;
+                                                  });
+                                                }),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              castrado == true
+                                  ? Container(
+                                      child: Column(
+                                        children: [
+                                          StreamBuilder<QuerySnapshot>(
+                                              stream: db
+                                                  .collection("Expedientes")
+                                                  .doc(widget.petModel.mid)
+                                                  .collection("Esterilizacion")
+                                                  .snapshots(),
+                                              builder: (context, dataSnapshot) {
+                                                if (!dataSnapshot.hasData) {
+                                                  return Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  );
+                                                }
+                                                return ListView.builder(
+                                                    physics:
+                                                        NeverScrollableScrollPhysics(),
+                                                    itemCount: dataSnapshot
+                                                        .data.documents.length,
+                                                    shrinkWrap: true,
+                                                    itemBuilder: (
+                                                      context,
+                                                      index,
+                                                    ) {
+                                                      ExpedienteModel exp =
+                                                          ExpedienteModel
+                                                              .fromJson(
+                                                                  dataSnapshot
+                                                                      .data
+                                                                      .docs[
+                                                                          index]
+                                                                      .data());
+                                                      return Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text(
+                                                            exp.esteril,
+                                                            style: TextStyle(
+                                                                fontSize: 14.0,
+                                                                color: Color(
+                                                                    0xFF7F9D9D),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 5.0,
+                                                          ),
+                                                          Text(
+                                                              DateFormat(
+                                                                      'dd-MM-yyyy')
+                                                                  .format(exp
+                                                                      .fechaEsteril
+                                                                      .toDate()),
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                      16.0,
+                                                                  color: Color(
+                                                                      0xFF7F9D9D))),
+                                                        ],
+                                                      );
+                                                    });
+                                              }),
+                                        ],
+                                      ),
+                                    )
+                                  : Container(),
+                            ]),
+                          ),
+                        ]),
+                  ]),
+                ))));
   }
 
   changePet(otro) {
@@ -1107,20 +1122,6 @@ class _HistoriaAdopcionState extends State<HistoriaAdopcion> {
 
     return otro;
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   Widget _buildChart(BuildContext context, List<ExpedienteChart> expe) {
     mydata = expe;

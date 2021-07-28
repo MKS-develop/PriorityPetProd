@@ -26,17 +26,15 @@ double width;
 
 class AdoptarConfirmar extends StatefulWidget {
   final PetModel petModel;
+  final int defaultChoiceIndex;
 
-  AdoptarConfirmar({this.petModel});
+  AdoptarConfirmar({this.petModel, this.defaultChoiceIndex});
 
   @override
   _AdoptarConfirmarState createState() => _AdoptarConfirmarState();
 }
 
 class _AdoptarConfirmarState extends State<AdoptarConfirmar> {
-
-
-
   String _pat = "";
   String _aler = "";
   String _vacu = "";
@@ -72,7 +70,7 @@ class _AdoptarConfirmarState extends State<AdoptarConfirmar> {
             DateFormat('dd-MM-yyyy')
                 .format(temperaturaChart.fechaTemperatura.toDate()),
         measureFn: (TemperaturaChart temperaturaChart, _) =>
-        temperaturaChart.temperatura,
+            temperaturaChart.temperatura,
         fillColorFn: (TemperaturaChart temperaturaChart, _) =>
             charts.ColorUtil.fromDartColor(Color(0xFF57419D)),
         id: 'TemperaturaChart',
@@ -130,9 +128,13 @@ class _AdoptarConfirmarState extends State<AdoptarConfirmar> {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
-            appBar: AppBarCustomAvatar(context, widget.petModel),
+            appBar: AppBarCustomAvatar(
+                context, widget.petModel, widget.defaultChoiceIndex),
             bottomNavigationBar: CustomBottomNavigationBar(),
-            drawer: MyDrawer(),
+            drawer: MyDrawer(
+              petModel: widget.petModel,
+              defaultChoiceIndex: widget.defaultChoiceIndex,
+            ),
             body: Container(
                 height: MediaQuery.of(context).size.height,
                 // decoration: new BoxDecoration(
@@ -145,109 +147,108 @@ class _AdoptarConfirmarState extends State<AdoptarConfirmar> {
                   horizontal: 16.0,
                 ),
                 child: SingleChildScrollView(
-                  child: Column(
-                      children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            IconButton(
-                                icon: Icon(Icons.arrow_back_ios,
-                                    color: Color(0xFF57419D)),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                }),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
-                              child: Text(
-                                "Adopción",
-                                style: TextStyle(
-                                  color: Color(0xFF57419D),
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 15,),
-                        Text("¡Ya casi estamos listos!",
-                            style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center),
-
-                        SizedBox(height: 15,),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-
-                          child: Image.network(
-                            widget
-                                .petModel.petthumbnailUrl,
-                            height: 150,
-                            width: 120,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        SizedBox(height: 15,),
-                        Container(
-                            width: _screenWidth,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: Text("Gracias por querer adoptarme."),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: Text("Pronto recibirás un correo y el formulario para enviar a la Fundación."),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: Text("Tendrás una entrevista y luego podrás tenerme en casa."),
-                                ),
-                              ],
-                            )),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Container(
-                          width: 200,
-                          child: RaisedButton(
+                  child: Column(children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        IconButton(
+                            icon: Icon(Icons.arrow_back_ios,
+                                color: Color(0xFF57419D)),
                             onPressed: () {
-                              Message(context, 'Su adopción ha sido procesada correctamente, espere un correo con todos los detalles.');
-                              _interesados();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        StoreHome(
-                                            petModel: widget.petModel)),
-                              );
-                            },
-                            // uploading ? null : ()=> uploadImageAndSavePetInfo(),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            color: Color(0xFF57419D),
-                            padding: EdgeInsets.all(6.0),
-                            child: Text("Confirmar adopción",
-                                style: TextStyle(
-                                    fontFamily: 'Product Sans',
-                                    color: Colors.white,
-                                    fontSize: 15.0)),
+                              Navigator.pop(context);
+                            }),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                          child: Text(
+                            "Adopción",
+                            style: TextStyle(
+                              color: Color(0xFF57419D),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-
-
-
-
-                      ]
-                  ),
-                )))
-    );
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Text("¡Ya casi estamos listos!",
+                        style: TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.network(
+                        widget.petModel.petthumbnailUrl,
+                        height: 150,
+                        width: 120,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Container(
+                        width: _screenWidth,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(3.0),
+                              child: Text("Gracias por querer adoptarme."),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(3.0),
+                              child: Text(
+                                  "El albergue se comunicará contigo para las evaluaciones y luego podrás tenerme en casa, para darme mucho cariño."),
+                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.all(3.0),
+                            //   child: Text(
+                            //       "Tendrás una entrevista y luego podrás tenerme en casa."),
+                            // ),
+                          ],
+                        )),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Container(
+                      width: 200,
+                      child: RaisedButton(
+                        onPressed: () {
+                          Message(context,
+                              'Su adopción ha sido procesada correctamente, espere un correo con todos los detalles.');
+                          _interesados();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => StoreHome(
+                                    petModel: widget.petModel,
+                                    defaultChoiceIndex:
+                                        widget.defaultChoiceIndex)),
+                          );
+                        },
+                        // uploading ? null : ()=> uploadImageAndSavePetInfo(),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        color: Color(0xFF57419D),
+                        padding: EdgeInsets.all(6.0),
+                        child: Text("Confirmar adopción",
+                            style: TextStyle(
+                                fontFamily: 'Product Sans',
+                                color: Colors.white,
+                                fontSize: 15.0)),
+                      ),
+                    ),
+                  ]),
+                ))));
   }
 
-  _interesados(){
+  _interesados() {
     final databaseReference = FirebaseFirestore.instance;
     databaseReference
         .collection('Mascotas')
@@ -255,9 +256,7 @@ class _AdoptarConfirmarState extends State<AdoptarConfirmar> {
         .collection('Interesados')
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
         .set({
-
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
-
       "mid": widget.petModel.mid,
       "interesado": true,
     });
@@ -270,7 +269,6 @@ class _AdoptarConfirmarState extends State<AdoptarConfirmar> {
 
     return otro;
   }
-
 
   Future<void> Message(BuildContext context, String error) async {
     // Navigator.of(context, rootNavigator: true).pop();
@@ -306,17 +304,4 @@ class _AdoptarConfirmarState extends State<AdoptarConfirmar> {
           );
         });
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

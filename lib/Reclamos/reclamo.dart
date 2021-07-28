@@ -19,9 +19,14 @@ class ReclamoPage extends StatefulWidget {
   final Producto productoModel;
   final CartModel cartModel;
   final ReclamoModel reclamoModel;
+  final int defaultChoiceIndex;
 
   ReclamoPage(
-      {this.petModel, this.productoModel, this.cartModel, this.reclamoModel});
+      {this.petModel,
+      this.productoModel,
+      this.cartModel,
+      this.reclamoModel,
+      this.defaultChoiceIndex});
 
   @override
   _ReclamoPageState createState() => _ReclamoPageState();
@@ -52,9 +57,13 @@ class _ReclamoPageState extends State<ReclamoPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(
@@ -220,7 +229,12 @@ class _ReclamoPageState extends State<ReclamoPage> {
         .delete()
         .then((value) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => ReclamosPage()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => ReclamosPage(
+                    petModel: widget.petModel,
+                    defaultChoiceIndex: widget.defaultChoiceIndex,
+                  )));
     });
   }
 }

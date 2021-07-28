@@ -24,8 +24,9 @@ double width;
 class VideoPage extends StatefulWidget {
   final PetModel petModel;
   final LocationModel locationModel;
+  final int defaultChoiceIndex;
 
-  VideoPage({this.petModel, this.locationModel});
+  VideoPage({this.petModel, this.locationModel, this.defaultChoiceIndex});
 
   @override
   _VideoPageState createState() => _VideoPageState();
@@ -154,9 +155,13 @@ class _VideoPageState extends State<VideoPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: MediaQuery.of(context).size.height,
           decoration: new BoxDecoration(
@@ -248,71 +253,126 @@ class _VideoPageState extends State<VideoPage> {
                 //     ],
                 //   ),
                 // ),
-                StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection("CategoriasServicios")
-                        .doc('Salud')
-                        .collection('Servicios')
-                        // .where('categoriaId', isEqualTo: 'Salud')
-                        .snapshots(),
-                    builder: (context, dataSnapshot) {
-                      if (!dataSnapshot.hasData) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else {
-                        List<String> cat = [];
-                        for (int i = 0;
-                            i < dataSnapshot.data.docs.length;
-                            i++) {
-                          DocumentSnapshot categoria =
-                              dataSnapshot.data.docs[i];
-
-                          cat.add(
-                            categoria.id,
-                          );
-                        }
-                        return Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(
-                                color: Color(0xFF7f9d9D),
-                                width: 1.0,
-                              ),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                            child: DropDownField(
-                              controller: _searchTextEditingController,
-                              hintText: 'Buscar servicio',
-                              hintStyle: TextStyle(
-                                  fontSize: 15.0,
-                                  color: Color(0xFF7f9d9D),
-                                  fontWeight: FontWeight.normal),
-                              icon: Padding(
-                                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                child: Image.asset(
-                                  'diseñador/drawable/Alimento1/search1.png',
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 8, 0, 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: _screenWidth * 0.9,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                      color: Color(0xFF7f9d9D),
+                                      width: 1.0,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10.0)),
+                                  ),
+                                  padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                  margin: EdgeInsets.all(5.0),
+                                  child: TextField(
+                                    controller: _searchTextEditingController,
+                                    keyboardType: TextInputType.text,
+                                    decoration: InputDecoration(
+                                      hintText: 'Buscar',
+                                      border: InputBorder.none,
+                                      hintStyle: TextStyle(
+                                          fontSize: 15.0,
+                                          color: Color(0xFF7f9d9D)),
+                                    ),
+                                    onChanged: (text) {
+                                      text = text.toLowerCase();
+                                      setState(() {});
+                                    },
+                                  ),
                                 ),
-                              ),
-                              enabled: true,
-                              onValueChanged: (value) {
-                                value = value.toLowerCase();
-                                setState(() {
-                                  // _searchTextEditingController = value;
-                                });
-                              },
-                              textStyle: TextStyle(
-                                  backgroundColor: Colors.transparent,
-                                  fontWeight: FontWeight.bold),
-                              items: cat,
+                                Container(
+                                    padding: EdgeInsets.fromLTRB(320, 12, 0, 0),
+                                    margin: EdgeInsets.all(5.0),
+                                    child: Image.asset(
+                                      'diseñador/drawable/Alimento1/search1.png',
+                                    )),
+                              ],
                             ),
-                          ),
-                        );
-                      }
-                    }),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // StreamBuilder<QuerySnapshot>(
+                //     stream: FirebaseFirestore.instance
+                //         .collection("CategoriasServicios")
+                //         .doc('Salud')
+                //         .collection('Servicios')
+                //         // .where('categoriaId', isEqualTo: 'Salud')
+                //         .snapshots(),
+                //     builder: (context, dataSnapshot) {
+                //       if (!dataSnapshot.hasData) {
+                //         return Center(
+                //           child: CircularProgressIndicator(),
+                //         );
+                //       } else {
+                //         List<String> cat = [];
+                //         for (int i = 0;
+                //             i < dataSnapshot.data.docs.length;
+                //             i++) {
+                //           DocumentSnapshot categoria =
+                //               dataSnapshot.data.docs[i];
+                //
+                //           cat.add(
+                //             categoria.id,
+                //           );
+                //         }
+                //         return Padding(
+                //           padding: const EdgeInsets.all(10.0),
+                //           child: Container(
+                //             decoration: BoxDecoration(
+                //               color: Colors.white,
+                //               border: Border.all(
+                //                 color: Color(0xFF7f9d9D),
+                //                 width: 1.0,
+                //               ),
+                //               borderRadius:
+                //                   BorderRadius.all(Radius.circular(10.0)),
+                //             ),
+                //             child: DropDownField(
+                //               controller: _searchTextEditingController,
+                //               hintText: 'Buscar servicio',
+                //               hintStyle: TextStyle(
+                //                   fontSize: 15.0,
+                //                   color: Color(0xFF7f9d9D),
+                //                   fontWeight: FontWeight.normal),
+                //               icon: Padding(
+                //                 padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                //                 child: Image.asset(
+                //                   'diseñador/drawable/Alimento1/search1.png',
+                //                 ),
+                //               ),
+                //               enabled: true,
+                //               onValueChanged: (value) {
+                //                 value = value.toLowerCase();
+                //                 setState(() {
+                //                   // _searchTextEditingController = value;
+                //                 });
+                //               },
+                //               textStyle: TextStyle(
+                //                   backgroundColor: Colors.transparent,
+                //                   fontWeight: FontWeight.bold),
+                //               items: cat,
+                //             ),
+                //           ),
+                //         );
+                //       }
+                //     }),
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                   child: Row(
@@ -414,24 +474,56 @@ class _VideoPageState extends State<VideoPage> {
                             SizedBox(
                               height: 5.0,
                             ),
-                            Container(
-                              height: 91 *
-                                  double.parse(_resultsList.length.toString()),
-                              // child: Expanded(
-                                child: Container(
-                                  height: _screenHeight,
-                                  width: _screenWidth,
-                                  child: ListView.builder(
-                                      physics: NeverScrollableScrollPhysics(),
-                                      itemCount: _resultsList.length,
-                                      shrinkWrap: true,
-                                      itemBuilder: (context, index) {
-                                        return sourceInfo2(
-                                            _resultsList[index], context);
-                                      }),
-                                ),
-                              // ),
-                            ),
+
+                            _resultsList.length == 0
+                                ? Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        height: _screenHeight * 0.3,
+                                        decoration: new BoxDecoration(
+                                          image: new DecorationImage(
+                                            image: new AssetImage(
+                                                "images/perritotriste.png"),
+                                            fit: BoxFit.fitHeight,
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0,
+                                        ),
+                                      ),
+                                      Text(
+                                        'No disponible',
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : Container(
+                                    height: 91 *
+                                        double.parse(
+                                            _resultsList.length.toString()),
+                                    // child: Expanded(
+                                    child: Container(
+                                      height: _screenHeight,
+                                      width: _screenWidth,
+                                      child: ListView.builder(
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
+                                          itemCount: _resultsList.length,
+                                          shrinkWrap: true,
+                                          itemBuilder: (context, index) {
+                                            return sourceInfo2(
+                                                _resultsList[index], context);
+                                          }),
+                                    ),
+                                    // ),
+                                  ),
                           ],
                         ),
                       ),

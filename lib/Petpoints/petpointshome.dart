@@ -15,8 +15,13 @@ class PetPointsHome extends StatefulWidget {
   final PetModel petModel;
   final Producto productoModel;
   final CartModel cartModel;
+  final int defaultChoiceIndex;
 
-  PetPointsHome({this.petModel, this.productoModel, this.cartModel});
+  PetPointsHome(
+      {this.petModel,
+      this.productoModel,
+      this.cartModel,
+      this.defaultChoiceIndex});
 
   @override
   _PetPointsHomeState createState() => _PetPointsHomeState();
@@ -52,9 +57,13 @@ class _PetPointsHomeState extends State<PetPointsHome> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(
@@ -98,29 +107,34 @@ class _PetPointsHomeState extends State<PetPointsHome> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(5.0),
-                        child: Text('Pet Points = Dinero', style: TextStyle(fontWeight: FontWeight.bold),),
+                        child: Text(
+                          'Pet Points = Dinero',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
-
                       Padding(
                         padding: const EdgeInsets.all(5.0),
-                        child: Text('¿Cómo puedes ganar Pet Points?', style: TextStyle(fontWeight: FontWeight.bold),),
+                        child: Text(
+                          '¿Cómo puedes ganar Pet Points?',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),
                         child: Column(
                           children: [
-                            Text('- Por cada ${PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda)} de compra acumulas puntos que luego podrás canjear por descuentos exclusivos o productos y servicios.'),
-                            Text('- Podrás hacer donaciones o colaborar en una labor social con nuestras ONG’s aliadas.'),
-                            Text('- Invitando a un amigo a formar parte de la comunidad. Ganas puntos por cada referido que se registre con tu código.'),
+                            Text(
+                                '- Por cada ${PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda)} de compra acumulas puntos que luego podrás canjear por descuentos exclusivos o productos y servicios.'),
+                            Text(
+                                '- Podrás hacer donaciones o colaborar en una labor social con nuestras ONG’s aliadas.'),
+                            Text(
+                                '- Invitando a un amigo a formar parte de la comunidad. Ganas puntos por cada referido que se registre con tu código.'),
                           ],
                         ),
                       ),
-
                     ],
                   ),
                 ),
-
-
                 StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection("Dueños")
@@ -326,7 +340,8 @@ class _PetPointsHomeState extends State<PetPointsHome> {
                         width: 10,
                       ),
                       Text(
-                        PetshopApp.sharedPreferences.getString(PetshopApp.Moneda),
+                        PetshopApp.sharedPreferences
+                            .getString(PetshopApp.Moneda),
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],

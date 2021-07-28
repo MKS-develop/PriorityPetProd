@@ -32,6 +32,7 @@ class CitaAgenda extends StatefulWidget {
   final LocationModel locationModel;
   final PromotionModel promotionModel;
   final EspecialidadesModel especialidadesModel;
+  final int defaultChoiceIndex;
 
   CitaAgenda(
       {this.petModel,
@@ -39,7 +40,8 @@ class CitaAgenda extends StatefulWidget {
       this.aliadoModel,
       this.locationModel,
       this.serviceModel,
-      this.especialidadesModel});
+      this.especialidadesModel,
+      this.defaultChoiceIndex});
 
   @override
   _CitaAgendaState createState() => _CitaAgendaState();
@@ -106,9 +108,13 @@ class _CitaAgendaState extends State<CitaAgenda> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(

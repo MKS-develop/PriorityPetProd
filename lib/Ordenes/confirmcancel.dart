@@ -23,9 +23,14 @@ class ConfirmCancel extends StatefulWidget {
   final Producto productoModel;
   final CartModel cartModel;
   final OrderModel orderModel;
+  final int defaultChoiceIndex;
 
   ConfirmCancel(
-      {this.petModel, this.productoModel, this.cartModel, this.orderModel});
+      {this.petModel,
+      this.productoModel,
+      this.cartModel,
+      this.orderModel,
+      this.defaultChoiceIndex});
 
   @override
   _ConfirmCancelState createState() => _ConfirmCancelState();
@@ -54,9 +59,13 @@ class _ConfirmCancelState extends State<ConfirmCancel> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(
@@ -389,7 +398,11 @@ class _ConfirmCancelState extends State<ConfirmCancel> {
     });
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => NewOrdenesHome()),
+      MaterialPageRoute(
+          builder: (context) => NewOrdenesHome(
+                defaultChoiceIndex: widget.defaultChoiceIndex,
+                petModel: widget.petModel,
+              )),
     );
   }
 

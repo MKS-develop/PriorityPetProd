@@ -12,8 +12,8 @@ import 'package:pet_shop/Widgets/navbar.dart';
 
 class CartPage extends StatefulWidget {
   final PetModel petModel;
-
-  CartPage({this.petModel});
+  final int defaultChoiceIndex;
+  CartPage({this.petModel, this.defaultChoiceIndex});
 
   @override
   _CartPageState createState() => _CartPageState();
@@ -273,9 +273,13 @@ class _CartPageState extends State<CartPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(

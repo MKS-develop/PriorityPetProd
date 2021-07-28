@@ -24,8 +24,13 @@ class ServicioDetalle extends StatefulWidget {
   final PetModel petModel;
   final ServicioModel servicioModel;
   final CartModel cartModel;
+  final int defaultChoiceIndex;
 
-  ServicioDetalle({this.petModel, this.servicioModel, this.cartModel});
+  ServicioDetalle(
+      {this.petModel,
+      this.servicioModel,
+      this.cartModel,
+      this.defaultChoiceIndex});
 
   @override
   _ServicioDetalleState createState() => _ServicioDetalleState();
@@ -65,9 +70,13 @@ class _ServicioDetalleState extends State<ServicioDetalle> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(
@@ -177,9 +186,10 @@ class _ServicioDetalleState extends State<ServicioDetalle> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ServicioContratar(
-                                      petModel: model,
-                                      servicioModel: widget.servicioModel,
-                                    )),
+                                    petModel: model,
+                                    servicioModel: widget.servicioModel,
+                                    defaultChoiceIndex:
+                                        widget.defaultChoiceIndex)),
                           );
                         },
                         shape: RoundedRectangleBorder(

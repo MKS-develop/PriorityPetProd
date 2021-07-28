@@ -23,19 +23,29 @@ class VideoLobby extends StatefulWidget {
   final PetModel petModel;
   final OrderModel orderModel;
   final ItemModel itemModel;
-  VideoLobby({this.petModel, this.orderModel, this.itemModel});
+  final int defaultChoiceIndex;
+  VideoLobby(
+      {this.petModel,
+      this.orderModel,
+      this.itemModel,
+      this.defaultChoiceIndex});
 
   @override
   _VideoLobbyState createState() => _VideoLobbyState();
 }
 
 class _VideoLobbyState extends State<VideoLobby> {
-
   final serverText = TextEditingController();
   final roomText = TextEditingController(text: "PriorityPet001");
   final subjectText = TextEditingController(text: "Videoconsulta veterinaria");
-  final nameText = TextEditingController(text: PetshopApp.sharedPreferences.getString(PetshopApp.userName) ?? 'Dueño',);
-  final emailText = TextEditingController(text: PetshopApp.sharedPreferences.getString(PetshopApp.userEmail) ?? 'Correo del dueño',);
+  final nameText = TextEditingController(
+    text:
+        PetshopApp.sharedPreferences.getString(PetshopApp.userName) ?? 'Dueño',
+  );
+  final emailText = TextEditingController(
+    text: PetshopApp.sharedPreferences.getString(PetshopApp.userEmail) ??
+        'Correo del dueño',
+  );
   var isAudioOnly = false;
   var isAudioMuted = false;
   var isVideoMuted = false;
@@ -55,6 +65,7 @@ class _VideoLobbyState extends State<VideoLobby> {
     // doctor.value = TextEditingValue(text: widget.orderModel.nombreComercial);
     _getAliado();
   }
+
   _getAliado() {
     DocumentReference documentReference = FirebaseFirestore.instance
         .collection("Aliados")
@@ -64,9 +75,9 @@ class _VideoLobbyState extends State<VideoLobby> {
         aliadoAvatar = (dataSnapshot.data()["avatar"]);
         // ppCanjeados = (dataSnapshot.data()["ppCanjeados"]);
       });
-
     });
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -76,11 +87,14 @@ class _VideoLobbyState extends State<VideoLobby> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner:false,
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
-
-        appBar: AppBarCustomAvatar(context, widget.petModel),
-        drawer: MyDrawer(),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           // decoration: new BoxDecoration(
           //   image: new DecorationImage(
@@ -95,7 +109,6 @@ class _VideoLobbyState extends State<VideoLobby> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -203,13 +216,8 @@ class _VideoLobbyState extends State<VideoLobby> {
                   children: [
                     _fondoImagen(),
                     _cuerpo(),
-
                   ],
                 ),
-
-
-
-
 
                 SizedBox(
                   height: 40.0,
@@ -218,7 +226,6 @@ class _VideoLobbyState extends State<VideoLobby> {
                     onPressed: () {
                       // _joinMeeting();
                     },
-
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
                     color: Color(0xFFEB9448),
@@ -237,10 +244,10 @@ class _VideoLobbyState extends State<VideoLobby> {
       ),
     );
   }
+
   Widget _cuerpo() {
     return Column(
       children: <Widget>[
-
         _menu(),
         _iconos(),
         _valor(),
@@ -249,60 +256,72 @@ class _VideoLobbyState extends State<VideoLobby> {
       ],
     );
   }
+
   Widget _multimedia() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-
         Padding(
           padding: const EdgeInsets.all(14.0),
           child: ClipOval(
             child: Material(
-              color: isAudioMuted != false ? Colors.red : Color(0xFF57419D), // button color
+              color: isAudioMuted != false
+                  ? Colors.red
+                  : Color(0xFF57419D), // button color
               child: InkWell(
                 splashColor: Colors.red, // inkwell color
-                child: SizedBox(width: 56, height: 56, child: Icon(Icons.mic, color: Colors.white, size: 36,)),
+                child: SizedBox(
+                    width: 56,
+                    height: 56,
+                    child: Icon(
+                      Icons.mic,
+                      color: Colors.white,
+                      size: 36,
+                    )),
                 onTap: () {
-                  if(isAudioMuted==true)
-                  {
+                  if (isAudioMuted == true) {
                     setState(() {
                       isAudioMuted = false;
                     });
-                  }
-                  else
-                  {
+                  } else {
                     setState(() {
                       isAudioMuted = true;
                     });
-
                   }
                 },
               ),
             ),
           ),
         ),
-        SizedBox(width: 20,),
+        SizedBox(
+          width: 20,
+        ),
         Padding(
           padding: const EdgeInsets.all(14.0),
           child: ClipOval(
             child: Material(
-              color: isVideoMuted != false ? Colors.red : Color(0xFF57419D), // button color
+              color: isVideoMuted != false
+                  ? Colors.red
+                  : Color(0xFF57419D), // button color
               child: InkWell(
                 splashColor: Colors.red, // inkwell color
-                child: SizedBox(width: 56, height: 56, child: Icon(Icons.video_call_outlined, color: Colors.white, size: 36,)),
+                child: SizedBox(
+                    width: 56,
+                    height: 56,
+                    child: Icon(
+                      Icons.video_call_outlined,
+                      color: Colors.white,
+                      size: 36,
+                    )),
                 onTap: () {
-                  if(isVideoMuted==true)
-                  {
+                  if (isVideoMuted == true) {
                     setState(() {
                       isVideoMuted = false;
                     });
-                  }
-                  else
-                  {
+                  } else {
                     setState(() {
                       isVideoMuted = true;
                     });
-
                   }
                 },
               ),
@@ -312,6 +331,7 @@ class _VideoLobbyState extends State<VideoLobby> {
       ],
     );
   }
+
   Widget _menu() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 70.0, 0, 10.0),
@@ -323,6 +343,7 @@ class _VideoLobbyState extends State<VideoLobby> {
       ),
     );
   }
+
   Widget _iconos() {
     return Column(
       children: [
@@ -394,8 +415,7 @@ class _VideoLobbyState extends State<VideoLobby> {
                                   .snapshots(),
                               builder: (context, dataSnapshot) {
                                 if (dataSnapshot.hasData) {
-                                  if (dataSnapshot.data.docs.length ==
-                                      0) {
+                                  if (dataSnapshot.data.docs.length == 0) {
                                     return Center(child: Container());
                                   }
                                 }
@@ -405,20 +425,17 @@ class _VideoLobbyState extends State<VideoLobby> {
                                   );
                                 }
                                 return ListView.builder(
-                                    physics:
-                                    NeverScrollableScrollPhysics(),
-                                    itemCount:
-                                    dataSnapshot.data.docs.length,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: dataSnapshot.data.docs.length,
                                     shrinkWrap: true,
                                     itemBuilder: (
-                                        context,
-                                        index,
-                                        ) {
+                                      context,
+                                      index,
+                                    ) {
                                       EspecialidadesModel especialidades =
-                                      EspecialidadesModel.fromJson(
-                                          dataSnapshot
-                                              .data.docs[index]
-                                              .data());
+                                          EspecialidadesModel.fromJson(
+                                              dataSnapshot.data.docs[index]
+                                                  .data());
                                       return Row(
                                         children: [
                                           Text(
@@ -452,6 +469,7 @@ class _VideoLobbyState extends State<VideoLobby> {
       ],
     );
   }
+
   Widget _fondoImagen() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
@@ -473,6 +491,7 @@ class _VideoLobbyState extends State<VideoLobby> {
       ),
     );
   }
+
   Widget _valor() {
     return Container(
       width: 350,
@@ -511,13 +530,14 @@ class _VideoLobbyState extends State<VideoLobby> {
       ),
     );
   }
+
   void _planModalBottomSheet(BuildContext context) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
           return Container(
               color:
-              Color(0xFF737373), //could change this to Color(0xFF737373),
+                  Color(0xFF737373), //could change this to Color(0xFF737373),
               //so you don't have to change MaterialApp canvasColor
 
               child: Container(
@@ -568,16 +588,16 @@ class _VideoLobbyState extends State<VideoLobby> {
                               );
                             }
                             return ListView.builder(
-                              // physics: NeverScrollableScrollPhysics(),
+                                // physics: NeverScrollableScrollPhysics(),
                                 itemCount: dataSnapshot.data.docs.length,
                                 shrinkWrap: true,
                                 itemBuilder: (
-                                    context,
-                                    index,
-                                    ) {
+                                  context,
+                                  index,
+                                ) {
                                   EspecialidadesModel especialidades =
-                                  EspecialidadesModel.fromJson(
-                                      dataSnapshot.data.docs[index].data());
+                                      EspecialidadesModel.fromJson(
+                                          dataSnapshot.data.docs[index].data());
 
                                   return Column(
                                     children: [
@@ -590,7 +610,7 @@ class _VideoLobbyState extends State<VideoLobby> {
                                       ),
                                       Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.center,
+                                            MainAxisAlignment.center,
                                         children: [
                                           Text(
                                             'Certificación: ',
@@ -612,7 +632,7 @@ class _VideoLobbyState extends State<VideoLobby> {
                                         padding: const EdgeInsets.all(12.0),
                                         child: Text(
                                           especialidades.hojaProfesional ==
-                                              'null'
+                                                  'null'
                                               ? especialidades.hojaProfesional
                                               : '',
                                           style: TextStyle(
@@ -643,20 +663,11 @@ class _VideoLobbyState extends State<VideoLobby> {
         });
   }
 
-
-
-
-
-
-
   _onAudioOnlyChanged(bool value) {
     setState(() {
       isAudioOnly = value;
     });
   }
-
-
-
 
   _onAudioMutedChanged(bool value) {
     setState(() {
@@ -670,63 +681,63 @@ class _VideoLobbyState extends State<VideoLobby> {
     });
   }
 
-  // _joinMeeting() async {
-  //   String serverUrl =
-  //   serverText.text?.trim()?.isEmpty ?? "" ? null : serverText.text;
-  //
-  //   try {
-  //     // Enable or disable any feature flag here
-  //     // If feature flag are not provided, default values will be used
-  //     // Full list of feature flags (and defaults) available in the README
-  //     FeatureFlag featureFlag = FeatureFlag();
-  //     featureFlag.welcomePageEnabled = false;
-  //     // Here is an example, disabling features for each platform
-  //     if (Platform.isAndroid) {
-  //       // Disable ConnectionService usage on Android to avoid issues (see README)
-  //       featureFlag.callIntegrationEnabled = false;
-  //     } else if (Platform.isIOS) {
-  //       // Disable PIP on iOS as it looks weird
-  //       featureFlag.pipEnabled = false;
-  //     }
-  //
-  //     //uncomment to modify video resolution
-  //     //featureFlag.resolution = FeatureFlagVideoResolution.MD_RESOLUTION;
-  //
-  //     // Define meetings options here
-  //     var options = JitsiMeetingOptions()
-  //       ..room = roomText.text
-  //       ..serverURL = serverUrl
-  //       ..subject = subjectText.text
-  //       ..userDisplayName = nameText.text
-  //       ..userEmail = emailText.text
-  //       ..audioOnly = isAudioOnly
-  //       ..audioMuted = isAudioMuted
-  //       ..videoMuted = isVideoMuted
-  //       ..featureFlag = featureFlag;
-  //
-  //     debugPrint("JitsiMeetingOptions: $options");
-  //     await JitsiMeet.joinMeeting(
-  //       options,
-  //       listener: JitsiMeetingListener(onConferenceWillJoin: ({message}) {
-  //         debugPrint("${options.room} will join with message: $message");
-  //       }, onConferenceJoined: ({message}) {
-  //         debugPrint("${options.room} joined with message: $message");
-  //       }, onConferenceTerminated: ({message}) {
-  //         debugPrint("${options.room} terminated with message: $message");
-  //       }, onPictureInPictureWillEnter: ({message}) {
-  //         debugPrint("${options.room} entered PIP mode with message: $message");
-  //       }, onPictureInPictureTerminated: ({message}) {
-  //         debugPrint("${options.room} exited PIP mode with message: $message");
-  //       }),
-  //       // by default, plugin default constraints are used
-  //       //roomNameConstraints: new Map(), // to disable all constraints
-  //       //roomNameConstraints: customContraints, // to use your own constraint(s)
-  //     );
-  //   } catch (error) {
-  //     debugPrint("error: $error");
-  //   }
-  // }
-  //
+  _joinMeeting() async {
+    // String serverUrl =
+    // serverText.text?.trim()?.isEmpty ?? "" ? null : serverText.text;
+    //
+    // try {
+    //   // Enable or disable any feature flag here
+    //   // If feature flag are not provided, default values will be used
+    //   // Full list of feature flags (and defaults) available in the README
+    //   FeatureFlag featureFlag = FeatureFlag();
+    //   featureFlag.welcomePageEnabled = false;
+    //   // Here is an example, disabling features for each platform
+    //   if (Platform.isAndroid) {
+    //     // Disable ConnectionService usage on Android to avoid issues (see README)
+    //     featureFlag.callIntegrationEnabled = false;
+    //   } else if (Platform.isIOS) {
+    //     // Disable PIP on iOS as it looks weird
+    //     featureFlag.pipEnabled = false;
+    //   }
+    //
+    //   //uncomment to modify video resolution
+    //   //featureFlag.resolution = FeatureFlagVideoResolution.MD_RESOLUTION;
+    //
+    //   // Define meetings options here
+    //   var options = JitsiMeetingOptions()
+    //     ..room = roomText.text
+    //     ..serverURL = serverUrl
+    //     ..subject = subjectText.text
+    //     ..userDisplayName = nameText.text
+    //     ..userEmail = emailText.text
+    //     ..audioOnly = isAudioOnly
+    //     ..audioMuted = isAudioMuted
+    //     ..videoMuted = isVideoMuted
+    //     ..featureFlag = featureFlag;
+    //
+    //   debugPrint("JitsiMeetingOptions: $options");
+    //   await JitsiMeet.joinMeeting(
+    //     options,
+    //     listener: JitsiMeetingListener(onConferenceWillJoin: ({message}) {
+    //       debugPrint("${options.room} will join with message: $message");
+    //     }, onConferenceJoined: ({message}) {
+    //       debugPrint("${options.room} joined with message: $message");
+    //     }, onConferenceTerminated: ({message}) {
+    //       debugPrint("${options.room} terminated with message: $message");
+    //     }, onPictureInPictureWillEnter: ({message}) {
+    //       debugPrint("${options.room} entered PIP mode with message: $message");
+    //     }, onPictureInPictureTerminated: ({message}) {
+    //       debugPrint("${options.room} exited PIP mode with message: $message");
+    //     }),
+    //     // by default, plugin default constraints are used
+    //     //roomNameConstraints: new Map(), // to disable all constraints
+    //     //roomNameConstraints: customContraints, // to use your own constraint(s)
+    //   );
+    // } catch (error) {
+    //   debugPrint("error: $error");
+    // }
+  }
+
   // static final Map<RoomNameConstraintType, RoomNameConstraint>
   // customContraints = {
   //   RoomNameConstraintType.MAX_LENGTH: new RoomNameConstraint((value) {
@@ -752,16 +763,16 @@ class _VideoLobbyState extends State<VideoLobby> {
   }
 
   void _onPictureInPictureWillEnter({message}) {
-    debugPrint("_onPictureInPictureWillEnter broadcasted with message: $message");
+    debugPrint(
+        "_onPictureInPictureWillEnter broadcasted with message: $message");
   }
 
   void _onPictureInPictureTerminated({message}) {
-    debugPrint("_onPictureInPictureTerminated broadcasted with message: $message");
+    debugPrint(
+        "_onPictureInPictureTerminated broadcasted with message: $message");
   }
 
   _onError(error) {
     debugPrint("_onError broadcasted: $error");
   }
-
-
 }

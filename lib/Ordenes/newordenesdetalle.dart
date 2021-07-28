@@ -21,9 +21,14 @@ class NewOrdenesDetalle extends StatefulWidget {
   final Producto productoModel;
   final CartModel cartModel;
   final OrderModel orderModel;
+  final int defaultChoiceIndex;
 
   NewOrdenesDetalle(
-      {this.petModel, this.productoModel, this.cartModel, this.orderModel});
+      {this.petModel,
+      this.productoModel,
+      this.cartModel,
+      this.orderModel,
+      this.defaultChoiceIndex});
 
   @override
   _NewOrdenesDetalleState createState() => _NewOrdenesDetalleState();
@@ -60,9 +65,13 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(
@@ -646,8 +655,12 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            ConfirmCancel(orderModel: order)),
+                                        builder: (context) => ConfirmCancel(
+                                              orderModel: order,
+                                              petModel: widget.petModel,
+                                              defaultChoiceIndex:
+                                                  widget.defaultChoiceIndex,
+                                            )),
                                   );
 
                                   Navigator.of(context, rootNavigator: true)

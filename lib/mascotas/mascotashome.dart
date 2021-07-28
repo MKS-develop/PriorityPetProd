@@ -12,8 +12,9 @@ import 'editarmascota.dart';
 
 class MascotasHome extends StatefulWidget {
   final PetModel petModel;
+  final int defaultChoiceIndex;
 
-  MascotasHome({this.petModel});
+  MascotasHome({this.petModel, this.defaultChoiceIndex});
 
   @override
   _MascotasHomeState createState() => _MascotasHomeState();
@@ -35,9 +36,13 @@ class _MascotasHomeState extends State<MascotasHome> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(
@@ -183,8 +188,9 @@ class _MascotasHomeState extends State<MascotasHome> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                EditarMascota(petModel: model)),
+                            builder: (context) => EditarMascota(
+                                petModel: model,
+                                defaultChoiceIndex: widget.defaultChoiceIndex)),
                       );
                     },
                     child: Material(

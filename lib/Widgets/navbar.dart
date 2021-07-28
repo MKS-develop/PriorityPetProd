@@ -3,13 +3,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/Models/Cart.dart';
+import 'package:pet_shop/Models/pet.dart';
 import 'package:pet_shop/Store/notificaciones.dart';
 import 'package:pet_shop/Store/storehome.dart';
 import 'package:pet_shop/cart/cartfinal.dart';
 
 class CustomBottomNavigationBar extends StatefulWidget {
   final noti, home, cart;
-  CustomBottomNavigationBar({this.noti, this.home, this.cart});
+  final PetModel petmodel;
+  final int defaultChoiceIndex;
+
+  CustomBottomNavigationBar({this.noti, this.home, this.cart, this.petmodel, this.defaultChoiceIndex});
   @override
   _CustomBottomNavigationBarState createState() =>
       _CustomBottomNavigationBarState();
@@ -36,31 +40,34 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
     // if(route!=null){
     //   print('el nombre de la ruta es${route.settings.name}');
     // }
-    if (widget.home != null) {
+    if(widget.home !=null){
       setState(() {
-        home = widget.home;
-      });
-    } else {
-      setState(() {
-        home = false;
+        home=widget.home;
       });
     }
-    if (widget.noti != null) {
+    else{
       setState(() {
-        noti = widget.noti;
-      });
-    } else {
-      setState(() {
-        noti = false;
+        home=false;
       });
     }
-    if (widget.cart != null) {
+    if(widget.noti !=null){
       setState(() {
-        cart = widget.cart;
+        noti=widget.noti;
       });
-    } else {
+    }
+    else{
       setState(() {
-        cart = false;
+        noti=false;
+      });
+    }
+    if(widget.cart !=null){
+      setState(() {
+        cart=widget.cart;
+      });
+    }
+    else{
+      setState(() {
+        cart=false;
       });
     }
   }
@@ -81,28 +88,28 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           IconButton(
+
               autofocus: true,
               icon: Icon(
                 Icons.home,
-                color: home
-                    ? Color(0xFF57419D)
-                    : Color(0xFF57419D).withOpacity(0.5),
+                color: home? Color(0xFF57419D) : Color(0xFF57419D).withOpacity(0.5),
                 size: 27.0,
               ),
               onPressed: () {
-                if (home != true) {
+                if(home!=true) {
                   // Route route = MaterialPageRoute(builder: (c) => StoreHome());
                   // Navigator.pushReplacement(context, route);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => StoreHome()),
+                    MaterialPageRoute(builder: (context) => StoreHome(petModel: widget.petmodel, defaultChoiceIndex: widget.defaultChoiceIndex)),
                   );
                 }
                 setState(() {
                   home = true;
                   noti = false;
-                  cart = false;
+                  cart= false;
                 });
+
               }),
 
           IconButton(
@@ -115,27 +122,26 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                 elevation: 0,
                 child: Image.asset(
                   'diseñador/drawable/Grupo82.png',
-                  color: noti
-                      ? Color(0xFF57419D)
-                      : Color(0xFF57419D).withOpacity(0.5),
+                  color: noti? Color(0xFF57419D) : Color(0xFF57419D).withOpacity(0.5),
                   height: 30.0,
                 ),
               ),
               onPressed: () {
-                if (noti != true) {
+                if(noti!=true){
                   // Route route = MaterialPageRoute(builder: (c) => NotificacionesPage());
                   // Navigator.pushReplacement(context, route);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => NotificacionesPage()),
+                    MaterialPageRoute(builder: (context) => NotificacionesPage(petModel: widget.petmodel, defaultChoiceIndex: widget.defaultChoiceIndex,)),
                   );
                 }
                 setState(() {
                   home = false;
                   noti = true;
-                  cart = false;
+                  cart= false;
                 });
+
+
               }),
           IconButton(
               icon: Badge(
@@ -144,30 +150,29 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                   style: TextStyle(color: Colors.white),
                 ),
                 badgeColor:
-                    totalList.length == 0 ? Colors.transparent : Colors.green,
+                totalList.length == 0 ? Colors.transparent : Colors.green,
                 elevation: 0,
                 child: Icon(
                   Icons.shopping_cart_rounded,
-                  color: cart
-                      ? Color(0xFF57419D)
-                      : Color(0xFF57419D).withOpacity(0.5),
+                  color: cart? Color(0xFF57419D) : Color(0xFF57419D).withOpacity(0.5),
                   size: 27.0,
                 ),
               ),
               onPressed: () {
-                if (cart != true) {
+                if(cart!=true) {
                   // Route route = MaterialPageRoute(builder: (c) => CartFinal());
                   // Navigator.pushReplacement(context, route);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => CartFinal()),
+                    MaterialPageRoute(builder: (context) => CartFinal(petModel: widget.petmodel, defaultChoiceIndex: widget.defaultChoiceIndex,)),
                   );
                 }
                 setState(() {
                   home = false;
                   noti = false;
-                  cart = true;
+                  cart= true;
                 });
+
               }),
 
           // Icon(Icons.shopping_cart_rounded, color: Color(0xFF57419D), size: 27.0,
@@ -228,17 +233,17 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
     }
   }
 
-  // suma(subtotal){
-  //   totalList.add(subtotal);
-  //
-  //   totalList.forEach((subtotal){
-  //
-  //     // totalsum = totalList.fold(0, (prev, num) => prev + num);
-  //
-  //
-  //   });
-  //   print(totalsum);
-  //   return totalsum;
-  // }
+// suma(subtotal){
+//   totalList.add(subtotal);
+//
+//   totalList.forEach((subtotal){
+//
+//     // totalsum = totalList.fold(0, (prev, num) => prev + num);
+//
+//
+//   });
+//   print(totalsum);
+//   return totalsum;
+// }
 
 }

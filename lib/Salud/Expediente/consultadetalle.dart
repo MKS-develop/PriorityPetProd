@@ -19,9 +19,11 @@ double width;
 class ConsultaDetalle extends StatefulWidget {
   final PetModel petModel;
   final String tituloDetalle;
+  final int defaultChoiceIndex;
 
   ConsultaDetalle({
     this.petModel,
+    this.defaultChoiceIndex,
     Key key,
     @required this.tituloDetalle,
   }) : super(key: key);
@@ -57,9 +59,13 @@ class _ConsultaDetalleState extends State<ConsultaDetalle> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: MediaQuery.of(context).size.height,
           decoration: new BoxDecoration(

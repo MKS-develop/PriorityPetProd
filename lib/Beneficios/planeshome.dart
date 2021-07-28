@@ -16,7 +16,8 @@ double width;
 
 class PlanesHome extends StatefulWidget {
   final PetModel petModel;
-  PlanesHome({this.petModel});
+  final int defaultChoiceIndex;
+  PlanesHome({this.petModel, this.defaultChoiceIndex});
 
   @override
   _PlanesHomeState createState() => _PlanesHomeState();
@@ -92,8 +93,12 @@ class _PlanesHomeState extends State<PlanesHome> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
-        drawer: MyDrawer(),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         bottomNavigationBar: CustomBottomNavigationBar(),
         body: Container(
           height: MediaQuery.of(context).size.height,
@@ -684,7 +689,10 @@ class _PlanesHomeState extends State<PlanesHome> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => PlanBasicoHome(
-                                    petModel: model, planModel: plan)),
+                                    petModel: model,
+                                    planModel: plan,
+                                    defaultChoiceIndex:
+                                        widget.defaultChoiceIndex)),
                           );
                         },
                         child: Padding(

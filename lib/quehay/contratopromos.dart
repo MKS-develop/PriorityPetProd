@@ -25,8 +25,13 @@ class ContratoPromos extends StatefulWidget {
   final PetModel petModel;
   final PromotionModel promotionModel;
   final AliadoModel aliadoModel;
+  final int defaultChoiceIndex;
 
-  ContratoPromos({this.petModel, this.promotionModel, this.aliadoModel});
+  ContratoPromos(
+      {this.petModel,
+      this.promotionModel,
+      this.aliadoModel,
+      this.defaultChoiceIndex});
 
   @override
   _ContratoPromosState createState() => _ContratoPromosState();
@@ -117,9 +122,13 @@ class _ContratoPromosState extends State<ContratoPromos> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(
@@ -218,116 +227,116 @@ class _ContratoPromosState extends State<ContratoPromos> {
                 ),
                 widget.promotionModel.domicilio != null
                     ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Servicio a domicilio',
-                      style: TextStyle(
-                          color: Color(0xFF7F9D9D), fontSize: 16),
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          PetshopApp.sharedPreferences
-                              .getString(PetshopApp.simboloMoneda),
-                          style: TextStyle(
-                            color: Color(0xFF57419D),
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Servicio a domicilio',
+                            style: TextStyle(
+                                color: Color(0xFF7F9D9D), fontSize: 16),
                           ),
-                        ),
-                        Text(
-                          (pro.domicilio).toString() != 'null'
-                              ? (pro.domicilio).toString()
-                              : '0',
-                          style: TextStyle(
-                            color: Color(0xFF57419D),
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Checkbox(
-                            value: _value,
-                            activeColor: Color(0xFF57419D),
-                            onChanged: (bool value) {
-                              setState(() {
-                                _value = value;
-                                if (value == true) {
-                                  if (pro.domicilio == null) {
-                                    recojo = 0;
-                                  } else {
-                                    recojo = pro.domicilio;
-                                  }
+                          Row(
+                            children: [
+                              Text(
+                                PetshopApp.sharedPreferences
+                                    .getString(PetshopApp.simboloMoneda),
+                                style: TextStyle(
+                                  color: Color(0xFF57419D),
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                (pro.domicilio).toString() != 'null'
+                                    ? (pro.domicilio).toString()
+                                    : '0',
+                                style: TextStyle(
+                                  color: Color(0xFF57419D),
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Checkbox(
+                                  value: _value,
+                                  activeColor: Color(0xFF57419D),
+                                  onChanged: (bool value) {
+                                    setState(() {
+                                      _value = value;
+                                      if (value == true) {
+                                        if (pro.domicilio == null) {
+                                          recojo = 0;
+                                        } else {
+                                          recojo = pro.domicilio;
+                                        }
 
-                                  _value2 = false;
-                                  delivery = 0;
-                                } else {
-                                  recojo = 0;
-                                }
-                              });
-                            }),
-                      ],
-                    ),
-                  ],
-                )
+                                        _value2 = false;
+                                        delivery = 0;
+                                      } else {
+                                        recojo = 0;
+                                      }
+                                    });
+                                  }),
+                            ],
+                          ),
+                        ],
+                      )
                     : Container(),
                 SizedBox(
                   height: 10,
                 ),
                 widget.promotionModel.delivery != null
                     ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Recoger a tu mascota',
-                      style: TextStyle(
-                          color: Color(0xFF7F9D9D), fontSize: 16),
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          PetshopApp.sharedPreferences
-                              .getString(PetshopApp.simboloMoneda),
-                          style: TextStyle(
-                            color: Color(0xFF57419D),
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Recoger a tu mascota',
+                            style: TextStyle(
+                                color: Color(0xFF7F9D9D), fontSize: 16),
                           ),
-                        ),
-                        Text(
-                          (pro.delivery).toString() != 'null'
-                              ? (pro.delivery).toString()
-                              : '0',
-                          style: TextStyle(
-                            color: Color(0xFF57419D),
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Checkbox(
-                            value: _value2,
-                            activeColor: Color(0xFF57419D),
-                            onChanged: (bool value) {
-                              setState(() {
-                                _value2 = value;
-                                if (value == true) {
-                                  if (pro.delivery == null) {
-                                    delivery = 0;
-                                  } else {
-                                    delivery = pro.delivery;
-                                  }
+                          Row(
+                            children: [
+                              Text(
+                                PetshopApp.sharedPreferences
+                                    .getString(PetshopApp.simboloMoneda),
+                                style: TextStyle(
+                                  color: Color(0xFF57419D),
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                (pro.delivery).toString() != 'null'
+                                    ? (pro.delivery).toString()
+                                    : '0',
+                                style: TextStyle(
+                                  color: Color(0xFF57419D),
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Checkbox(
+                                  value: _value2,
+                                  activeColor: Color(0xFF57419D),
+                                  onChanged: (bool value) {
+                                    setState(() {
+                                      _value2 = value;
+                                      if (value == true) {
+                                        if (pro.delivery == null) {
+                                          delivery = 0;
+                                        } else {
+                                          delivery = pro.delivery;
+                                        }
 
-                                  _value = false;
-                                  recojo = 0;
-                                } else {
-                                  delivery = 0;
-                                }
-                              });
-                            }),
-                      ],
-                    ),
-                  ],
-                )
+                                        _value = false;
+                                        recojo = 0;
+                                      } else {
+                                        delivery = 0;
+                                      }
+                                    });
+                                  }),
+                            ],
+                          ),
+                        ],
+                      )
                     : Container(),
                 SizedBox(
                   height: 10,
@@ -339,8 +348,8 @@ class _ContratoPromosState extends State<ContratoPromos> {
                         widget.promotionModel.tipoPromocion == 'Producto'
                             ? ""
                             : widget.promotionModel.tipoAgenda == 'Slots'
-                            ? 'Seleccione día y hora disponibles'
-                            : 'Seleccione el día disponible',
+                                ? 'Seleccione día y hora disponibles'
+                                : 'Seleccione el día disponible',
                         style: TextStyle(
                             fontSize: 17,
                             color: Color(0xFF57419D),
@@ -381,25 +390,25 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                   scrollDirection: Axis.horizontal,
                                   shrinkWrap: true,
                                   itemBuilder: (
-                                      context,
-                                      index,
-                                      ) {
+                                    context,
+                                    index,
+                                  ) {
                                     PromotionModel pro =
-                                    PromotionModel.fromJson(dataSnapshot
-                                        .data.docs[index]
-                                        .data());
+                                        PromotionModel.fromJson(dataSnapshot
+                                            .data.docs[index]
+                                            .data());
                                     return Padding(
                                       padding: const EdgeInsets.all(2.0),
                                       child: ChoiceChip(
                                         label: sourceInfo(pro, context),
                                         labelPadding:
-                                        EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            EdgeInsets.fromLTRB(0, 0, 0, 0),
                                         selected: _defaultChoiceIndex == index,
                                         selectedColor: Color(0xFFEB9448),
                                         onSelected: (bool selected) {
                                           setState(() {
                                             _defaultChoiceIndex =
-                                            selected ? index : 0;
+                                                selected ? index : 0;
                                             print(pro.fecha);
                                             fecha = pro.fecha;
                                             date = pro.date;
@@ -426,285 +435,286 @@ class _ContratoPromosState extends State<ContratoPromos> {
                 ),
                 widget.promotionModel.tipoAgenda == 'Slots'
                     ? Container(
-                  width: _screenWidth,
-                  child: Column(
-                    children: [
-                      StreamBuilder<QuerySnapshot>(
-                          stream: db
-                              .collection("Promociones")
-                              .doc(widget.promotionModel.promoid)
-                              .collection("Agenda")
-                              .where('fecha', isEqualTo: fecha)
-                              .snapshots(),
-                          builder: (context, dataSnapshot) {
-                            if (dataSnapshot.hasData) {
-                              if (dataSnapshot.data.docs.length == 0) {
-                                return Center(child: Text(''));
-                              }
-                            }
-                            if (!dataSnapshot.hasData) {
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-                            return Container(
-                              child: ListView.builder(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount: 1,
-                                  shrinkWrap: true,
-                                  itemBuilder: (
-                                      context,
-                                      index,
-                                      ) {
-                                    DayModel day = DayModel.fromJson(
-                                        dataSnapshot.data.docs[index]
-                                            .data());
-                                    return Container(
-                                      child: GridView.builder(
-                                        shrinkWrap: true,
-                                        scrollDirection: Axis.vertical,
-                                        itemCount: day.horasDia.length,
-                                        gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 5,
-                                            crossAxisSpacing: 10,
-                                            mainAxisSpacing: 10),
-                                        physics: BouncingScrollPhysics(),
-                                        itemBuilder:
-                                            (BuildContext context,
-                                            int i) {
-                                          return ChoiceChip(
-                                            label: sourceInfo2(
-                                                context, day, i),
-                                            labelPadding:
-                                            EdgeInsets.fromLTRB(
-                                                0, 0, 0, 0),
-                                            selected:
-                                            _2defaultChoiceIndex == i,
-                                            selectedColor:
-                                            Color(0xFFEB9448),
-                                            onSelected: (bool selected) {
-                                              setState(() {
-                                                if (selected) {
-                                                  _2defaultChoiceIndex =
-                                                      i;
-                                                  print(day.horasDia[i]);
-                                                  hora = day.horasDia[i];
-                                                }
-                                              });
-                                            },
-                                            shape: StadiumBorder(
-                                                side: BorderSide(
-                                                    color: Color(
-                                                        0xFFBDD7D6))),
-                                            backgroundColor:
-                                            Colors.transparent,
-                                            labelStyle: TextStyle(
-                                                color: Colors.white),
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  }),
-                            );
-                          }),
-                    ],
-                  ),
-                )
-                    : Container(),
-                PetshopApp.sharedPreferences.getString(PetshopApp.userPais) ==
-                    "Perú"
-                    ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: 200.0,
-                      child: RaisedButton(
-                        onPressed: () {
-                          if (fecha == null &&
-                              widget.promotionModel.tipoAgenda ==
-                                  'Free') {
-                            showDialog(
-                              context: context,
-                              child: AlertDialog(
-                                title: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.cancel,
-                                      color: Colors.red,
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      'Seleccione una fecha.',
-                                      style: TextStyle(fontSize: 14),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          } else if (fecha != null &&
-                              widget.promotionModel.tipoAgenda ==
-                                  'Free') {
-                            // AddOrder(widget.promotionModel.promoid, context);
-                            int totalPrice = (pro.precio +
-                                recojo +
-                                delivery -
-                                totalPet)
-                                .toInt();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PaymentPage(
-                                    petModel: widget.petModel,
-                                    aliadoModel: widget.aliadoModel,
-                                    promotionModel:
-                                    widget.promotionModel,
-                                    tituloCategoria: tituloCategoria,
-                                    totalPrice: totalPrice,
-                                    hora: hora,
-                                    fecha: fecha,
-                                    recojo: recojo,
-                                    delivery: delivery,
-                                    value2: _value2,
-                                    value: _value,
-                                    date: date,
-                                  )),
-                            );
-                          } else if (widget.promotionModel.tipoAgenda ==
-                              'Slots') {
-                            if (hora == null) {
-                              showDialog(
-                                context: context,
-                                child: AlertDialog(
-                                  title: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.cancel,
-                                        color: Colors.red,
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        'Seleccione una hora.',
-                                        style: TextStyle(fontSize: 14),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }
-                            if (fecha == null) {
-                              showDialog(
-                                context: context,
-                                child: AlertDialog(
-                                  title: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.cancel,
-                                        color: Colors.red,
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        'Seleccione una fecha.',
-                                        style: TextStyle(fontSize: 14),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }
-                            if (hora != null && fecha != null) {
-                              // AddOrder(widget.promotionModel.promoid, context);
-                              int totalPrice = (pro.precio +
-                                  recojo +
-                                  delivery -
-                                  totalPet)
-                                  .toInt();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => PaymentPage(
-                                      petModel: widget.petModel,
-                                      aliadoModel: widget.aliadoModel,
-                                      promotionModel:
-                                      widget.promotionModel,
-                                      tituloCategoria:
-                                      tituloCategoria,
-                                      totalPrice: totalPrice,
-                                      hora: hora,
-                                      fecha: fecha,
-                                      recojo: recojo,
-                                      delivery: delivery,
-                                      value2: _value2,
-                                      value: _value,
-                                      date: date,
-                                    )),
-                              );
-                            }
-                          }
-
-                          if (widget.promotionModel.tipoPromocion ==
-                              'Producto') {
-                            AddOrder(
-                                widget.promotionModel.promoid, context);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => StoreHome(
-                                    petModel: model,
-                                  )),
-                            );
-                          }
-                        },
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5)),
-                        color: Color(0xFFEB9448),
-                        padding: EdgeInsets.all(10.0),
+                        width: _screenWidth,
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                                widget.promotionModel.tipoPromocion !=
-                                    'Producto'
-                                    ? "Contratar servicio"
-                                    : "Pagar promoción",
-                                style: TextStyle(
-                                    fontFamily: 'Product Sans',
-                                    color: Colors.white,
-                                    fontSize: 18.0)),
+                            StreamBuilder<QuerySnapshot>(
+                                stream: db
+                                    .collection("Promociones")
+                                    .doc(widget.promotionModel.promoid)
+                                    .collection("Agenda")
+                                    .where('fecha', isEqualTo: fecha)
+                                    .snapshots(),
+                                builder: (context, dataSnapshot) {
+                                  if (dataSnapshot.hasData) {
+                                    if (dataSnapshot.data.docs.length == 0) {
+                                      return Center(child: Text(''));
+                                    }
+                                  }
+                                  if (!dataSnapshot.hasData) {
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+                                  return Container(
+                                    child: ListView.builder(
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemCount: 1,
+                                        shrinkWrap: true,
+                                        itemBuilder: (
+                                          context,
+                                          index,
+                                        ) {
+                                          DayModel day = DayModel.fromJson(
+                                              dataSnapshot.data.docs[index]
+                                                  .data());
+                                          return Container(
+                                            child: GridView.builder(
+                                              shrinkWrap: true,
+                                              scrollDirection: Axis.vertical,
+                                              itemCount: day.horasDia.length,
+                                              gridDelegate:
+                                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                                      crossAxisCount: 5,
+                                                      crossAxisSpacing: 10,
+                                                      mainAxisSpacing: 10),
+                                              physics: BouncingScrollPhysics(),
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int i) {
+                                                return ChoiceChip(
+                                                  label: sourceInfo2(
+                                                      context, day, i),
+                                                  labelPadding:
+                                                      EdgeInsets.fromLTRB(
+                                                          0, 0, 0, 0),
+                                                  selected:
+                                                      _2defaultChoiceIndex == i,
+                                                  selectedColor:
+                                                      Color(0xFFEB9448),
+                                                  onSelected: (bool selected) {
+                                                    setState(() {
+                                                      if (selected) {
+                                                        _2defaultChoiceIndex =
+                                                            i;
+                                                        print(day.horasDia[i]);
+                                                        hora = day.horasDia[i];
+                                                      }
+                                                    });
+                                                  },
+                                                  shape: StadiumBorder(
+                                                      side: BorderSide(
+                                                          color: Color(
+                                                              0xFFBDD7D6))),
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  labelStyle: TextStyle(
+                                                      color: Colors.white),
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        }),
+                                  );
+                                }),
                           ],
                         ),
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          PetshopApp.sharedPreferences
-                              .getString(PetshopApp.simboloMoneda),
-                          style: TextStyle(
-                            color: Color(0xFF57419D),
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
+                      )
+                    : Container(),
+                PetshopApp.sharedPreferences.getString(PetshopApp.userPais) ==
+                        "Perú"
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: 200.0,
+                            child: RaisedButton(
+                              onPressed: () {
+                                if (fecha == null &&
+                                    widget.promotionModel.tipoAgenda ==
+                                        'Free') {
+                                  showDialog(
+                                    context: context,
+                                    child: AlertDialog(
+                                      title: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.cancel,
+                                            color: Colors.red,
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            'Seleccione una fecha.',
+                                            style: TextStyle(fontSize: 14),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                } else if (fecha != null &&
+                                    widget.promotionModel.tipoAgenda ==
+                                        'Free') {
+                                  // AddOrder(widget.promotionModel.promoid, context);
+                                  int totalPrice = (pro.precio +
+                                          recojo +
+                                          delivery -
+                                          totalPet)
+                                      .toInt();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => PaymentPage(
+                                            petModel: widget.petModel,
+                                            aliadoModel: widget.aliadoModel,
+                                            promotionModel:
+                                                widget.promotionModel,
+                                            tituloCategoria: tituloCategoria,
+                                            totalPrice: totalPrice,
+                                            hora: hora,
+                                            fecha: fecha,
+                                            recojo: recojo,
+                                            delivery: delivery,
+                                            value2: _value2,
+                                            value: _value,
+                                            date: date,
+                                            defaultChoiceIndex:
+                                                widget.defaultChoiceIndex)),
+                                  );
+                                } else if (widget.promotionModel.tipoAgenda ==
+                                    'Slots') {
+                                  if (hora == null) {
+                                    showDialog(
+                                      context: context,
+                                      child: AlertDialog(
+                                        title: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.cancel,
+                                              color: Colors.red,
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              'Seleccione una hora.',
+                                              style: TextStyle(fontSize: 14),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  if (fecha == null) {
+                                    showDialog(
+                                      context: context,
+                                      child: AlertDialog(
+                                        title: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.cancel,
+                                              color: Colors.red,
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              'Seleccione una fecha.',
+                                              style: TextStyle(fontSize: 14),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  if (hora != null && fecha != null) {
+                                    // AddOrder(widget.promotionModel.promoid, context);
+                                    int totalPrice = (pro.precio +
+                                            recojo +
+                                            delivery -
+                                            totalPet)
+                                        .toInt();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => PaymentPage(
+                                              petModel: widget.petModel,
+                                              aliadoModel: widget.aliadoModel,
+                                              promotionModel:
+                                                  widget.promotionModel,
+                                              tituloCategoria: tituloCategoria,
+                                              totalPrice: totalPrice,
+                                              hora: hora,
+                                              fecha: fecha,
+                                              recojo: recojo,
+                                              delivery: delivery,
+                                              value2: _value2,
+                                              value: _value,
+                                              date: date,
+                                              defaultChoiceIndex:
+                                                  widget.defaultChoiceIndex)),
+                                    );
+                                  }
+                                }
+
+                                if (widget.promotionModel.tipoPromocion ==
+                                    'Producto') {
+                                  AddOrder(
+                                      widget.promotionModel.promoid, context);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => StoreHome(
+                                              petModel: model,
+                                            )),
+                                  );
+                                }
+                              },
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5)),
+                              color: Color(0xFFEB9448),
+                              padding: EdgeInsets.all(10.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                      widget.promotionModel.tipoPromocion !=
+                                              'Producto'
+                                          ? "Contratar servicio"
+                                          : "Pagar promoción",
+                                      style: TextStyle(
+                                          fontFamily: 'Product Sans',
+                                          color: Colors.white,
+                                          fontSize: 18.0)),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                        Text(
-                          (pro.precio + recojo + delivery - totalPet)
-                              .toString(),
-                          style: TextStyle(
-                            color: Color(0xFF57419D),
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
+                          Row(
+                            children: [
+                              Text(
+                                PetshopApp.sharedPreferences
+                                    .getString(PetshopApp.simboloMoneda),
+                                style: TextStyle(
+                                  color: Color(0xFF57419D),
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                (pro.precio + recojo + delivery - totalPet)
+                                    .toString(),
+                                style: TextStyle(
+                                  color: Color(0xFF57419D),
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                )
+                        ],
+                      )
                     : Container(),
               ],
             ),
@@ -813,7 +823,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
 
   AddOrder(String itemID, BuildContext context) async {
     var databaseReference =
-    FirebaseFirestore.instance.collection('Ordenes').doc(productId);
+        FirebaseFirestore.instance.collection('Ordenes').doc(productId);
 
     await databaseReference.collection('Items').doc(itemID).setData({
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),

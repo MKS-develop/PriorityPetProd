@@ -19,9 +19,14 @@ class OrdenesDetalle extends StatefulWidget {
   final Producto productoModel;
   final CartModel cartModel;
   final OrderModel orderModel;
+  final int defaultChoiceIndex;
 
   OrdenesDetalle(
-      {this.petModel, this.productoModel, this.cartModel, this.orderModel});
+      {this.petModel,
+      this.productoModel,
+      this.cartModel,
+      this.orderModel,
+      this.defaultChoiceIndex});
 
   @override
   _OrdenesDetalleState createState() => _OrdenesDetalleState();
@@ -40,9 +45,13 @@ class _OrdenesDetalleState extends State<OrdenesDetalle> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(

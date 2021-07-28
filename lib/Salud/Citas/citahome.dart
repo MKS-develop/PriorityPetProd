@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:pet_shop/Chat/ChatPage.dart';
 import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/Models/alidados.dart';
 import 'package:pet_shop/Models/clinicas.dart';
@@ -22,13 +23,14 @@ class CitaHome extends StatefulWidget {
   final ServiceModel serviceModel;
   final AliadoModel aliadoModel;
   final LocationModel locationModel;
+  final int defaultChoiceIndex;
 
-  CitaHome({
-    this.petModel,
-    this.aliadoModel,
-    this.locationModel,
-    this.serviceModel,
-  });
+  CitaHome(
+      {this.petModel,
+      this.aliadoModel,
+      this.locationModel,
+      this.serviceModel,
+      this.defaultChoiceIndex});
 
   @override
   _CitaHomeState createState() => _CitaHomeState();
@@ -56,8 +58,12 @@ class _CitaHomeState extends State<CitaHome> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
-        drawer: MyDrawer(),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         bottomNavigationBar: CustomBottomNavigationBar(),
         body: _fondo(),
       ),
@@ -163,7 +169,8 @@ class _CitaHomeState extends State<CitaHome> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda),
+                PetshopApp.sharedPreferences
+                    .getString(PetshopApp.simboloMoneda),
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -287,7 +294,16 @@ class _CitaHomeState extends State<CitaHome> {
           children: [
             SizedBox(
               child: RaisedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChatPage(
+                              petModel: widget.petModel,
+                              aliado: widget.aliadoModel.aliadoId,
+                            )),
+                  );
+                },
                 color: Color(0xFFBDD7D6),
                 child: Text(
                   'Enviar mensaje',

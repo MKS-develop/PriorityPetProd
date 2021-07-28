@@ -19,8 +19,13 @@ class OrdenesHome extends StatefulWidget {
   final PetModel petModel;
   final Producto productoModel;
   final CartModel cartModel;
+  final int defaultChoiceIndex;
 
-  OrdenesHome({this.petModel, this.productoModel, this.cartModel});
+  OrdenesHome(
+      {this.petModel,
+      this.productoModel,
+      this.cartModel,
+      this.defaultChoiceIndex});
 
   @override
   _OrdenesHomeState createState() => _OrdenesHomeState();
@@ -38,9 +43,13 @@ class _OrdenesHomeState extends State<OrdenesHome> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(
@@ -129,7 +138,11 @@ class _OrdenesHomeState extends State<OrdenesHome> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => OrdenesDetalle(orderModel: order)),
+                builder: (context) => OrdenesDetalle(
+                      orderModel: order,
+                      petModel: widget.petModel,
+                      defaultChoiceIndex: widget.defaultChoiceIndex,
+                    )),
           );
         },
         child: Padding(

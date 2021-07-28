@@ -23,13 +23,14 @@ class VideoHome extends StatefulWidget {
   final ServiceModel serviceModel;
   final AliadoModel aliadoModel;
   final LocationModel locationModel;
+  final int defaultChoiceIndex;
 
-  VideoHome({
-    this.petModel,
-    this.aliadoModel,
-    this.locationModel,
-    this.serviceModel,
-  });
+  VideoHome(
+      {this.petModel,
+      this.aliadoModel,
+      this.locationModel,
+      this.serviceModel,
+      this.defaultChoiceIndex});
 
   @override
   _VideoHomeState createState() => _VideoHomeState();
@@ -57,8 +58,12 @@ class _VideoHomeState extends State<VideoHome> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
-        drawer: MyDrawer(),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         bottomNavigationBar: CustomBottomNavigationBar(),
         body: _fondo(),
       ),

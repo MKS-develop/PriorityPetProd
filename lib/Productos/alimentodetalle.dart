@@ -25,13 +25,15 @@ class AlimentoDetalle extends StatefulWidget {
   final ProductoModel productoModel;
   final CartModel cartModel;
   final AliadoModel aliadoModel;
+  final int defaultChoiceIndex;
 
   AlimentoDetalle(
       {this.petModel,
       this.productModel,
       this.productoModel,
       this.cartModel,
-      this.aliadoModel});
+      this.aliadoModel,
+      this.defaultChoiceIndex});
 
   @override
   _AlimentoDetalleState createState() => _AlimentoDetalleState();
@@ -105,9 +107,13 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(
@@ -461,7 +467,10 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CartFinal()),
+                                builder: (context) => CartFinal(
+                                    petModel: widget.petModel,
+                                    defaultChoiceIndex:
+                                        widget.defaultChoiceIndex)),
                           );
                         },
                         shape: RoundedRectangleBorder(

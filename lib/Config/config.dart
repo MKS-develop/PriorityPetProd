@@ -36,6 +36,8 @@ class PetshopApp {
   static final String userCulqi = 'id_culqi';
   static final String simboloMoneda = 'simbolo';
   static final String Moneda = 'moneda';
+  static final String codigoTexto = 'codigoTexto';
+  static final String tipoDocumento = 'tipoDocumento';
 
   static final String addressID = 'addressID';
   static final String totalAmount = 'totalAmount';

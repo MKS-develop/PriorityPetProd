@@ -21,8 +21,9 @@ double width;
 
 class EditarMascota extends StatefulWidget {
   final PetModel petModel;
+  final int defaultChoiceIndex;
 
-  EditarMascota({this.petModel});
+  EditarMascota({this.petModel, this.defaultChoiceIndex});
 
   @override
   _EditarMascotaState createState() => _EditarMascotaState();
@@ -143,7 +144,10 @@ class _EditarMascotaState extends State<EditarMascota>
           ),
         ),
       ),
-      drawer: MyDrawer(),
+      drawer: MyDrawer(
+        petModel: widget.petModel,
+        defaultChoiceIndex: widget.defaultChoiceIndex,
+      ),
       bottomNavigationBar: CustomBottomNavigationBar(),
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -464,10 +468,10 @@ class _EditarMascotaState extends State<EditarMascota>
                                               enabled: false,
                                               border: InputBorder.none,
                                             ),
-                                            mode: Mode.MENU,
+                                            mode: Mode.BOTTOM_SHEET,
                                             maxHeight: 300,
-                                            searchBoxController:
-                                                _razaTextEditingController,
+                                            // searchBoxController:
+                                            //     _razaTextEditingController,
                                             // popupBackgroundColor: Colors.amber,
                                             // searchBoxDecoration: InputDecoration(
                                             //   fillColor: Colors.blue,
@@ -853,7 +857,10 @@ class _EditarMascotaState extends State<EditarMascota>
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => MascotasHome()),
+                                        builder: (context) => MascotasHome(
+                                            petModel: widget.petModel,
+                                            defaultChoiceIndex:
+                                                widget.defaultChoiceIndex)),
                                   );
                                   Navigator.of(context, rootNavigator: true)
                                       .pop();
@@ -1059,7 +1066,7 @@ class _EditarMascotaState extends State<EditarMascota>
                       child: CupertinoDatePicker(
                         mode: CupertinoDatePickerMode.date,
                         initialDateTime: selectedDate,
-                        maximumDate: DateTime.now(),
+                        // maximumDate: DateTime.now(),
                         onDateTimeChanged: (datetime) {
                           setState(() {
                             selectedDate = datetime;

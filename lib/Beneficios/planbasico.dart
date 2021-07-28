@@ -16,7 +16,8 @@ double width;
 class PlanBasicoHome extends StatefulWidget {
   final PetModel petModel;
   final PlanModel planModel;
-  PlanBasicoHome({this.petModel, this.planModel});
+  final int defaultChoiceIndex;
+  PlanBasicoHome({this.petModel, this.planModel, this.defaultChoiceIndex});
 
   @override
   _PlanBasicoHomeState createState() => _PlanBasicoHomeState();
@@ -55,8 +56,12 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
-        drawer: MyDrawer(),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         bottomNavigationBar: CustomBottomNavigationBar(),
         body: Container(
           height: MediaQuery.of(context).size.height,
@@ -110,11 +115,11 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
                               return Padding(
                                 padding: const EdgeInsets.all(3.0),
                                 // child: Expanded(
-                                  child: Text(
-                                      widget.planModel.detallesCompletos[i],
-                                      style: TextStyle(
-                                          fontFamily: 'Product Sans',
-                                          fontSize: 16.0)),
+                                child: Text(
+                                    widget.planModel.detallesCompletos[i],
+                                    style: TextStyle(
+                                        fontFamily: 'Product Sans',
+                                        fontSize: 16.0)),
                                 // ),
                               );
                             }),
@@ -356,13 +361,12 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
                                                                         .push(
                                                                       context,
                                                                       MaterialPageRoute(
-                                                                          builder: (context) =>
-                                                                              PaymentPage(
-                                                                                petModel: model,
-                                                                                planModel: plan,
-                                                                                tituloCategoria: 'Plan Mensual',
-                                                                                totalPrice: totalPrice,
-                                                                              )),
+                                                                          builder: (context) => PaymentPage(
+                                                                              petModel: model,
+                                                                              planModel: plan,
+                                                                              tituloCategoria: 'Plan Mensual',
+                                                                              totalPrice: totalPrice,
+                                                                              defaultChoiceIndex: widget.defaultChoiceIndex)),
                                                                     );
                                                                   },
                                                                   shape: RoundedRectangleBorder(

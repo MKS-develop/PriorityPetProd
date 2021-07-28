@@ -19,8 +19,9 @@ double width;
 
 class ClinicasPage extends StatefulWidget {
   final PetModel petModel;
+  final int defaultChoiceIndex;
 
-  ClinicasPage({this.petModel});
+  ClinicasPage({this.petModel, this.defaultChoiceIndex});
 
   @override
   _ClinicasPageState createState() => _ClinicasPageState();
@@ -29,7 +30,7 @@ class ClinicasPage extends StatefulWidget {
 class _ClinicasPageState extends State<ClinicasPage> {
   DateTime selectedDate = DateTime.now();
   TextEditingController _searchTextEditingController =
-  new TextEditingController();
+      new TextEditingController();
   String _categoria;
   List _allResults = [];
   List _resultsList = [];
@@ -61,7 +62,6 @@ class _ClinicasPageState extends State<ClinicasPage> {
     // getAllSnapshots();
     MastersList();
     getCiudades(PetshopApp.sharedPreferences.getString(PetshopApp.userPais));
-
   }
 
   @override
@@ -81,27 +81,24 @@ class _ClinicasPageState extends State<ClinicasPage> {
     FirebaseFirestore.instance
         .collection("Aliados")
         .where('tipoAliado', isEqualTo: "Clinica")
-        .where("pais", isEqualTo: PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
+        .where("pais",
+            isEqualTo:
+                PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
         .where("ciudad", isEqualTo: _categoria)
         .snapshots()
         .listen(createListofServices);
   }
 
-
-
   createListofServices(QuerySnapshot snapshot) async {
     var docs = snapshot.docs;
     for (var Doc in docs) {
       setState(() {
-
         _allResults.add(ClinicasModel.fromFirestore(Doc));
         print(_allResults);
       });
     }
     searchResultsList();
   }
-
-
 
   searchResultsList() {
     var showResults = [];
@@ -121,10 +118,6 @@ class _ClinicasPageState extends State<ClinicasPage> {
     });
   }
 
-
-
-
-
   _onSearchChanged() {
     searchResultsList();
     print(_searchTextEditingController.text);
@@ -135,26 +128,29 @@ class _ClinicasPageState extends State<ClinicasPage> {
 
   final db = FirebaseFirestore.instance;
 
-
   Future<List<dynamic>> getCiudades(pais) async {
     ciudades = [];
-    try{
-      await FirebaseFirestore.instance.collection('Ciudades').where("paisId", isEqualTo: PetshopApp.sharedPreferences.getString(PetshopApp.userPais)).get().then((QuerySnapshot querySnapshot) => {
-        querySnapshot.docs.forEach((paisA) {
-          setState((){
-            ciudades = paisA["ciudades"].toList();
-          });
-
-        })
-      });
+    try {
+      await FirebaseFirestore.instance
+          .collection('Ciudades')
+          .where("paisId",
+              isEqualTo:
+                  PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
+          .get()
+          .then((QuerySnapshot querySnapshot) => {
+                querySnapshot.docs.forEach((paisA) {
+                  setState(() {
+                    ciudades = paisA["ciudades"].toList();
+                  });
+                })
+              });
+      ciudades.sort();
       print(ciudades.length);
-    }catch(e){
+    } catch (e) {
       print(e);
     }
     return ciudades;
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -164,9 +160,13 @@ class _ClinicasPageState extends State<ClinicasPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: MediaQuery.of(context).size.height,
           decoration: new BoxDecoration(
@@ -224,7 +224,7 @@ class _ClinicasPageState extends State<ClinicasPage> {
                                       width: 1.0,
                                     ),
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
+                                        BorderRadius.all(Radius.circular(10.0)),
                                   ),
                                   padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
                                   margin: EdgeInsets.all(5.0),
@@ -278,7 +278,8 @@ class _ClinicasPageState extends State<ClinicasPage> {
                                   Container(
                                     width: _screenWidth * 0.9,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
@@ -297,22 +298,28 @@ class _ClinicasPageState extends State<ClinicasPage> {
                                               children: <Widget>[
                                                 DropdownButton(
                                                     hint: Padding(
-                                                      padding:
-                                                      const EdgeInsets.fromLTRB(
+                                                      padding: const EdgeInsets
+                                                              .fromLTRB(
                                                           50, 0, 0, 0),
                                                       child: Text(
                                                         'Ciudad',
                                                         style: TextStyle(
                                                             color: Colors.black,
                                                             fontWeight:
-                                                            FontWeight.bold),
+                                                                FontWeight
+                                                                    .bold),
                                                       ),
                                                     ),
-                                                    items: ciudades.map((dynamic value) {
-                                                      return DropdownMenuItem<dynamic>(
+                                                    items: ciudades
+                                                        .map((dynamic value) {
+                                                      return DropdownMenuItem<
+                                                          dynamic>(
                                                         value: value,
                                                         child: Padding(
-                                                          padding: const EdgeInsets.fromLTRB(40, 0, 0, 0),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .fromLTRB(
+                                                                  40, 0, 0, 0),
                                                           child: Text(value),
                                                         ),
                                                       );
@@ -330,7 +337,8 @@ class _ClinicasPageState extends State<ClinicasPage> {
                                                 Container(
                                                   width: 20,
                                                   margin: EdgeInsets.symmetric(
-                                                      vertical: 15, horizontal: 10),
+                                                      vertical: 15,
+                                                      horizontal: 10),
                                                   child: Image.asset(
                                                     'diseñador/drawable/Grupo197.png',
                                                   ),
@@ -431,10 +439,6 @@ class _ClinicasPageState extends State<ClinicasPage> {
                             //       }
                             //     }),
 
-
-
-
-
                             SizedBox(
                               height: 5.0,
                             ),
@@ -443,17 +447,15 @@ class _ClinicasPageState extends State<ClinicasPage> {
                                   double.parse(_resultsList.length.toString()),
                               width: _screenWidth,
                               child: Container(
-
                                 child: ListView.builder(
                                     itemCount: _resultsList.length,
                                     shrinkWrap: true,
                                     itemBuilder: (
-                                        BuildContext context,
-                                        int index,
-                                        ) =>
+                                      BuildContext context,
+                                      int index,
+                                    ) =>
                                         sourceInfo(
                                             context, _resultsList[index])),
-
                               ),
                             ),
                           ],
@@ -462,11 +464,6 @@ class _ClinicasPageState extends State<ClinicasPage> {
                     ],
                   ),
                 ),
-
-
-
-
-
               ],
             ),
           ),
@@ -497,9 +494,9 @@ class _ClinicasPageState extends State<ClinicasPage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => ClinicasDetalle(
-                      petModel: model,
-                      clinicasModel: clinica,
-                    )),
+                          petModel: model,
+                          clinicasModel: clinica,
+                        )),
               );
             },
             child: Container(

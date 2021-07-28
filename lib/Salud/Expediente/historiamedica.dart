@@ -26,8 +26,9 @@ double width;
 
 class HistoriaMedica extends StatefulWidget {
   final PetModel petModel;
+  final int defaultChoiceIndex;
 
-  HistoriaMedica({this.petModel});
+  HistoriaMedica({this.petModel, this.defaultChoiceIndex});
 
   @override
   _HistoriaMedicaState createState() => _HistoriaMedicaState();
@@ -93,6 +94,7 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
   bool _value8 = false;
   bool _value9 = false;
   bool _value10 = false;
+  bool _castrado;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -134,7 +136,7 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
     );
   }
 
-  int tab = 0;
+  int tab = 1;
   PetModel model;
   ExpedienteModel exp;
   bool select = true;
@@ -208,6 +210,8 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
         _agua = (dataSnapshot.data()["anteFisiologicosValues"]["tomaAgua"]);
         _evacuaciones =
             (dataSnapshot.data()["anteFisiologicosValues"]["defecacion"]);
+        _castrado =
+            (dataSnapshot.data()["anteFisiologicosValues"]["castracion"]);
         _miccion = (dataSnapshot.data()["anteFisiologicosValues"]["diuresis"]);
         _suenoTextEditingController.text =
             (dataSnapshot.data()["anteFisiologicosValues"]["sueno"]);
@@ -233,6 +237,17 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
             .data()["anteFisiologicosValues"]["fechaUltimoEstrogeno"]
             .microsecondsSinceEpoch);
       });
+      if (_castrado == true) {
+        setState(() {
+          _castraTextEditingController.value = TextEditingValue(text: 'Sí');
+        });
+      }
+      if (_castrado == false) {
+        setState(() {
+          _castraTextEditingController.value = TextEditingValue(text: 'No');
+        });
+      }
+
       if (fecha != '') {
         var formatter = DateFormat.yMd('es_VE');
 
@@ -269,9 +284,14 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
-        bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
+        bottomNavigationBar:
+            CustomBottomNavigationBar(petmodel: widget.petModel),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: MediaQuery.of(context).size.height,
           // decoration: new BoxDecoration(
@@ -315,41 +335,41 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          FlatButton(
-                              onPressed: () {
-                                setState(() {
-                                  tab = 0;
-                                  // select = true;
-                                  peso = false;
-                                  temperatura = false;
-                                  desparasitacion = false;
-                                  vacunas = false;
-                                  alergias = false;
-                                  patologias = false;
-                                  castrado = false;
-                                });
-                              },
-                              minWidth: _screenWidth * 0.26,
-                              padding: EdgeInsets.all(13.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(8.0),
-                                  topRight: Radius.zero,
-                                  bottomLeft: Radius.circular(8.0),
-                                  bottomRight: Radius.zero,
-                                ),
-                              ),
-                              child: Text(
-                                'Registro',
-                                style: TextStyle(
-                                    color: tab == 0
-                                        ? Colors.white
-                                        : Color(0xFF57419D),
-                                    fontSize: 17),
-                              ),
-                              color: tab == 0
-                                  ? Color(0xFF57419D)
-                                  : Color(0xFFBDD7D6)),
+                          // FlatButton(
+                          //     onPressed: () {
+                          //       setState(() {
+                          //         tab = 0;
+                          //         // select = true;
+                          //         peso = false;
+                          //         temperatura = false;
+                          //         desparasitacion = false;
+                          //         vacunas = false;
+                          //         alergias = false;
+                          //         patologias = false;
+                          //         castrado = false;
+                          //       });
+                          //     },
+                          //     minWidth: _screenWidth * 0.19,
+                          //     padding: EdgeInsets.all(15.0),
+                          //     shape: RoundedRectangleBorder(
+                          //       borderRadius: BorderRadius.only(
+                          //         topLeft: Radius.circular(10.0),
+                          //         topRight: Radius.zero,
+                          //         bottomLeft: Radius.circular(10.0),
+                          //         bottomRight: Radius.zero,
+                          //       ),
+                          //     ),
+                          //     child: Text(
+                          //       'Registro',
+                          //       style: TextStyle(
+                          //           color: tab == 0
+                          //               ? Colors.white
+                          //               : Color(0xFF57419D),
+                          //           fontSize: 16),
+                          //     ),
+                          //     color: tab == 0
+                          //         ? Color(0xFF57419D)
+                          //         : Color(0xFFBDD7D6)),
                           FlatButton(
                               onPressed: () {
                                 setState(() {
@@ -364,23 +384,23 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                                   castrado = false;
                                 });
                               },
-                              minWidth: _screenWidth * 0.26,
-                              padding: EdgeInsets.all(13.0),
+                              minWidth: _screenWidth * 0.4,
+                              padding: EdgeInsets.all(15.0),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
-                                  topLeft: Radius.zero,
+                                  topLeft: Radius.circular(10.0),
                                   topRight: Radius.zero,
-                                  bottomLeft: Radius.zero,
+                                  bottomLeft: Radius.circular(10.0),
                                   bottomRight: Radius.zero,
                                 ),
                               ),
                               child: Text(
-                                'Consulta',
+                                'Control',
                                 style: TextStyle(
                                     color: tab == 1
                                         ? Colors.white
                                         : Color(0xFF57419D),
-                                    fontSize: 17),
+                                    fontSize: 16),
                               ),
                               color: tab == 1
                                   ? Color(0xFF57419D)
@@ -399,8 +419,8 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                                   castrado = false;
                                 });
                               },
-                              minWidth: _screenWidth * 0.26,
-                              padding: EdgeInsets.all(13.0),
+                              minWidth: _screenWidth * 0.4,
+                              padding: EdgeInsets.all(15.0),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
                                   topLeft: Radius.zero,
@@ -415,7 +435,7 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                                     color: tab == 2
                                         ? Colors.white
                                         : Color(0xFF57419D),
-                                    fontSize: 17),
+                                    fontSize: 16),
                               ),
                               color: tab == 2
                                   ? Color(0xFF57419D)
@@ -678,90 +698,90 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                                     ],
                                   ),
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(0, 8, 0, 18),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Container(
-                                        width: 130.0,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Esterilizado/Castrado',
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Color(0xFF1A3E4D)),
-                                            ),
-                                            CustomTextField(
-                                              controller: _textEste,
-                                              isObsecure: false,
-                                              keyboard: TextInputType.text,
-                                              data: null,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 150.0,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Fecha',
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Color(0xFF1A3E4D)),
-                                            ),
-                                            GestureDetector(
-                                              onTap: () =>
-                                                  _selectDateEste(context),
-                                              child: AbsorbPointer(
-                                                child: CustomTextIconField(
-                                                  controller: _dateEste,
-                                                  isObsecure: false,
-                                                  data: Icons.web,
-                                                  keyboard:
-                                                      TextInputType.datetime,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Column(
-                                        children: [
-                                          Container(
-                                              width: _screenWidth * 0.15,
-                                              child: RaisedButton(
-                                                onPressed: () {
-                                                  saveEsteInfo();
-                                                },
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                color: Color(0xFF57419D),
-                                                padding: EdgeInsets.all(12.0),
-                                                child: Center(
-                                                    child: Icon(
-                                                  Icons.save_rounded,
-                                                  color: Colors.white,
-                                                )),
-                                              )),
-                                          SizedBox(
-                                            height: 6,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                // Padding(
+                                //   padding: EdgeInsets.fromLTRB(0, 8, 0, 18),
+                                //   child: Row(
+                                //     mainAxisAlignment:
+                                //         MainAxisAlignment.spaceEvenly,
+                                //     crossAxisAlignment: CrossAxisAlignment.end,
+                                //     children: [
+                                //       Container(
+                                //         width: 130.0,
+                                //         child: Column(
+                                //           crossAxisAlignment:
+                                //               CrossAxisAlignment.start,
+                                //           children: [
+                                //             Text(
+                                //               'Esterilizado/Castrado',
+                                //               style: TextStyle(
+                                //                   fontSize: 15,
+                                //                   color: Color(0xFF1A3E4D)),
+                                //             ),
+                                //             CustomTextField(
+                                //               controller: _textEste,
+                                //               isObsecure: false,
+                                //               keyboard: TextInputType.text,
+                                //               data: null,
+                                //             ),
+                                //           ],
+                                //         ),
+                                //       ),
+                                //       Container(
+                                //         width: 150.0,
+                                //         child: Column(
+                                //           crossAxisAlignment:
+                                //               CrossAxisAlignment.start,
+                                //           children: [
+                                //             Text(
+                                //               'Fecha',
+                                //               style: TextStyle(
+                                //                   fontSize: 15,
+                                //                   color: Color(0xFF1A3E4D)),
+                                //             ),
+                                //             GestureDetector(
+                                //               onTap: () =>
+                                //                   _selectDateEste(context),
+                                //               child: AbsorbPointer(
+                                //                 child: CustomTextIconField(
+                                //                   controller: _dateEste,
+                                //                   isObsecure: false,
+                                //                   data: Icons.web,
+                                //                   keyboard:
+                                //                       TextInputType.datetime,
+                                //                 ),
+                                //               ),
+                                //             ),
+                                //           ],
+                                //         ),
+                                //       ),
+                                //       Column(
+                                //         children: [
+                                //           Container(
+                                //               width: _screenWidth * 0.15,
+                                //               child: RaisedButton(
+                                //                 onPressed: () {
+                                //                   saveEsteInfo();
+                                //                 },
+                                //                 shape: RoundedRectangleBorder(
+                                //                     borderRadius:
+                                //                         BorderRadius.circular(
+                                //                             10)),
+                                //                 color: Color(0xFF57419D),
+                                //                 padding: EdgeInsets.all(12.0),
+                                //                 child: Center(
+                                //                     child: Icon(
+                                //                   Icons.save_rounded,
+                                //                   color: Colors.white,
+                                //                 )),
+                                //               )),
+                                //           SizedBox(
+                                //             height: 6,
+                                //           ),
+                                //         ],
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
 
                                 Padding(
                                   padding: EdgeInsets.fromLTRB(0, 8, 0, 18),
@@ -1468,31 +1488,128 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                               ),
                             ),
                             peso == true
-                                ? Container(
-                                    height: 200,
-                                    child: StreamBuilder<QuerySnapshot>(
-                                      stream: FirebaseFirestore.instance
-                                          .collection('Expedientes')
-                                          .doc(widget.petModel.mid)
-                                          .collection('Peso')
-                                          .snapshots(),
-                                      builder: (context, snapshot) {
-                                        if (!snapshot.hasData) {
-                                          return LinearProgressIndicator();
-                                        } else {
-                                          List<ExpedienteChart> expediente =
-                                              snapshot.data.docs
-                                                  .map((documentSnapshot) =>
-                                                      ExpedienteChart.fromMap(
-                                                          documentSnapshot
-                                                              .data()))
-                                                  .toList();
+                                ? Column(
+                                    children: [
+                                      Container(
+                                        height: 200,
+                                        child: StreamBuilder<QuerySnapshot>(
+                                          stream: FirebaseFirestore.instance
+                                              .collection('Expedientes')
+                                              .doc(widget.petModel.mid)
+                                              .collection('Peso')
+                                              .snapshots(),
+                                          builder: (context, snapshot) {
+                                            if (!snapshot.hasData) {
+                                              return LinearProgressIndicator();
+                                            } else {
+                                              List<ExpedienteChart> expediente =
+                                                  snapshot.data.docs
+                                                      .map((documentSnapshot) =>
+                                                          ExpedienteChart.fromMap(
+                                                              documentSnapshot
+                                                                  .data()))
+                                                      .toList();
 
-                                          return _buildChart(
-                                              context, expediente);
-                                        }
-                                      },
-                                    ),
+                                              return _buildChart(
+                                                  context, expediente);
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 0, 0, 18),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              width: 130.0,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    'Peso (Kg)',
+                                                    style: TextStyle(
+                                                        fontSize: 15,
+                                                        color:
+                                                            Color(0xFF1A3E4D)),
+                                                  ),
+                                                  CustomTextField(
+                                                    isObsecure: false,
+                                                    keyboard:
+                                                        TextInputType.number,
+                                                    controller: _textPeso,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              width: 150.0,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    'Fecha',
+                                                    style: TextStyle(
+                                                        fontSize: 15,
+                                                        color:
+                                                            Color(0xFF1A3E4D)),
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: () =>
+                                                        _selectDatePeso(
+                                                            context),
+                                                    child: AbsorbPointer(
+                                                      child:
+                                                          CustomTextIconField(
+                                                        controller: _datePeso,
+                                                        isObsecure: false,
+                                                        data: Icons.web,
+                                                        keyboard: TextInputType
+                                                            .datetime,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Column(
+                                              children: [
+                                                SizedBox(
+                                                  height: 23,
+                                                ),
+                                                Container(
+                                                    width: _screenWidth * 0.15,
+                                                    child: RaisedButton(
+                                                      onPressed: () {
+                                                        savePesoInfo();
+                                                      },
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          80)),
+                                                      color: Color(0xFF57419D),
+                                                      padding:
+                                                          EdgeInsets.all(12.0),
+                                                      child: Center(
+                                                          child: Icon(
+                                                        Icons.add,
+                                                        color: Colors.white,
+                                                      )),
+                                                    )),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   )
                                 : Container(),
                             Padding(
@@ -1574,32 +1691,131 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                               ),
                             ),
                             temperatura == true
-                                ? Container(
-                                    height: 200,
-                                    child: StreamBuilder<QuerySnapshot>(
-                                      stream: FirebaseFirestore.instance
-                                          .collection('Expedientes')
-                                          .doc(widget.petModel.mid)
-                                          .collection('Temperatura')
-                                          .snapshots(),
-                                      builder: (context, snapshot) {
-                                        if (!snapshot.hasData) {
-                                          return LinearProgressIndicator();
-                                        } else {
-                                          List<TemperaturaChart>
-                                              temperaturachart = snapshot
-                                                  .data.docs
-                                                  .map((documentSnapshot) =>
-                                                      TemperaturaChart.fromMap(
-                                                          documentSnapshot
-                                                              .data()))
-                                                  .toList();
+                                ? Column(
+                                    children: [
+                                      Container(
+                                        height: 200,
+                                        child: StreamBuilder<QuerySnapshot>(
+                                          stream: FirebaseFirestore.instance
+                                              .collection('Expedientes')
+                                              .doc(widget.petModel.mid)
+                                              .collection('Temperatura')
+                                              .snapshots(),
+                                          builder: (context, snapshot) {
+                                            if (!snapshot.hasData) {
+                                              return LinearProgressIndicator();
+                                            } else {
+                                              List<TemperaturaChart>
+                                                  temperaturachart = snapshot
+                                                      .data.docs
+                                                      .map((documentSnapshot) =>
+                                                          TemperaturaChart
+                                                              .fromMap(
+                                                                  documentSnapshot
+                                                                      .data()))
+                                                      .toList();
 
-                                          return _buildChart2(
-                                              context, temperaturachart);
-                                        }
-                                      },
-                                    ),
+                                              return _buildChart2(
+                                                  context, temperaturachart);
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 0, 0, 18),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              width: 130.0,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    'Temperatura (°C)',
+                                                    style: TextStyle(
+                                                        fontSize: 15,
+                                                        color:
+                                                            Color(0xFF1A3E4D)),
+                                                  ),
+                                                  CustomTextField(
+                                                    isObsecure: false,
+                                                    keyboard:
+                                                        TextInputType.number,
+                                                    data: null,
+                                                    controller: _textTemp,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              width: 150.0,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    'Fecha',
+                                                    style: TextStyle(
+                                                        fontSize: 15,
+                                                        color:
+                                                            Color(0xFF1A3E4D)),
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: () =>
+                                                        _selectDateTemp(
+                                                            context),
+                                                    child: AbsorbPointer(
+                                                      child:
+                                                          CustomTextIconField(
+                                                        controller: _dateTemp,
+                                                        isObsecure: false,
+                                                        data: Icons.web,
+                                                        keyboard: TextInputType
+                                                            .datetime,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Column(
+                                              children: [
+                                                Container(
+                                                    width: _screenWidth * 0.15,
+                                                    child: RaisedButton(
+                                                      onPressed: () {
+                                                        saveTempInfo();
+                                                      },
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          80)),
+                                                      color: Color(0xFF57419D),
+                                                      padding:
+                                                          EdgeInsets.all(12.0),
+                                                      child: Center(
+                                                          child: Icon(
+                                                        Icons.add,
+                                                        color: Colors.white,
+                                                      )),
+                                                    )),
+                                                SizedBox(
+                                                  height: 6,
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   )
                                 : Container(),
                             Padding(
@@ -1737,6 +1953,96 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                                                     );
                                                   });
                                             }),
+                                        Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(0, 8, 0, 18),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                width: 130.0,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Desparasitación',
+                                                      style: TextStyle(
+                                                          fontSize: 15,
+                                                          color: Color(
+                                                              0xFF1A3E4D)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                width: 150.0,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Fecha',
+                                                      style: TextStyle(
+                                                          fontSize: 15,
+                                                          color: Color(
+                                                              0xFF1A3E4D)),
+                                                    ),
+                                                    GestureDetector(
+                                                      onTap: () =>
+                                                          _selectDateDesparasitacion(
+                                                              context),
+                                                      child: AbsorbPointer(
+                                                        child:
+                                                            CustomTextIconField(
+                                                          controller:
+                                                              _dateDesparasitacion,
+                                                          isObsecure: false,
+                                                          data: Icons.web,
+                                                          keyboard:
+                                                              TextInputType
+                                                                  .datetime,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Column(
+                                                children: [
+                                                  SizedBox(
+                                                    height: 23,
+                                                  ),
+                                                  Container(
+                                                      width:
+                                                          _screenWidth * 0.15,
+                                                      child: RaisedButton(
+                                                        onPressed: () {
+                                                          saveDespaInfo();
+                                                        },
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        100)),
+                                                        color:
+                                                            Color(0xFF57419D),
+                                                        padding: EdgeInsets.all(
+                                                            12.0),
+                                                        child: Center(
+                                                            child: Icon(
+                                                          Icons.add,
+                                                          color: Colors.white,
+                                                        )),
+                                                      )),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   )
@@ -1885,6 +2191,206 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                                                     );
                                                   });
                                             }),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(0, 0, 0, 18),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                width: 130.0,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Vacunas',
+                                                      style: TextStyle(
+                                                          fontSize: 15,
+                                                          color: Color(
+                                                              0xFF1A3E4D)),
+                                                    ),
+                                                    StreamBuilder<
+                                                        QuerySnapshot>(
+                                                      stream: FirebaseFirestore
+                                                          .instance
+                                                          .collection(
+                                                              "Especies")
+                                                          .doc(widget
+                                                              .petModel.especie)
+                                                          .collection("Vacunas")
+                                                          .snapshots(),
+                                                      builder:
+                                                          (context, snapshot) {
+                                                        if (!snapshot.hasData) {
+                                                          return Center(
+                                                            child:
+                                                                CircularProgressIndicator(),
+                                                          );
+                                                        } else {
+                                                          List<DropdownMenuItem>
+                                                              vacunasItems = [];
+                                                          for (int i = 0;
+                                                              i <
+                                                                  snapshot
+                                                                      .data
+                                                                      .documents
+                                                                      .length;
+                                                              i++) {
+                                                            DocumentSnapshot
+                                                                snap = snapshot
+                                                                    .data
+                                                                    .documents[i];
+                                                            vacunasItems.add(
+                                                              DropdownMenuItem(
+                                                                child: Text(
+                                                                  snap.documentID,
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .black),
+                                                                ),
+                                                                value:
+                                                                    "${snap.documentID}",
+                                                              ),
+                                                            );
+                                                          }
+                                                          return Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              border:
+                                                                  Border.all(
+                                                                color: Color(
+                                                                    0xFF7f9d9D),
+                                                                width: 1.0,
+                                                              ),
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          10.0)),
+                                                            ),
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    0.0),
+                                                            margin:
+                                                                EdgeInsets.all(
+                                                                    5.0),
+                                                            child:
+                                                                DropdownButtonHideUnderline(
+                                                              child:
+                                                                  DropdownButtonFormField(
+                                                                decoration:
+                                                                    InputDecoration(
+                                                                  enabledBorder:
+                                                                      UnderlineInputBorder(
+                                                                          borderSide:
+                                                                              BorderSide.none),
+                                                                  focusedBorder:
+                                                                      UnderlineInputBorder(
+                                                                          borderSide:
+                                                                              BorderSide.none),
+                                                                  disabledBorder:
+                                                                      UnderlineInputBorder(
+                                                                          borderSide:
+                                                                              BorderSide.none),
+                                                                ),
+                                                                items:
+                                                                    vacunasItems,
+                                                                icon: Icon(
+                                                                  // Add this
+                                                                  Icons
+                                                                      .add_box, // Add this
+                                                                  // Add this
+                                                                ),
+                                                                isExpanded:
+                                                                    true,
+                                                                onChanged:
+                                                                    (value) {
+                                                                  setState(() {
+                                                                    _vacu =
+                                                                        value;
+                                                                  });
+                                                                },
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                width: 150.0,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Fecha',
+                                                      style: TextStyle(
+                                                          fontSize: 15,
+                                                          color: Color(
+                                                              0xFF1A3E4D)),
+                                                    ),
+                                                    GestureDetector(
+                                                      onTap: () =>
+                                                          _selectDateVacu(
+                                                              context),
+                                                      child: AbsorbPointer(
+                                                        child:
+                                                            CustomTextIconField(
+                                                          controller: _dateVacu,
+                                                          isObsecure: false,
+                                                          data: Icons.web,
+                                                          keyboard:
+                                                              TextInputType
+                                                                  .datetime,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Column(
+                                                children: [
+                                                  SizedBox(
+                                                    height: 23,
+                                                  ),
+                                                  Container(
+                                                      width:
+                                                          _screenWidth * 0.15,
+                                                      child: RaisedButton(
+                                                        onPressed: () {
+                                                          saveVacunaInfo();
+                                                        },
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        100)),
+                                                        color:
+                                                            Color(0xFF57419D),
+                                                        padding: EdgeInsets.all(
+                                                            12.0),
+                                                        child: Center(
+                                                            child: Icon(
+                                                          Icons.add,
+                                                          color: Colors.white,
+                                                        )),
+                                                      )),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   )
@@ -2031,6 +2537,208 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                                                     );
                                                   });
                                             }),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(0, 0, 0, 18),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                width: 130.0,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Alergias',
+                                                      style: TextStyle(
+                                                          fontSize: 15,
+                                                          color: Color(
+                                                              0xFF1A3E4D)),
+                                                    ),
+                                                    StreamBuilder<
+                                                        QuerySnapshot>(
+                                                      stream: FirebaseFirestore
+                                                          .instance
+                                                          .collection(
+                                                              "Especies")
+                                                          .doc(widget
+                                                              .petModel.especie)
+                                                          .collection(
+                                                              "Alergias")
+                                                          .snapshots(),
+                                                      builder:
+                                                          (context, snapshot) {
+                                                        if (!snapshot.hasData) {
+                                                          return Center(
+                                                            child:
+                                                                CircularProgressIndicator(),
+                                                          );
+                                                        } else {
+                                                          List<DropdownMenuItem>
+                                                              alergiasItems =
+                                                              [];
+                                                          for (int i = 0;
+                                                              i <
+                                                                  snapshot
+                                                                      .data
+                                                                      .documents
+                                                                      .length;
+                                                              i++) {
+                                                            DocumentSnapshot
+                                                                snap = snapshot
+                                                                    .data
+                                                                    .documents[i];
+                                                            alergiasItems.add(
+                                                              DropdownMenuItem(
+                                                                child: Text(
+                                                                  snap.documentID,
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .black),
+                                                                ),
+                                                                value:
+                                                                    "${snap.documentID}",
+                                                              ),
+                                                            );
+                                                          }
+                                                          return Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              border:
+                                                                  Border.all(
+                                                                color: Color(
+                                                                    0xFF7f9d9D),
+                                                                width: 1.0,
+                                                              ),
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          10.0)),
+                                                            ),
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    0.0),
+                                                            margin:
+                                                                EdgeInsets.all(
+                                                                    5.0),
+                                                            child:
+                                                                DropdownButtonHideUnderline(
+                                                              child:
+                                                                  DropdownButtonFormField(
+                                                                decoration:
+                                                                    InputDecoration(
+                                                                  enabledBorder:
+                                                                      UnderlineInputBorder(
+                                                                          borderSide:
+                                                                              BorderSide.none),
+                                                                  focusedBorder:
+                                                                      UnderlineInputBorder(
+                                                                          borderSide:
+                                                                              BorderSide.none),
+                                                                  disabledBorder:
+                                                                      UnderlineInputBorder(
+                                                                          borderSide:
+                                                                              BorderSide.none),
+                                                                ),
+                                                                items:
+                                                                    alergiasItems,
+                                                                icon: Icon(
+                                                                  // Add this
+                                                                  Icons
+                                                                      .add_box, // Add this
+                                                                  // Add this
+                                                                ),
+                                                                isExpanded:
+                                                                    true,
+                                                                onChanged:
+                                                                    (value) {
+                                                                  setState(() {
+                                                                    _aler =
+                                                                        value;
+                                                                  });
+                                                                },
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                width: 150.0,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Fecha',
+                                                      style: TextStyle(
+                                                          fontSize: 15,
+                                                          color: Color(
+                                                              0xFF1A3E4D)),
+                                                    ),
+                                                    GestureDetector(
+                                                      onTap: () =>
+                                                          _selectDateAler(
+                                                              context),
+                                                      child: AbsorbPointer(
+                                                        child:
+                                                            CustomTextIconField(
+                                                          controller: _dateAler,
+                                                          isObsecure: false,
+                                                          data: Icons.web,
+                                                          keyboard:
+                                                              TextInputType
+                                                                  .datetime,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Column(
+                                                children: [
+                                                  SizedBox(
+                                                    height: 23,
+                                                  ),
+                                                  Container(
+                                                      width:
+                                                          _screenWidth * 0.15,
+                                                      child: RaisedButton(
+                                                        onPressed: () {
+                                                          saveAlergiaInfo();
+                                                        },
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        100)),
+                                                        color:
+                                                            Color(0xFF57419D),
+                                                        padding: EdgeInsets.all(
+                                                            12.0),
+                                                        child: Center(
+                                                            child: Icon(
+                                                          Icons.add,
+                                                          color: Colors.white,
+                                                        )),
+                                                      )),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   )
@@ -2179,88 +2887,287 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                                                     );
                                                   });
                                             }),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(0, 0, 0, 40),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                width: 130.0,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Patología',
+                                                      style: TextStyle(
+                                                          fontSize: 15,
+                                                          color: Color(
+                                                              0xFF1A3E4D)),
+                                                    ),
+                                                    StreamBuilder<
+                                                        QuerySnapshot>(
+                                                      stream: FirebaseFirestore
+                                                          .instance
+                                                          .collection(
+                                                              "Especies")
+                                                          .doc(widget
+                                                              .petModel.especie)
+                                                          .collection(
+                                                              "Patologias")
+                                                          .snapshots(),
+                                                      builder:
+                                                          (context, snapshot) {
+                                                        if (!snapshot.hasData) {
+                                                          return Center(
+                                                            child:
+                                                                CircularProgressIndicator(),
+                                                          );
+                                                        } else {
+                                                          List<DropdownMenuItem>
+                                                              patologiasItems =
+                                                              [];
+                                                          for (int i = 0;
+                                                              i <
+                                                                  snapshot
+                                                                      .data
+                                                                      .documents
+                                                                      .length;
+                                                              i++) {
+                                                            DocumentSnapshot
+                                                                snap = snapshot
+                                                                    .data
+                                                                    .documents[i];
+                                                            patologiasItems.add(
+                                                              DropdownMenuItem(
+                                                                child: Text(
+                                                                  snap.documentID,
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .black),
+                                                                ),
+                                                                value:
+                                                                    "${snap.documentID}",
+                                                              ),
+                                                            );
+                                                          }
+                                                          return Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              border:
+                                                                  Border.all(
+                                                                color: Color(
+                                                                    0xFF7f9d9D),
+                                                                width: 1.0,
+                                                              ),
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          10.0)),
+                                                            ),
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    0.0),
+                                                            margin:
+                                                                EdgeInsets.all(
+                                                                    5.0),
+                                                            child:
+                                                                DropdownButtonHideUnderline(
+                                                              child:
+                                                                  DropdownButtonFormField(
+                                                                decoration:
+                                                                    InputDecoration(
+                                                                  enabledBorder:
+                                                                      UnderlineInputBorder(
+                                                                          borderSide:
+                                                                              BorderSide.none),
+                                                                  focusedBorder:
+                                                                      UnderlineInputBorder(
+                                                                          borderSide:
+                                                                              BorderSide.none),
+                                                                  disabledBorder:
+                                                                      UnderlineInputBorder(
+                                                                          borderSide:
+                                                                              BorderSide.none),
+                                                                ),
+                                                                items:
+                                                                    patologiasItems,
+                                                                icon: Icon(
+                                                                  Icons.add_box,
+                                                                ),
+                                                                isExpanded:
+                                                                    true,
+                                                                onChanged:
+                                                                    (value) {
+                                                                  setState(() {
+                                                                    _pat =
+                                                                        value;
+                                                                  });
+                                                                },
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                width: 150.0,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Fecha',
+                                                      style: TextStyle(
+                                                          fontSize: 15,
+                                                          color: Color(
+                                                              0xFF1A3E4D)),
+                                                    ),
+                                                    GestureDetector(
+                                                      onTap: () =>
+                                                          _selectDatePat(
+                                                              context),
+                                                      child: AbsorbPointer(
+                                                        child:
+                                                            CustomTextIconField(
+                                                          controller: _datePat,
+                                                          isObsecure: false,
+                                                          data: Icons.web,
+                                                          keyboard:
+                                                              TextInputType
+                                                                  .datetime,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Column(
+                                                children: [
+                                                  SizedBox(
+                                                    height: 23,
+                                                  ),
+                                                  Container(
+                                                      width:
+                                                          _screenWidth * 0.15,
+                                                      child: RaisedButton(
+                                                        onPressed: () {
+                                                          savePatoInfo();
+                                                        },
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        100)),
+                                                        color:
+                                                            Color(0xFF57419D),
+                                                        padding: EdgeInsets.all(
+                                                            12.0),
+                                                        child: Center(
+                                                            child: Icon(
+                                                          Icons.add,
+                                                          color: Colors.white,
+                                                        )),
+                                                      )),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   )
                                 : Container(),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: SizedBox(
-                                width: double.infinity,
-                                child: RaisedButton(
-                                  onPressed: () {
-                                    String tituloDetalle =
-                                        "Esterilizado/Castrado";
-                                    // Navigator.push(
-                                    //   context,
-                                    //
-                                    //   MaterialPageRoute(builder: (context) => ConsultaDetalle(petModel: model, tituloDetalle: tituloDetalle)),
-                                    // );
-                                    if (castrado == false) {
-                                      setState(() {
-                                        castrado = true;
-                                      });
-                                    } else {
-                                      setState(() {
-                                        castrado = false;
-                                      });
-                                    }
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  color: Color(0xFF57419D),
-                                  padding: EdgeInsets.all(10.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                              'diseñador/drawable/Salud/castrado.png'),
-                                          SizedBox(
-                                            width: 15.0,
-                                          ),
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text("Esterilizado/Castrado",
-                                                  style: TextStyle(
-                                                      fontFamily:
-                                                          'Product Sans',
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 18.0)),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      castrado == false
-                                          ? IconButton(
-                                              icon: Icon(Icons.add,
-                                                  color: Colors.white),
-                                              onPressed: () {
-                                                setState(() {
-                                                  castrado = true;
-                                                });
-                                              })
-                                          : IconButton(
-                                              icon: Icon(Icons.remove_rounded,
-                                                  color: Colors.white),
-                                              onPressed: () {
-                                                setState(() {
-                                                  castrado = false;
-                                                });
-                                              }),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.all(10.0),
+                            //   child: SizedBox(
+                            //     width: double.infinity,
+                            //     child: RaisedButton(
+                            //       onPressed: () {
+                            //         String tituloDetalle =
+                            //             "Esterilizado/Castrado";
+                            //         // Navigator.push(
+                            //         //   context,
+                            //         //
+                            //         //   MaterialPageRoute(builder: (context) => ConsultaDetalle(petModel: model, tituloDetalle: tituloDetalle)),
+                            //         // );
+                            //         if (castrado == false) {
+                            //           setState(() {
+                            //             castrado = true;
+                            //           });
+                            //         } else {
+                            //           setState(() {
+                            //             castrado = false;
+                            //           });
+                            //         }
+                            //       },
+                            //       shape: RoundedRectangleBorder(
+                            //           borderRadius: BorderRadius.circular(10)),
+                            //       color: Color(0xFF57419D),
+                            //       padding: EdgeInsets.all(10.0),
+                            //       child: Row(
+                            //         mainAxisAlignment:
+                            //             MainAxisAlignment.spaceBetween,
+                            //         children: [
+                            //           Row(
+                            //             children: [
+                            //               Image.asset(
+                            //                   'diseñador/drawable/Salud/castrado.png'),
+                            //               SizedBox(
+                            //                 width: 15.0,
+                            //               ),
+                            //               Column(
+                            //                 mainAxisAlignment:
+                            //                     MainAxisAlignment.start,
+                            //                 crossAxisAlignment:
+                            //                     CrossAxisAlignment.start,
+                            //                 children: [
+                            //                   Text("Esterilizado/Castrado",
+                            //                       style: TextStyle(
+                            //                           fontFamily:
+                            //                               'Product Sans',
+                            //                           color: Colors.white,
+                            //                           fontWeight:
+                            //                               FontWeight.bold,
+                            //                           fontSize: 18.0)),
+                            //                 ],
+                            //               ),
+                            //             ],
+                            //           ),
+                            //           castrado == false
+                            //               ? IconButton(
+                            //                   icon: Icon(Icons.add,
+                            //                       color: Colors.white),
+                            //                   onPressed: () {
+                            //                     setState(() {
+                            //                       castrado = true;
+                            //                     });
+                            //                   })
+                            //               : IconButton(
+                            //                   icon: Icon(Icons.remove_rounded,
+                            //                       color: Colors.white),
+                            //                   onPressed: () {
+                            //                     setState(() {
+                            //                       castrado = false;
+                            //                     });
+                            //                   }),
+                            //         ],
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
                             castrado == true
                                 ? Container(
                                     child: Column(
@@ -2334,2038 +3241,1944 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                           ])
                         : Container(),
 
-                    tab == 2
-                        ? Container(
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  height: 10.0,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    child: RaisedButton(
-                                      onPressed: () {
-                                        if (ambiental == false) {
-                                          setState(() {
-                                            ambiental = true;
-                                          });
-                                        } else {
-                                          setState(() {
-                                            ambiental = false;
-                                          });
-                                        }
-                                      },
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      color: Color(0xFF57419D),
-                                      padding: EdgeInsets.all(10.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                    if (tab == 2)
+                      Container(
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: RaisedButton(
+                                  onPressed: () {
+                                    if (ambiental == false) {
+                                      setState(() {
+                                        ambiental = true;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        ambiental = false;
+                                      });
+                                    }
+                                  },
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  color: Color(0xFF57419D),
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
                                         children: [
-                                          Row(
+                                          Image.asset(
+                                              'diseñador/drawable/Salud/despa.png'),
+                                          SizedBox(
+                                            width: 15.0,
+                                          ),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              Image.asset(
-                                                  'diseñador/drawable/Salud/despa.png'),
-                                              SizedBox(
-                                                width: 15.0,
-                                              ),
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text("Ambiental",
-                                                      style: TextStyle(
-                                                          fontFamily:
-                                                              'Product Sans',
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 18.0)),
-                                                ],
+                                              Text("Ambiental",
+                                                  style: TextStyle(
+                                                      fontFamily:
+                                                          'Product Sans',
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 18.0)),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      ambiental == false
+                                          ? IconButton(
+                                              icon: Icon(Icons.add,
+                                                  color: Colors.white),
+                                              onPressed: () {
+                                                setState(() {
+                                                  ambiental = true;
+                                                });
+                                              })
+                                          : IconButton(
+                                              icon: Icon(Icons.remove_rounded,
+                                                  color: Colors.white),
+                                              onPressed: () {
+                                                setState(() {
+                                                  ambiental = false;
+                                                });
+                                              }),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            ambiental == true
+                                ? Container(
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                child: Text(
+                                                  'Lugar de nacimiento',
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Color(0xFF7F9D9D)),
+                                                ),
                                               ),
                                             ],
                                           ),
-                                          ambiental == false
-                                              ? IconButton(
-                                                  icon: Icon(Icons.add,
-                                                      color: Colors.white),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      ambiental = true;
-                                                    });
-                                                  })
-                                              : IconButton(
-                                                  icon: Icon(
-                                                      Icons.remove_rounded,
-                                                      color: Colors.white),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      ambiental = false;
-                                                    });
-                                                  }),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                ambiental == true
-                                    ? Container(
-                                        child: Column(
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    child: Text(
-                                                      'Lugar de nacimiento',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Color(
-                                                              0xFF7F9D9D)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Center(
-                                              child: Container(
-                                                width: _screenWidth * 0.89,
-                                                child: CustomTextField(
-                                                  controller:
-                                                      _lugarNacTextEditingController,
-                                                  keyboard: TextInputType.text,
-                                                  hintText:
-                                                      "Lugar de nacimiento",
-                                                  isObsecure: false,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    child: Text(
-                                                      'Donde ha vivido',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Color(
-                                                              0xFF7F9D9D)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Center(
-                                              child: Container(
-                                                width: _screenWidth * 0.89,
-                                                child: CustomTextField(
-                                                  controller:
-                                                      _dondeViveTextEditingController,
-                                                  keyboard: TextInputType.text,
-                                                  hintText: "Donde ha vivido",
-                                                  isObsecure: false,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    child: Text(
-                                                      'Tipo de vivienda',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Color(
-                                                              0xFF7F9D9D)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0, 0, 0, 10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    width: _screenWidth * 0.9,
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Colors.white,
-                                                            border: Border.all(
-                                                              color: Color(
-                                                                  0xFF7f9d9D),
-                                                              width: 1.0,
-                                                            ),
-                                                            borderRadius:
-                                                                BorderRadius.all(
-                                                                    Radius.circular(
-                                                                        10.0)),
-                                                          ),
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  0.0),
-                                                          margin:
-                                                              EdgeInsets.all(
-                                                                  5.0),
-                                                          child:
-                                                              DropdownButtonHideUnderline(
-                                                            child: Stack(
-                                                              children: <
-                                                                  Widget>[
-                                                                DropdownButton(
-                                                                    hint:
-                                                                        Padding(
-                                                                      padding:
-                                                                          const EdgeInsets.fromLTRB(
-                                                                              15,
-                                                                              0,
-                                                                              0,
-                                                                              0),
-                                                                      child: Text(
-                                                                          'Tipo de vivienda',
-                                                                          style: TextStyle(
-                                                                              fontSize: 15.0,
-                                                                              color: Color(0xFF7f9d9D))),
-                                                                    ),
-                                                                    items: <
-                                                                        String>[
-                                                                      'Callejero',
-                                                                      'Campo',
-                                                                      'Departamento',
-                                                                      'Casa',
-                                                                      'Otro'
-                                                                    ].map((String
-                                                                        value) {
-                                                                      return new DropdownMenuItem<
-                                                                          String>(
-                                                                        value:
-                                                                            value,
-                                                                        child:
-                                                                            Padding(
-                                                                          padding: const EdgeInsets.fromLTRB(
-                                                                              10,
-                                                                              0,
-                                                                              0,
-                                                                              0),
-                                                                          child:
-                                                                              new Text(value),
-                                                                        ),
-                                                                      );
-                                                                    }).toList(),
-                                                                    isExpanded:
-                                                                        true,
-                                                                    onChanged:
-                                                                        (value) {
-                                                                      setState(
-                                                                          () {
-                                                                        _tipoVivienda =
-                                                                            value;
-                                                                      });
-                                                                    },
-                                                                    value:
-                                                                        _tipoVivienda),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    child: Text(
-                                                      'Convivencia con otros animales',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Color(
-                                                              0xFF7F9D9D)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Center(
-                                              child: Container(
-                                                width: _screenWidth * 0.89,
-                                                child: CustomTextField(
-                                                  controller:
-                                                      _convivenTextEditingController,
-                                                  keyboard: TextInputType.text,
-                                                  hintText:
-                                                      "Convivencia con otros animales",
-                                                  isObsecure: false,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    child: Text(
-                                                      'Actividad física',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Color(
-                                                              0xFF7F9D9D)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0, 0, 0, 10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    width: _screenWidth * 0.9,
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Colors.white,
-                                                            border: Border.all(
-                                                              color: Color(
-                                                                  0xFF7f9d9D),
-                                                              width: 1.0,
-                                                            ),
-                                                            borderRadius:
-                                                                BorderRadius.all(
-                                                                    Radius.circular(
-                                                                        10.0)),
-                                                          ),
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  0.0),
-                                                          margin:
-                                                              EdgeInsets.all(
-                                                                  5.0),
-                                                          child:
-                                                              DropdownButtonHideUnderline(
-                                                            child: Stack(
-                                                              children: <
-                                                                  Widget>[
-                                                                DropdownButton(
-                                                                    hint:
-                                                                        Padding(
-                                                                      padding:
-                                                                          const EdgeInsets.fromLTRB(
-                                                                              15,
-                                                                              0,
-                                                                              0,
-                                                                              0),
-                                                                      child: Text(
-                                                                          'Actividad física',
-                                                                          style: TextStyle(
-                                                                              fontSize: 15.0,
-                                                                              color: Color(0xFF7f9d9D))),
-                                                                    ),
-                                                                    items: <
-                                                                        String>[
-                                                                      'Sedentario',
-                                                                      'Paseos',
-                                                                      'Deportivo',
-                                                                      'Entrenamiento'
-                                                                    ].map((String
-                                                                        value) {
-                                                                      return new DropdownMenuItem<
-                                                                          String>(
-                                                                        value:
-                                                                            value,
-                                                                        child:
-                                                                            Padding(
-                                                                          padding: const EdgeInsets.fromLTRB(
-                                                                              10,
-                                                                              0,
-                                                                              0,
-                                                                              0),
-                                                                          child:
-                                                                              new Text(value),
-                                                                        ),
-                                                                      );
-                                                                    }).toList(),
-                                                                    isExpanded:
-                                                                        true,
-                                                                    onChanged:
-                                                                        (value) {
-                                                                      setState(
-                                                                          () {
-                                                                        _actividadFisica =
-                                                                            value;
-                                                                      });
-                                                                    },
-                                                                    value:
-                                                                        _actividadFisica),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
                                         ),
-                                      )
-                                    : Container(),
-                                SizedBox(
-                                  height: 10.0,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    child: RaisedButton(
-                                      onPressed: () {
-                                        if (familiares == false) {
-                                          setState(() {
-                                            familiares = true;
-                                          });
-                                        } else {
-                                          setState(() {
-                                            familiares = false;
-                                          });
-                                        }
-                                      },
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      color: Color(0xFF57419D),
-                                      padding: EdgeInsets.all(10.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
+                                        Center(
+                                          child: Container(
+                                            width: _screenWidth * 0.89,
+                                            child: CustomTextField(
+                                              controller:
+                                                  _lugarNacTextEditingController,
+                                              keyboard: TextInputType.text,
+                                              hintText: "Lugar de nacimiento",
+                                              isObsecure: false,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 10.0,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
                                             children: [
-                                              Image.asset(
-                                                  'diseñador/drawable/Salud/despa.png'),
-                                              SizedBox(
-                                                width: 15.0,
-                                              ),
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                      "Antecedentes familiares",
-                                                      style: TextStyle(
-                                                          fontFamily:
-                                                              'Product Sans',
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 18.0)),
-                                                ],
+                                              Container(
+                                                child: Text(
+                                                  'Donde ha vivido',
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Color(0xFF7F9D9D)),
+                                                ),
                                               ),
                                             ],
                                           ),
-                                          familiares == false
-                                              ? IconButton(
-                                                  icon: Icon(Icons.add,
-                                                      color: Colors.white),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      familiares = true;
-                                                    });
-                                                  })
-                                              : IconButton(
-                                                  icon: Icon(
-                                                      Icons.remove_rounded,
-                                                      color: Colors.white),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      familiares = false;
-                                                    });
-                                                  }),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                familiares == true
-                                    ? Container(
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Container(
-                                                  width: 140,
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      SizedBox(
-                                                        height: 14,
+                                        ),
+                                        Center(
+                                          child: Container(
+                                            width: _screenWidth * 0.89,
+                                            child: CustomTextField(
+                                              controller:
+                                                  _dondeViveTextEditingController,
+                                              keyboard: TextInputType.text,
+                                              hintText: "Donde ha vivido",
+                                              isObsecure: false,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 10.0,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                child: Text(
+                                                  'Tipo de vivienda',
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Color(0xFF7F9D9D)),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                width: _screenWidth * 0.9,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        border: Border.all(
+                                                          color:
+                                                              Color(0xFF7f9d9D),
+                                                          width: 1.0,
+                                                        ),
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10.0)),
                                                       ),
-                                                      Text('Cancer',
-                                                          style: TextStyle(
-                                                            fontSize: 16,
-                                                          )),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Column(
-                                                  children: [
-                                                    Text(
-                                                      'Padre',
-                                                      style: TextStyle(
-                                                          color:
-                                                              Color(0xFF57419D),
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 16),
-                                                    ),
-                                                    Checkbox(
-                                                        value: _value,
-                                                        activeColor:
-                                                            Color(0xFF57419D),
-                                                        onChanged:
-                                                            (bool value) {
-                                                          setState(() {
-                                                            _value = value;
-                                                            // if (value == true) {
-                                                            //   _value = false;
-                                                            // } else {}
-                                                          });
-                                                        }),
-                                                  ],
-                                                ),
-                                                Column(
-                                                  children: [
-                                                    Text(
-                                                      'Madre',
-                                                      style: TextStyle(
-                                                          color:
-                                                              Color(0xFF57419D),
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 16),
-                                                    ),
-                                                    Checkbox(
-                                                        value: _value2,
-                                                        activeColor:
-                                                            Color(0xFF57419D),
-                                                        onChanged:
-                                                            (bool value) {
-                                                          setState(() {
-                                                            _value2 = value;
-                                                            // if (value == true) {
-                                                            //   _value2 = false;
-                                                            // } else {}
-                                                          });
-                                                        }),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Container(
-                                                  width: 140,
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text('Diabetes',
-                                                          style: TextStyle(
-                                                            fontSize: 16,
-                                                          )),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Column(
-                                                  children: [
-                                                    Checkbox(
-                                                        value: _value3,
-                                                        activeColor:
-                                                            Color(0xFF57419D),
-                                                        onChanged:
-                                                            (bool value) {
-                                                          setState(() {
-                                                            _value3 = value;
-                                                            // if (value == true) {
-                                                            //   _value = false;
-                                                            // } else {}
-                                                          });
-                                                        }),
-                                                  ],
-                                                ),
-                                                Column(
-                                                  children: [
-                                                    Checkbox(
-                                                        value: _value4,
-                                                        activeColor:
-                                                            Color(0xFF57419D),
-                                                        onChanged:
-                                                            (bool value) {
-                                                          setState(() {
-                                                            _value4 = value;
-                                                            // if (value == true) {
-                                                            //   _value2 = false;
-                                                            // } else {}
-                                                          });
-                                                        }),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Container(
-                                                  width: 140,
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text('Cardiopatías',
-                                                          style: TextStyle(
-                                                            fontSize: 16,
-                                                          )),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Column(
-                                                  children: [
-                                                    Checkbox(
-                                                        value: _value5,
-                                                        activeColor:
-                                                            Color(0xFF57419D),
-                                                        onChanged:
-                                                            (bool value) {
-                                                          setState(() {
-                                                            _value5 = value;
-                                                            // if (value == true) {
-                                                            //   _value = false;
-                                                            // } else {}
-                                                          });
-                                                        }),
-                                                  ],
-                                                ),
-                                                Column(
-                                                  children: [
-                                                    Checkbox(
-                                                        value: _value6,
-                                                        activeColor:
-                                                            Color(0xFF57419D),
-                                                        onChanged:
-                                                            (bool value) {
-                                                          setState(() {
-                                                            _value6 = value;
-                                                            // if (value == true) {
-                                                            //   _value2 = false;
-                                                            // } else {}
-                                                          });
-                                                        }),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Container(
-                                                  width: 140,
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text('Aparato Locomotor',
-                                                          style: TextStyle(
-                                                            fontSize: 16,
-                                                          )),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Column(
-                                                  children: [
-                                                    Checkbox(
-                                                        value: _value7,
-                                                        activeColor:
-                                                            Color(0xFF57419D),
-                                                        onChanged:
-                                                            (bool value) {
-                                                          setState(() {
-                                                            _value7 = value;
-                                                            // if (value == true) {
-                                                            //   _value = false;
-                                                            // } else {}
-                                                          });
-                                                        }),
-                                                  ],
-                                                ),
-                                                Column(
-                                                  children: [
-                                                    Checkbox(
-                                                        value: _value8,
-                                                        activeColor:
-                                                            Color(0xFF57419D),
-                                                        onChanged:
-                                                            (bool value) {
-                                                          setState(() {
-                                                            _value8 = value;
-                                                            // if (value == true) {
-                                                            //   _value2 = false;
-                                                            // } else {}
-                                                          });
-                                                        }),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Container(
-                                                  width: 140,
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text('Sistema Nervioso',
-                                                          style: TextStyle(
-                                                            fontSize: 16,
-                                                          )),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Column(
-                                                  children: [
-                                                    Checkbox(
-                                                        value: _value9,
-                                                        activeColor:
-                                                            Color(0xFF57419D),
-                                                        onChanged:
-                                                            (bool value) {
-                                                          setState(() {
-                                                            _value9 = value;
-                                                            // if (value == true) {
-                                                            //   _value = false;
-                                                            // } else {}
-                                                          });
-                                                        }),
-                                                  ],
-                                                ),
-                                                Column(
-                                                  children: [
-                                                    Checkbox(
-                                                        value: _value10,
-                                                        activeColor:
-                                                            Color(0xFF57419D),
-                                                        onChanged:
-                                                            (bool value) {
-                                                          setState(() {
-                                                            _value10 = value;
-                                                            // if (value == true) {
-                                                            //   _value2 = false;
-                                                            // } else {}
-                                                          });
-                                                        }),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    child: Text(
-                                                      'Otras',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Color(
-                                                              0xFF7F9D9D)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Center(
-                                              child: Container(
-                                                width: _screenWidth * 0.89,
-                                                child: CustomTextField(
-                                                  controller:
-                                                      _otrosAntecedentesTextEditingController,
-                                                  keyboard: TextInputType.text,
-                                                  hintText: "Otras",
-                                                  isObsecure: false,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    : Container(),
-                                SizedBox(
-                                  height: 10.0,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    child: RaisedButton(
-                                      onPressed: () {
-                                        if (fisiologicos == false) {
-                                          setState(() {
-                                            fisiologicos = true;
-                                          });
-                                        } else {
-                                          setState(() {
-                                            fisiologicos = false;
-                                          });
-                                        }
-                                      },
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      color: Color(0xFF57419D),
-                                      padding: EdgeInsets.all(10.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Image.asset(
-                                                  'diseñador/drawable/Salud/despa.png'),
-                                              SizedBox(
-                                                width: 15.0,
-                                              ),
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text("Fisiológicos",
-                                                      style: TextStyle(
-                                                          fontFamily:
-                                                              'Product Sans',
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 18.0)),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          fisiologicos == false
-                                              ? IconButton(
-                                                  icon: Icon(Icons.add,
-                                                      color: Colors.white),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      fisiologicos = true;
-                                                    });
-                                                  })
-                                              : IconButton(
-                                                  icon: Icon(
-                                                      Icons.remove_rounded,
-                                                      color: Colors.white),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      fisiologicos = false;
-                                                    });
-                                                  }),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                fisiologicos == true
-                                    ? Container(
-                                        child: Column(
-                                          children: [
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    child: Text(
-                                                      'Toma de agua (Cantidad)',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Color(
-                                                              0xFF7F9D9D)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0, 0, 0, 10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    width: _screenWidth * 0.9,
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Colors.white,
-                                                            border: Border.all(
-                                                              color: Color(
-                                                                  0xFF7f9d9D),
-                                                              width: 1.0,
-                                                            ),
-                                                            borderRadius:
-                                                                BorderRadius.all(
-                                                                    Radius.circular(
-                                                                        10.0)),
-                                                          ),
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  0.0),
-                                                          margin:
-                                                              EdgeInsets.all(
-                                                                  5.0),
-                                                          child:
-                                                              DropdownButtonHideUnderline(
-                                                            child: Stack(
-                                                              children: <
-                                                                  Widget>[
-                                                                DropdownButton(
-                                                                    hint:
-                                                                        Padding(
-                                                                      padding:
-                                                                          const EdgeInsets.fromLTRB(
-                                                                              15,
-                                                                              0,
-                                                                              0,
-                                                                              0),
-                                                                      child: Text(
-                                                                          'Toma de agua (Cantidad)',
-                                                                          style: TextStyle(
-                                                                              fontSize: 15.0,
-                                                                              color: Color(0xFF7f9d9D))),
-                                                                    ),
-                                                                    items: <
-                                                                        String>[
-                                                                      '1/2 litro',
-                                                                      '1 litro',
-                                                                      '2 litros',
-                                                                      '3 litros'
-                                                                    ].map((String
-                                                                        value) {
-                                                                      return new DropdownMenuItem<
-                                                                          String>(
-                                                                        value:
-                                                                            value,
-                                                                        child:
-                                                                            Padding(
-                                                                          padding: const EdgeInsets.fromLTRB(
-                                                                              10,
-                                                                              0,
-                                                                              0,
-                                                                              0),
-                                                                          child:
-                                                                              new Text(value),
-                                                                        ),
-                                                                      );
-                                                                    }).toList(),
-                                                                    isExpanded:
-                                                                        true,
-                                                                    onChanged:
-                                                                        (value) {
-                                                                      setState(
-                                                                          () {
-                                                                        _agua =
-                                                                            value;
-                                                                      });
-                                                                    },
-                                                                    value:
-                                                                        _agua),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    child: Text(
-                                                      'Evacuaciones',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Color(
-                                                              0xFF7F9D9D)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0, 0, 0, 10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    width: _screenWidth * 0.9,
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Colors.white,
-                                                            border: Border.all(
-                                                              color: Color(
-                                                                  0xFF7f9d9D),
-                                                              width: 1.0,
-                                                            ),
-                                                            borderRadius:
-                                                                BorderRadius.all(
-                                                                    Radius.circular(
-                                                                        10.0)),
-                                                          ),
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  0.0),
-                                                          margin:
-                                                              EdgeInsets.all(
-                                                                  5.0),
-                                                          child:
-                                                              DropdownButtonHideUnderline(
-                                                            child: Stack(
-                                                              children: <
-                                                                  Widget>[
-                                                                DropdownButton(
-                                                                    hint:
-                                                                        Padding(
-                                                                      padding:
-                                                                          const EdgeInsets.fromLTRB(
-                                                                              15,
-                                                                              0,
-                                                                              0,
-                                                                              0),
-                                                                      child: Text(
-                                                                          'Evacuaciones',
-                                                                          style: TextStyle(
-                                                                              fontSize: 15.0,
-                                                                              color: Color(0xFF7f9d9D))),
-                                                                    ),
-                                                                    items: <
-                                                                        String>[
-                                                                      '1 vez',
-                                                                      '2 veces',
-                                                                      '3 veces',
-                                                                      '4 veces',
-                                                                      '5 veces',
-                                                                      '6 veces',
-                                                                      'Más'
-                                                                    ].map((String
-                                                                        value) {
-                                                                      return new DropdownMenuItem<
-                                                                          String>(
-                                                                        value:
-                                                                            value,
-                                                                        child:
-                                                                            Padding(
-                                                                          padding: const EdgeInsets.fromLTRB(
-                                                                              10,
-                                                                              0,
-                                                                              0,
-                                                                              0),
-                                                                          child:
-                                                                              new Text(value),
-                                                                        ),
-                                                                      );
-                                                                    }).toList(),
-                                                                    isExpanded:
-                                                                        true,
-                                                                    onChanged:
-                                                                        (value) {
-                                                                      setState(
-                                                                          () {
-                                                                        _evacuaciones =
-                                                                            value;
-                                                                      });
-                                                                    },
-                                                                    value:
-                                                                        _evacuaciones),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    child: Text(
-                                                      'Micción',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Color(
-                                                              0xFF7F9D9D)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0, 0, 0, 10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    width: _screenWidth * 0.9,
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Colors.white,
-                                                            border: Border.all(
-                                                              color: Color(
-                                                                  0xFF7f9d9D),
-                                                              width: 1.0,
-                                                            ),
-                                                            borderRadius:
-                                                                BorderRadius.all(
-                                                                    Radius.circular(
-                                                                        10.0)),
-                                                          ),
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  0.0),
-                                                          margin:
-                                                              EdgeInsets.all(
-                                                                  5.0),
-                                                          child:
-                                                              DropdownButtonHideUnderline(
-                                                            child: Stack(
-                                                              children: <
-                                                                  Widget>[
-                                                                DropdownButton(
-                                                                    hint:
-                                                                        Padding(
-                                                                      padding:
-                                                                          const EdgeInsets.fromLTRB(
-                                                                              15,
-                                                                              0,
-                                                                              0,
-                                                                              0),
-                                                                      child: Text(
-                                                                          'Micción',
-                                                                          style: TextStyle(
-                                                                              fontSize: 15.0,
-                                                                              color: Color(0xFF7f9d9D))),
-                                                                    ),
-                                                                    items: <
-                                                                        String>[
-                                                                      '1 vez',
-                                                                      '2 veces',
-                                                                      '3 veces',
-                                                                      '4 veces',
-                                                                      '5 veces',
-                                                                      '6 veces',
-                                                                      'Más'
-                                                                    ].map((String
-                                                                        value) {
-                                                                      return new DropdownMenuItem<
-                                                                          String>(
-                                                                        value:
-                                                                            value,
-                                                                        child:
-                                                                            Padding(
-                                                                          padding: const EdgeInsets.fromLTRB(
-                                                                              10,
-                                                                              0,
-                                                                              0,
-                                                                              0),
-                                                                          child:
-                                                                              new Text(value),
-                                                                        ),
-                                                                      );
-                                                                    }).toList(),
-                                                                    isExpanded:
-                                                                        true,
-                                                                    onChanged:
-                                                                        (value) {
-                                                                      setState(
-                                                                          () {
-                                                                        _miccion =
-                                                                            value;
-                                                                      });
-                                                                    },
-                                                                    value:
-                                                                        _miccion),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    child: Text(
-                                                      'Sueño (Cantidad de horas)',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Color(
-                                                              0xFF7F9D9D)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Center(
-                                              child: Container(
-                                                width: _screenWidth * 0.89,
-                                                child: CustomTextField(
-                                                  controller:
-                                                      _suenoTextEditingController,
-                                                  keyboard:
-                                                      TextInputType.number,
-                                                  hintText:
-                                                      "Sueño (Cantidad de horas)",
-                                                  isObsecure: false,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    child: Text(
-                                                      'Fecha de último estro o celo',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Color(
-                                                              0xFF7F9D9D)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Center(
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  _selectDate(context);
-                                                },
-                                                child: AbsorbPointer(
-                                                  child: Container(
-                                                    width: _screenWidth * 0.89,
-                                                    child: CustomTextField(
-                                                      controller:
-                                                          _dateTextEditingController,
-                                                      keyboard:
-                                                          TextInputType.text,
-                                                      hintText:
-                                                          "Fecha de último estro o celo",
-                                                      isObsecure: false,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    child: Text(
-                                                      'Frecuencia en intensidad de celos',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Color(
-                                                              0xFF7F9D9D)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0, 0, 0, 10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    width: _screenWidth * 0.9,
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Colors.white,
-                                                            border: Border.all(
-                                                              color: Color(
-                                                                  0xFF7f9d9D),
-                                                              width: 1.0,
-                                                            ),
-                                                            borderRadius:
-                                                                BorderRadius.all(
-                                                                    Radius.circular(
-                                                                        10.0)),
-                                                          ),
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  0.0),
-                                                          margin:
-                                                              EdgeInsets.all(
-                                                                  5.0),
-                                                          child:
-                                                              DropdownButtonHideUnderline(
-                                                            child: Stack(
-                                                              children: <
-                                                                  Widget>[
-                                                                DropdownButton(
-                                                                    hint:
-                                                                        Padding(
-                                                                      padding:
-                                                                          const EdgeInsets.fromLTRB(
-                                                                              15,
-                                                                              0,
-                                                                              0,
-                                                                              0),
-                                                                      child: Text(
-                                                                          'Frecuencia en intensidad de celos',
-                                                                          style: TextStyle(
-                                                                              fontSize: 15.0,
-                                                                              color: Color(0xFF7f9d9D))),
-                                                                    ),
-                                                                    items: <
-                                                                        String>[
-                                                                      'Poco',
-                                                                      'Normal',
-                                                                      'Mucho',
-                                                                    ].map((String
-                                                                        value) {
-                                                                      return new DropdownMenuItem<
-                                                                          String>(
-                                                                        value:
-                                                                            value,
-                                                                        child:
-                                                                            Padding(
-                                                                          padding: const EdgeInsets.fromLTRB(
-                                                                              10,
-                                                                              0,
-                                                                              0,
-                                                                              0),
-                                                                          child:
-                                                                              new Text(value),
-                                                                        ),
-                                                                      );
-                                                                    }).toList(),
-                                                                    isExpanded:
-                                                                        true,
-                                                                    onChanged:
-                                                                        (value) {
-                                                                      setState(
-                                                                          () {
-                                                                        _intensidadCelos =
-                                                                            value;
-                                                                      });
-                                                                    },
-                                                                    value:
-                                                                        _intensidadCelos),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            // SizedBox(
-                                            //   height: 10.0,
-                                            // ),
-                                            // Padding(
-                                            //   padding: const EdgeInsets.all(8.0),
-                                            //   child: Row(
-                                            //     mainAxisAlignment: MainAxisAlignment.start,
-                                            //     children: [
-                                            //       Container(
-                                            //         child: Text(
-                                            //           'Castración/Esterilización',
-                                            //           style: TextStyle(
-                                            //               fontSize: 16, color: Color(0xFF7F9D9D)),
-                                            //         ),
-                                            //       ),
-                                            //     ],
-                                            //   ),
-                                            // ),
-                                            // Center(
-                                            //   child: Container(
-                                            //     width: _screenWidth * 0.89,
-                                            //     child: CustomTextField(
-                                            //       controller: _castraTextEditingController,
-                                            //       keyboard: TextInputType.text,
-                                            //       hintText: "Castración/Esterilización",
-                                            //       isObsecure: false,
-                                            //     ),
-                                            //   ),
-                                            // ),
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    child: Text(
-                                                      'Cirugía estética',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Color(
-                                                              0xFF7F9D9D)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Center(
-                                              child: Container(
-                                                width: _screenWidth * 0.89,
-                                                child: CustomTextField(
-                                                  controller:
-                                                      _cirugiaTextEditingController,
-                                                  keyboard: TextInputType.text,
-                                                  hintText: "Cirugía estética",
-                                                  isObsecure: false,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    child: Text(
-                                                      'Comentarios de cirugía estética',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Color(
-                                                              0xFF7F9D9D)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Center(
-                                              child: Container(
-                                                width: _screenWidth * 0.89,
-                                                child: CustomTextField(
-                                                  controller:
-                                                      _cirugiaComenTextEditingController,
-                                                  keyboard: TextInputType.text,
-                                                  hintText:
-                                                      "Comentarios de cirugía estética",
-                                                  isObsecure: false,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    : Container(),
-                                SizedBox(
-                                  height: 10.0,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    child: RaisedButton(
-                                      onPressed: () {
-                                        if (alimenticios == false) {
-                                          setState(() {
-                                            alimenticios = true;
-                                          });
-                                        } else {
-                                          setState(() {
-                                            alimenticios = false;
-                                          });
-                                        }
-                                      },
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      color: Color(0xFF57419D),
-                                      padding: EdgeInsets.all(10.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Image.asset(
-                                                  'diseñador/drawable/Salud/despa.png'),
-                                              SizedBox(
-                                                width: 15.0,
-                                              ),
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text("Alimenticio",
-                                                      style: TextStyle(
-                                                          fontFamily:
-                                                              'Product Sans',
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 18.0)),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          alimenticios == false
-                                              ? IconButton(
-                                                  icon: Icon(Icons.add,
-                                                      color: Colors.white),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      alimenticios = true;
-                                                    });
-                                                  })
-                                              : IconButton(
-                                                  icon: Icon(
-                                                      Icons.remove_rounded,
-                                                      color: Colors.white),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      alimenticios = false;
-                                                    });
-                                                  }),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                alimenticios == true
-                                    ? Container(
-                                        child: Column(
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    child: Text(
-                                                      'Tipo de alimentación',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Color(
-                                                              0xFF7F9D9D)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0, 0, 0, 10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    width: _screenWidth * 0.9,
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Colors.white,
-                                                            border: Border.all(
-                                                              color: Color(
-                                                                  0xFF7f9d9D),
-                                                              width: 1.0,
-                                                            ),
-                                                            borderRadius:
-                                                                BorderRadius.all(
-                                                                    Radius.circular(
-                                                                        10.0)),
-                                                          ),
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  0.0),
-                                                          margin:
-                                                              EdgeInsets.all(
-                                                                  5.0),
-                                                          child:
-                                                              DropdownButtonHideUnderline(
-                                                            child: Stack(
-                                                              children: <
-                                                                  Widget>[
-                                                                DropdownButton(
-                                                                    hint:
-                                                                        Padding(
-                                                                      padding:
-                                                                          const EdgeInsets.fromLTRB(
-                                                                              15,
-                                                                              0,
-                                                                              0,
-                                                                              0),
-                                                                      child: Text(
-                                                                          'Tipo de alimentación',
-                                                                          style: TextStyle(
-                                                                              fontSize: 15.0,
-                                                                              color: Color(0xFF7f9d9D))),
-                                                                    ),
-                                                                    items: <
-                                                                        String>[
-                                                                      'Barf',
-                                                                      'Concentrados',
-                                                                      'Seco y húmedo',
-                                                                      'Casera',
-                                                                    ].map((String
-                                                                        value) {
-                                                                      return new DropdownMenuItem<
-                                                                          String>(
-                                                                        value:
-                                                                            value,
-                                                                        child:
-                                                                            Padding(
-                                                                          padding: const EdgeInsets.fromLTRB(
-                                                                              10,
-                                                                              0,
-                                                                              0,
-                                                                              0),
-                                                                          child:
-                                                                              new Text(value),
-                                                                        ),
-                                                                      );
-                                                                    }).toList(),
-                                                                    isExpanded:
-                                                                        true,
-                                                                    onChanged:
-                                                                        (value) {
-                                                                      setState(
-                                                                          () {
-                                                                        _tipoAlimentacion =
-                                                                            value;
-                                                                      });
-                                                                    },
-                                                                    value:
-                                                                        _tipoAlimentacion),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    child: Text(
-                                                      'Marca y tipo de alimento',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Color(
-                                                              0xFF7F9D9D)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Center(
-                                              child: Container(
-                                                width: _screenWidth * 0.89,
-                                                child: CustomTextField(
-                                                  controller:
-                                                      _alimentoMarcaTextEditingController,
-                                                  keyboard: TextInputType.text,
-                                                  hintText:
-                                                      "Marca y tipo de alimento",
-                                                  isObsecure: false,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    child: Text(
-                                                      'Cantidad (gr) y frecuencia diaria',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Color(
-                                                              0xFF7F9D9D)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0, 0, 0, 10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    width: _screenWidth * 0.65,
-                                                    child: CustomTextField(
-                                                      controller:
-                                                          _alimentoCantidadTextEditingController,
-                                                      keyboard:
-                                                          TextInputType.text,
-                                                      hintText:
-                                                          "Cantidad (gr) y frecuencia diaria",
-                                                      isObsecure: false,
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        EdgeInsets.fromLTRB(
-                                                            0, 0, 0, 10),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Container(
-                                                          width: _screenWidth *
-                                                              0.24,
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Container(
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  border: Border
-                                                                      .all(
-                                                                    color: Color(
-                                                                        0xFF7f9d9D),
-                                                                    width: 1.0,
-                                                                  ),
-                                                                  borderRadius:
-                                                                      BorderRadius.all(
-                                                                          Radius.circular(
-                                                                              10.0)),
+                                                      padding:
+                                                          EdgeInsets.all(0.0),
+                                                      margin:
+                                                          EdgeInsets.all(5.0),
+                                                      child:
+                                                          DropdownButtonHideUnderline(
+                                                        child: Stack(
+                                                          children: <Widget>[
+                                                            DropdownButton(
+                                                                hint: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .fromLTRB(
+                                                                          15,
+                                                                          0,
+                                                                          0,
+                                                                          0),
+                                                                  child: Text(
+                                                                      'Tipo de vivienda',
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              15.0,
+                                                                          color:
+                                                                              Color(0xFF7f9d9D))),
                                                                 ),
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(
-                                                                            0.0),
-                                                                margin:
-                                                                    EdgeInsets
-                                                                        .all(
-                                                                            5.0),
-                                                                child:
-                                                                    DropdownButtonHideUnderline(
-                                                                  child: Stack(
-                                                                    children: <
-                                                                        Widget>[
-                                                                      DropdownButton(
-                                                                          hint:
+                                                                items: <String>[
+                                                                  'Callejero',
+                                                                  'Campo',
+                                                                  'Departamento',
+                                                                  'Casa',
+                                                                  'Otro'
+                                                                ].map((String
+                                                                    value) {
+                                                                  return new DropdownMenuItem<
+                                                                      String>(
+                                                                    value:
+                                                                        value,
+                                                                    child:
+                                                                        Padding(
+                                                                      padding:
+                                                                          const EdgeInsets.fromLTRB(
+                                                                              10,
+                                                                              0,
+                                                                              0,
+                                                                              0),
+                                                                      child: new Text(
+                                                                          value),
+                                                                    ),
+                                                                  );
+                                                                }).toList(),
+                                                                isExpanded:
+                                                                    true,
+                                                                onChanged:
+                                                                    (value) {
+                                                                  setState(() {
+                                                                    _tipoVivienda =
+                                                                        value;
+                                                                  });
+                                                                },
+                                                                value:
+                                                                    _tipoVivienda),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 10.0,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                child: Text(
+                                                  'Convivencia con otros animales',
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Color(0xFF7F9D9D)),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Center(
+                                          child: Container(
+                                            width: _screenWidth * 0.89,
+                                            child: CustomTextField(
+                                              controller:
+                                                  _convivenTextEditingController,
+                                              keyboard: TextInputType.text,
+                                              hintText:
+                                                  "Convivencia con otros animales",
+                                              isObsecure: false,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 10.0,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                child: Text(
+                                                  'Actividad física',
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Color(0xFF7F9D9D)),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                width: _screenWidth * 0.9,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        border: Border.all(
+                                                          color:
+                                                              Color(0xFF7f9d9D),
+                                                          width: 1.0,
+                                                        ),
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10.0)),
+                                                      ),
+                                                      padding:
+                                                          EdgeInsets.all(0.0),
+                                                      margin:
+                                                          EdgeInsets.all(5.0),
+                                                      child:
+                                                          DropdownButtonHideUnderline(
+                                                        child: Stack(
+                                                          children: <Widget>[
+                                                            DropdownButton(
+                                                                hint: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .fromLTRB(
+                                                                          15,
+                                                                          0,
+                                                                          0,
+                                                                          0),
+                                                                  child: Text(
+                                                                      'Actividad física',
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              15.0,
+                                                                          color:
+                                                                              Color(0xFF7f9d9D))),
+                                                                ),
+                                                                items: <String>[
+                                                                  'Sedentario',
+                                                                  'Paseos',
+                                                                  'Deportivo',
+                                                                  'Entrenamiento'
+                                                                ].map((String
+                                                                    value) {
+                                                                  return new DropdownMenuItem<
+                                                                      String>(
+                                                                    value:
+                                                                        value,
+                                                                    child:
+                                                                        Padding(
+                                                                      padding:
+                                                                          const EdgeInsets.fromLTRB(
+                                                                              10,
+                                                                              0,
+                                                                              0,
+                                                                              0),
+                                                                      child: new Text(
+                                                                          value),
+                                                                    ),
+                                                                  );
+                                                                }).toList(),
+                                                                isExpanded:
+                                                                    true,
+                                                                onChanged:
+                                                                    (value) {
+                                                                  setState(() {
+                                                                    _actividadFisica =
+                                                                        value;
+                                                                  });
+                                                                },
+                                                                value:
+                                                                    _actividadFisica),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : Container(),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: RaisedButton(
+                                  onPressed: () {
+                                    if (familiares == false) {
+                                      setState(() {
+                                        familiares = true;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        familiares = false;
+                                      });
+                                    }
+                                  },
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  color: Color(0xFF57419D),
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Image.asset(
+                                              'diseñador/drawable/Salud/despa.png'),
+                                          SizedBox(
+                                            width: 15.0,
+                                          ),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text("Antecedentes familiares",
+                                                  style: TextStyle(
+                                                      fontFamily:
+                                                          'Product Sans',
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 18.0)),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      familiares == false
+                                          ? IconButton(
+                                              icon: Icon(Icons.add,
+                                                  color: Colors.white),
+                                              onPressed: () {
+                                                setState(() {
+                                                  familiares = true;
+                                                });
+                                              })
+                                          : IconButton(
+                                              icon: Icon(Icons.remove_rounded,
+                                                  color: Colors.white),
+                                              onPressed: () {
+                                                setState(() {
+                                                  familiares = false;
+                                                });
+                                              }),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            familiares == true
+                                ? Container(
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              width: 140,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(
+                                                    height: 14,
+                                                  ),
+                                                  Text('Cancer',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      )),
+                                                ],
+                                              ),
+                                            ),
+                                            Column(
+                                              children: [
+                                                Text(
+                                                  'Padre',
+                                                  style: TextStyle(
+                                                      color: Color(0xFF57419D),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 16),
+                                                ),
+                                                Checkbox(
+                                                    value: _value,
+                                                    activeColor:
+                                                        Color(0xFF57419D),
+                                                    onChanged: (bool value) {
+                                                      setState(() {
+                                                        _value = value;
+                                                        // if (value == true) {
+                                                        //   _value = false;
+                                                        // } else {}
+                                                      });
+                                                    }),
+                                              ],
+                                            ),
+                                            Column(
+                                              children: [
+                                                Text(
+                                                  'Madre',
+                                                  style: TextStyle(
+                                                      color: Color(0xFF57419D),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 16),
+                                                ),
+                                                Checkbox(
+                                                    value: _value2,
+                                                    activeColor:
+                                                        Color(0xFF57419D),
+                                                    onChanged: (bool value) {
+                                                      setState(() {
+                                                        _value2 = value;
+                                                        // if (value == true) {
+                                                        //   _value2 = false;
+                                                        // } else {}
+                                                      });
+                                                    }),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              width: 140,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text('Diabetes',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      )),
+                                                ],
+                                              ),
+                                            ),
+                                            Column(
+                                              children: [
+                                                Checkbox(
+                                                    value: _value3,
+                                                    activeColor:
+                                                        Color(0xFF57419D),
+                                                    onChanged: (bool value) {
+                                                      setState(() {
+                                                        _value3 = value;
+                                                        // if (value == true) {
+                                                        //   _value = false;
+                                                        // } else {}
+                                                      });
+                                                    }),
+                                              ],
+                                            ),
+                                            Column(
+                                              children: [
+                                                Checkbox(
+                                                    value: _value4,
+                                                    activeColor:
+                                                        Color(0xFF57419D),
+                                                    onChanged: (bool value) {
+                                                      setState(() {
+                                                        _value4 = value;
+                                                        // if (value == true) {
+                                                        //   _value2 = false;
+                                                        // } else {}
+                                                      });
+                                                    }),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              width: 140,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text('Cardiopatías',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      )),
+                                                ],
+                                              ),
+                                            ),
+                                            Column(
+                                              children: [
+                                                Checkbox(
+                                                    value: _value5,
+                                                    activeColor:
+                                                        Color(0xFF57419D),
+                                                    onChanged: (bool value) {
+                                                      setState(() {
+                                                        _value5 = value;
+                                                        // if (value == true) {
+                                                        //   _value = false;
+                                                        // } else {}
+                                                      });
+                                                    }),
+                                              ],
+                                            ),
+                                            Column(
+                                              children: [
+                                                Checkbox(
+                                                    value: _value6,
+                                                    activeColor:
+                                                        Color(0xFF57419D),
+                                                    onChanged: (bool value) {
+                                                      setState(() {
+                                                        _value6 = value;
+                                                        // if (value == true) {
+                                                        //   _value2 = false;
+                                                        // } else {}
+                                                      });
+                                                    }),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              width: 140,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text('Aparato Locomotor',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      )),
+                                                ],
+                                              ),
+                                            ),
+                                            Column(
+                                              children: [
+                                                Checkbox(
+                                                    value: _value7,
+                                                    activeColor:
+                                                        Color(0xFF57419D),
+                                                    onChanged: (bool value) {
+                                                      setState(() {
+                                                        _value7 = value;
+                                                        // if (value == true) {
+                                                        //   _value = false;
+                                                        // } else {}
+                                                      });
+                                                    }),
+                                              ],
+                                            ),
+                                            Column(
+                                              children: [
+                                                Checkbox(
+                                                    value: _value8,
+                                                    activeColor:
+                                                        Color(0xFF57419D),
+                                                    onChanged: (bool value) {
+                                                      setState(() {
+                                                        _value8 = value;
+                                                        // if (value == true) {
+                                                        //   _value2 = false;
+                                                        // } else {}
+                                                      });
+                                                    }),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              width: 140,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text('Sistema Nervioso',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                      )),
+                                                ],
+                                              ),
+                                            ),
+                                            Column(
+                                              children: [
+                                                Checkbox(
+                                                    value: _value9,
+                                                    activeColor:
+                                                        Color(0xFF57419D),
+                                                    onChanged: (bool value) {
+                                                      setState(() {
+                                                        _value9 = value;
+                                                        // if (value == true) {
+                                                        //   _value = false;
+                                                        // } else {}
+                                                      });
+                                                    }),
+                                              ],
+                                            ),
+                                            Column(
+                                              children: [
+                                                Checkbox(
+                                                    value: _value10,
+                                                    activeColor:
+                                                        Color(0xFF57419D),
+                                                    onChanged: (bool value) {
+                                                      setState(() {
+                                                        _value10 = value;
+                                                        // if (value == true) {
+                                                        //   _value2 = false;
+                                                        // } else {}
+                                                      });
+                                                    }),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                child: Text(
+                                                  'Otras',
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Color(0xFF7F9D9D)),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Center(
+                                          child: Container(
+                                            width: _screenWidth * 0.89,
+                                            child: CustomTextField(
+                                              controller:
+                                                  _otrosAntecedentesTextEditingController,
+                                              keyboard: TextInputType.text,
+                                              hintText: "Otras",
+                                              isObsecure: false,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 10.0,
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : Container(),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: RaisedButton(
+                                  onPressed: () {
+                                    if (fisiologicos == false) {
+                                      setState(() {
+                                        fisiologicos = true;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        fisiologicos = false;
+                                      });
+                                    }
+                                  },
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  color: Color(0xFF57419D),
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Image.asset(
+                                              'diseñador/drawable/Salud/despa.png'),
+                                          SizedBox(
+                                            width: 15.0,
+                                          ),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text("Fisiológicos",
+                                                  style: TextStyle(
+                                                      fontFamily:
+                                                          'Product Sans',
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 18.0)),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      fisiologicos == false
+                                          ? IconButton(
+                                              icon: Icon(Icons.add,
+                                                  color: Colors.white),
+                                              onPressed: () {
+                                                setState(() {
+                                                  fisiologicos = true;
+                                                });
+                                              })
+                                          : IconButton(
+                                              icon: Icon(Icons.remove_rounded,
+                                                  color: Colors.white),
+                                              onPressed: () {
+                                                setState(() {
+                                                  fisiologicos = false;
+                                                });
+                                              }),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            if (fisiologicos == true)
+                              Container(
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            child: Text(
+                                              'Toma de agua (Cantidad)',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Color(0xFF7F9D9D)),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            width: _screenWidth * 0.9,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    border: Border.all(
+                                                      color: Color(0xFF7f9d9D),
+                                                      width: 1.0,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                10.0)),
+                                                  ),
+                                                  padding: EdgeInsets.all(0.0),
+                                                  margin: EdgeInsets.all(5.0),
+                                                  child:
+                                                      DropdownButtonHideUnderline(
+                                                    child: Stack(
+                                                      children: <Widget>[
+                                                        DropdownButton(
+                                                            hint: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .fromLTRB(
+                                                                      15,
+                                                                      0,
+                                                                      0,
+                                                                      0),
+                                                              child: Text(
+                                                                  'Toma de agua (Cantidad)',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          15.0,
+                                                                      color: Color(
+                                                                          0xFF7f9d9D))),
+                                                            ),
+                                                            items: <String>[
+                                                              '1/2 litro',
+                                                              '1 litro',
+                                                              '2 litros',
+                                                              '3 litros'
+                                                            ].map(
+                                                                (String value) {
+                                                              return new DropdownMenuItem<
+                                                                  String>(
+                                                                value: value,
+                                                                child: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .fromLTRB(
+                                                                          10,
+                                                                          0,
+                                                                          0,
+                                                                          0),
+                                                                  child:
+                                                                      new Text(
+                                                                          value),
+                                                                ),
+                                                              );
+                                                            }).toList(),
+                                                            isExpanded: true,
+                                                            onChanged: (value) {
+                                                              setState(() {
+                                                                _agua = value;
+                                                              });
+                                                            },
+                                                            value: _agua),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            child: Text(
+                                              'Evacuaciones',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Color(0xFF7F9D9D)),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            width: _screenWidth * 0.9,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    border: Border.all(
+                                                      color: Color(0xFF7f9d9D),
+                                                      width: 1.0,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                10.0)),
+                                                  ),
+                                                  padding: EdgeInsets.all(0.0),
+                                                  margin: EdgeInsets.all(5.0),
+                                                  child:
+                                                      DropdownButtonHideUnderline(
+                                                    child: Stack(
+                                                      children: <Widget>[
+                                                        DropdownButton(
+                                                            hint: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .fromLTRB(
+                                                                      15,
+                                                                      0,
+                                                                      0,
+                                                                      0),
+                                                              child: Text(
+                                                                  'Evacuaciones',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          15.0,
+                                                                      color: Color(
+                                                                          0xFF7f9d9D))),
+                                                            ),
+                                                            items: <String>[
+                                                              '1 vez',
+                                                              '2 veces',
+                                                              '3 veces',
+                                                              '4 veces',
+                                                              '5 veces',
+                                                              '6 veces',
+                                                              'Más'
+                                                            ].map(
+                                                                (String value) {
+                                                              return new DropdownMenuItem<
+                                                                  String>(
+                                                                value: value,
+                                                                child: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .fromLTRB(
+                                                                          10,
+                                                                          0,
+                                                                          0,
+                                                                          0),
+                                                                  child:
+                                                                      new Text(
+                                                                          value),
+                                                                ),
+                                                              );
+                                                            }).toList(),
+                                                            isExpanded: true,
+                                                            onChanged: (value) {
+                                                              setState(() {
+                                                                _evacuaciones =
+                                                                    value;
+                                                              });
+                                                            },
+                                                            value:
+                                                                _evacuaciones),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            child: Text(
+                                              'Micción',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Color(0xFF7F9D9D)),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            width: _screenWidth * 0.9,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    border: Border.all(
+                                                      color: Color(0xFF7f9d9D),
+                                                      width: 1.0,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                10.0)),
+                                                  ),
+                                                  padding: EdgeInsets.all(0.0),
+                                                  margin: EdgeInsets.all(5.0),
+                                                  child:
+                                                      DropdownButtonHideUnderline(
+                                                    child: Stack(
+                                                      children: <Widget>[
+                                                        DropdownButton(
+                                                            hint: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .fromLTRB(
+                                                                      15,
+                                                                      0,
+                                                                      0,
+                                                                      0),
+                                                              child: Text(
+                                                                  'Micción',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          15.0,
+                                                                      color: Color(
+                                                                          0xFF7f9d9D))),
+                                                            ),
+                                                            items: <String>[
+                                                              '1 vez',
+                                                              '2 veces',
+                                                              '3 veces',
+                                                              '4 veces',
+                                                              '5 veces',
+                                                              '6 veces',
+                                                              'Más'
+                                                            ].map(
+                                                                (String value) {
+                                                              return new DropdownMenuItem<
+                                                                  String>(
+                                                                value: value,
+                                                                child: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .fromLTRB(
+                                                                          10,
+                                                                          0,
+                                                                          0,
+                                                                          0),
+                                                                  child:
+                                                                      new Text(
+                                                                          value),
+                                                                ),
+                                                              );
+                                                            }).toList(),
+                                                            isExpanded: true,
+                                                            onChanged: (value) {
+                                                              setState(() {
+                                                                _miccion =
+                                                                    value;
+                                                              });
+                                                            },
+                                                            value: _miccion),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            child: Text(
+                                              'Sueño (Cantidad de horas)',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Color(0xFF7F9D9D)),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Center(
+                                      child: Container(
+                                        width: _screenWidth * 0.89,
+                                        child: CustomTextField(
+                                          controller:
+                                              _suenoTextEditingController,
+                                          keyboard: TextInputType.number,
+                                          hintText: "Sueño (Cantidad de horas)",
+                                          isObsecure: false,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            child: Text(
+                                              'Fecha de último estro o celo',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Color(0xFF7F9D9D)),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Center(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          _selectDate(context);
+                                        },
+                                        child: AbsorbPointer(
+                                          child: Container(
+                                            width: _screenWidth * 0.89,
+                                            child: CustomTextField(
+                                              controller:
+                                                  _dateTextEditingController,
+                                              keyboard: TextInputType.text,
+                                              hintText:
+                                                  "Fecha de último estro o celo",
+                                              isObsecure: false,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            child: Text(
+                                              'Frecuencia en intensidad de celos',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Color(0xFF7F9D9D)),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            width: _screenWidth * 0.9,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    border: Border.all(
+                                                      color: Color(0xFF7f9d9D),
+                                                      width: 1.0,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                10.0)),
+                                                  ),
+                                                  padding: EdgeInsets.all(0.0),
+                                                  margin: EdgeInsets.all(5.0),
+                                                  child:
+                                                      DropdownButtonHideUnderline(
+                                                    child: Stack(
+                                                      children: <Widget>[
+                                                        DropdownButton(
+                                                            hint: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .fromLTRB(
+                                                                      15,
+                                                                      0,
+                                                                      0,
+                                                                      0),
+                                                              child: Text(
+                                                                  'Frecuencia en intensidad de celos',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          15.0,
+                                                                      color: Color(
+                                                                          0xFF7f9d9D))),
+                                                            ),
+                                                            items: <String>[
+                                                              'Poco',
+                                                              'Normal',
+                                                              'Mucho',
+                                                            ].map(
+                                                                (String value) {
+                                                              return new DropdownMenuItem<
+                                                                  String>(
+                                                                value: value,
+                                                                child: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .fromLTRB(
+                                                                          10,
+                                                                          0,
+                                                                          0,
+                                                                          0),
+                                                                  child:
+                                                                      new Text(
+                                                                          value),
+                                                                ),
+                                                              );
+                                                            }).toList(),
+                                                            isExpanded: true,
+                                                            onChanged: (value) {
+                                                              setState(() {
+                                                                _intensidadCelos =
+                                                                    value;
+                                                              });
+                                                            },
+                                                            value:
+                                                                _intensidadCelos),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            child: Text(
+                                              'Castración/Esterilización',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Color(0xFF7F9D9D)),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Center(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          if (_castrado == false) {
+                                            setState(() {
+                                              _castraTextEditingController
+                                                      .value =
+                                                  TextEditingValue(text: 'Sí');
+                                              _castrado = true;
+                                            });
+                                          } else {
+                                            _castraTextEditingController.value =
+                                                TextEditingValue(text: 'No');
+                                            _castrado = false;
+                                          }
+                                          ;
+                                        },
+                                        child: AbsorbPointer(
+                                          child: Container(
+                                            width: _screenWidth * 0.89,
+                                            child: CustomTextField(
+                                              controller:
+                                                  _castraTextEditingController,
+                                              keyboard: TextInputType.text,
+                                              hintText:
+                                                  "Castración/Esterilización",
+                                              isObsecure: false,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            child: Text(
+                                              'Cirugía estética',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Color(0xFF7F9D9D)),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Center(
+                                      child: Container(
+                                        width: _screenWidth * 0.89,
+                                        child: CustomTextField(
+                                          controller:
+                                              _cirugiaTextEditingController,
+                                          keyboard: TextInputType.text,
+                                          hintText: "Cirugía estética",
+                                          isObsecure: false,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            child: Text(
+                                              'Comentarios de cirugía estética',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Color(0xFF7F9D9D)),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Center(
+                                      child: Container(
+                                        width: _screenWidth * 0.89,
+                                        child: CustomTextField(
+                                          controller:
+                                              _cirugiaComenTextEditingController,
+                                          keyboard: TextInputType.text,
+                                          hintText:
+                                              "Comentarios de cirugía estética",
+                                          isObsecure: false,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            else
+                              Container(),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: RaisedButton(
+                                  onPressed: () {
+                                    if (alimenticios == false) {
+                                      setState(() {
+                                        alimenticios = true;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        alimenticios = false;
+                                      });
+                                    }
+                                  },
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  color: Color(0xFF57419D),
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Image.asset(
+                                              'diseñador/drawable/Salud/despa.png'),
+                                          SizedBox(
+                                            width: 15.0,
+                                          ),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text("Alimenticio",
+                                                  style: TextStyle(
+                                                      fontFamily:
+                                                          'Product Sans',
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 18.0)),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      alimenticios == false
+                                          ? IconButton(
+                                              icon: Icon(Icons.add,
+                                                  color: Colors.white),
+                                              onPressed: () {
+                                                setState(() {
+                                                  alimenticios = true;
+                                                });
+                                              })
+                                          : IconButton(
+                                              icon: Icon(Icons.remove_rounded,
+                                                  color: Colors.white),
+                                              onPressed: () {
+                                                setState(() {
+                                                  alimenticios = false;
+                                                });
+                                              }),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            alimenticios == true
+                                ? Container(
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                child: Text(
+                                                  'Tipo de alimentación',
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Color(0xFF7F9D9D)),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                width: _screenWidth * 0.9,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        border: Border.all(
+                                                          color:
+                                                              Color(0xFF7f9d9D),
+                                                          width: 1.0,
+                                                        ),
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10.0)),
+                                                      ),
+                                                      padding:
+                                                          EdgeInsets.all(0.0),
+                                                      margin:
+                                                          EdgeInsets.all(5.0),
+                                                      child:
+                                                          DropdownButtonHideUnderline(
+                                                        child: Stack(
+                                                          children: <Widget>[
+                                                            DropdownButton(
+                                                                hint: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .fromLTRB(
+                                                                          15,
+                                                                          0,
+                                                                          0,
+                                                                          0),
+                                                                  child: Text(
+                                                                      'Tipo de alimentación',
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              15.0,
+                                                                          color:
+                                                                              Color(0xFF7f9d9D))),
+                                                                ),
+                                                                items: <String>[
+                                                                  'Barf',
+                                                                  'Concentrados',
+                                                                  'Seco y húmedo',
+                                                                  'Casera',
+                                                                ].map((String
+                                                                    value) {
+                                                                  return new DropdownMenuItem<
+                                                                      String>(
+                                                                    value:
+                                                                        value,
+                                                                    child:
+                                                                        Padding(
+                                                                      padding:
+                                                                          const EdgeInsets.fromLTRB(
+                                                                              10,
+                                                                              0,
+                                                                              0,
+                                                                              0),
+                                                                      child: new Text(
+                                                                          value),
+                                                                    ),
+                                                                  );
+                                                                }).toList(),
+                                                                isExpanded:
+                                                                    true,
+                                                                onChanged:
+                                                                    (value) {
+                                                                  setState(() {
+                                                                    _tipoAlimentacion =
+                                                                        value;
+                                                                  });
+                                                                },
+                                                                value:
+                                                                    _tipoAlimentacion),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 10.0,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                child: Text(
+                                                  'Marca y tipo de alimento',
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Color(0xFF7F9D9D)),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Center(
+                                          child: Container(
+                                            width: _screenWidth * 0.89,
+                                            child: CustomTextField(
+                                              controller:
+                                                  _alimentoMarcaTextEditingController,
+                                              keyboard: TextInputType.text,
+                                              hintText:
+                                                  "Marca y tipo de alimento",
+                                              isObsecure: false,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 10.0,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                child: Text(
+                                                  'Cantidad (gr) y frecuencia diaria',
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Color(0xFF7F9D9D)),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                width: _screenWidth * 0.65,
+                                                child: CustomTextField(
+                                                  controller:
+                                                      _alimentoCantidadTextEditingController,
+                                                  keyboard: TextInputType.text,
+                                                  hintText:
+                                                      "Cantidad (gr) y frecuencia diaria",
+                                                  isObsecure: false,
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 10),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      width:
+                                                          _screenWidth * 0.24,
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              border:
+                                                                  Border.all(
+                                                                color: Color(
+                                                                    0xFF7f9d9D),
+                                                                width: 1.0,
+                                                              ),
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          10.0)),
+                                                            ),
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    0.0),
+                                                            margin:
+                                                                EdgeInsets.all(
+                                                                    5.0),
+                                                            child:
+                                                                DropdownButtonHideUnderline(
+                                                              child: Stack(
+                                                                children: <
+                                                                    Widget>[
+                                                                  DropdownButton(
+                                                                      hint:
+                                                                          Padding(
+                                                                        padding: const EdgeInsets.fromLTRB(
+                                                                            15,
+                                                                            0,
+                                                                            0,
+                                                                            0),
+                                                                        child: Text(
+                                                                            '1 vez',
+                                                                            style:
+                                                                                TextStyle(fontSize: 15.0, color: Color(0xFF7f9d9D))),
+                                                                      ),
+                                                                      items: <
+                                                                          String>[
+                                                                        '1 vez',
+                                                                        '2 veces',
+                                                                        '3 veces',
+                                                                        '4 veces',
+                                                                        '5 veces',
+                                                                        '6 veces',
+                                                                        'Más'
+                                                                      ].map((String
+                                                                          value) {
+                                                                        return new DropdownMenuItem<
+                                                                            String>(
+                                                                          value:
+                                                                              value,
+                                                                          child:
                                                                               Padding(
                                                                             padding: const EdgeInsets.fromLTRB(
-                                                                                15,
+                                                                                10,
                                                                                 0,
                                                                                 0,
                                                                                 0),
                                                                             child:
-                                                                                Text('1 vez', style: TextStyle(fontSize: 15.0, color: Color(0xFF7f9d9D))),
+                                                                                new Text(value),
                                                                           ),
-                                                                          items: <
-                                                                              String>[
-                                                                            '1 vez',
-                                                                            '2 veces',
-                                                                            '3 veces',
-                                                                            '4 veces',
-                                                                            '5 veces',
-                                                                            '6 veces',
-                                                                            'Más'
-                                                                          ].map((String
-                                                                              value) {
-                                                                            return new DropdownMenuItem<String>(
-                                                                              value: value,
-                                                                              child: Padding(
-                                                                                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                                                                child: new Text(value),
-                                                                              ),
-                                                                            );
-                                                                          }).toList(),
-                                                                          isExpanded:
-                                                                              true,
-                                                                          onChanged:
-                                                                              (value) {
-                                                                            setState(() {
-                                                                              _frecuenciaAlimento = value;
-                                                                            });
-                                                                          },
-                                                                          value:
-                                                                              _frecuenciaAlimento),
-                                                                    ],
-                                                                  ),
-                                                                ),
+                                                                        );
+                                                                      }).toList(),
+                                                                      isExpanded:
+                                                                          true,
+                                                                      onChanged:
+                                                                          (value) {
+                                                                        setState(
+                                                                            () {
+                                                                          _frecuenciaAlimento =
+                                                                              value;
+                                                                        });
+                                                                      },
+                                                                      value:
+                                                                          _frecuenciaAlimento),
+                                                                ],
                                                               ),
-                                                            ],
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ],
+                                                        ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    : Container(),
-                                ambiental == true ||
-                                        fisiologicos == true ||
-                                        alimenticios == true ||
-                                        familiares == true
-                                    ? Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: SizedBox(
-                                          width: double.infinity,
-                                          child: RaisedButton(
-                                            onPressed: () {
-                                              saveAntececedentesInfo();
-                                            },
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5)),
-                                            color: Color(0xFFEB9448),
-                                            padding: EdgeInsets.all(14.0),
-                                            child: Text(
-                                                "Actualizar antecedentes",
-                                                style: TextStyle(
-                                                    fontFamily: 'Product Sans',
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 18.0)),
+                                            ],
                                           ),
                                         ),
-                                      )
-                                    : Container(),
-                              ],
-                            ),
-                          )
-                        : Container(),
+                                      ],
+                                    ),
+                                  )
+                                : Container(),
+                            ambiental == true ||
+                                    fisiologicos == true ||
+                                    alimenticios == true ||
+                                    familiares == true
+                                ? Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: SizedBox(
+                                      width: double.infinity,
+                                      child: RaisedButton(
+                                        onPressed: () {
+                                          saveAntececedentesInfo();
+                                        },
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5)),
+                                        color: Color(0xFFEB9448),
+                                        padding: EdgeInsets.all(14.0),
+                                        child: Text("Actualizar antecedentes",
+                                            style: TextStyle(
+                                                fontFamily: 'Product Sans',
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18.0)),
+                                      ),
+                                    ),
+                                  )
+                                : Container(),
+                          ],
+                        ),
+                      )
+                    else
+                      Container(),
                   ],
                 ),
               ],
@@ -4496,6 +5309,7 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
         "defecacion": _evacuaciones,
         "diuresis": _miccion,
         "sueno": _suenoTextEditingController.text.trim(),
+        "castracion": _castrado,
 
         "fechaUltimoEstrogeno": _dateTextEditingController.text == ''
             ? ''
@@ -4550,10 +5364,15 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
       "fechaPeso": DateTime.parse(_datePeso.text),
     });
     setState(() {
-      Route route =
-          MaterialPageRoute(builder: (c) => HistoriaMedica(petModel: model));
-      Navigator.pushReplacement(context, route);
+      _textPeso.clear();
+      _datePeso.clear();
+      productId = DateTime.now().millisecondsSinceEpoch.toString();
     });
+    // setState(() {
+    //   Route route =
+    //       MaterialPageRoute(builder: (c) => HistoriaMedica(petModel: model));
+    //   Navigator.pushReplacement(context, route);
+    // });
   }
 
   saveTempInfo() {
@@ -4571,10 +5390,15 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
       "fechaTemperatura": DateTime.parse(_dateTemp.text),
     });
     setState(() {
-      Route route =
-          MaterialPageRoute(builder: (c) => HistoriaMedica(petModel: model));
-      Navigator.pushReplacement(context, route);
+      _textTemp.clear();
+      _dateTemp.clear();
+      productId = DateTime.now().millisecondsSinceEpoch.toString();
     });
+    // setState(() {
+    //   Route route =
+    //       MaterialPageRoute(builder: (c) => HistoriaMedica(petModel: model));
+    //   Navigator.pushReplacement(context, route);
+    // });
   }
 
   saveEsteInfo() {
@@ -4592,10 +5416,15 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
       "fechaEsteril": DateTime.parse(_dateEste.text),
     });
     setState(() {
-      Route route =
-          MaterialPageRoute(builder: (c) => HistoriaMedica(petModel: model));
-      Navigator.pushReplacement(context, route);
+      _textEste.clear();
+      _dateEste.clear();
+      productId = DateTime.now().millisecondsSinceEpoch.toString();
     });
+    // setState(() {
+    //   Route route =
+    //       MaterialPageRoute(builder: (c) => HistoriaMedica(petModel: model));
+    //   Navigator.pushReplacement(context, route);
+    // });
   }
 
   saveAlergiaInfo() {
@@ -4612,10 +5441,14 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
       "alergia": _aler,
       "fechaAlergia": DateTime.parse(_dateAler.text),
     });
+    // setState(() {
+    //   Route route =
+    //       MaterialPageRoute(builder: (c) => HistoriaMedica(petModel: model));
+    //   Navigator.pushReplacement(context, route);
+    // });
     setState(() {
-      Route route =
-          MaterialPageRoute(builder: (c) => HistoriaMedica(petModel: model));
-      Navigator.pushReplacement(context, route);
+      _dateAler.clear();
+      productId = DateTime.now().millisecondsSinceEpoch.toString();
     });
   }
 
@@ -4633,10 +5466,14 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
       "patologia": _pat,
       "fechaPatologia": DateTime.parse(_datePat.text),
     });
+    // setState(() {
+    //   Route route =
+    //       MaterialPageRoute(builder: (c) => HistoriaMedica(petModel: model));
+    //   Navigator.pushReplacement(context, route);
+    // });
     setState(() {
-      Route route =
-          MaterialPageRoute(builder: (c) => HistoriaMedica(petModel: model));
-      Navigator.pushReplacement(context, route);
+      _datePat.clear();
+      productId = DateTime.now().millisecondsSinceEpoch.toString();
     });
   }
 
@@ -4654,10 +5491,14 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
       "vacuna": _vacu,
       "fechaVacuna": DateTime.parse(_dateVacu.text),
     });
+    // setState(() {
+    //   Route route =
+    //       MaterialPageRoute(builder: (c) => HistoriaMedica(petModel: model));
+    //   Navigator.pushReplacement(context, route);
+    // });
     setState(() {
-      Route route =
-          MaterialPageRoute(builder: (c) => HistoriaMedica(petModel: model));
-      Navigator.pushReplacement(context, route);
+      _dateVacu.clear();
+      productId = DateTime.now().millisecondsSinceEpoch.toString();
     });
   }
 
@@ -4674,10 +5515,14 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
       "eid": productId,
       "fechaDesparasitacion": DateTime.parse(_dateDesparasitacion.text),
     });
+    // setState(() {
+    //   Route route =
+    //       MaterialPageRoute(builder: (c) => HistoriaMedica(petModel: model));
+    //   Navigator.pushReplacement(context, route);
+    // });
     setState(() {
-      Route route =
-          MaterialPageRoute(builder: (c) => HistoriaMedica(petModel: model));
-      Navigator.pushReplacement(context, route);
+      _dateDesparasitacion.clear();
+      productId = DateTime.now().millisecondsSinceEpoch.toString();
     });
   }
 
@@ -4922,7 +5767,7 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
-        String timeString = DateFormat('dd-MM-yyyy').format(picked).toString();
+        String timeString = (picked).toString();
         _datePat.value = TextEditingValue(text: timeString.split(" ")[0]);
       });
   }

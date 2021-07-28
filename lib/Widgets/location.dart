@@ -64,7 +64,7 @@
 //
 //         ),
 //         bottomNavigationBar: CustomBottomNavigationBar(),
-//         drawer: MyDrawer(),
+//         drawer: MyDrawer(petModel: model, defaultChoiceIndex: _defaultChoiceIndex,),
 //         body: Builder(builder: (context) {
 //           return Center(
 //             child: Column(

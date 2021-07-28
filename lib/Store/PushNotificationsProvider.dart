@@ -93,10 +93,10 @@ class PushNotificationsProvider {
           'notification': <String, dynamic>{
             'title': "Priority Pet",
             'body':
-                PetshopApp.sharedPreferences.getString(PetshopApp.userName) +
-                    " ha procesado la orden " +
-                    ordenid +
-                    " exitosamente",
+            PetshopApp.sharedPreferences.getString(PetshopApp.userNombre) +
+                " ha procesado la orden " +
+                ordenid +
+                " exitosamente",
           },
           'priority': 'high',
           'data': <String, dynamic>{
@@ -108,7 +108,50 @@ class PushNotificationsProvider {
     );
 
     final Completer<Map<String, dynamic>> completer =
-        Completer<Map<String, dynamic>>();
+    Completer<Map<String, dynamic>>();
+    return completer.future;
+  }
+
+  Future<Map<String, dynamic>> sendMessageNotificaction(
+      String aliadoId, String message) async {
+    String nombreAliado;
+    String token;
+
+    // User user = await FirebaseAuth.instance.currentUser;
+    // await FirebaseFirestore.instance.collection('Aliados').doc(user.uid).get().then((DocumentSnapshot documentSnapshot) => {
+    //   nombreAliado = documentSnapshot['nombre']
+    // });
+    await FirebaseFirestore.instance
+        .collection('Aliados')
+        .doc(aliadoId)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) =>
+    {token = documentSnapshot['token']});
+
+    await http.post(
+      'https://fcm.googleapis.com/fcm/send',
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$serverToken',
+      },
+      body: jsonEncode(
+        <String, dynamic>{
+          'notification': <String, dynamic>{
+            'title': PetshopApp.sharedPreferences.get(PetshopApp.userNombre) + " " +
+                PetshopApp.sharedPreferences.get(PetshopApp.userApellido),
+            'body': message
+          },
+          'priority': 'high',
+          'data': <String, dynamic>{
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+          },
+          'to': token,
+        },
+      ),
+    );
+
+    final Completer<Map<String, dynamic>> completer =
+    Completer<Map<String, dynamic>>();
     return completer.future;
   }
 

@@ -32,9 +32,13 @@ class ContratoServicio extends StatefulWidget {
   final ServiceModel serviceModel;
   final AliadoModel aliadoModel;
   final LocationModel locationModel;
-
+  final int defaultChoiceIndex;
   ContratoServicio(
-      {this.petModel, this.serviceModel, this.aliadoModel, this.locationModel});
+      {this.petModel,
+      this.serviceModel,
+      this.aliadoModel,
+      this.locationModel,
+      this.defaultChoiceIndex});
 
   @override
   _ContratoServicioState createState() => _ContratoServicioState();
@@ -158,9 +162,13 @@ class _ContratoServicioState extends State<ContratoServicio> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(
@@ -618,20 +626,21 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => PaymentPage(
-                                              petModel: model,
-                                              aliadoModel: ali,
-                                              serviceModel: servicio,
-                                              locationModel: location,
-                                              tituloCategoria: tituloCategoria,
-                                              totalPrice: totalPrice,
-                                              hora: hora,
-                                              fecha: fecha,
-                                              recojo: recojo,
-                                              delivery: delivery,
-                                              value2: _value2,
-                                              value: _value,
-                                              date: date,
-                                            )),
+                                            petModel: model,
+                                            aliadoModel: ali,
+                                            serviceModel: servicio,
+                                            locationModel: location,
+                                            tituloCategoria: tituloCategoria,
+                                            totalPrice: totalPrice,
+                                            hora: hora,
+                                            fecha: fecha,
+                                            recojo: recojo,
+                                            delivery: delivery,
+                                            value2: _value2,
+                                            value: _value,
+                                            date: date,
+                                            defaultChoiceIndex:
+                                                widget.defaultChoiceIndex)),
                                   );
                                 } else if (widget.serviceModel.tipoAgenda ==
                                     'Slots') {

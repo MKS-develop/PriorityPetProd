@@ -45,26 +45,27 @@ class PaymentPage extends StatefulWidget {
   final Timestamp date;
   final PromotionModel promotionModel;
   final PlanModel planModel;
+  final int defaultChoiceIndex;
 
-  PaymentPage({
-    this.promotionModel,
-    this.petModel,
-    this.productoModel,
-    this.cartModel,
-    this.serviceModel,
-    this.locationModel,
-    this.aliadoModel,
-    this.tituloCategoria,
-    this.totalPrice,
-    this.hora,
-    this.recojo,
-    this.delivery,
-    this.fecha,
-    this.value2,
-    this.value,
-    this.date,
-    this.planModel,
-  });
+  PaymentPage(
+      {this.promotionModel,
+      this.petModel,
+      this.productoModel,
+      this.cartModel,
+      this.serviceModel,
+      this.locationModel,
+      this.aliadoModel,
+      this.tituloCategoria,
+      this.totalPrice,
+      this.hora,
+      this.recojo,
+      this.delivery,
+      this.fecha,
+      this.value2,
+      this.value,
+      this.date,
+      this.planModel,
+      this.defaultChoiceIndex});
 
   @override
   _PaymentPageState createState() => _PaymentPageState();
@@ -174,9 +175,13 @@ class _PaymentPageState extends State<PaymentPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(
@@ -323,13 +328,14 @@ class _PaymentPageState extends State<PaymentPage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => AddCreditCardPage(
-                                      petModel: model,
-                                      aliadoModel: ali,
-                                      serviceModel: service,
-                                      locationModel: location,
-                                      tituloCategoria: widget.tituloCategoria,
-                                      totalPrice: widget.totalPrice,
-                                    )),
+                                    petModel: model,
+                                    aliadoModel: ali,
+                                    serviceModel: service,
+                                    locationModel: location,
+                                    tituloCategoria: widget.tituloCategoria,
+                                    totalPrice: widget.totalPrice,
+                                    defaultChoiceIndex:
+                                        widget.defaultChoiceIndex)),
                           );
                         }),
                     Text(
@@ -338,132 +344,150 @@ class _PaymentPageState extends State<PaymentPage> {
                     )
                   ],
                 ),
-                widget.totalPrice != null ?
-                SizedBox(
-                  width: _screenWidth * 0.9,
-                  child: RaisedButton(
-                    onPressed: () {
-                      if (selectedobscurecard != null) {
-                        showDialog(
-                            context: context,
-                            child: AlertDialog(
-                                // title: Text('Su pago ha sido aprobado.'),
-                                content: SingleChildScrollView(
-                                    child: ListBody(children: <Widget>[
-                              Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                          '¿Desea confirmar su compra? S/${widget.totalPrice} serán debitados de la tarjeta $selectedobscurecard',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(6.0),
-                                            child: SizedBox(
-                                              width: _screenWidth * 0.3,
-                                              child: RaisedButton(
-                                                onPressed: () {
-                                                  // AddOrder(productId, context, widget.planModel.montoMensual, widget.planModel.planid);
-                                                  addCulqi();
-                                                  Navigator.of(context,
-                                                          rootNavigator: true)
-                                                      .pop();
-                                                  _loadingDialog(context);
-                                                },
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
-                                                color: Color(0xFFEB9448),
-                                                padding: EdgeInsets.all(10.0),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    Text("Confirmar",
-                                                        style: TextStyle(
-                                                            fontFamily:
-                                                                'Product Sans',
-                                                            color: Colors.white,
-                                                            fontSize: 16.0)),
-                                                  ],
+                widget.totalPrice != null
+                    ? SizedBox(
+                        width: _screenWidth * 0.9,
+                        child: RaisedButton(
+                          onPressed: () {
+                            if (selectedobscurecard != null) {
+                              showDialog(
+                                  context: context,
+                                  child: AlertDialog(
+                                      // title: Text('Su pago ha sido aprobado.'),
+                                      content: SingleChildScrollView(
+                                          child: ListBody(children: <Widget>[
+                                    Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                                '¿Desea confirmar su compra? S/${widget.totalPrice} serán debitados de la tarjeta $selectedobscurecard',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(6.0),
+                                                  child: SizedBox(
+                                                    width: _screenWidth * 0.3,
+                                                    child: RaisedButton(
+                                                      onPressed: () {
+                                                        // AddOrder(productId, context, widget.planModel.montoMensual, widget.planModel.planid);
+                                                        addCulqi();
+                                                        Navigator.of(context,
+                                                                rootNavigator:
+                                                                    true)
+                                                            .pop();
+                                                        _loadingDialog(context);
+                                                      },
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5)),
+                                                      color: Color(0xFFEB9448),
+                                                      padding:
+                                                          EdgeInsets.all(10.0),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text("Confirmar",
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      'Product Sans',
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize:
+                                                                      16.0)),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: SizedBox(
-                                              width: _screenWidth * 0.3,
-                                              child: RaisedButton(
-                                                onPressed: () {
-                                                  // AddOrder(productId, context, widget.planModel.montoAnual, widget.planModel.planid);
-                                                  Navigator.of(context,
-                                                          rootNavigator: true)
-                                                      .pop();
-                                                },
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
-                                                color: Color(0xFF57419D),
-                                                padding: EdgeInsets.all(10.0),
-                                                child: Column(
-                                                  children: [
-                                                    Text("Cancelar",
-                                                        style: TextStyle(
-                                                            fontFamily:
-                                                                'Product Sans',
-                                                            color: Colors.white,
-                                                            fontSize: 16.0)),
-                                                  ],
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: SizedBox(
+                                                    width: _screenWidth * 0.3,
+                                                    child: RaisedButton(
+                                                      onPressed: () {
+                                                        // AddOrder(productId, context, widget.planModel.montoAnual, widget.planModel.planid);
+                                                        Navigator.of(context,
+                                                                rootNavigator:
+                                                                    true)
+                                                            .pop();
+                                                      },
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5)),
+                                                      color: Color(0xFF57419D),
+                                                      padding:
+                                                          EdgeInsets.all(10.0),
+                                                      child: Column(
+                                                        children: [
+                                                          Text("Cancelar",
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      'Product Sans',
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize:
+                                                                      16.0)),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
+                                              ],
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  )),
-                            ]))));
-                      } else {
-                        showDialog(
-                            context: context,
-                            child: new ChoosePetAlertDialog(
-                              message:
-                                  "Por favor seleccione un método de pago.",
-                            ));
-                      }
+                                          ],
+                                        )),
+                                  ]))));
+                            } else {
+                              showDialog(
+                                  context: context,
+                                  child: new ChoosePetAlertDialog(
+                                    message:
+                                        "Por favor seleccione un método de pago.",
+                                  ));
+                            }
 
-                      // AddOrder(productId, context, widget.planModel.montoAnual, widget.planModel.planid);
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) => StoreHome(
-                      //         petModel: model,
-                      //       )),
-                      // );
-                    },
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5)),
-                    color: Color(0xFFEB9448),
-                    padding: EdgeInsets.all(10.0),
-                    child: Column(
-                      children: [
-                        Text("Pagar",
-                            style: TextStyle(
-                                fontFamily: 'Product Sans',
-                                color: Colors.white,
-                                fontSize: 16.0)),
-                      ],
-                    ),
-                  ),
-                ):Container(),
+                            // AddOrder(productId, context, widget.planModel.montoAnual, widget.planModel.planid);
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) => StoreHome(
+                            //         petModel: model,
+                            //       )),
+                            // );
+                          },
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          color: Color(0xFFEB9448),
+                          padding: EdgeInsets.all(10.0),
+                          child: Column(
+                            children: [
+                              Text("Pagar",
+                                  style: TextStyle(
+                                      fontFamily: 'Product Sans',
+                                      color: Colors.white,
+                                      fontSize: 16.0)),
+                            ],
+                          ),
+                        ),
+                      )
+                    : Container(),
               ],
             ),
           ),

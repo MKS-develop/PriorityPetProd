@@ -45,6 +45,7 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
   String errorMessage;
   String _paises;
   var referidos = [];
+  String productId = DateTime.now().millisecondsSinceEpoch.toString();
   final db = FirebaseFirestore.instance;
   UserCredential userCredential;
 
@@ -1119,6 +1120,7 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
       "token": token,
       "registroCompleto": false,
       "pais": _paises,
+      "createdOn": productId,
       PetshopApp.userCartList: ["garbageValue"],
     });
 
@@ -1288,6 +1290,10 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
           .setString("uid", dataSnapshot.data()[PetshopApp.userUID]);
       PetshopApp.sharedPreferences.setString(PetshopApp.userAvatarUrl,
           dataSnapshot.data()[PetshopApp.userAvatarUrl]);
+      PetshopApp.sharedPreferences.setString(
+          PetshopApp.codigoTexto, dataSnapshot.data()[PetshopApp.codigoTexto]);
+      PetshopApp.sharedPreferences.setString(PetshopApp.tipoDocumento,
+          dataSnapshot.data()[PetshopApp.tipoDocumento]);
 
       PetshopApp.sharedPreferences.setString(PetshopApp.userTelefono,
           dataSnapshot.data()[PetshopApp.userTelefono]);

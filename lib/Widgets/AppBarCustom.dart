@@ -5,7 +5,7 @@ import 'package:pet_shop/Store/storehome.dart';
 import 'ktitle.dart';
 
 // ignore: non_constant_identifier_names
-Widget AppBarCustom(context){
+Widget AppBarCustom(context, petmodel, defaultChoiceIndex){
   return PreferredSize(
     preferredSize: Size.fromHeight(90.0),
     child: Padding(
@@ -22,8 +22,13 @@ Widget AppBarCustom(context){
 
         title: GestureDetector(
           onTap: () {
-            Route route = MaterialPageRoute(builder: (c) => StoreHome());
-            Navigator.pushReplacement(context, route);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => StoreHome(petModel: petmodel, defaultChoiceIndex: defaultChoiceIndex,)),
+            );
+            // Route route = MaterialPageRoute(builder: (c) => StoreHome());
+            // Navigator.pushReplacement(context, route);
           },
           child: Image.asset(
             'diseñador/logo.png',
@@ -32,6 +37,7 @@ Widget AppBarCustom(context){
           ),
         ),
         centerTitle: true,
+
       ),
     ),
   );

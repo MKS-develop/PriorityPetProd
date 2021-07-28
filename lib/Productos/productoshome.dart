@@ -16,7 +16,8 @@ double width;
 
 class ProductosHome extends StatefulWidget {
   final PetModel petModel;
-  ProductosHome({this.petModel});
+  final int defaultChoiceIndex;
+  ProductosHome({this.petModel, this.defaultChoiceIndex});
 
   @override
   _ProductosHomeState createState() => _ProductosHomeState();
@@ -110,9 +111,14 @@ class _ProductosHomeState extends State<ProductosHome> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
-        drawer: MyDrawer(),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
+        bottomNavigationBar:
+            CustomBottomNavigationBar(petmodel: widget.petModel),
         body: _fondo(),
       ),
     );
@@ -278,7 +284,10 @@ class _ProductosHomeState extends State<ProductosHome> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => AlimentoHome(
-                            petModel: model, tituloDetalle: tituloDetalle)),
+                              petModel: model,
+                              tituloDetalle: tituloDetalle,
+                              defaultChoiceIndex: widget.defaultChoiceIndex,
+                            )),
                   );
                 },
                 shape: RoundedRectangleBorder(
@@ -323,7 +332,10 @@ class _ProductosHomeState extends State<ProductosHome> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => AlimentoHome(
-                            petModel: model, tituloDetalle: tituloDetalle)),
+                              petModel: model,
+                              tituloDetalle: tituloDetalle,
+                              defaultChoiceIndex: widget.defaultChoiceIndex,
+                            )),
                   );
                 },
                 shape: RoundedRectangleBorder(
@@ -373,7 +385,10 @@ class _ProductosHomeState extends State<ProductosHome> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => AlimentoHome(
-                            petModel: model, tituloDetalle: tituloDetalle)),
+                              petModel: model,
+                              tituloDetalle: tituloDetalle,
+                              defaultChoiceIndex: widget.defaultChoiceIndex,
+                            )),
                   );
                 },
                 shape: RoundedRectangleBorder(
@@ -418,7 +433,10 @@ class _ProductosHomeState extends State<ProductosHome> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => AlimentoHome(
-                            petModel: model, tituloDetalle: tituloDetalle)),
+                              petModel: model,
+                              tituloDetalle: tituloDetalle,
+                              defaultChoiceIndex: widget.defaultChoiceIndex,
+                            )),
                   );
                 },
                 shape: RoundedRectangleBorder(
@@ -468,7 +486,10 @@ class _ProductosHomeState extends State<ProductosHome> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => AlimentoHome(
-                            petModel: model, tituloDetalle: tituloDetalle)),
+                              petModel: model,
+                              tituloDetalle: tituloDetalle,
+                              defaultChoiceIndex: widget.defaultChoiceIndex,
+                            )),
                   );
                 },
                 shape: RoundedRectangleBorder(

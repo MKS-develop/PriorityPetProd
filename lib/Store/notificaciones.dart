@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:http/http.dart';
 
 import 'package:pet_shop/Config/config.dart';
 
@@ -13,13 +14,18 @@ import 'package:pet_shop/Store/storehome.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
 import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
-
+import 'package:http/http.dart' as http;
 class NotificacionesPage extends StatefulWidget {
   final PetModel petModel;
   final Producto productoModel;
   final CartModel cartModel;
+  final int defaultChoiceIndex;
 
-  NotificacionesPage({this.petModel, this.productoModel, this.cartModel});
+  NotificacionesPage(
+      {this.petModel,
+      this.productoModel,
+      this.cartModel,
+      this.defaultChoiceIndex});
 
   @override
   _NotificacionesPageState createState() => _NotificacionesPageState();
@@ -36,6 +42,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
   bool noti = true;
   bool home = false;
   bool carrito = false;
+  String _prk;
 
   final db = FirebaseFirestore.instance;
 
@@ -43,6 +50,8 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
   void initState() {
     super.initState();
     _getOrderStatus();
+    _getprK();
+
     // initState calificarAliado();
 
     // try{
@@ -60,8 +69,32 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
     //   print(e.message);
     //   return null;
     // }
+
   }
 
+  deleteUser() async{
+    try {
+
+      var url = ("https://api.culqi.com/v2/customers/cus_live_yU1r8lEQtUhwAECM");
+      Map<String, String> headers = {
+        "Content-type": "application/json",
+        "Authorization": _prk
+      };
+      Response res = await http.delete(url, headers: headers);
+      int statusCode = await res.statusCode;
+
+
+      setState(() {
+        // response = statusCode.toString();
+
+        print(statusCode);
+        print('el cuerpo es ${res.body}');
+      });
+    } catch (e) {
+      print(e.message);
+      return null;
+    }
+  }
   // calificarAliado() {
   //
   //   StreamBuilder<QuerySnapshot>(
@@ -91,6 +124,16 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
   //       }
   //   );
   // }
+  _getprK() {
+    DocumentReference documentReference =
+    FirebaseFirestore.instance.collection("Culqi").doc("Priv");
+    documentReference.get().then((dataSnapshot) {
+      setState(() {
+        _prk = (dataSnapshot.data()["prk"]);
+      });
+       // deleteUser();
+    });
+  }
 
   Future<List<dynamic>> _getOrderStatus() async {
     List list = await FirebaseFirestore.instance
@@ -279,13 +322,17 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(
           noti: noti,
           home: home,
           cart: carrito,
         ),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(

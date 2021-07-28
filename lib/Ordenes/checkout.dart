@@ -15,6 +15,7 @@ class CheckOutPage extends StatefulWidget {
   final PetModel petModel;
   final Producto productoModel;
   final CartModel cartModel;
+  final int defaultChoiceIndex;
 
   Future getCount({String id}) async => FirebaseFirestore.instance
           .collection('Dueños')
@@ -28,7 +29,11 @@ class CheckOutPage extends StatefulWidget {
         return count;
       });
 
-  CheckOutPage({this.petModel, this.productoModel, this.cartModel});
+  CheckOutPage(
+      {this.petModel,
+      this.productoModel,
+      this.cartModel,
+      this.defaultChoiceIndex});
 
   @override
   _CheckOutPageState createState() => _CheckOutPageState();
@@ -52,9 +57,13 @@ class _CheckOutPageState extends State<CheckOutPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(

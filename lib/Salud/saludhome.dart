@@ -22,8 +22,10 @@ import 'Clinicas/clinicaspage.dart';
 double width;
 
 class SaludHome extends StatefulWidget {
+  final int defaultChoiceIndex;
   final PetModel petModel;
-  SaludHome({this.petModel});
+
+  SaludHome({this.petModel, this.defaultChoiceIndex});
 
   @override
   _SaludHomeState createState() => _SaludHomeState();
@@ -59,9 +61,14 @@ class _SaludHomeState extends State<SaludHome> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
-        drawer: MyDrawer(),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
+        bottomNavigationBar:
+            CustomBottomNavigationBar(petmodel: widget.petModel),
         body: Container(
           height: MediaQuery.of(context).size.height,
           decoration: new BoxDecoration(
@@ -116,9 +123,9 @@ class _SaludHomeState extends State<SaludHome> {
                             itemCount: 1,
                             shrinkWrap: true,
                             itemBuilder: (
-                                context,
-                                index,
-                                ) {
+                              context,
+                              index,
+                            ) {
                               LocationModel location = LocationModel.fromJson(
                                   dataSnapshot.data.docs[index].data());
                               return SizedBox(
@@ -129,8 +136,11 @@ class _SaludHomeState extends State<SaludHome> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => CitasPage(
-                                              petModel: model,
-                                              locationModel: location)),
+                                                petModel: model,
+                                                locationModel: location,
+                                                defaultChoiceIndex:
+                                                    widget.defaultChoiceIndex,
+                                              )),
                                     );
                                   },
                                   shape: RoundedRectangleBorder(
@@ -146,9 +156,9 @@ class _SaludHomeState extends State<SaludHome> {
                                       ),
                                       Column(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.start,
+                                            MainAxisAlignment.start,
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text("Citas",
                                               style: TextStyle(
@@ -180,7 +190,10 @@ class _SaludHomeState extends State<SaludHome> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => VideoPage(petModel: model)),
+                            builder: (context) => VideoPage(
+                                  petModel: model,
+                                  defaultChoiceIndex: widget.defaultChoiceIndex,
+                                )),
                       );
                       // showDialog(
                       //     context: context,
@@ -230,8 +243,10 @@ class _SaludHomeState extends State<SaludHome> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                HistoriaMedica(petModel: model)),
+                            builder: (context) => HistoriaMedica(
+                                  petModel: model,
+                                  defaultChoiceIndex: widget.defaultChoiceIndex,
+                                )),
                       );
                     },
                     shape: RoundedRectangleBorder(
@@ -276,8 +291,10 @@ class _SaludHomeState extends State<SaludHome> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                ClinicasPage(petModel: model)),
+                            builder: (context) => ClinicasPage(
+                                  petModel: model,
+                                  defaultChoiceIndex: widget.defaultChoiceIndex,
+                                )),
                       );
                     },
                     shape: RoundedRectangleBorder(

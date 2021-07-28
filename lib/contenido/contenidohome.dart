@@ -23,7 +23,12 @@ class ContenidoHome extends StatefulWidget {
   final PetModel petModel;
   final ContenidoModel contenidoModel;
   final AliadoModel aliadoModel;
-  ContenidoHome({this.petModel, this.contenidoModel, this.aliadoModel});
+  final int defaultChoiceIndex;
+  ContenidoHome(
+      {this.petModel,
+      this.contenidoModel,
+      this.aliadoModel,
+      this.defaultChoiceIndex});
 
   @override
   _ContenidoHomeState createState() => _ContenidoHomeState();
@@ -76,8 +81,12 @@ class _ContenidoHomeState extends State<ContenidoHome> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
-        drawer: MyDrawer(),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         bottomNavigationBar: CustomBottomNavigationBar(),
         body: Container(
           height: MediaQuery.of(context).size.height,

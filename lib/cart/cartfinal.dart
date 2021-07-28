@@ -18,8 +18,9 @@ import 'package:http/http.dart' as http;
 
 class CartFinal extends StatefulWidget {
   final PetModel petModel;
+  final int defaultChoiceIndex;
 
-  CartFinal({this.petModel});
+  CartFinal({this.petModel, this.defaultChoiceIndex});
 
   @override
   _CartFinalState createState() => _CartFinalState();
@@ -380,10 +381,14 @@ class _CartFinalState extends State<CartFinal> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar:
             CustomBottomNavigationBar(home: home, cart: carrito, noti: noti),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(

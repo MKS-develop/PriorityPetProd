@@ -5,7 +5,7 @@ import 'package:pet_shop/Store/storehome.dart';
 import 'ktitle.dart';
 
 // ignore: non_constant_identifier_names
-Widget AppBarCustomAvatar(context, petmodel) {
+Widget AppBarCustomAvatar(context, petmodel, defaultChoiceIndex) {
   return PreferredSize(
     preferredSize: Size.fromHeight(90.0),
     child: Padding(
@@ -22,7 +22,7 @@ Widget AppBarCustomAvatar(context, petmodel) {
 
         title: GestureDetector(
           onTap: () {
-            Route route = MaterialPageRoute(builder: (c) => StoreHome());
+            Route route = MaterialPageRoute(builder: (c) => StoreHome(petModel: petmodel, defaultChoiceIndex: defaultChoiceIndex,));
             Navigator.pushReplacement(context, route);
           },
           child: Image.asset(
@@ -45,7 +45,7 @@ Widget AppBarCustomAvatar(context, petmodel) {
                     backgroundColor: Colors.white,
                     backgroundImage: petmodel == null
                         ? NetworkImage(PetshopApp.sharedPreferences
-                            .getString(PetshopApp.userAvatarUrl))
+                        .getString(PetshopApp.userAvatarUrl))
                         : NetworkImage(petmodel.petthumbnailUrl),
                   ),
                 ),

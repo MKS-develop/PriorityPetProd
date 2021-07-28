@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_shop/DialogBox/errorDialog.dart';
+import 'package:pet_shop/Models/pet.dart';
 import 'package:pet_shop/Widgets/customTextField.dart';
 import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
@@ -18,6 +19,10 @@ import 'package:intl/date_symbol_data_local.dart';
 double width;
 
 class RegistroMascota extends StatefulWidget {
+  final PetModel petModel;
+  final int defaultChoiceIndex;
+
+  RegistroMascota({this.petModel, this.defaultChoiceIndex});
   @override
   _RegistroMascotaState createState() => _RegistroMascotaState();
 }
@@ -110,7 +115,10 @@ class _RegistroMascotaState extends State<RegistroMascota>
           ),
         ),
       ),
-      drawer: MyDrawer(),
+      drawer: MyDrawer(
+        petModel: widget.petModel,
+        defaultChoiceIndex: widget.defaultChoiceIndex,
+      ),
       bottomNavigationBar: CustomBottomNavigationBar(),
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -431,10 +439,10 @@ class _RegistroMascotaState extends State<RegistroMascota>
                                               enabled: false,
                                               border: InputBorder.none,
                                             ),
-                                            mode: Mode.MENU,
+                                            mode: Mode.BOTTOM_SHEET,
                                             maxHeight: 300,
-                                            searchBoxController:
-                                                _razaTextEditingController,
+                                            // searchBoxController:
+                                            //     _razaTextEditingController,
                                             // popupBackgroundColor: Colors.amber,
                                             // searchBoxDecoration: InputDecoration(
                                             //   fillColor: Colors.blue,
@@ -865,7 +873,10 @@ class _RegistroMascotaState extends State<RegistroMascota>
 
       _aboutpetTextEditingController.clear();
 
-      Route route = MaterialPageRoute(builder: (c) => StoreHome());
+      Route route = MaterialPageRoute(
+          builder: (c) => StoreHome(
+              petModel: widget.petModel,
+              defaultChoiceIndex: widget.defaultChoiceIndex));
       Navigator.pushReplacement(context, route);
       Message(context, 'Se ha creado el registro de su mascota existosamente.');
     });
@@ -971,7 +982,7 @@ class _RegistroMascotaState extends State<RegistroMascota>
                       child: CupertinoDatePicker(
                         mode: CupertinoDatePickerMode.date,
                         initialDateTime: selectedDate,
-                        maximumDate: DateTime.now(),
+                        // maximumDate: DateTime.now(),
                         onDateTimeChanged: (datetime) {
                           setState(() {
                             selectedDate = datetime;

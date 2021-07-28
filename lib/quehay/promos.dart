@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
+import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import 'package:pet_shop/quehay/detallespromos.dart';
 import '../Widgets/myDrawer.dart';
@@ -19,7 +20,9 @@ double width;
 class PromoHome extends StatefulWidget {
   final PromotionModel promotionModel;
   final PetModel petModel;
-  PromoHome({this.petModel, this.promotionModel});
+  final int defaultChoiceIndex;
+
+  PromoHome({this.petModel, this.promotionModel, this.defaultChoiceIndex});
 
   @override
   _PromoHomeState createState() => _PromoHomeState();
@@ -57,56 +60,12 @@ class _PromoHomeState extends State<PromoHome> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(90.0),
-          child: Padding(
-            padding: const EdgeInsets.only(
-              left: 10.0,
-              top: 20,
-              right: 16.0,
-            ),
-            child: AppBar(
-              iconTheme: IconThemeData(color: Colors.black),
-              backgroundColor: Colors.transparent,
-              //No more green
-              elevation: 0.0,
-              //Shadow gone
-              title: GestureDetector(
-                onTap: () {
-                  Route route = MaterialPageRoute(builder: (c) => StoreHome());
-                  Navigator.pushReplacement(context, route);
-                },
-                child: Image.asset(
-                  'diseñador/logo.png',
-                  fit: BoxFit.contain,
-                  height: 40,
-                ),
-              ),
-              centerTitle: true,
-              actions: <Widget>[
-                Stack(
-                  children: <Widget>[
-                    Material(
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      child: Container(
-                        height: 50,
-                        width: 50,
-                        child: CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          backgroundImage: widget.petModel == null
-                              ? NetworkImage(PetshopApp.sharedPreferences
-                              .getString(PetshopApp.userAvatarUrl))
-                              : NetworkImage(widget.petModel.petthumbnailUrl),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
         ),
-        drawer: MyDrawer(),
         bottomNavigationBar: CustomBottomNavigationBar(),
         body: Container(
           height: MediaQuery.of(context).size.height,
@@ -154,7 +113,7 @@ class _PromoHomeState extends State<PromoHome> {
                               select = true;
                             });
                           },
-                          minWidth: _screenWidth*0.4,
+                          minWidth: _screenWidth * 0.4,
                           padding: EdgeInsets.all(15.0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
@@ -168,11 +127,11 @@ class _PromoHomeState extends State<PromoHome> {
                             'Promociones',
                             style: TextStyle(
                                 color:
-                                select ? Colors.white : Color(0xFF57419D),
+                                    select ? Colors.white : Color(0xFF57419D),
                                 fontSize: 20),
                           ),
                           color:
-                          select ? Color(0xFF57419D) : Color(0xFFBDD7D6)),
+                              select ? Color(0xFF57419D) : Color(0xFFBDD7D6)),
                       SizedBox(
                         width: 10.0,
                       ),
@@ -182,7 +141,7 @@ class _PromoHomeState extends State<PromoHome> {
                               select = false;
                             });
                           },
-                          minWidth: _screenWidth*0.4,
+                          minWidth: _screenWidth * 0.4,
                           padding: EdgeInsets.all(15.0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
@@ -196,72 +155,76 @@ class _PromoHomeState extends State<PromoHome> {
                             'Pet Friendly',
                             style: TextStyle(
                                 color:
-                                select ? Color(0xFF57419D) : Colors.white,
+                                    select ? Color(0xFF57419D) : Colors.white,
                                 fontSize: 20),
                           ),
                           color:
-                          select ? Color(0xFFBDD7D6) : Color(0xFF57419D)),
+                              select ? Color(0xFFBDD7D6) : Color(0xFF57419D)),
                     ],
                   ),
                 ),
                 select == true
                     ? Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection("Promociones")
-                          .where("pais", isEqualTo: PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
-                          .snapshots(),
-                      builder: (context, dataSnapshot) {
-                        if (!dataSnapshot.hasData) {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        return ListView.builder(
-                            itemCount: dataSnapshot.data.docs.length,
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (
-                                context,
-                                index,
-                                ) {
-                              PromotionModel pro =
-                              PromotionModel.fromJson(dataSnapshot
-                                  .data.docs[index]
-                                  .data());
-                              return sourceInfo(pro, context);
-                            });
-                      }),
-                )
+                        padding: const EdgeInsets.all(8.0),
+                        child: StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection("Promociones")
+                                .where("pais",
+                                    isEqualTo: PetshopApp.sharedPreferences
+                                        .getString(PetshopApp.userPais))
+                                .snapshots(),
+                            builder: (context, dataSnapshot) {
+                              if (!dataSnapshot.hasData) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                              return ListView.builder(
+                                  itemCount: dataSnapshot.data.docs.length,
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemBuilder: (
+                                    context,
+                                    index,
+                                  ) {
+                                    PromotionModel pro =
+                                        PromotionModel.fromJson(dataSnapshot
+                                            .data.docs[index]
+                                            .data());
+                                    return sourceInfo(pro, context);
+                                  });
+                            }),
+                      )
                     : Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection("Aliados")
-                          .where("pais", isEqualTo: PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
-                          .where('tipoAliado', isEqualTo: 'Pet Friendly')
-                          .snapshots(),
-                      builder: (context, dataSnapshot) {
-                        if (!dataSnapshot.hasData) {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        return ListView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: dataSnapshot.data.docs.length,
-                            shrinkWrap: true,
-                            itemBuilder: (
-                                context,
-                                index,
-                                ) {
-                              AliadoModel ali = AliadoModel.fromJson(
-                                  dataSnapshot.data.docs[index].data());
-                              return sourceInfo2(ali, context);
-                            });
-                      }),
-                ),
+                        padding: const EdgeInsets.all(8.0),
+                        child: StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection("Aliados")
+                                .where("pais",
+                                    isEqualTo: PetshopApp.sharedPreferences
+                                        .getString(PetshopApp.userPais))
+                                .where('tipoAliado', isEqualTo: 'Pet Friendly')
+                                .snapshots(),
+                            builder: (context, dataSnapshot) {
+                              if (!dataSnapshot.hasData) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                              return ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: dataSnapshot.data.docs.length,
+                                  shrinkWrap: true,
+                                  itemBuilder: (
+                                    context,
+                                    index,
+                                  ) {
+                                    AliadoModel ali = AliadoModel.fromJson(
+                                        dataSnapshot.data.docs[index].data());
+                                    return sourceInfo2(ali, context);
+                                  });
+                            }),
+                      ),
               ],
             ),
           ),
@@ -271,9 +234,9 @@ class _PromoHomeState extends State<PromoHome> {
   }
 
   Widget sourceInfo(
-      PromotionModel pro,
-      BuildContext context,
-      ) {
+    PromotionModel pro,
+    BuildContext context,
+  ) {
     return InkWell(
       child: Column(
         children: [
@@ -296,11 +259,11 @@ class _PromoHomeState extends State<PromoHome> {
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (
-                        context,
-                        index,
-                        ) {
+                      context,
+                      index,
+                    ) {
                       AliadoModel ali =
-                      AliadoModel.fromJson(dataSnapshot.data.data());
+                          AliadoModel.fromJson(dataSnapshot.data.data());
 
                       return Container(
                         height: 150,
@@ -322,7 +285,7 @@ class _PromoHomeState extends State<PromoHome> {
                               width: MediaQuery.of(context).size.width * 0.4,
                               child: Column(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
@@ -343,7 +306,7 @@ class _PromoHomeState extends State<PromoHome> {
                                                 context: context,
                                                 child: new ChoosePetAlertDialog(
                                                   message:
-                                                  "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
+                                                      "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
                                                 ));
                                           }
                                         } else {
@@ -352,20 +315,23 @@ class _PromoHomeState extends State<PromoHome> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     DetallesPromo(
-                                                        petModel: model,
-                                                        promotionModel: pro,
-                                                        aliadoModel: ali)),
+                                                      petModel: model,
+                                                      promotionModel: pro,
+                                                      aliadoModel: ali,
+                                                      defaultChoiceIndex: widget
+                                                          .defaultChoiceIndex,
+                                                    )),
                                           );
                                         }
                                       },
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
-                                          BorderRadius.circular(5)),
+                                              BorderRadius.circular(5)),
                                       color: Color(0xFFEB9448),
                                       padding: EdgeInsets.all(10.0),
                                       child: Column(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.center,
+                                            MainAxisAlignment.center,
                                         children: [
                                           Text("Más información",
                                               style: TextStyle(
@@ -390,9 +356,9 @@ class _PromoHomeState extends State<PromoHome> {
   }
 
   Widget sourceInfo2(
-      AliadoModel ali,
-      BuildContext context,
-      ) {
+    AliadoModel ali,
+    BuildContext context,
+  ) {
     return InkWell(
       child: Column(
         children: [

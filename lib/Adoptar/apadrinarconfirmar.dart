@@ -27,8 +27,9 @@ double width;
 
 class ApadrinarConfirmar extends StatefulWidget {
   final PetModel petModel;
+  final int defaultChoiceIndex;
 
-  ApadrinarConfirmar({this.petModel});
+  ApadrinarConfirmar({this.petModel, this.defaultChoiceIndex});
 
   @override
   _ApadrinarConfirmarState createState() => _ApadrinarConfirmarState();
@@ -36,7 +37,6 @@ class ApadrinarConfirmar extends StatefulWidget {
 
 class _ApadrinarConfirmarState extends State<ApadrinarConfirmar> {
   DateTime selectedDate = DateTime.now();
-
 
   String _pat = "";
   String _aler = "";
@@ -129,121 +129,124 @@ class _ApadrinarConfirmarState extends State<ApadrinarConfirmar> {
     // print(age.years);
     // print(DateFormat('yyyy-MM-dd').format(widget.petModel.fechanac.toDate()));
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
-        bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          // decoration: new BoxDecoration(
-          //   image: new DecorationImage(
-          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-          //     fit: BoxFit.cover,
-          //   ),
-          // ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16.0,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    IconButton(
-                        icon: Icon(Icons.arrow_back_ios,
-                            color: Color(0xFF57419D)),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        }),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
-                      child: Text(
-                        "Apadrinar",
-                        style: TextStyle(
-                          color: Color(0xFF57419D),
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+            appBar: AppBarCustomAvatar(
+                context, widget.petModel, widget.defaultChoiceIndex),
+            bottomNavigationBar: CustomBottomNavigationBar(),
+            drawer: MyDrawer(
+              petModel: widget.petModel,
+              defaultChoiceIndex: widget.defaultChoiceIndex,
+            ),
+            body: Container(
+                height: MediaQuery.of(context).size.height,
+                // decoration: new BoxDecoration(
+                //   image: new DecorationImage(
+                //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+                //     fit: BoxFit.cover,
+                //   ),
+                // ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                ),
+                child: SingleChildScrollView(
+                  child: Column(children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        IconButton(
+                            icon: Icon(Icons.arrow_back_ios,
+                                color: Color(0xFF57419D)),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            }),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                          child: Text(
+                            "Apadrinar",
+                            style: TextStyle(
+                              color: Color(0xFF57419D),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Text("¡Ya casi estamos listos!",
+                        style: TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.network(
+                        widget.petModel.petthumbnailUrl,
+                        height: 150,
+                        width: 120,
+                        fit: BoxFit.cover,
                       ),
                     ),
-                  ],
-                ),
-              SizedBox(height: 15,),
-                Text("¡Ya casi estamos listos!",
-                    style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center),
-
-                SizedBox(height: 15,),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
-
-                  child: Image.network(
-                    widget
-                        .petModel.petthumbnailUrl,
-                    height: 150,
-                    width: 120,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                SizedBox(height: 15,),
-                Container(
-                    width: _screenWidth,
-                    child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(3.0),
-                      child: Text("Gracias por tu interés en apadrinar a  ${widget.petModel.nombre} mientras está en proceso de recuperación."),
+                    SizedBox(
+                      height: 15,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(3.0),
-                      child: Text("El aporte requerido es de  S/100 por mes. Recibirás fotos, un Boletín mensual con noticias del albergue, cuponera con descuento. "),
+                    Container(
+                        width: _screenWidth,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(3.0),
+                              child: Text(
+                                  "Gracias por tu interés en apadrinar a  ${widget.petModel.nombre}. Adoptar a distancia es una excelente forma de ayudar a un peludito del albergue que espera hogar. Además, gracias a tu colaboración podremos rescatar a otro perrito de la calle, esterilizarlo y darle un lugar seguro donde dormir.."),
+                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.all(3.0),
+                            //   child: Text(
+                            //       "El aporte requerido es de  S/100 por mes. Recibirás fotos, un Boletín mensual con noticias del albergue, cuponera con descuento. "),
+                            // ),
+                            // Padding(
+                            //   padding: const EdgeInsets.all(3.0),
+                            //   child: Text(
+                            //       "Después de su recuperación, estará lista para adopción!  Si esto ocurre, te notificaremos para que apadrines a otra mascota o para que tu aportación mensual sea suspendida."),
+                            // ),
+                          ],
+                        )),
+                    SizedBox(
+                      height: 15,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(3.0),
-                      child: Text("Después de su recuperación, estará lista para adopción!  Si esto ocurre, te notificaremos para que apadrines a otra mascota o para que tu aportación mensual sea suspendida."),
+                    Container(
+                      width: 200,
+                      child: RaisedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PaymentPage(
+                                    petModel: widget.petModel,
+                                    defaultChoiceIndex:
+                                        widget.defaultChoiceIndex)),
+                          );
+                        },
+                        // uploading ? null : ()=> uploadImageAndSavePetInfo(),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        color: Color(0xFF57419D),
+                        padding: EdgeInsets.all(6.0),
+                        child: Text("Donar",
+                            style: TextStyle(
+                                fontFamily: 'Product Sans',
+                                color: Colors.white,
+                                fontSize: 15.0)),
+                      ),
                     ),
-                  ],
-                )),
-                SizedBox(
-                  height: 15,
-                ),
-                Container(
-                  width: 200,
-                  child: RaisedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                PaymentPage(
-                                    petModel: widget.petModel)),
-                      );
-                    },
-                    // uploading ? null : ()=> uploadImageAndSavePetInfo(),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    color: Color(0xFF57419D),
-                    padding: EdgeInsets.all(6.0),
-                    child: Text("Donar",
-                        style: TextStyle(
-                            fontFamily: 'Product Sans',
-                            color: Colors.white,
-                            fontSize: 15.0)),
-                  ),
-                ),
-
-
-
-
-    ]
-      ),
-    )))
-    );
+                  ]),
+                ))));
   }
 
   changePet(otro) {
@@ -253,20 +256,4 @@ class _ApadrinarConfirmarState extends State<ApadrinarConfirmar> {
 
     return otro;
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

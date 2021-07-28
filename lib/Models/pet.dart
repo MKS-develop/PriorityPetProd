@@ -15,26 +15,28 @@ class PetModel {
   String mid;
   String uid, edadMascota, tamanoMascota, historia;
   int views;
+  String aliadoId;
 
-  PetModel(
-      {this.nombre,
-        this.shortInfo,
-        this.publishedDate,
-        this.petthumbnailUrl,
-        this.longDescription,
-        this.status,
-        this.fechanac,
-        this.especie,
-        this.raza,
-        this.sexo,
-        this.acerca,
-        this.mid,
-        this.uid,
-        this.edadMascota,
-        this.tamanoMascota,
-        this.historia,
-        this.views,
-      });
+  PetModel({
+    this.nombre,
+    this.shortInfo,
+    this.publishedDate,
+    this.petthumbnailUrl,
+    this.longDescription,
+    this.status,
+    this.fechanac,
+    this.especie,
+    this.raza,
+    this.sexo,
+    this.acerca,
+    this.mid,
+    this.uid,
+    this.edadMascota,
+    this.tamanoMascota,
+    this.historia,
+    this.views,
+    this.aliadoId,
+  });
 
   PetModel.fromJson(Map<String, dynamic> json) {
     nombre = json['nombre'];
@@ -54,7 +56,7 @@ class PetModel {
     tamanoMascota = json['tamanoMascota'];
     historia = json['historia'];
     views = json['views'];
-
+    aliadoId = json['aliadoId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -78,6 +80,7 @@ class PetModel {
     data['tamanoMascota'] = this.tamanoMascota;
     data['historia'] = this.historia;
     data['views'] = this.views;
+    data['aliadoId'] = this.aliadoId;
     return data;
   }
 }

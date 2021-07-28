@@ -16,7 +16,8 @@ double width;
 
 class ServiciosHome extends StatefulWidget {
   final PetModel petModel;
-  ServiciosHome({this.petModel});
+  final int defaultChoiceIndex;
+  ServiciosHome({this.petModel, this.defaultChoiceIndex});
 
   @override
   _ServiciosHomeState createState() => _ServiciosHomeState();
@@ -124,8 +125,12 @@ class _ServiciosHomeState extends State<ServiciosHome> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
-        drawer: MyDrawer(),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         bottomNavigationBar: CustomBottomNavigationBar(),
         body: _fondo(),
       ),
@@ -292,9 +297,9 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => ServicioPage(
-                              petModel: model,
-                              tituloDetalle: tituloDetalle,
-                            )),
+                            petModel: model,
+                            tituloDetalle: tituloDetalle,
+                            defaultChoiceIndex: widget.defaultChoiceIndex)),
                   );
                 },
                 shape: RoundedRectangleBorder(
@@ -339,9 +344,9 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => ServicioPage(
-                              petModel: model,
-                              tituloDetalle: tituloDetalle,
-                            )),
+                            petModel: model,
+                            tituloDetalle: tituloDetalle,
+                            defaultChoiceIndex: widget.defaultChoiceIndex)),
                   );
                 },
                 shape: RoundedRectangleBorder(
@@ -391,9 +396,9 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => ServicioPage(
-                              petModel: model,
-                              tituloDetalle: tituloDetalle,
-                            )),
+                            petModel: model,
+                            tituloDetalle: tituloDetalle,
+                            defaultChoiceIndex: widget.defaultChoiceIndex)),
                   );
                 },
                 shape: RoundedRectangleBorder(
@@ -438,9 +443,9 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => ServicioPage(
-                              petModel: model,
-                              tituloDetalle: tituloDetalle,
-                            )),
+                            petModel: model,
+                            tituloDetalle: tituloDetalle,
+                            defaultChoiceIndex: widget.defaultChoiceIndex)),
                   );
                 },
                 shape: RoundedRectangleBorder(
@@ -493,9 +498,9 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => ServicioPage(
-                              petModel: model,
-                              tituloDetalle: tituloDetalle,
-                            )),
+                            petModel: model,
+                            tituloDetalle: tituloDetalle,
+                            defaultChoiceIndex: widget.defaultChoiceIndex)),
                   );
                 },
                 shape: RoundedRectangleBorder(

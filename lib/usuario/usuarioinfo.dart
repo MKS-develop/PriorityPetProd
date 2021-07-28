@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:http/http.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:pet_shop/DialogBox/choosepetDialog.dart';
 import 'package:pet_shop/Models/culqiUser.dart';
+import 'package:pet_shop/Models/pet.dart';
 import 'package:pet_shop/Widgets/AppBarCustom.dart';
 import 'package:pet_shop/Widgets/customTextField.dart';
 import 'package:pet_shop/Config/config.dart';
@@ -24,6 +26,10 @@ import 'package:intl/date_symbol_data_local.dart';
 double width;
 
 class UsuarioInfo extends StatefulWidget {
+  final PetModel petModel;
+  final int defaultChoiceIndex;
+
+  UsuarioInfo({this.petModel, this.defaultChoiceIndex});
   @override
   _UsuarioInfoState createState() => _UsuarioInfoState();
 }
@@ -31,53 +37,75 @@ class UsuarioInfo extends StatefulWidget {
 class _UsuarioInfoState extends State<UsuarioInfo>
     with AutomaticKeepAliveClientMixin<UsuarioInfo> {
   final TextEditingController _nameTextEditingController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _lastnameTextEditingController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _idTextEditingController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _addressTextEditingController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _tlfTextEditingController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _dateTextEditingController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _date2TextEditingController =
-      TextEditingController();
+  TextEditingController();
+  final TextEditingController _tipoDocuTextEditingController =
+  TextEditingController();
   final GlobalKey<FormState> _petformKey = GlobalKey<FormState>();
 
   DateTime selectedDate = DateTime.now();
+  List<dynamic> ciudades = [];
+  String _categoria;
+  String ciudad;
 
   String productId = DateTime.now().millisecondsSinceEpoch.toString();
   bool uploading = false;
   String telefono;
   String petImageUrl = "";
   bool bienvenida = false;
+  String codigoTexto;
 
   bool get wantKeepAlive => true;
   PickedFile _imageFile;
   String _paises;
   String _pais;
   String _sexo;
+  String _prk;
   String culqiId;
   String imageDownloadUrl =
-      PetshopApp.sharedPreferences.getString(PetshopApp.userAvatarUrl);
+  PetshopApp.sharedPreferences.getString(PetshopApp.userAvatarUrl);
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    // getCountrySymbol(PetshopApp.sharedPreferences.getString(PetshopApp.userPais));
     //initializeDateFormatting("es_VE", null).then((_) {});
     var formatter = DateFormat.yMd('es_VE');
+    // setState(() {
+    //   codigoTexto =
+    //       PetshopApp.sharedPreferences.getString(PetshopApp.codigoTexto);
+    // });
+    _getprK();
+    getCiudades(PetshopApp.sharedPreferences.getString(PetshopApp.userPais));
+
     if (PetshopApp.sharedPreferences.getString(PetshopApp.userNombre) != null) {
       _nameTextEditingController.value = TextEditingValue(
           text: PetshopApp.sharedPreferences.getString(PetshopApp.userNombre));
+    }
+    if (PetshopApp.sharedPreferences.getString(PetshopApp.tipoDocumento) !=
+        null) {
+      ciudad = PetshopApp.sharedPreferences.getString(PetshopApp.tipoDocumento);
+      _categoria =
+          PetshopApp.sharedPreferences.getString(PetshopApp.tipoDocumento);
+      // _tipoDocuTextEditingController.value = TextEditingValue(text: PetshopApp.sharedPreferences.getString(PetshopApp.tipoDocumento));
     }
     if (PetshopApp.sharedPreferences.getString(PetshopApp.userApellido) !=
         null) {
       _lastnameTextEditingController.value = TextEditingValue(
           text:
-              PetshopApp.sharedPreferences.getString(PetshopApp.userApellido));
+          PetshopApp.sharedPreferences.getString(PetshopApp.userApellido));
     }
     if (PetshopApp.sharedPreferences.getString(PetshopApp.userDocId) != null) {
       _idTextEditingController.value = TextEditingValue(
@@ -96,14 +124,14 @@ class _UsuarioInfoState extends State<UsuarioInfo>
         null) {
       _addressTextEditingController.value = TextEditingValue(
           text:
-              PetshopApp.sharedPreferences.getString(PetshopApp.userDireccion));
+          PetshopApp.sharedPreferences.getString(PetshopApp.userDireccion));
     }
 
     if (PetshopApp.sharedPreferences.getString(PetshopApp.userTelefono) !=
         null) {
       _tlfTextEditingController.value = TextEditingValue(
           text:
-              PetshopApp.sharedPreferences.getString(PetshopApp.userTelefono));
+          PetshopApp.sharedPreferences.getString(PetshopApp.userTelefono));
     }
 
     if (PetshopApp.sharedPreferences.getString(PetshopApp.userFechaNac) != '') {
@@ -128,6 +156,34 @@ class _UsuarioInfoState extends State<UsuarioInfo>
     documentReference.get().then((dataSnapshot) {
       setState(() {
         bienvenida = (dataSnapshot.data()["bienvenida"]);
+        culqiId = (dataSnapshot.data()["id_culqi"]);
+        // codigoTexto = dataSnapshot.data()["codigoTexto"];
+      });
+    });
+  }
+
+  Future<dynamic> getCountrySymbol(p) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('Ciudades')
+          .doc(p)
+          .get()
+          .then((DocumentSnapshot documentSnapshot) => {
+        setState(() {
+          codigoTexto = documentSnapshot.data()["codigoTexto"];
+          print(codigoTexto);
+        })
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+  _getprK() {
+    DocumentReference documentReference =
+    FirebaseFirestore.instance.collection("Culqi").doc("Priv");
+    documentReference.get().then((dataSnapshot) {
+      setState(() {
+        _prk = (dataSnapshot.data()["prk"]);
       });
     });
   }
@@ -138,9 +194,9 @@ class _UsuarioInfoState extends State<UsuarioInfo>
         _screenHeight = MediaQuery.of(context).size.height;
 
     return new Scaffold(
-      appBar: AppBarCustom(context),
+      appBar: AppBarCustom(context, widget.petModel, widget.defaultChoiceIndex),
       drawer: MyDrawer(),
-      bottomNavigationBar: CustomBottomNavigationBar(),
+      bottomNavigationBar: CustomBottomNavigationBar(petmodel: widget.petModel),
       body: Container(
         height: MediaQuery.of(context).size.height,
         decoration: new BoxDecoration(
@@ -196,21 +252,21 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                               radius: 38,
                               child: _imageFile != null
                                   ? ClipRRect(
-                                      borderRadius: BorderRadius.circular(50),
-                                      child: Image.file(
-                                        File(_imageFile.path),
-                                        width: 70,
-                                        height: 70,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    )
+                                borderRadius: BorderRadius.circular(50),
+                                child: Image.file(
+                                  File(_imageFile.path),
+                                  width: 70,
+                                  height: 70,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
                                   : CircleAvatar(
-                                      radius: _screenWidth * 0.1,
-                                      backgroundColor: Colors.white,
-                                      backgroundImage: NetworkImage(PetshopApp
-                                          .sharedPreferences
-                                          .getString(
-                                              PetshopApp.userAvatarUrl))),
+                                  radius: _screenWidth * 0.1,
+                                  backgroundColor: Colors.white,
+                                  backgroundImage: NetworkImage(PetshopApp
+                                      .sharedPreferences
+                                      .getString(
+                                      PetshopApp.userAvatarUrl))),
                             )),
 
                         // CircleAvatar(
@@ -344,16 +400,16 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                                       } else {
                                         List<DropdownMenuItem> list = [];
                                         for (int i = 0;
-                                            i < dataSnapshot.data.docs.length;
-                                            i++) {
+                                        i < dataSnapshot.data.docs.length;
+                                        i++) {
                                           DocumentSnapshot razas =
-                                              dataSnapshot.data.docs[i];
+                                          dataSnapshot.data.docs[i];
                                           list.add(
                                             DropdownMenuItem(
                                               child: Padding(
                                                 padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        15, 0, 0, 0),
+                                                const EdgeInsets.fromLTRB(
+                                                    15, 0, 0, 0),
                                                 child: Text(
                                                   razas.id,
                                                   style: TextStyle(
@@ -383,7 +439,7 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                                                 DropdownButton(
                                                     hint: Padding(
                                                       padding: const EdgeInsets
-                                                              .fromLTRB(
+                                                          .fromLTRB(
                                                           15, 0, 0, 0),
                                                       child: Text(
                                                           'Indica tu género',
@@ -435,11 +491,78 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                         ],
                       ),
                     ),
-                    CustomTextField(
-                      controller: _idTextEditingController,
-                      keyboard: TextInputType.number,
-                      hintText: 'Indica tu número de identidad',
-                      isObsecure: false,
+
+                    Row(
+                      children: [
+                        Container(
+                          width: _screenWidth * 0.4,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    color: Color(0xFF7f9d9D),
+                                    width: 1.0,
+                                  ),
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                                ),
+                                padding: EdgeInsets.all(0.0),
+                                margin: EdgeInsets.all(5.0),
+                                child: DropdownButtonHideUnderline(
+                                  child: Stack(
+                                    children: <Widget>[
+                                      DropdownButton(
+                                          hint: Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                8, 0, 0, 0),
+                                            child: Text(
+                                              'Tipo de documento',
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                // fontWeight: FontWeight.bold
+                                              ),
+                                            ),
+                                          ),
+                                          items: ciudades.map((dynamic value) {
+                                            return DropdownMenuItem<dynamic>(
+                                              value: value,
+                                              child: Padding(
+                                                padding:
+                                                const EdgeInsets.fromLTRB(
+                                                    8, 0, 0, 0),
+                                                child: Text(value),
+                                              ),
+                                            );
+                                          }).toList(),
+                                          isExpanded: true,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _categoria = value;
+                                              ciudad = value;
+                                              // _tipoDocuTextEditingController.value = value;
+                                            });
+                                          },
+                                          value: ciudad),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: _screenWidth * 0.5,
+                          child: CustomTextField(
+                            controller: _idTextEditingController,
+                            keyboard: TextInputType.number,
+                            hintText: 'Indica tu número de identidad',
+                            isObsecure: false,
+                          ),
+                        ),
+                      ],
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -480,16 +603,16 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                                       } else {
                                         List<DropdownMenuItem> list = [];
                                         for (int i = 0;
-                                            i < dataSnapshot.data.docs.length;
-                                            i++) {
+                                        i < dataSnapshot.data.docs.length;
+                                        i++) {
                                           DocumentSnapshot ciudad =
-                                              dataSnapshot.data.docs[i];
+                                          dataSnapshot.data.docs[i];
                                           list.add(
                                             DropdownMenuItem(
                                               child: Padding(
                                                 padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        15, 0, 0, 0),
+                                                const EdgeInsets.fromLTRB(
+                                                    15, 0, 0, 0),
                                                 child: Text(
                                                   ciudad.id,
                                                   style: TextStyle(
@@ -519,7 +642,7 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                                                 DropdownButton(
                                                     hint: Padding(
                                                       padding: const EdgeInsets
-                                                              .fromLTRB(
+                                                          .fromLTRB(
                                                           15, 0, 0, 0),
                                                       child: Text(
                                                           'País de residencia',
@@ -533,6 +656,10 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                                                     onChanged: (value) {
                                                       setState(() {
                                                         _paises = value;
+                                                        // _tipoDocuTextEditingController.value = value;
+                                                        // getCountrySymbol(value);
+                                                        ciudad = null;
+                                                        getCiudades(_paises);
                                                       });
                                                     },
                                                     value: _paises),
@@ -575,7 +702,7 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                                 context: context,
                                 child: new ChoosePetAlertDialog(
                                   message:
-                                      "Esta función estará disponible próximamente...",
+                                  "Esta función estará disponible próximamente...",
                                 ));
                             // Navigator.push(
                             //   context,
@@ -642,38 +769,49 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                           0,
                         ),
                         child: IntlPhoneField(
-                          searchText: "Buscar por país",
-                          validator: (val) {
-                            if (val.isEmpty) {
-                              return 'Este campo es requerido';
-                            }
-                          },
-                          controller: _tlfTextEditingController,
-                          onChanged: (val) =>
-                              print(val.countryISOCode + val.completeNumber),
-                          onSaved: (val) {
-                            telefono = val.completeNumber.toString();
-                            _tlfTextEditingController.value =
-                                TextEditingValue(text: telefono);
-                          },
-                          decoration: InputDecoration(
-                            focusColor: Color(0xFF7f9d9D),
-                            fillColor: Colors.white,
-                            enabledBorder: new OutlineInputBorder(
-                              borderRadius: new BorderRadius.circular(10.0),
-                              borderSide: BorderSide(color: Color(0xFF7f9d9D)),
+                            searchText: "Buscar por país",
+                            validator: (val) {
+                              if (val.isEmpty) {
+                                return 'Este campo es requerido';
+                              }
+                            },
+                            controller: _tlfTextEditingController,
+                            onChanged: (val) {
+                              print(val.countryISOCode + val.completeNumber);
+                              setState(() {
+                                codigoTexto = val.countryISOCode;
+                              });
+                              print('el pais es $codigoTexto');
+                            },
+                            onSaved: (val) {
+                              setState(() {
+                                codigoTexto = val.countryISOCode;
+                                telefono = val.completeNumber.toString();
+                                _tlfTextEditingController.value =
+                                    TextEditingValue(text: telefono);
+                              });
+                            },
+                            decoration: InputDecoration(
+                              focusColor: Color(0xFF7f9d9D),
+                              fillColor: Colors.white,
+                              enabledBorder: new OutlineInputBorder(
+                                borderRadius: new BorderRadius.circular(10.0),
+                                borderSide:
+                                BorderSide(color: Color(0xFF7f9d9D)),
+                              ),
+                              focusedBorder: new OutlineInputBorder(
+                                borderRadius: new BorderRadius.circular(10.0),
+                                borderSide:
+                                BorderSide(color: Color(0xFF7f9d9D)),
+                              ),
+                              filled: true,
+                              hintStyle: TextStyle(
+                                  fontSize: 15.0, color: Color(0xFF7f9d9D)),
+                              hintText: 'Número de teléfono',
                             ),
-                            focusedBorder: new OutlineInputBorder(
-                              borderRadius: new BorderRadius.circular(10.0),
-                              borderSide: BorderSide(color: Color(0xFF7f9d9D)),
-                            ),
-                            filled: true,
-                            hintStyle: TextStyle(
-                                fontSize: 15.0, color: Color(0xFF7f9d9D)),
-                            hintText: 'Número de teléfono',
-                          ),
-                          initialCountryCode: 'PE',
-                        ),
+                            // initialCountryCode: 'PE',
+                            initialCountryCode: PetshopApp.sharedPreferences
+                                .getString(PetshopApp.codigoTexto)),
                       ),
                     )
                   ],
@@ -691,7 +829,7 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                           context: context,
                           child: new ChoosePetAlertDialog(
                             message:
-                                "Por favor indique su fecha de nacimiento.",
+                            "Por favor indique su fecha de nacimiento.",
                           ));
                     }
                     if (_nameTextEditingController.text == '') {
@@ -722,6 +860,13 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                           child: new ChoosePetAlertDialog(
                             message: "Por favor indique su dirección.",
                           ));
+                    }
+                    if (ciudad == null) {
+                      showDialog(
+                          context: context,
+                          child: new ChoosePetAlertDialog(
+                            message: "Por favor indique su tipo de documento.",
+                          ));
                     } else {
                       if (_nameTextEditingController.text.isNotEmpty &&
                           _lastnameTextEditingController.text.isNotEmpty &&
@@ -731,7 +876,7 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                         uploadImageAndSavePetInfo();
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => StoreHome()),
+                          MaterialPageRoute(builder: (context) => StoreHome(petModel: widget.petModel, defaultChoiceIndex: widget.defaultChoiceIndex,)),
                         );
                       }
                     }
@@ -783,13 +928,13 @@ class _UsuarioInfoState extends State<UsuarioInfo>
   Future<String> uploadPetImage(mFileImage) async {
     if (mFileImage == null) {
       String downloadUrl =
-          PetshopApp.sharedPreferences.getString(PetshopApp.userAvatarUrl);
+      PetshopApp.sharedPreferences.getString(PetshopApp.userAvatarUrl);
       return downloadUrl;
     } else {
       final Reference reference =
-          FirebaseStorage.instance.ref().child("Dueños");
+      FirebaseStorage.instance.ref().child("Dueños");
       UploadTask uploadTask =
-          reference.child("dueño_$productId.jpg").putFile(mFileImage);
+      reference.child("dueño_$productId.jpg").putFile(mFileImage);
       String downloadUrl = await (await uploadTask).ref.getDownloadURL();
       return downloadUrl;
     }
@@ -797,47 +942,53 @@ class _UsuarioInfoState extends State<UsuarioInfo>
 
   savePetInfo(String downloadUrl) async {
     {
-      try {
-        var json =
-            '{"filial": "01","documento": "${_idTextEditingController.text.trim()}","nombre": "${_nameTextEditingController.text.trim() + _lastnameTextEditingController.text.trim()}","direccion": "${_addressTextEditingController.text.trim()}","complemento": "","ubigeo": "101010","dpto": "${_addressTextEditingController.text.trim()}","provincia": "${_addressTextEditingController.text.trim()}","distrito": "${_addressTextEditingController.text.trim()}","telefono": "${_tlfTextEditingController.text.trim()}","email": "${PetshopApp.sharedPreferences.getString(PetshopApp.userEmail)}"}';
-        var url = ("https://epcloud.ebc.pe.grupoempodera.com/api/?cliente");
-        Map<String, String> headers = {"Content-type": "application/json"};
-        Response res = await http.post(url, headers: headers, body: json);
-        int statusCode = res.statusCode;
-        setState(() {
-          // response = statusCode.toString();
-          print(statusCode);
-        });
-      } catch (e) {
-        print(e.message);
-        return null;
-      }
+      // try {
+      //   var json =
+      //       '{"filial": "01","documento": "${_idTextEditingController.text.trim()}","nombre": "${_nameTextEditingController.text.trim() + _lastnameTextEditingController.text.trim()}","direccion": "${_addressTextEditingController.text.trim()}","complemento": "","ubigeo": "101010","dpto": "${_addressTextEditingController.text.trim()}","provincia": "${_addressTextEditingController.text.trim()}","distrito": "${_addressTextEditingController.text.trim()}","telefono": "${_tlfTextEditingController.text.trim()}","email": "${PetshopApp.sharedPreferences.getString(PetshopApp.userEmail)}"}';
+      //   var url = ("https://epcloud.ebc.pe.grupoempodera.com/api/?cliente");
+      //   Map<String, String> headers = {"Content-type": "application/json"};
+      //   Response res = await http.post(url, headers: headers, body: json);
+      //   int statusCode = res.statusCode;
+      //   setState(() {
+      //     // response = statusCode.toString();
+      //     print(statusCode);
+      //   });
+      // } catch (e) {
+      //   print(e.message);
+      //   return null;
+      // }
+        if(_paises=='Perú' && culqiId == null) {
+          try {
+            var json =
+                '{"first_name": "${_nameTextEditingController
+                .text}","last_name": "${_lastnameTextEditingController
+                .text}","address": "${_addressTextEditingController
+                .text}","phone_number": "${_tlfTextEditingController
+                .text}","email": "${PetshopApp.sharedPreferences.getString(
+                PetshopApp.userEmail)}", "address_city": "Lima", "country_code": "PE", "metadata": {"$ciudad": "${_idTextEditingController.text}"}}';
+            var url = ("https://api.culqi.com/v2/customers");
+            Map<String, String> headers = {
+              "Content-type": "application/json",
+              "Authorization": _prk,
+            };
+            Response res = await http.post(url, headers: headers, body: json);
+            int statusCode = await res.statusCode;
+            final nuevo = jsonDecode(res.body);
 
-      try {
-        var json =
-            '{"first_name": "${_nameTextEditingController.text}","last_name": "${_lastnameTextEditingController.text}","address": "${_addressTextEditingController.text}","phone_number": "${_tlfTextEditingController.text}","email": "${PetshopApp.sharedPreferences.getString(PetshopApp.userEmail)}", "address_city": "Lima", "country_code": "PE"}';
-        var url = ("https://api.culqi.com/v2/customers");
-        Map<String, String> headers = {
-          "Content-type": "application/json",
-          "Authorization": "Bearer sk_test_7c6b926b8a7d65eb"
-        };
-        Response res = await http.post(url, headers: headers, body: json);
-        int statusCode = await res.statusCode;
-        final nuevo = jsonDecode(res.body);
+            CulqiUserModel culqi = CulqiUserModel.fromJson(nuevo);
 
-        CulqiUserModel culqi = CulqiUserModel.fromJson(nuevo);
-
-        setState(() {
-          // response = statusCode.toString();
-          culqiId = culqi.id;
-          print(culqi.id);
-          // print(statusCode);
-        });
-      } catch (e) {
-        print(e.message);
-        return null;
-      }
-
+            setState(() {
+              // response = statusCode.toString();
+              culqiId = culqi.id;
+              print(culqi.id);
+               print(statusCode);
+               print('el cuerpo es ${res.body}');
+            });
+          } catch (e) {
+            print(e.message);
+            return null;
+          }
+        }
       // try {
       //   var url =
       //       ("https://api.culqi.com/v2/customers/cus_test_Dlk8IUQw4PXGYbVQ");
@@ -884,6 +1035,10 @@ class _UsuarioInfoState extends State<UsuarioInfo>
         "bienvenida": bienvenida,
         "id_culqi": culqiId,
         "registroCompleto": true,
+        "tipoDocumento": ciudad,
+        "codigoTexto": codigoTexto == null
+            ? PetshopApp.sharedPreferences.getString(PetshopApp.codigoTexto)
+            : codigoTexto,
       });
 
       PetshopApp.sharedPreferences.setString(
@@ -897,6 +1052,13 @@ class _UsuarioInfoState extends State<UsuarioInfo>
       PetshopApp.sharedPreferences.setString(PetshopApp.userToken,
           PetshopApp.sharedPreferences.getString(PetshopApp.userToken));
       PetshopApp.sharedPreferences.setString(PetshopApp.userCulqi, culqiId);
+      PetshopApp.sharedPreferences
+          .setString(PetshopApp.tipoDocumento, _categoria);
+
+      if (codigoTexto != null) {
+        PetshopApp.sharedPreferences
+            .setString(PetshopApp.codigoTexto, codigoTexto);
+      }
 
       PetshopApp.sharedPreferences
           .setString(PetshopApp.userNombre, _nameTextEditingController.text);
@@ -936,10 +1098,44 @@ class _UsuarioInfoState extends State<UsuarioInfo>
       //   Route route = MaterialPageRoute(builder: (c) => StoreHome());
       //   Navigator.pushReplacement(context, route);
       // });
-
+        Message(context,
+            'Se han agregado los datos a su perfil.');
     }
   }
-
+  Future<void> Message(BuildContext context, String error) async {
+    // Navigator.of(context, rootNavigator: true).pop();
+    return showDialog(
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.3),
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)), //this right here
+            child: Container(
+              height: 400,
+              child: Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.check_circle, color: Colors.green, size: 55.0),
+                    SizedBox(height: 20.0),
+                    Text(
+                      error,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 17.0,
+                          fontWeight: FontWeight.w300),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
       context: context,
@@ -969,6 +1165,28 @@ class _UsuarioInfoState extends State<UsuarioInfo>
             TextEditingValue(text: timeString.split(" ")[0]);
         print(_date2TextEditingController.text);
       });
+  }
+
+  Future<List<dynamic>> getCiudades(pais) async {
+    ciudades = [];
+    try {
+      await FirebaseFirestore.instance
+          .collection('Ciudades')
+          .where("paisId", isEqualTo: pais)
+          .get()
+          .then((QuerySnapshot querySnapshot) => {
+        querySnapshot.docs.forEach((paisA) {
+          setState(() {
+            ciudades = paisA["idPersonaNatural"].toList();
+          });
+        })
+      });
+      ciudades.sort();
+      print(ciudades.length);
+    } catch (e) {
+      print(e);
+    }
+    return ciudades;
   }
 
   void _planModalBottomSheet(BuildContext context) {
@@ -1005,7 +1223,7 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                       child: CupertinoDatePicker(
                         mode: CupertinoDatePickerMode.date,
                         initialDateTime: selectedDate,
-                        maximumDate: DateTime.now(),
+                        // maximumDate: DateTime.now(),
                         onDateTimeChanged: (datetime) {
                           setState(() {
                             selectedDate = datetime;
@@ -1015,7 +1233,7 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                             var formatter = DateFormat.yMd('es_VE');
 
                             String newtime =
-                                formatter.format(datetime).toString();
+                            formatter.format(datetime).toString();
 
                             _dateTextEditingController.value =
                                 TextEditingValue(text: newtime);
@@ -1026,29 +1244,29 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                         },
                       ),
                     ),
-                    // Padding(
-                    //   padding: const EdgeInsets.all(8.0),
-                    //   child: RaisedButton(
-                    //     onPressed: () {
-                    //       Navigator.of(context, rootNavigator: true).pop();
-                    //     },
-                    //     shape: RoundedRectangleBorder(
-                    //         borderRadius: BorderRadius.circular(5)),
-                    //     color: Color(0xFFEB9448),
-                    //     padding: EdgeInsets.fromLTRB(18, 0, 18, 0),
-                    //     child: Column(
-                    //       mainAxisAlignment: MainAxisAlignment.start,
-                    //       children: [
-                    //         Text("Seleccionar fecha",
-                    //             style: TextStyle(
-                    //                 fontFamily: 'Product Sans',
-                    //                 color: Colors.white,
-                    //                 fontWeight: FontWeight.bold,
-                    //                 fontSize: 18.0)),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: RaisedButton(
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true).pop();
+                        },
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5)),
+                        color: Color(0xFFEB9448),
+                        padding: EdgeInsets.fromLTRB(18, 0, 18, 0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text("Seleccionar fecha",
+                                style: TextStyle(
+                                    fontFamily: 'Product Sans',
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.0)),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 )),
           );

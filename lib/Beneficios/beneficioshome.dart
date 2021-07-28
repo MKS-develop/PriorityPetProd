@@ -16,7 +16,8 @@ double width;
 
 class BeneficiosHome extends StatefulWidget {
   final PetModel petModel;
-  BeneficiosHome({this.petModel});
+  final int defaultChoiceIndex;
+  BeneficiosHome({this.petModel, this.defaultChoiceIndex});
 
   @override
   _BeneficiosHomeState createState() => _BeneficiosHomeState();
@@ -57,8 +58,12 @@ class _BeneficiosHomeState extends State<BeneficiosHome> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
-        drawer: MyDrawer(),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         bottomNavigationBar: CustomBottomNavigationBar(),
         body: Container(
           height: MediaQuery.of(context).size.height,
@@ -171,10 +176,8 @@ class _BeneficiosHomeState extends State<BeneficiosHome> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              dataSnapshot
-                                                  .data
-                                                  .docs[0]
-                                                      ['Cantidad_mascotas']
+                                              dataSnapshot.data
+                                                  .docs[0]['Cantidad_mascotas']
                                                   .toString(),
                                               style: TextStyle(
                                                 color: Colors.white,
@@ -520,8 +523,9 @@ class _BeneficiosHomeState extends State<BeneficiosHome> {
   }
 
   void _goPlanes() {
-    Route route =
-        MaterialPageRoute(builder: (c) => PlanesHome(petModel: model));
+    Route route = MaterialPageRoute(
+        builder: (c) => PlanesHome(
+            petModel: model, defaultChoiceIndex: widget.defaultChoiceIndex));
     Navigator.pushReplacement(context, route);
   }
 

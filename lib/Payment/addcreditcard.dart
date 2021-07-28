@@ -36,18 +36,20 @@ class AddCreditCardPage extends StatefulWidget {
   final int totalPrice;
   final PromotionModel promotionModel;
   final PlanModel planModel;
+  final int defaultChoiceIndex;
 
   AddCreditCardPage(
       {this.petModel,
-        this.productoModel,
-        this.cartModel,
-        this.serviceModel,
-        this.locationModel,
-        this.aliadoModel,
-        this.promotionModel,
-        this.tituloCategoria,
-        this.totalPrice,
-        this.planModel});
+      this.productoModel,
+      this.cartModel,
+      this.serviceModel,
+      this.locationModel,
+      this.aliadoModel,
+      this.promotionModel,
+      this.tituloCategoria,
+      this.totalPrice,
+      this.planModel,
+      this.defaultChoiceIndex});
 
   @override
   _AddCreditCardPageState createState() => _AddCreditCardPageState();
@@ -101,9 +103,13 @@ class _AddCreditCardPageState extends State<AddCreditCardPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(
@@ -214,13 +220,14 @@ class _AddCreditCardPageState extends State<AddCreditCardPage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => PaymentPage(
-                                petModel: model,
-                                aliadoModel: ali,
-                                serviceModel: service,
-                                locationModel: location,
-                                tituloCategoria: widget.tituloCategoria,
-                                totalPrice: widget.totalPrice,
-                              )),
+                                  petModel: model,
+                                  aliadoModel: ali,
+                                  serviceModel: service,
+                                  locationModel: location,
+                                  tituloCategoria: widget.tituloCategoria,
+                                  totalPrice: widget.totalPrice,
+                                  defaultChoiceIndex:
+                                      widget.defaultChoiceIndex)),
                         );
                       } else {
                         print('invalid!');
@@ -380,7 +387,7 @@ class _AddCreditCardPageState extends State<AddCreditCardPage> {
 
   _getprK() {
     DocumentReference documentReference =
-    FirebaseFirestore.instance.collection("Culqi").doc("Priv");
+        FirebaseFirestore.instance.collection("Culqi").doc("Priv");
     documentReference.get().then((dataSnapshot) {
       setState(() {
         _prk = (dataSnapshot.data()["prk"]);
@@ -390,7 +397,7 @@ class _AddCreditCardPageState extends State<AddCreditCardPage> {
 
   _getpuK() {
     DocumentReference documentReference =
-    FirebaseFirestore.instance.collection("Culqi").doc("Pub");
+        FirebaseFirestore.instance.collection("Culqi").doc("Pub");
     documentReference.get().then((dataSnapshot) {
       setState(() {
         _publicKey = (dataSnapshot.data()["puk"]);
@@ -432,6 +439,7 @@ class _AddCreditCardPageState extends State<AddCreditCardPage> {
           );
         });
   }
+
   Future<void> Message(BuildContext context, String error) async {
     Navigator.of(context, rootNavigator: true).pop();
     return showDialog(

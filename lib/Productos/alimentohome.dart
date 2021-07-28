@@ -25,11 +25,13 @@ class AlimentoHome extends StatefulWidget {
   final ProductModel productModel;
   final Producto productoModel;
   final String tituloDetalle;
+  final int defaultChoiceIndex;
 
   AlimentoHome({
     this.petModel,
     this.productModel,
     this.productoModel,
+    this.defaultChoiceIndex,
     Key key,
     @required this.tituloDetalle,
   }) : super(key: key);
@@ -48,7 +50,7 @@ class _AlimentoHomeState extends State<AlimentoHome> {
   Future resultsLoaded;
 
   DateTime selectedDate = DateTime.now();
-  String _categoria = 'Perro';
+  String _categoria;
   TextEditingController _searchTextEditingController =
       new TextEditingController();
 
@@ -67,7 +69,7 @@ class _AlimentoHomeState extends State<AlimentoHome> {
     changePet(widget.petModel);
     _searchTextEditingController.addListener(_onSearchChanged);
     // getAllSnapshots();
-    MastersList();
+    MastersList(_categoria);
     MastersList2();
   }
 
@@ -84,14 +86,14 @@ class _AlimentoHomeState extends State<AlimentoHome> {
     // resultsLoaded = getCategoriesSnapshots();
   }
 
-  MastersList() {
+  MastersList(String categoria) {
     FirebaseFirestore.instance
         .collection("Productos")
         .where('categoria', isEqualTo: widget.tituloDetalle)
         .where("pais",
             isEqualTo:
                 PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
-        .where('tipoMascota', isEqualTo: _categoria)
+        .where('tipoMascota', isEqualTo: categoria)
         .snapshots()
         .listen(createListofServices);
   }
@@ -114,6 +116,7 @@ class _AlimentoHomeState extends State<AlimentoHome> {
         .where("pais",
             isEqualTo:
                 PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
+        .where('tipoMascota', isEqualTo: _categoria)
         .snapshots()
         .listen(createListofServices2);
   }
@@ -163,9 +166,13 @@ class _AlimentoHomeState extends State<AlimentoHome> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(
@@ -336,7 +343,10 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                                 onChanged: (value) {
                                                   setState(() {
                                                     _categoria = value;
-                                                    MastersList();
+                                                    _resultsList = [];
+                                                    _allResults = [];
+                                                    print(value);
+                                                    MastersList(value);
                                                   });
                                                 },
                                                 value: _categoria),
@@ -384,13 +394,33 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                 // child: Row(
                 //   children: [
                 _resultsList.length == 0
-                    ? Text(
-                        'No disponible',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    ? Column(
+                        children: [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            height: _screenHeight * 0.3,
+                            decoration: new BoxDecoration(
+                              image: new DecorationImage(
+                                image:
+                                    new AssetImage("images/perritotriste.png"),
+                                fit: BoxFit.fitHeight,
+                              ),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                          ),
+                          Text(
+                            'No disponible',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       )
                     : Container(
                         // height: 1100,
@@ -403,7 +433,7 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                 SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
                                     crossAxisSpacing: 1,
-                                    childAspectRatio: 0.6),
+                                    childAspectRatio: 0.63),
                             itemBuilder: (
                               BuildContext context,
                               int index,
@@ -500,7 +530,7 @@ class _AlimentoHomeState extends State<AlimentoHome> {
       child: Column(
         children: [
           Container(
-            height: 280.0,
+            height: 250.0,
             width: MediaQuery.of(context).size.width * 0.5,
             child: StreamBuilder(
                 stream: FirebaseFirestore.instance
@@ -529,10 +559,11 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => AlimentoDetalle(
-                                    petModel: model,
-                                    productoModel: product,
-                                    aliadoModel: ali,
-                                  ),
+                                      petModel: model,
+                                      productoModel: product,
+                                      aliadoModel: ali,
+                                      defaultChoiceIndex:
+                                          widget.defaultChoiceIndex),
                                 ));
                           },
                           child: Container(
@@ -781,10 +812,11 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => AlimentoDetalle(
-                                    petModel: model,
-                                    productoModel: product,
-                                    aliadoModel: ali,
-                                  ),
+                                      petModel: model,
+                                      productoModel: product,
+                                      aliadoModel: ali,
+                                      defaultChoiceIndex:
+                                          widget.defaultChoiceIndex),
                                 ));
                           },
                           child: Container(
@@ -841,7 +873,10 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                         SizedBox(height: 8.0),
                                         Row(
                                           children: [
-                                            Text('S/',
+                                            Text(
+                                                PetshopApp.sharedPreferences
+                                                    .get(PetshopApp
+                                                        .simboloMoneda),
                                                 style: TextStyle(
                                                     fontSize: 13,
                                                     fontWeight:
