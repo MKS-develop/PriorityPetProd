@@ -75,7 +75,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
   deleteUser() async{
     try {
 
-      var url = ("https://api.culqi.com/v2/customers/cus_live_yU1r8lEQtUhwAECM");
+      var url = ("https://api.culqi.com/v2/customers/cus_live_UpWsKodzqCv0nDZa");
       Map<String, String> headers = {
         "Content-type": "application/json",
         "Authorization": _prk
@@ -131,7 +131,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
       setState(() {
         _prk = (dataSnapshot.data()["prk"]);
       });
-       // deleteUser();
+        // deleteUser();
     });
   }
 

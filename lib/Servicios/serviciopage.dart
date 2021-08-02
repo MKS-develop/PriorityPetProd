@@ -272,8 +272,8 @@ class _ServicioPageState extends State<ServicioPage> {
                                         mode: Mode.BOTTOM_SHEET,
                                         maxHeight: 300,
 
-                                        searchBoxController:
-                                            _searchTextEditingController,
+                                        // searchBoxController:
+                                        //     _searchTextEditingController,
 
                                         // popupBackgroundColor: Colors.amber,
                                         // searchBoxDecoration: InputDecoration(

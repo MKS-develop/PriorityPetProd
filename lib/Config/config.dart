@@ -38,6 +38,8 @@ class PetshopApp {
   static final String Moneda = 'moneda';
   static final String codigoTexto = 'codigoTexto';
   static final String tipoDocumento = 'tipoDocumento';
+  static final String geolocation = 'geolocation';
+  static final String geoAddress = 'geoAddress';
 
   static final String addressID = 'addressID';
   static final String totalAmount = 'totalAmount';

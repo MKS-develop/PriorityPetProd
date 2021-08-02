@@ -217,49 +217,51 @@ class _CitaHomeState extends State<CitaHome> {
                                 petModel: model,
                                 serviceModel: widget.serviceModel,
                                 aliadoModel: widget.aliadoModel,
-                                locationModel: widget.locationModel)),
+                                locationModel: widget.locationModel,
+                              defaultChoiceIndex:
+                              widget.defaultChoiceIndex,)),
                       );
                     },
                     child: Image.asset(
                       'diseñador/drawable/Grupo253.png',
                       fit: BoxFit.contain,
-                      height: 45,
+                      height: 50,
                     ),
                   ),
                 ),
               ],
             ),
-            Column(
-              children: [
-                Text(
-                  'Agendar',
-                  style: TextStyle(fontSize: 13),
-                ),
-                Text(
-                  'Videoconsulta',
-                  style: TextStyle(fontSize: 13),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => CitaAgenda(petModel: model, serviceModel: widget.serviceModel,
-                      //       aliadoModel: widget.aliadoModel,
-                      //       locationModel:
-                      //       widget.locationModel, especialidadesModel: widget.especialidadesModel)),
-                      // );
-                    },
-                    child: Image.asset(
-                      'diseñador/drawable/Grupo234.png',
-                      fit: BoxFit.contain,
-                      height: 45,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            // Column(
+            //   children: [
+            //     Text(
+            //       'Agendar',
+            //       style: TextStyle(fontSize: 13),
+            //     ),
+            //     Text(
+            //       'Videoconsulta',
+            //       style: TextStyle(fontSize: 13),
+            //     ),
+            //     Padding(
+            //       padding: const EdgeInsets.all(5.0),
+            //       child: GestureDetector(
+            //         onTap: () {
+            //           // Navigator.push(
+            //           //   context,
+            //           //   MaterialPageRoute(builder: (context) => CitaAgenda(petModel: model, serviceModel: widget.serviceModel,
+            //           //       aliadoModel: widget.aliadoModel,
+            //           //       locationModel:
+            //           //       widget.locationModel, especialidadesModel: widget.especialidadesModel)),
+            //           // );
+            //         },
+            //         child: Image.asset(
+            //           'diseñador/drawable/Grupo234.png',
+            //           fit: BoxFit.contain,
+            //           height: 45,
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
             Column(
               children: [
                 Text(
@@ -278,7 +280,7 @@ class _CitaHomeState extends State<CitaHome> {
                     child: Image.asset(
                       'diseñador/drawable/Grupo197.png',
                       fit: BoxFit.contain,
-                      height: 45,
+                      height: 50,
                     ),
                   ),
                 ),

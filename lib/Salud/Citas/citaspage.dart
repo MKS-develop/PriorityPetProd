@@ -532,6 +532,7 @@ class _CitasPageState extends State<CitasPage> {
                                                         _categoria = value;
                                                         ciudad = value;
                                                         _allResults = [];
+                                                        _resultsList = [];
                                                         MastersList();
                                                       });
                                                     },
@@ -835,7 +836,9 @@ class _CitasPageState extends State<CitasPage> {
                                             petModel: model,
                                             serviceModel: servicio,
                                             aliadoModel: aliado,
-                                            locationModel: location)),
+                                            locationModel: location,
+                                          defaultChoiceIndex:
+                                          widget.defaultChoiceIndex,)),
                                   );
                                 },
                                 child: Padding(

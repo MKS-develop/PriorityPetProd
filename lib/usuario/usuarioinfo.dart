@@ -5,6 +5,8 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -14,6 +16,7 @@ import 'package:pet_shop/Models/pet.dart';
 import 'package:pet_shop/Widgets/AppBarCustom.dart';
 import 'package:pet_shop/Widgets/customTextField.dart';
 import 'package:pet_shop/Config/config.dart';
+import 'package:pet_shop/Widgets/ktitle.dart';
 import 'package:pet_shop/Widgets/location.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import '../Widgets/loadingWidget.dart';
@@ -28,6 +31,7 @@ double width;
 class UsuarioInfo extends StatefulWidget {
   final PetModel petModel;
   final int defaultChoiceIndex;
+
 
   UsuarioInfo({this.petModel, this.defaultChoiceIndex});
   @override
@@ -53,7 +57,7 @@ class _UsuarioInfoState extends State<UsuarioInfo>
   final TextEditingController _tipoDocuTextEditingController =
   TextEditingController();
   final GlobalKey<FormState> _petformKey = GlobalKey<FormState>();
-
+  LocationResult _pickedLocation;
   DateTime selectedDate = DateTime.now();
   List<dynamic> ciudades = [];
   String _categoria;
@@ -64,7 +68,9 @@ class _UsuarioInfoState extends State<UsuarioInfo>
   String telefono;
   String petImageUrl = "";
   bool bienvenida = false;
+  String get apiKey => "AIzaSyDmb3pc-t9K9aC_mKnZBfIPQ7Il4OClCN0";
   String codigoTexto;
+  GeoPoint location;
 
   bool get wantKeepAlive => true;
   PickedFile _imageFile;
@@ -88,6 +94,7 @@ class _UsuarioInfoState extends State<UsuarioInfo>
     //       PetshopApp.sharedPreferences.getString(PetshopApp.codigoTexto);
     // });
     _getprK();
+    _getGeo();
     getCiudades(PetshopApp.sharedPreferences.getString(PetshopApp.userPais));
 
     if (PetshopApp.sharedPreferences.getString(PetshopApp.userNombre) != null) {
@@ -187,6 +194,15 @@ class _UsuarioInfoState extends State<UsuarioInfo>
       });
     });
   }
+  _getGeo() {
+    DocumentReference documentReference =
+    FirebaseFirestore.instance.collection("Dueños").doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
+    documentReference.get().then((dataSnapshot) {
+      setState(() {
+        location = (dataSnapshot.data()["location"]);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -194,6 +210,7 @@ class _UsuarioInfoState extends State<UsuarioInfo>
         _screenHeight = MediaQuery.of(context).size.height;
 
     return new Scaffold(
+
       appBar: AppBarCustom(context, widget.petModel, widget.defaultChoiceIndex),
       drawer: MyDrawer(),
       bottomNavigationBar: CustomBottomNavigationBar(petmodel: widget.petModel),
@@ -697,32 +714,77 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                       child: Container(
                         width: 360,
                         child: RaisedButton(
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                child: new ChoosePetAlertDialog(
-                                  message:
-                                  "Esta función estará disponible próximamente...",
-                                ));
+                          onPressed: () async {
+                            LocationResult result = await showLocationPicker(context, apiKey,
+                              // initialCenter: LatLng(32.4219971, -123.0839996),
+                              automaticallyAnimateToCurrentLocation: true,
+                              // mapStylePath: 'assets/mapStyle.json',
+                              myLocationButtonEnabled: true,
+                              requiredGPS: true,
+                              layersButtonEnabled: true,
+                              language: 'es',
+                              // countries: ['AE', 'NG']
+
+//                      resultCardAlignment: Alignment.bottomCenter,
+                              desiredAccuracy: LocationAccuracy.best,
+                            );
+                            print("result = $result");
+                            setState(() => _pickedLocation = result);
+                            // showDialog(
+                            //     context: context,
+                            //     child: new ChoosePetAlertDialog(
+                            //       message:
+                            //       "Esta función estará disponible próximamente...",
+                            //     ));
                             // Navigator.push(
                             //   context,
                             //   MaterialPageRoute(
-                            //       builder: (context) => Location()),
+                            //       builder: (context) => Location(petModel: widget.petModel, defaultChoiceIndex: widget.defaultChoiceIndex,)),
                             // );
                           },
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
                           color: Color(0xFF57419D),
                           padding: EdgeInsets.all(15.0),
-                          child: Text("Locación",
-                              style: TextStyle(
-                                  fontFamily: 'Product Sans',
-                                  color: Colors.white,
-                                  fontSize: 18.0)),
+                          child: Icon(Icons.map, color: Colors.white,),
+                          // Text("Locación",
+                          //     style: TextStyle(
+                          //         fontFamily: 'Product Sans',
+                          //         color: Colors.white,
+                          //         fontSize: 18.0)),
                         ),
                       ),
                     ),
-
+                    _pickedLocation != null ?
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Icon(Icons.location_on_rounded, color: primaryColor,),
+                          Expanded(
+                            child: Text(
+                              _pickedLocation.address,
+                              style: TextStyle(
+                                  fontSize: 16, color: Color(0xFF7F9D9D)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ): PetshopApp.sharedPreferences.getString(PetshopApp.geoAddress) != null ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Icon(Icons.location_on_rounded, color: primaryColor,),
+                          Expanded(
+                            child: Text(
+                              PetshopApp.sharedPreferences.getString(PetshopApp.geoAddress),
+                              style: TextStyle(
+                                  fontSize: 16, color: Color(0xFF7F9D9D)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ) : Container(),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
@@ -1039,6 +1101,9 @@ class _UsuarioInfoState extends State<UsuarioInfo>
         "codigoTexto": codigoTexto == null
             ? PetshopApp.sharedPreferences.getString(PetshopApp.codigoTexto)
             : codigoTexto,
+        "geolocation": _pickedLocation != null ? _pickedLocation.latLng.toString() : PetshopApp.sharedPreferences.getString(PetshopApp.geolocation),
+        "geoAddress": _pickedLocation != null ? _pickedLocation.address : PetshopApp.sharedPreferences.getString(PetshopApp.geoAddress),
+        "location": _pickedLocation != null ? new GeoPoint(_pickedLocation.latLng.latitude, _pickedLocation.latLng.longitude) : location,
       });
 
       PetshopApp.sharedPreferences.setString(
@@ -1053,12 +1118,16 @@ class _UsuarioInfoState extends State<UsuarioInfo>
           PetshopApp.sharedPreferences.getString(PetshopApp.userToken));
       PetshopApp.sharedPreferences.setString(PetshopApp.userCulqi, culqiId);
       PetshopApp.sharedPreferences
-          .setString(PetshopApp.tipoDocumento, _categoria);
+          .setString(PetshopApp.tipoDocumento, ciudad);
 
       if (codigoTexto != null) {
         PetshopApp.sharedPreferences
             .setString(PetshopApp.codigoTexto, codigoTexto);
       }
+        if (_pickedLocation != null) {
+          PetshopApp.sharedPreferences.setString(PetshopApp.geolocation, _pickedLocation.latLng.toString());
+          PetshopApp.sharedPreferences.setString(PetshopApp.geoAddress, _pickedLocation.address.toString());
+        }
 
       PetshopApp.sharedPreferences
           .setString(PetshopApp.userNombre, _nameTextEditingController.text);
@@ -1244,29 +1313,29 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                         },
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: RaisedButton(
-                        onPressed: () {
-                          Navigator.of(context, rootNavigator: true).pop();
-                        },
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5)),
-                        color: Color(0xFFEB9448),
-                        padding: EdgeInsets.fromLTRB(18, 0, 18, 0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text("Seleccionar fecha",
-                                style: TextStyle(
-                                    fontFamily: 'Product Sans',
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18.0)),
-                          ],
-                        ),
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: RaisedButton(
+                    //     onPressed: () {
+                    //       Navigator.of(context, rootNavigator: true).pop();
+                    //     },
+                    //     shape: RoundedRectangleBorder(
+                    //         borderRadius: BorderRadius.circular(5)),
+                    //     color: Color(0xFFEB9448),
+                    //     padding: EdgeInsets.fromLTRB(18, 0, 18, 0),
+                    //     child: Column(
+                    //       mainAxisAlignment: MainAxisAlignment.start,
+                    //       children: [
+                    //         Text("Seleccionar fecha",
+                    //             style: TextStyle(
+                    //                 fontFamily: 'Product Sans',
+                    //                 color: Colors.white,
+                    //                 fontWeight: FontWeight.bold,
+                    //                 fontSize: 18.0)),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 )),
           );

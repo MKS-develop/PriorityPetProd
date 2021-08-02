@@ -596,6 +596,8 @@ class _VideoAgendaState extends State<VideoAgenda> {
                                               value2: _value2,
                                               value: _value,
                                               date: date,
+                                          defaultChoiceIndex:
+                                          widget.defaultChoiceIndex,
                                             )),
                                   );
                                 } else if (widget.serviceModel.tipoAgenda ==
@@ -672,6 +674,8 @@ class _VideoAgendaState extends State<VideoAgenda> {
                                                 value2: _value2,
                                                 value: _value,
                                                 date: date,
+                                            defaultChoiceIndex:
+                                            widget.defaultChoiceIndex,
                                               )),
                                     );
                                   }

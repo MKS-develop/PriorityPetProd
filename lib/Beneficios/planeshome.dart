@@ -149,83 +149,109 @@ class _PlanesHomeState extends State<PlanesHome> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          .80,
-                                      child: Text(
-                                        'Estos son algunos de los beneficios que puedes tener comprando uno de nuestros planes.',
-                                        style: TextStyle(
-                                            fontSize: 15.0,
-                                            color: Color(0xFF1A3E4D)),
-                                        // )
-                                      ),
-                                    ),
+                                    // Container(
+                                    //   width: MediaQuery.of(context).size.width *
+                                    //       .80,
+                                    //   child: Text(
+                                    //     'Sabemos que tu mascota forma parte de tu familia y siempre quieres darle lo mejor.',
+                                    //     style: TextStyle(
+                                    //         fontSize: 15.0,
+                                    //         color: Color(0xFF1A3E4D)),
+                                    //     // )
+                                    //   ),
+                                    // ),
                                     Container(
                                       width: MediaQuery.of(context).size.width *
                                           .80,
                                       child: Column(
+                                       crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    15, 20, 0, 5),
-                                                child: Text(
-                                                  "Descuentos en servicios y productos",
-                                                  style: TextStyle(
-                                                    color: Color(0xFF1A3E4D),
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              'HOLA PETLOVER,',
+                                              style: TextStyle(
+                                                  fontSize: 20.0,
+                                                  color: Color(0xFF1A3E4D),
+                                                  fontWeight: FontWeight.bold,),
+                                              // )
+                                            ),
                                           ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    15, 5, 0, 5),
-                                                child: Text(
-                                                  "Historial médico completo",
-                                                  style: TextStyle(
-                                                    color: Color(0xFF1A3E4D),
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              'Sabemos que tu mascota forma parte de tu familia y siempre quieres darle lo mejor.',
+                                              style: TextStyle(
+                                                  fontSize: 15.0,
+                                                  color: Color(0xFF1A3E4D)),
+                                              // )
+                                            ),
                                           ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    15, 5, 0, 20),
-                                                child: Text(
-                                                  "Chip con GPS para tu mascota",
-                                                  style: TextStyle(
-                                                    color: Color(0xFF1A3E4D),
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
+                                          // Row(
+                                          //   mainAxisAlignment:
+                                          //       MainAxisAlignment.start,
+                                          //   children: [
+                                          //     Padding(
+                                          //       padding: EdgeInsets.fromLTRB(
+                                          //           15, 20, 0, 5),
+                                          //       child: Text(
+                                          //         "Descuentos en servicios y productos",
+                                          //         style: TextStyle(
+                                          //           color: Color(0xFF1A3E4D),
+                                          //           fontSize: 16,
+                                          //           fontWeight: FontWeight.bold,
+                                          //         ),
+                                          //       ),
+                                          //     ),
+                                          //   ],
+                                          // ),
+                                          // Row(
+                                          //   mainAxisAlignment:
+                                          //       MainAxisAlignment.start,
+                                          //   children: [
+                                          //     Padding(
+                                          //       padding: EdgeInsets.fromLTRB(
+                                          //           15, 5, 0, 5),
+                                          //       child: Text(
+                                          //         "Historial médico completo",
+                                          //         style: TextStyle(
+                                          //           color: Color(0xFF1A3E4D),
+                                          //           fontSize: 16,
+                                          //           fontWeight: FontWeight.bold,
+                                          //         ),
+                                          //       ),
+                                          //     ),
+                                          //   ],
+                                          // ),
+                                          // Row(
+                                          //   mainAxisAlignment:
+                                          //       MainAxisAlignment.start,
+                                          //   children: [
+                                          //     Padding(
+                                          //       padding: EdgeInsets.fromLTRB(
+                                          //           15, 5, 0, 20),
+                                          //       child: Text(
+                                          //         "Chip con GPS para tu mascota",
+                                          //         style: TextStyle(
+                                          //           color: Color(0xFF1A3E4D),
+                                          //           fontSize: 16,
+                                          //           fontWeight: FontWeight.bold,
+                                          //         ),
+                                          //       ),
+                                          //     ),
+                                          //   ],
+                                          // ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              'Por eso te mostramos los planes y beneficios que tenemos para tu mascota:',
+                                              style: TextStyle(
+                                                  fontSize: 15.0,
+                                                  color: Color(0xFF1A3E4D)),
+                                              // )
+                                            ),
                                           ),
-                                          Text(
-                                            'El precio de cada plan está mostrado mensualmente',
-                                            style: TextStyle(
-                                                fontSize: 15.0,
-                                                color: Color(0xFF1A3E4D)),
-                                            // )
-                                          ),
+                                          SizedBox(height: 110,),
                                           StreamBuilder<QuerySnapshot>(
                                               stream: FirebaseFirestore.instance
                                                   .collection("Planes")
@@ -557,12 +583,13 @@ class _PlanesHomeState extends State<PlanesHome> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
               color: Color(0xFFEB9448),
-              padding: EdgeInsets.fromLTRB(18, 5, 18, 5),
+              padding: EdgeInsets.fromLTRB(18, 13, 18, 13),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
                     width: 100,
+                    // height: 50,
                     child: Text(plan.planid,
                         style: TextStyle(
                             fontFamily: 'Product Sans',
@@ -570,32 +597,32 @@ class _PlanesHomeState extends State<PlanesHome> {
                             fontWeight: FontWeight.bold,
                             fontSize: 17.0)),
                   ),
-                  Row(
-                    children: [
-                      Text(plan.descuento.toString(),
-                          style: TextStyle(
-                              fontFamily: 'Product Sans', fontSize: 17.0)),
-                      Text("% Desct.",
-                          style: TextStyle(
-                              fontFamily: 'Product Sans', fontSize: 17.0)),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text("S/",
-                          style: TextStyle(
-                              fontFamily: 'Product Sans',
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 17.0)),
-                      Text(plan.montoMensual.toString(),
-                          style: TextStyle(
-                              fontFamily: 'Product Sans',
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 17.0)),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     Text(plan.descuento.toString(),
+                  //         style: TextStyle(
+                  //             fontFamily: 'Product Sans', fontSize: 17.0)),
+                  //     Text("% Desct.",
+                  //         style: TextStyle(
+                  //             fontFamily: 'Product Sans', fontSize: 17.0)),
+                  //   ],
+                  // ),
+                  // Row(
+                  //   children: [
+                  //     Text("S/",
+                  //         style: TextStyle(
+                  //             fontFamily: 'Product Sans',
+                  //             color: Colors.white,
+                  //             fontWeight: FontWeight.bold,
+                  //             fontSize: 17.0)),
+                  //     Text(plan.montoMensual.toString(),
+                  //         style: TextStyle(
+                  //             fontFamily: 'Product Sans',
+                  //             color: Colors.white,
+                  //             fontWeight: FontWeight.bold,
+                  //             fontSize: 17.0)),
+                  //   ],
+                  // ),
                 ],
               ),
             ),

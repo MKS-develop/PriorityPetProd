@@ -21,6 +21,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:http/http.dart' as http;
 
 class AutenticacionPage extends StatefulWidget {
+
   @override
   _AutenticacionPageState createState() => _AutenticacionPageState();
 }
@@ -43,6 +44,7 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
   bool _value = false;
   bool bienvenida;
   String errorMessage;
+
   String _paises;
   var referidos = [];
   String productId = DateTime.now().millisecondsSinceEpoch.toString();
@@ -1294,6 +1296,10 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
           PetshopApp.codigoTexto, dataSnapshot.data()[PetshopApp.codigoTexto]);
       PetshopApp.sharedPreferences.setString(PetshopApp.tipoDocumento,
           dataSnapshot.data()[PetshopApp.tipoDocumento]);
+      PetshopApp.sharedPreferences.setString(PetshopApp.geoAddress,
+          dataSnapshot.data()[PetshopApp.geoAddress]);
+      PetshopApp.sharedPreferences.setString(PetshopApp.geolocation,
+          dataSnapshot.data()[PetshopApp.geolocation]);
 
       PetshopApp.sharedPreferences.setString(PetshopApp.userTelefono,
           dataSnapshot.data()[PetshopApp.userTelefono]);

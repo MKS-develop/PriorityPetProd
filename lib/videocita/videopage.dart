@@ -728,7 +728,9 @@ class _VideoPageState extends State<VideoPage> {
                                             petModel: model,
                                             serviceModel: servicio,
                                             aliadoModel: aliado,
-                                            locationModel: location)),
+                                            locationModel: location,
+                                          defaultChoiceIndex:
+                                          widget.defaultChoiceIndex,)),
                                   );
                                 },
                                 child: Padding(

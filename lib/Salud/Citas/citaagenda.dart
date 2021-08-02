@@ -622,6 +622,8 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                               value2: _value2,
                                               value: _value,
                                               date: date,
+                                          defaultChoiceIndex:
+                                          widget.defaultChoiceIndex,
                                             )),
                                   );
                                 } else if (widget.serviceModel.tipoAgenda ==
@@ -699,6 +701,8 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                                 value2: _value2,
                                                 value: _value,
                                                 date: date,
+                                            defaultChoiceIndex:
+                                            widget.defaultChoiceIndex,
                                               )),
                                     );
                                   }

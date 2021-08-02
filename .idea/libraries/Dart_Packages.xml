@@ -23,6 +23,13 @@
             </list>
           </value>
         </entry>
+        <entry key="android_intent">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/android_intent-0.3.7+7/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="archive">
           <value>
             <list>
@@ -366,6 +373,27 @@
             </list>
           </value>
         </entry>
+        <entry key="geolocator">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/geolocator-6.2.1/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="geolocator_platform_interface">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/geolocator_platform_interface-1.0.9/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="geolocator_web">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/geolocator_web-1.0.1/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="getflutter">
           <value>
             <list>
@@ -377,6 +405,27 @@
           <value>
             <list>
               <option value="$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/glob-1.2.0/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="google_map_location_picker">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/google_map_location_picker-4.1.6/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="google_maps_flutter">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/google_maps_flutter-1.2.0/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="google_maps_flutter_platform_interface">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/google_maps_flutter_platform_interface-1.2.0/lib" />
             </list>
           </value>
         </entry>
@@ -517,6 +566,13 @@
           <value>
             <list>
               <option value="$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/package_config-1.9.3/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="package_info">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/package_info-0.4.3+4/lib" />
             </list>
           </value>
         </entry>
@@ -702,6 +758,13 @@
             </list>
           </value>
         </entry>
+        <entry key="stream_transform">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/stream_transform-1.2.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="string_scanner">
           <value>
             <list>
@@ -778,6 +841,7 @@
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/_fe_analyzer_shared-7.0.0/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/age-0.0.1/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/analyzer-0.39.17/lib" />
+      <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/android_intent-0.3.7+7/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/archive-2.0.13/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/args-1.6.0/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/async-2.5.0-nullsafety.1/lib" />
@@ -823,8 +887,14 @@
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_share_me-0.9.2/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_staggered_grid_view-0.3.4/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/fluttertoast-7.1.8/lib" />
+      <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/geolocator-6.2.1/lib" />
+      <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/geolocator_platform_interface-1.0.9/lib" />
+      <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/geolocator_web-1.0.1/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/getflutter-1.1.3/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/glob-1.2.0/lib" />
+      <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/google_map_location_picker-4.1.6/lib" />
+      <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/google_maps_flutter-1.2.0/lib" />
+      <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/google_maps_flutter_platform_interface-1.2.0/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-4.5.9/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in_platform_interface-1.1.2/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in_web-0.9.2/lib" />
@@ -845,6 +915,7 @@
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/node_interop-1.2.1/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/node_io-1.2.0/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/package_config-1.9.3/lib" />
+      <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/package_info-0.4.3+4/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/path-1.8.0-nullsafety.1/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-0.5.0+1/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-0.0.1+2/lib" />
@@ -870,6 +941,7 @@
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/source_span-1.8.0-nullsafety.2/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/stack_trace-1.10.0-nullsafety.1/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/stream_channel-2.1.0-nullsafety.1/lib" />
+      <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/stream_transform-1.2.0/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/string_scanner-1.1.0-nullsafety.1/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/term_glyph-1.2.0-nullsafety.1/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/test_api-0.2.19-nullsafety.2/lib" />

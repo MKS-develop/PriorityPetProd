@@ -530,7 +530,7 @@ class _AlimentoHomeState extends State<AlimentoHome> {
       child: Column(
         children: [
           Container(
-            height: 250.0,
+            height: 260.0,
             width: MediaQuery.of(context).size.width * 0.5,
             child: StreamBuilder(
                 stream: FirebaseFirestore.instance

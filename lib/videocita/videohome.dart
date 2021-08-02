@@ -169,7 +169,8 @@ class _VideoHomeState extends State<VideoHome> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                'S/',
+                PetshopApp.sharedPreferences
+                    .getString(PetshopApp.simboloMoneda),
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -216,7 +217,9 @@ class _VideoHomeState extends State<VideoHome> {
                                 petModel: model,
                                 serviceModel: widget.serviceModel,
                                 aliadoModel: widget.aliadoModel,
-                                locationModel: widget.locationModel)),
+                                locationModel: widget.locationModel,
+                              defaultChoiceIndex:
+                              widget.defaultChoiceIndex,)),
                       );
                     },
                     child: Image.asset(

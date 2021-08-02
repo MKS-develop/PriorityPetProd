@@ -228,13 +228,13 @@ class _ReclamoPageState extends State<ReclamoPage> {
         .doc(widget.reclamoModel.id)
         .delete()
         .then((value) {
-      Navigator.push(
+      Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
               builder: (context) => ReclamosPage(
                     petModel: widget.petModel,
-                    defaultChoiceIndex: widget.defaultChoiceIndex,
-                  )));
+                    defaultChoiceIndex: widget.defaultChoiceIndex,),
+          ),  (route) => false,);
     });
   }
 }

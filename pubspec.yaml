@@ -1,7 +1,7 @@
 name: pet_shop
 description: petshop
 
-version: 1.0.25+25
+version: 1.0.26+26
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -34,8 +34,8 @@ dependencies:
   
   getflutter: ^1.0.11
   email_validator: ^1.0.4
-#  google_maps_flutter: ^0.5.30
-#  google_map_location_picker: ^3.3.4
+  google_maps_flutter: any
+  google_map_location_picker: any
   flutter_localizations:
     sdk: flutter
   charts_flutter: ^0.10.0
