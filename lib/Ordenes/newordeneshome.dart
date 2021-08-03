@@ -98,6 +98,7 @@ class _NewOrdenesHomeState extends State<NewOrdenesHome> {
                             isEqualTo: PetshopApp.sharedPreferences
                                 .getString(PetshopApp.userUID)
                                 .toString())
+                        .where('pais', isEqualTo: PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
                         .orderBy('createdOn', descending: true)
                         .snapshots(),
                     builder: (context, dataSnapshot) {

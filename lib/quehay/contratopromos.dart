@@ -306,7 +306,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
                               ),
                               Text(
                                 (pro.delivery).toString() != 'null'
-                                    ? (pro.delivery).toString()
+                                    ? (pro.delivery).toStringAsFixed(2)
                                     : '0',
                                 style: TextStyle(
                                   color: Color(0xFF57419D),
@@ -729,7 +729,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
                               ),
                               Text(
                                 (pro.precio + recojo + delivery - totalPet)
-                                    .toString(),
+                                    .toStringAsFixed(2),
                                 style: TextStyle(
                                   color: Color(0xFF57419D),
                                   fontSize: 22,

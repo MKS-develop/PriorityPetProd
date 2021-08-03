@@ -250,7 +250,7 @@ class _DetallesPromoState extends State<DetallesPromo> {
                             Text(
                                 (widget.promotionModel.precio).toString() !=
                                         'null'
-                                    ? (widget.promotionModel.precio).toString()
+                                    ? (widget.promotionModel.precio).toStringAsFixed(2)
                                     : '0',
                                 style: TextStyle(
                                     fontSize: 20,
@@ -279,6 +279,8 @@ class _DetallesPromoState extends State<DetallesPromo> {
                                                   petModel: model,
                                                   promotionModel: pro,
                                                   aliadoModel: ali,
+                                                  defaultChoiceIndex: widget
+                                                      .defaultChoiceIndex,
                                                 )),
                                       );
                                     } else {
