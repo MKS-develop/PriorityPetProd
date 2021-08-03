@@ -364,8 +364,7 @@ class _ConfirmCancelState extends State<ConfirmCancel> {
       var orden = widget.orderModel.oid;
       var precio = widget.orderModel.precio;
       showDialog(
-        context: context,
-        child: AlertDialog(
+        builder: (context) => AlertDialog(
           // title: Text('Su pago ha sido aprobado.'),
           content: SingleChildScrollView(
             child: ListBody(
@@ -393,7 +392,7 @@ class _ConfirmCancelState extends State<ConfirmCancel> {
               ],
             ),
           ),
-        ),
+        ), context: context,
       );
     });
     Navigator.push(
@@ -408,8 +407,7 @@ class _ConfirmCancelState extends State<ConfirmCancel> {
 
   confirmaCancel() {
     showDialog(
-        context: context,
-        child: AlertDialog(
+        builder: (context) => AlertDialog(
             // title: Text('Su pago ha sido aprobado.'),
             content: SingleChildScrollView(
                 child: ListBody(children: <Widget>[
@@ -430,7 +428,7 @@ class _ConfirmCancelState extends State<ConfirmCancel> {
                   ),
                 ],
               )),
-        ]))));
+        ]))), context: context);
   }
 
   Widget sourceInfo(

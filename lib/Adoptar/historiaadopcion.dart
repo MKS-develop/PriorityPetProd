@@ -495,7 +495,7 @@ class _HistoriaAdopcionState extends State<HistoriaAdopcion> {
                                                     physics:
                                                         NeverScrollableScrollPhysics(),
                                                     itemCount: dataSnapshot
-                                                        .data.documents.length,
+                                                        .data.docs.length,
                                                     shrinkWrap: true,
                                                     itemBuilder: (
                                                       context,
@@ -624,7 +624,7 @@ class _HistoriaAdopcionState extends State<HistoriaAdopcion> {
                                                     physics:
                                                         NeverScrollableScrollPhysics(),
                                                     itemCount: dataSnapshot
-                                                        .data.documents.length,
+                                                        .data.docs.length,
                                                     shrinkWrap: true,
                                                     itemBuilder: (
                                                       context,
@@ -912,7 +912,7 @@ class _HistoriaAdopcionState extends State<HistoriaAdopcion> {
                                                     physics:
                                                         NeverScrollableScrollPhysics(),
                                                     itemCount: dataSnapshot
-                                                        .data.documents.length,
+                                                        .data.docs.length,
                                                     shrinkWrap: true,
                                                     itemBuilder: (
                                                       context,
@@ -1057,7 +1057,7 @@ class _HistoriaAdopcionState extends State<HistoriaAdopcion> {
                                                     physics:
                                                         NeverScrollableScrollPhysics(),
                                                     itemCount: dataSnapshot
-                                                        .data.documents.length,
+                                                        .data.docs.length,
                                                     shrinkWrap: true,
                                                     itemBuilder: (
                                                       context,

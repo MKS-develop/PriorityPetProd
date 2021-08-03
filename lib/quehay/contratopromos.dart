@@ -47,6 +47,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
   int delivery = 0;
   int _defaultChoiceIndex;
   int _2defaultChoiceIndex;
+  dynamic _totalPrice;
   bool _value = false;
   bool _value2 = false;
   AliadoModel ali;
@@ -534,8 +535,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                     widget.promotionModel.tipoAgenda ==
                                         'Free') {
                                   showDialog(
-                                    context: context,
-                                    child: AlertDialog(
+                                    builder: (context) => AlertDialog(
                                       title: Row(
                                         children: [
                                           Icon(
@@ -551,7 +551,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                           ),
                                         ],
                                       ),
-                                    ),
+                                    ), context: context,
                                   );
                                 } else if (fecha != null &&
                                     widget.promotionModel.tipoAgenda ==
@@ -586,8 +586,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                     'Slots') {
                                   if (hora == null) {
                                     showDialog(
-                                      context: context,
-                                      child: AlertDialog(
+                                      builder: (context) => AlertDialog(
                                         title: Row(
                                           children: [
                                             Icon(
@@ -603,13 +602,12 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                             ),
                                           ],
                                         ),
-                                      ),
+                                      ), context: context,
                                     );
                                   }
                                   if (fecha == null) {
                                     showDialog(
-                                      context: context,
-                                      child: AlertDialog(
+                                      builder: (context) => AlertDialog(
                                         title: Row(
                                           children: [
                                             Icon(
@@ -625,7 +623,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                             ),
                                           ],
                                         ),
-                                      ),
+                                      ), context: context,
                                     );
                                   }
                                   if (hora != null && fecha != null) {
@@ -660,15 +658,42 @@ class _ContratoPromosState extends State<ContratoPromos> {
 
                                 if (widget.promotionModel.tipoPromocion ==
                                     'Producto') {
-                                  AddOrder(
-                                      widget.promotionModel.promoid, context);
+                                  _totalPrice = (pro.precio +
+                                      recojo +
+                                      delivery -
+                                      totalPet)
+                                  ;
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => StoreHome(
-                                              petModel: model,
-                                            )),
+                                        builder: (context) => PaymentPage(
+                                          petModel: widget.petModel,
+                                          aliadoModel: widget.aliadoModel,
+                                          promotionModel:
+                                          widget.promotionModel,
+                                          tituloCategoria:
+                                          tituloCategoria,
+                                          totalPrice: _totalPrice,
+                                          hora: hora,
+                                          fecha: fecha,
+                                          recojo: recojo,
+                                          delivery: delivery,
+                                          value2: _value2,
+                                          value: _value,
+                                          date: date,
+                                          defaultChoiceIndex: widget.defaultChoiceIndex,
+
+                                        )),
                                   );
+                                  // AddOrder(
+                                  //     widget.promotionModel.promoid, context);
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //       builder: (context) => StoreHome(
+                                  //             petModel: model,
+                                  //           )),
+                                  // );
                                 }
                               },
                               shape: RoundedRectangleBorder(
@@ -825,7 +850,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
     var databaseReference =
         FirebaseFirestore.instance.collection('Ordenes').doc(productId);
 
-    await databaseReference.collection('Items').doc(itemID).setData({
+    await databaseReference.collection('Items').doc(itemID).set({
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
       "nombreComercial": widget.aliadoModel.nombreComercial,
       "petthumbnailUrl": widget.petModel.petthumbnailUrl,
@@ -845,7 +870,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
       "nombre": widget.petModel.nombre,
     });
 
-    await databaseReference.setData({
+    await databaseReference.set({
       "aliadoId": widget.promotionModel.aliadoid,
       "oid": productId,
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),

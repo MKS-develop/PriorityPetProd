@@ -629,8 +629,7 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
 
   popUp() {
     showDialog(
-        context: context,
-        child: AlertDialog(
+        builder: (context) => AlertDialog(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0)),
             // title: Text('Su pago ha sido aprobado.'),
@@ -713,13 +712,12 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                       ),
                     ],
                   )),
-            ]))));
+            ]))), context: context);
   }
 
   confirmaCancel() {
     showDialog(
-        context: context,
-        child: AlertDialog(
+        builder: (context) => AlertDialog(
             // title: Text('Su pago ha sido aprobado.'),
             content: SingleChildScrollView(
                 child: ListBody(children: <Widget>[
@@ -740,7 +738,7 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                   ),
                 ],
               )),
-        ]))));
+        ]))), context: context);
   }
 
   showConfirmationDialog(BuildContext context) {

@@ -246,7 +246,7 @@ class _ServicioDetalleState extends State<ServicioDetalle> {
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
         .collection('Cart')
         .doc(productId)
-        .setData({
+        .set({
       "aliadoId": widget.servicioModel.aliadoId,
       "iId": productId,
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),

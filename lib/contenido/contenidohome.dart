@@ -236,7 +236,7 @@ class _ContenidoHomeState extends State<ContenidoHome> {
                                     .collection('Likes')
                                     .doc(PetshopApp.sharedPreferences
                                         .getString(PetshopApp.userUID))
-                                    .setData({
+                                    .set({
                                   'like': false,
                                   'uid': PetshopApp.sharedPreferences
                                       .getString(PetshopApp.userUID),
@@ -248,7 +248,7 @@ class _ContenidoHomeState extends State<ContenidoHome> {
                                 var likeRef = db
                                     .collection("Contenido")
                                     .doc(widget.contenidoModel.postId);
-                                likeRef.updateData({
+                                likeRef.update({
                                   'likes': FieldValue.increment(-1),
                                 });
                               } else {
@@ -260,7 +260,7 @@ class _ContenidoHomeState extends State<ContenidoHome> {
                                     .collection('Likes')
                                     .doc(PetshopApp.sharedPreferences
                                         .getString(PetshopApp.userUID))
-                                    .setData({
+                                    .set({
                                   'like': true,
                                   'uid': PetshopApp.sharedPreferences
                                       .getString(PetshopApp.userUID),
@@ -272,7 +272,7 @@ class _ContenidoHomeState extends State<ContenidoHome> {
                                 var likeRef = db
                                     .collection("Contenido")
                                     .doc(widget.contenidoModel.postId);
-                                likeRef.updateData({
+                                likeRef.update({
                                   'likes': FieldValue.increment(1),
                                 });
                               }
@@ -463,7 +463,7 @@ class _ContenidoHomeState extends State<ContenidoHome> {
         .doc(widget.contenidoModel.postId)
         .collection('Comentarios')
         .doc(productId)
-        .setData({
+        .set({
       "usuarioNombre":
           PetshopApp.sharedPreferences.getString(PetshopApp.userName),
       "comentarioId": productId,

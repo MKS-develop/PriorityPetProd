@@ -48,11 +48,11 @@ class _ContratoServicioState extends State<ContratoServicio> {
   final pushProvider = PushNotificationsProvider();
   bool _checked = false;
   Timestamp date;
-  double totalPet = 0;
+  dynamic totalPet = 0;
   String hora;
   String fecha = '0';
-  int recojo = 0;
-  int delivery = 0;
+  dynamic recojo = 0;
+  dynamic delivery = 0;
   int _defaultChoiceIndex;
   int _2defaultChoiceIndex;
   bool _value = false;
@@ -103,8 +103,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
     });
 
     _getPetpoints();
-    http.get(
-        'https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=jesusgsb@gmail.com');
+    http.get(Uri.parse('https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=jesusgsb@gmail.com'));
   }
 
   // eliminarFecha(){
@@ -132,13 +131,13 @@ class _ContratoServicioState extends State<ContratoServicio> {
 
   sendEmail(_email, nombreCompleto, orderId, aliadoAvatar) async {
     await http.get(
-        'https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=$_email&username=$nombreCompleto&orderId=$orderId&logoAliado=$aliadoAvatar');
+        Uri.parse('https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=$_email&username=$nombreCompleto&orderId=$orderId&logoAliado=$aliadoAvatar'));
     print('$_email $nombreCompleto $orderId $aliadoAvatar');
   }
 
   sendEmail2(_email, nombreCompleto) async {
     await http.get(
-        'https://us-central1-priority-pet.cloudfunctions.net/sendWelcomeEmailDuenos?dest=$_email&username=$nombreCompleto');
+        Uri.parse('https://us-central1-priority-pet.cloudfunctions.net/sendWelcomeEmailDuenos?dest=$_email&username=$nombreCompleto'));
   }
 
   ScrollController controller = ScrollController();
@@ -284,9 +283,9 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                 ),
                               ),
                               Text(
-                                (widget.serviceModel.domicilio).toString() !=
+                                (widget.serviceModel.domicilio).toStringAsFixed(2) !=
                                         'null'
-                                    ? (widget.serviceModel.domicilio).toString()
+                                    ? (widget.serviceModel.domicilio).toStringAsFixed(2)
                                     : '0',
                                 style: TextStyle(
                                   color: Color(0xFF57419D),
@@ -345,9 +344,9 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                 ),
                               ),
                               Text(
-                                (widget.serviceModel.delivery).toString() !=
+                                (widget.serviceModel.delivery).toStringAsFixed(2) !=
                                         'null'
-                                    ? (widget.serviceModel.delivery).toString()
+                                    ? (widget.serviceModel.delivery).toStringAsFixed(2)
                                     : '0',
                                 style: TextStyle(
                                   color: Color(0xFF57419D),
@@ -595,8 +594,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                 if (fecha == null &&
                                     widget.serviceModel.tipoAgenda == 'Free') {
                                   showDialog(
-                                    context: context,
-                                    child: AlertDialog(
+                                    builder: (context) => AlertDialog(
                                       title: Row(
                                         children: [
                                           Icon(
@@ -612,7 +610,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                           ),
                                         ],
                                       ),
-                                    ),
+                                    ), context: context,
                                   );
                                 } else if (fecha != null &&
                                     widget.serviceModel.tipoAgenda == 'Free') {
@@ -626,10 +624,10 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => PaymentPage(
-                                            petModel: model,
-                                            aliadoModel: ali,
-                                            serviceModel: servicio,
-                                            locationModel: location,
+                                            petModel: widget.petModel,
+                                            aliadoModel: widget.aliadoModel,
+                                            serviceModel: widget.serviceModel,
+                                            locationModel: widget.locationModel,
                                             tituloCategoria: tituloCategoria,
                                             totalPrice: totalPrice,
                                             hora: hora,
@@ -646,8 +644,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                     'Slots') {
                                   if (hora == null) {
                                     showDialog(
-                                      context: context,
-                                      child: AlertDialog(
+                                      builder: (context) => AlertDialog(
                                         title: Row(
                                           children: [
                                             Icon(
@@ -663,13 +660,12 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                             ),
                                           ],
                                         ),
-                                      ),
+                                      ), context: context,
                                     );
                                   }
                                   if (fecha == null) {
                                     showDialog(
-                                      context: context,
-                                      child: AlertDialog(
+                                      builder: (context) => AlertDialog(
                                         title: Row(
                                           children: [
                                             Icon(
@@ -685,7 +681,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                             ),
                                           ],
                                         ),
-                                      ),
+                                      ), context: context,
                                     );
                                   }
                                   if (hora != null && fecha != null) {
@@ -700,12 +696,11 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => PaymentPage(
-                                                petModel: model,
-                                                aliadoModel: ali,
-                                                serviceModel: servicio,
-                                                locationModel: location,
-                                                tituloCategoria:
-                                                    tituloCategoria,
+                                              petModel: widget.petModel,
+                                              aliadoModel: widget.aliadoModel,
+                                              serviceModel: widget.serviceModel,
+                                              locationModel: widget.locationModel,
+                                              tituloCategoria: tituloCategoria,
                                                 totalPrice: totalPrice,
                                                 hora: hora,
                                                 fecha: fecha,
@@ -714,6 +709,8 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                                 value2: _value2,
                                                 value: _value,
                                                 date: date,
+                                              defaultChoiceIndex:
+                                              widget.defaultChoiceIndex
                                               )),
                                     );
                                   }
@@ -751,7 +748,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                         recojo +
                                         delivery -
                                         totalPet)
-                                    .toString(),
+                                    .toStringAsFixed(2),
                                 style: TextStyle(
                                   color: Color(0xFF57419D),
                                   fontSize: 22,
@@ -877,7 +874,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
     var databaseReference =
         FirebaseFirestore.instance.collection('Ordenes').doc(productId);
 
-    databaseReference.collection('Items').doc(itemID).setData({
+    databaseReference.collection('Items').doc(itemID).set({
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
       "nombreComercial": widget.aliadoModel.nombreComercial,
       "petthumbnailUrl": widget.petModel.petthumbnailUrl,
@@ -897,7 +894,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
       "domicilio": recojo,
       "nombre": widget.petModel.nombre,
     });
-    databaseReference.setData({
+    databaseReference.set({
       "aliadoId": widget.serviceModel.aliadoId,
       "oid": productId,
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
@@ -916,6 +913,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
       "user": PetshopApp.sharedPreferences.getString(PetshopApp.userName),
       "nombreComercial": widget.aliadoModel.nombreComercial,
       "localidadId": widget.locationModel.localidadId,
+      "pais": PetshopApp.sharedPreferences.getString(PetshopApp.userPais),
     });
     // then((value) => databaseReference.snapshots().listen(onData));
     // sendEmail(

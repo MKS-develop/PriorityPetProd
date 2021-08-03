@@ -615,7 +615,7 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                                 PetshopApp.sharedPreferences
                                                         .getString(PetshopApp
                                                             .simboloMoneda) +
-                                                    product.precio.toString(),
+                                                    product.precio.toStringAsFixed(2),
                                                 style: TextStyle(
                                                     fontSize: 15,
                                                     color: Color(0xFF57419D),
@@ -882,7 +882,7 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                                     fontWeight:
                                                         FontWeight.bold),
                                                 textAlign: TextAlign.left),
-                                            Text(product.precio.toString(),
+                                            Text(product.precio.toStringAsFixed(2),
                                                 style: TextStyle(
                                                     fontSize: 13,
                                                     fontWeight:

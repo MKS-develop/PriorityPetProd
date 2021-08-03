@@ -1,20 +1,15 @@
 import 'dart:io';
 
-import 'package:age/age.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/Models/expedientechart.dart';
 import 'package:pet_shop/Models/temperaturachart.dart';
 import 'package:pet_shop/Store/storehome.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
-import 'package:pet_shop/Widgets/customTextField.dart';
-import 'package:pet_shop/Widgets/customTextIconField.dart';
 import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 

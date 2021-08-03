@@ -48,8 +48,8 @@ class _CartPageState extends State<CartPage> {
         .collection('Dueños')
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
         .collection('Cart')
-        .getDocuments();
-    List<DocumentSnapshot> _myDocCount = _myDoc.documents;
+        .get();
+    List<DocumentSnapshot> _myDocCount = _myDoc.docs;
     print(_myDocCount.length);
     // Count of Documents in Collection
   }
@@ -572,7 +572,7 @@ class _CartPageState extends State<CartPage> {
         .collection('Dueños')
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
         .collection('Cart');
-    var querySnapshot = await respectsQuery.getDocuments();
+    var querySnapshot = await respectsQuery.get();
     var totalEquals = querySnapshot.docs.length;
     print(totalEquals);
     return totalEquals;

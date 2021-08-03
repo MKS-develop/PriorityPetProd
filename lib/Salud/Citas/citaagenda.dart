@@ -342,7 +342,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
                           ),
                         ),
                         Text(
-                          (widget.serviceModel.precio).toString(),
+                          (widget.serviceModel.precio).toStringAsFixed(2),
                           style: TextStyle(
                             color: Color(0xFF57419D),
                             fontSize: 22,
@@ -578,8 +578,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                 if (fecha == null &&
                                     widget.serviceModel.tipoAgenda == 'Free') {
                                   showDialog(
-                                    context: context,
-                                    child: AlertDialog(
+                                    builder: (context) => AlertDialog(
                                       title: Row(
                                         children: [
                                           Icon(
@@ -595,7 +594,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                           ),
                                         ],
                                       ),
-                                    ),
+                                    ), context: context,
                                   );
                                 } else if (fecha != null &&
                                     widget.serviceModel.tipoAgenda == 'Free') {
@@ -609,10 +608,10 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => PaymentPage(
-                                              petModel: model,
-                                              aliadoModel: ali,
+                                              petModel: widget.petModel,
+                                              aliadoModel: widget.aliadoModel,
                                               serviceModel: widget.serviceModel,
-                                              locationModel: location,
+                                              locationModel: widget.locationModel,
                                               tituloCategoria: tituloCategoria,
                                               totalPrice: totalPrice,
                                               hora: hora,
@@ -630,8 +629,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                     'Slots') {
                                   if (hora == null) {
                                     showDialog(
-                                      context: context,
-                                      child: AlertDialog(
+                                      builder: (context) => AlertDialog(
                                         title: Row(
                                           children: [
                                             Icon(
@@ -647,13 +645,12 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                             ),
                                           ],
                                         ),
-                                      ),
+                                      ), context: context,
                                     );
                                   }
                                   if (fecha == null) {
                                     showDialog(
-                                      context: context,
-                                      child: AlertDialog(
+                                      builder: (context) => AlertDialog(
                                         title: Row(
                                           children: [
                                             Icon(
@@ -669,7 +666,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                             ),
                                           ],
                                         ),
-                                      ),
+                                      ), context: context,
                                     );
                                   }
                                   if (hora != null && fecha != null) {

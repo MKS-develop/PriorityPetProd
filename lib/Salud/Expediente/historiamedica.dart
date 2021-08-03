@@ -902,21 +902,21 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                                                   for (int i = 0;
                                                       i <
                                                           snapshot.data
-                                                              .documents.length;
+                                                              .docs.length;
                                                       i++) {
                                                     DocumentSnapshot snap =
                                                         snapshot
-                                                            .data.documents[i];
+                                                            .data.docs[i];
                                                     vacunasItems.add(
                                                       DropdownMenuItem(
                                                         child: Text(
-                                                          snap.documentID,
+                                                          snap.id,
                                                           style: TextStyle(
                                                               color:
                                                                   Colors.black),
                                                         ),
                                                         value:
-                                                            "${snap.documentID}",
+                                                            "${snap.id}",
                                                       ),
                                                     );
                                                   }
@@ -1074,21 +1074,21 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                                                   for (int i = 0;
                                                       i <
                                                           snapshot.data
-                                                              .documents.length;
+                                                              .docs.length;
                                                       i++) {
                                                     DocumentSnapshot snap =
                                                         snapshot
-                                                            .data.documents[i];
+                                                            .data.docs[i];
                                                     alergiasItems.add(
                                                       DropdownMenuItem(
                                                         child: Text(
-                                                          snap.documentID,
+                                                          snap.id,
                                                           style: TextStyle(
                                                               color:
                                                                   Colors.black),
                                                         ),
                                                         value:
-                                                            "${snap.documentID}",
+                                                            "${snap.id}",
                                                       ),
                                                     );
                                                   }
@@ -1246,21 +1246,21 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                                                   for (int i = 0;
                                                       i <
                                                           snapshot.data
-                                                              .documents.length;
+                                                              .docs.length;
                                                       i++) {
                                                     DocumentSnapshot snap =
                                                         snapshot
-                                                            .data.documents[i];
+                                                            .data.docs[i];
                                                     patologiasItems.add(
                                                       DropdownMenuItem(
                                                         child: Text(
-                                                          snap.documentID,
+                                                          snap.id,
                                                           style: TextStyle(
                                                               color:
                                                                   Colors.black),
                                                         ),
                                                         value:
-                                                            "${snap.documentID}",
+                                                            "${snap.id}",
                                                       ),
                                                     );
                                                   }
@@ -1924,7 +1924,7 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                                                   physics:
                                                       NeverScrollableScrollPhysics(),
                                                   itemCount: dataSnapshot
-                                                      .data.documents.length,
+                                                      .data.docs.length,
                                                   shrinkWrap: true,
                                                   itemBuilder: (
                                                     context,
@@ -2146,7 +2146,7 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                                                   physics:
                                                       NeverScrollableScrollPhysics(),
                                                   itemCount: dataSnapshot
-                                                      .data.documents.length,
+                                                      .data.docs.length,
                                                   shrinkWrap: true,
                                                   itemBuilder: (
                                                     context,
@@ -2240,23 +2240,23 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                                                               i <
                                                                   snapshot
                                                                       .data
-                                                                      .documents
+                                                                      .docs
                                                                       .length;
                                                               i++) {
                                                             DocumentSnapshot
                                                                 snap = snapshot
                                                                     .data
-                                                                    .documents[i];
+                                                                    .docs[i];
                                                             vacunasItems.add(
                                                               DropdownMenuItem(
                                                                 child: Text(
-                                                                  snap.documentID,
+                                                                  snap.id,
                                                                   style: TextStyle(
                                                                       color: Colors
                                                                           .black),
                                                                 ),
                                                                 value:
-                                                                    "${snap.documentID}",
+                                                                    "${snap.id}",
                                                               ),
                                                             );
                                                           }
@@ -2588,23 +2588,23 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                                                               i <
                                                                   snapshot
                                                                       .data
-                                                                      .documents
+                                                                      .docs
                                                                       .length;
                                                               i++) {
                                                             DocumentSnapshot
                                                                 snap = snapshot
                                                                     .data
-                                                                    .documents[i];
+                                                                    .docs[i];
                                                             alergiasItems.add(
                                                               DropdownMenuItem(
                                                                 child: Text(
-                                                                  snap.documentID,
+                                                                  snap.id,
                                                                   style: TextStyle(
                                                                       color: Colors
                                                                           .black),
                                                                 ),
                                                                 value:
-                                                                    "${snap.documentID}",
+                                                                    "${snap.id}",
                                                               ),
                                                             );
                                                           }
@@ -2842,7 +2842,7 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                                                   physics:
                                                       NeverScrollableScrollPhysics(),
                                                   itemCount: dataSnapshot
-                                                      .data.documents.length,
+                                                      .data.docs.length,
                                                   shrinkWrap: true,
                                                   itemBuilder: (
                                                     context,
@@ -2938,23 +2938,23 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                                                               i <
                                                                   snapshot
                                                                       .data
-                                                                      .documents
+                                                                      .docs
                                                                       .length;
                                                               i++) {
                                                             DocumentSnapshot
                                                                 snap = snapshot
                                                                     .data
-                                                                    .documents[i];
+                                                                    .docs[i];
                                                             patologiasItems.add(
                                                               DropdownMenuItem(
                                                                 child: Text(
-                                                                  snap.documentID,
+                                                                  snap.id,
                                                                   style: TextStyle(
                                                                       color: Colors
                                                                           .black),
                                                                 ),
                                                                 value:
-                                                                    "${snap.documentID}",
+                                                                    "${snap.id}",
                                                               ),
                                                             );
                                                           }
@@ -3189,7 +3189,7 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                                                   physics:
                                                       NeverScrollableScrollPhysics(),
                                                   itemCount: dataSnapshot
-                                                      .data.documents.length,
+                                                      .data.docs.length,
                                                   shrinkWrap: true,
                                                   itemBuilder: (
                                                     context,
@@ -5198,11 +5198,11 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
   }
 
   Future<void> _selectAndPickImage() async {
-    File imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      file = imageFile;
-    });
+    // File imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+    //
+    // setState(() {
+    //   file = imageFile;
+    // });
   }
 
   uploadImageAndSavePetInfo() async {

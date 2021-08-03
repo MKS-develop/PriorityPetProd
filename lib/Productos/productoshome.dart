@@ -609,6 +609,8 @@ class _ProductosHomeState extends State<ProductosHome> {
                                     petModel: model,
                                     productoModel: product,
                                     aliadoModel: ali,
+                                      defaultChoiceIndex:
+                                      widget.defaultChoiceIndex
                                   ),
                                 ));
                           },
@@ -668,7 +670,7 @@ class _ProductosHomeState extends State<ProductosHome> {
                                                         fontWeight:
                                                             FontWeight.bold),
                                                     textAlign: TextAlign.left),
-                                                Text(product.precio.toString(),
+                                                Text(product.precio.toStringAsFixed(2),
                                                     style: TextStyle(
                                                         fontSize: 14,
                                                         color:

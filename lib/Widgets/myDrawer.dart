@@ -45,7 +45,7 @@ class MyDrawer extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              UsuarioInfo()),
+                              UsuarioInfo(petModel: petModel, defaultChoiceIndex: defaultChoiceIndex,)),
                     );
                   },
                   child: CircleAvatar(

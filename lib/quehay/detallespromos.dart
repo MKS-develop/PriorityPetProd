@@ -283,11 +283,10 @@ class _DetallesPromoState extends State<DetallesPromo> {
                                       );
                                     } else {
                                       showDialog(
-                                          context: context,
-                                          child: new ChoosePetAlertDialog(
+                                          builder: (context) => new ChoosePetAlertDialog(
                                             message:
                                                 "Esto es una campaña sólo informativa, sin costo alguno.",
-                                          ));
+                                          ), context: context);
                                     }
                                   },
                                   shape: RoundedRectangleBorder(
@@ -325,7 +324,7 @@ class _DetallesPromoState extends State<DetallesPromo> {
 
   AddOrder(String itemID, BuildContext context) {
     final databaseReference = FirebaseFirestore.instance;
-    databaseReference.collection('Ordenes').doc(productId).setData({
+    databaseReference.collection('Ordenes').doc(productId).set({
       "aliadoId": widget.promotionModel.aliadoid,
       "oid": productId,
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),

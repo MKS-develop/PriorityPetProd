@@ -253,7 +253,7 @@ class _AddCreditCardPageState extends State<AddCreditCardPage> {
         "Authorization": "$_prk"
       };
 
-      Response res = await http.post(url, headers: headers, body: json);
+      Response res = await http.post(Uri.parse(url), headers: headers, body: json);
       int statusCode = res.statusCode;
       final nuevo = jsonDecode(res.body);
       //
@@ -290,10 +290,9 @@ class _AddCreditCardPageState extends State<AddCreditCardPage> {
       "expiryDate": expiryDate,
     });
     showDialog(
-        context: context,
-        child: new ChoosePetAlertDialog(
+        builder: (context) => new ChoosePetAlertDialog(
           message: "Tarjeta añadida exitosamente",
-        ));
+        ), context: context);
     setState(() {
       Navigator.of(context, rootNavigator: true).pop();
     });

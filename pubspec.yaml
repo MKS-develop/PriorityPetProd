@@ -19,23 +19,23 @@ dependencies:
   firebase_core: ^0.5.0+1
   # firebase_database: ^3.0.0
   firebase_messaging: ^7.0.3
-  
+
   shared_preferences: ^0.5.6+1
   fluttertoast: ^7.1.8
   image_picker: ^0.6.7+22
-  
+
   flutter_staggered_grid_view: ^0.3.0
   provider: ^4.3.2+2
   path_provider: ^0.5.0+1
   image: ^2.0.7
   intl: ^0.16.1
   intl_phone_field: ^1.4.2
-#  jitsi_meet: ^2.1.0
-  
+  #  jitsi_meet: ^2.1.0
+  geocoder: ^0.2.0
   getflutter: ^1.0.11
   email_validator: ^1.0.4
-  google_maps_flutter: any
-  google_map_location_picker: any
+  google_maps_flutter: ^1.2.0
+  google_map_location_picker: ^4.0.0
   flutter_localizations:
     sdk: flutter
   charts_flutter: ^0.10.0
@@ -50,8 +50,8 @@ dependencies:
   flutter_credit_card: 0.1.4
   flutter_culqi : ^0.5.2
   dropdown_search: ^0.4.8
-#  contact_picker: any
-#  flutter_sms: any
+  #  contact_picker: any
+  #  flutter_sms: any
   flutter_share_me: ^0.9.2
 
 dev_dependencies:
@@ -96,4 +96,3 @@ flutter:
     - diseñador/Grupo592.png
     - assets/images/
     - assets/images/patas.png
-

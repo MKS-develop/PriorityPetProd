@@ -405,12 +405,12 @@ class _RegistroMascotaState extends State<RegistroMascota>
                                         for (int i = 0;
                                             i <
                                                 dataSnapshot
-                                                    .data.documents.length;
+                                                    .data.docs.length;
                                             i++) {
                                           DocumentSnapshot razas =
-                                              dataSnapshot.data.documents[i];
+                                              dataSnapshot.data.docs[i];
                                           list.add(
-                                            razas.documentID,
+                                            razas.id,
                                           );
                                         }
                                         return Container(

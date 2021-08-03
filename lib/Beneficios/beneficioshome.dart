@@ -416,7 +416,7 @@ class _BeneficiosHomeState extends State<BeneficiosHome> {
                               Padding(
                                 padding: const EdgeInsets.all(15.0),
                                 child: Text(
-                                  dataSnapshot.data.documents[0]['id'],
+                                  dataSnapshot.data.docs[0]['id'],
                                   style: TextStyle(
                                     color: Color(0xFFEB9448),
                                     fontSize: 20,

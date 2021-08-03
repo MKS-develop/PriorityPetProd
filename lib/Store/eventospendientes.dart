@@ -493,7 +493,7 @@ class _EventosPendientesHomeState extends State<EventosPendientesHome> {
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
         .collection('Cart')
         .get();
-    final int documents = qSnap.documents.length;
+    final int documents = qSnap.docs.length;
     print(documents);
 
     QuerySnapshot _myDoc = await FirebaseFirestore.instance
@@ -576,7 +576,7 @@ class _EventosPendientesHomeState extends State<EventosPendientesHome> {
                                 FirebaseFirestore.instance
                                     .collection('Ordenes')
                                     .doc(order.oid)
-                                    .updateData({
+                                    .update({
                                   "statusCita": "Confirmada"
                                 }).then((result) {
                                   print("new USer true");
@@ -616,7 +616,7 @@ class _EventosPendientesHomeState extends State<EventosPendientesHome> {
                                 FirebaseFirestore.instance
                                     .collection('Ordenes')
                                     .doc(order.oid)
-                                    .updateData({
+                                    .update({
                                   "statusCita": "Cancelada"
                                 }).then((result) {
                                   print("new USer true");

@@ -213,12 +213,12 @@ class _AddReclamosPageState extends State<AddReclamosPage> {
                                                   for (int i = 0;
                                                   i <
                                                       dataSnapshot
-                                                          .data.documents.length;
+                                                          .data.docs.length;
                                                   i++) {
                                                     DocumentSnapshot razas =
-                                                    dataSnapshot.data.documents[i];
+                                                    dataSnapshot.data.docs[i];
                                                     list.add(
-                                                      razas.documentID,
+                                                      razas.id,
                                                     );
                                                   }
                                                   return Container(
@@ -409,20 +409,20 @@ class _AddReclamosPageState extends State<AddReclamosPage> {
     try {
       await db
           .collection('TiposReclamo')
-          .getDocuments()
+          .get()
           .then((QuerySnapshot querySnapshot) => {
-                querySnapshot.documents.forEach((tipoReclamo) {
+                querySnapshot.docs.forEach((tipoReclamo) {
                   setState(() {
-                    tiposReclamo.add(tipoReclamo.documentID.toString());
+                    tiposReclamo.add(tipoReclamo.id.toString());
                   });
                 })
               });
       await db
           .collection('Reclamos')
-          .getDocuments()
+          .get()
           .then((QuerySnapshot querySnapshot) => {
                 setState(() {
-                  reclamos = querySnapshot.documents.length + 1;
+                  reclamos = querySnapshot.docs.length + 1;
                 })
               });
     } catch (e) {
@@ -474,7 +474,7 @@ class _AddReclamosPageState extends State<AddReclamosPage> {
         buttonText = "Enviando...";
       });
 
-      await db.collection('Reclamos').doc(productId).setData({
+      await db.collection('Reclamos').doc(productId).set({
         "id": productId,
         "reclamoId": "51" + reclamos.toString(),
         "aliadoId": codigoAliado,

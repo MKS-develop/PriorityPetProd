@@ -401,8 +401,8 @@ class _ReferidosPageState extends State<ReferidosPage> {
           buttonText = "Invitando...";
         });
 
-        var res = await http.get(
-            'https://us-central1-priority-pet.cloudfunctions.net/sendInvitationEmail?dest=$userEmail&aliado=$aliadoUsername&username=$userName');
+        var res = await http.get(Uri.parse(
+            'https://us-central1-priority-pet.cloudfunctions.net/sendInvitationEmail?dest=$userEmail&aliado=$aliadoUsername&username=$userName'));
         await FirebaseFirestore.instance
             .collection('Referidos')
             .doc(userEmail)

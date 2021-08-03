@@ -205,9 +205,7 @@ class _StoreHomeState extends State<StoreHome> {
       var usuario = PetshopApp.sharedPreferences.getString(PetshopApp.userName);
       //   for(OrderModel order in allResults){
       showDialog(
-        context: context,
-        barrierColor: Colors.white.withOpacity(0),
-        child: AlertDialog(
+        builder: (context) => AlertDialog(
           // title: Text('Su pago ha sido aprobado.'),
           content: SingleChildScrollView(
             child: ListBody(
@@ -268,7 +266,8 @@ class _StoreHomeState extends State<StoreHome> {
               ],
             ),
           ),
-        ),
+        ), context: context,
+        barrierColor: Colors.white.withOpacity(0),
       );
     }
   }
@@ -477,11 +476,10 @@ class _StoreHomeState extends State<StoreHome> {
                               if (model == null) {
                                 {
                                   showDialog(
-                                      context: context,
-                                      child: new ChoosePetAlertDialog(
+                                      builder: (context) => new ChoosePetAlertDialog(
                                         message:
                                         "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
-                                      ));
+                                      ), context: context);
                                 }
                               } else {
                                 Navigator.push(
@@ -530,11 +528,10 @@ class _StoreHomeState extends State<StoreHome> {
                               if (model == null) {
                                 {
                                   showDialog(
-                                      context: context,
-                                      child: new ChoosePetAlertDialog(
+                                      builder: (context) => new ChoosePetAlertDialog(
                                         message:
                                         "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
-                                      ));
+                                      ), context: context);
                                 }
                               }
                               if (PetshopApp.sharedPreferences
@@ -552,11 +549,10 @@ class _StoreHomeState extends State<StoreHome> {
                                   .getString(PetshopApp.userPais) !=
                                   "Perú") {
                                 showDialog(
-                                    context: context,
-                                    child: new ChoosePetAlertDialog(
+                                    builder: (context) => new ChoosePetAlertDialog(
                                       message:
                                       "No estan disponibles planes para tu pais",
-                                    ));
+                                    ), context: context);
                               }
                             },
                             child: Stack(
@@ -597,11 +593,10 @@ class _StoreHomeState extends State<StoreHome> {
                               if (model == null) {
                                 {
                                   showDialog(
-                                      context: context,
-                                      child: new ChoosePetAlertDialog(
+                                      builder: (context) => new ChoosePetAlertDialog(
                                         message:
                                         "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
-                                      ));
+                                      ), context: context);
                                 }
                               } else {
                                 Navigator.push(
@@ -650,11 +645,10 @@ class _StoreHomeState extends State<StoreHome> {
                               if (model == null) {
                                 {
                                   showDialog(
-                                      context: context,
-                                      child: new ChoosePetAlertDialog(
+                                      builder: (context) => new ChoosePetAlertDialog(
                                         message:
                                         "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
-                                      ));
+                                      ), context: context);
                                 }
                               } else {
                                 Navigator.push(
@@ -854,11 +848,10 @@ class _StoreHomeState extends State<StoreHome> {
                         GestureDetector(
                           onTap: () {
                             showDialog(
-                                context: context,
-                                child: new ChoosePetAlertDialog(
+                                builder: (context) => new ChoosePetAlertDialog(
                                   message:
                                   "Esta función estará disponible próximamente...",
-                                ));
+                                ), context: context);
                           },
                           child: Stack(
                             alignment: Alignment.center,

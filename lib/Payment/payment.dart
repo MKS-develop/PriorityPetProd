@@ -35,7 +35,7 @@ class PaymentPage extends StatefulWidget {
   final LocationModel locationModel;
   final AliadoModel aliadoModel;
   final String tituloCategoria;
-  final int totalPrice;
+  final dynamic totalPrice;
   final String hora;
   final String fecha;
   final int recojo;
@@ -134,7 +134,7 @@ class _PaymentPageState extends State<PaymentPage> {
         .collection('Items')
         .get();
     setState(() {
-      _cartResults = data.documents;
+      _cartResults = data.docs;
     });
     addAllItemsToOrder(_cartResults);
 
@@ -351,8 +351,7 @@ class _PaymentPageState extends State<PaymentPage> {
                           onPressed: () {
                             if (selectedobscurecard != null) {
                               showDialog(
-                                  context: context,
-                                  child: AlertDialog(
+                                  builder: (context) => AlertDialog(
                                       // title: Text('Su pago ha sido aprobado.'),
                                       content: SingleChildScrollView(
                                           child: ListBody(children: <Widget>[
@@ -362,7 +361,8 @@ class _PaymentPageState extends State<PaymentPage> {
                                         child: Column(
                                           children: [
                                             Text(
-                                                '¿Desea confirmar su compra? S/${widget.totalPrice} serán debitados de la tarjeta $selectedobscurecard',
+                                                '¿Desea confirmar su compra? ${PetshopApp.sharedPreferences
+                                                    .getString(PetshopApp.simboloMoneda)}${widget.totalPrice.toStringAsFixed(2)} serán debitados de la tarjeta $selectedobscurecard',
                                                 style: TextStyle(
                                                     fontWeight:
                                                         FontWeight.bold)),
@@ -374,7 +374,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                                   padding:
                                                       const EdgeInsets.all(6.0),
                                                   child: SizedBox(
-                                                    width: _screenWidth * 0.3,
+                                                    width: _screenWidth * 0.25,
                                                     child: RaisedButton(
                                                       onPressed: () {
                                                         // AddOrder(productId, context, widget.planModel.montoMensual, widget.planModel.planid);
@@ -416,7 +416,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                                   padding:
                                                       const EdgeInsets.all(8.0),
                                                   child: SizedBox(
-                                                    width: _screenWidth * 0.3,
+                                                    width: _screenWidth * 0.25,
                                                     child: RaisedButton(
                                                       onPressed: () {
                                                         // AddOrder(productId, context, widget.planModel.montoAnual, widget.planModel.planid);
@@ -453,14 +453,13 @@ class _PaymentPageState extends State<PaymentPage> {
                                             ),
                                           ],
                                         )),
-                                  ]))));
+                                  ]))), context: context);
                             } else {
                               showDialog(
-                                  context: context,
-                                  child: new ChoosePetAlertDialog(
+                                  builder: (context) => new ChoosePetAlertDialog(
                                     message:
                                         "Por favor seleccione un método de pago.",
-                                  ));
+                                  ), context: context);
                             }
 
                             // AddOrder(productId, context, widget.planModel.montoAnual, widget.planModel.planid);
@@ -534,7 +533,8 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   addCulqi() async {
-    var precio = widget.totalPrice * 100;
+    var precio2 = widget.totalPrice * 100;
+    dynamic precio = precio2.toInt();
     print('el precio es $precio');
     try {
       var json =
@@ -545,7 +545,7 @@ class _PaymentPageState extends State<PaymentPage> {
         "Authorization": "$_prk"
       };
 
-      Response res = await http.post(url, headers: headers, body: json);
+      Response res = await http.post(Uri.parse(url), headers: headers, body: json);
       int statusCode = res.statusCode;
       var nuevo = await jsonDecode(res.body);
       //
@@ -676,22 +676,23 @@ class _PaymentPageState extends State<PaymentPage> {
       "vigencia_hasta":
           widget.tituloCategoria == 'Plan Mensual' ? newDateMonth : newDateYear,
       "petthumbnailUrl": widget.petModel.petthumbnailUrl,
+      "pais": PetshopApp.sharedPreferences.getString(PetshopApp.userPais),
     });
-    try {
-      var json =
-          '{"filial": "01","id": "$productId","cliente": "${PetshopApp.sharedPreferences.getString(PetshopApp.userDocId)}","proveedor": "20606516453","emision": "$epDate","formapag": "$formapag","moneda": "PEN","items": [{ "producto": "${widget.planModel.planid}","cantidad": 1,"precio": ${widget.totalPrice}] }';
-      var url = ("https://epcloud.ebc.pe.grupoempodera.com/api/?cliente");
-      Map<String, String> headers = {"Content-type": "application/json"};
-      Response res = await http.post(url, headers: headers, body: json);
-      int statusCode = res.statusCode;
-      setState(() {
-        // response = statusCode.toString();
-        print(statusCode);
-      });
-    } catch (e) {
-      print(e.message);
-      return null;
-    }
+    // try {
+    //   var json =
+    //       '{"filial": "01","id": "$productId","cliente": "${PetshopApp.sharedPreferences.getString(PetshopApp.userDocId)}","proveedor": "20606516453","emision": "$epDate","formapag": "$formapag","moneda": "PEN","items": [{ "producto": "${widget.planModel.planid}","cantidad": 1,"precio": ${widget.totalPrice}] }';
+    //   var url = ("https://epcloud.ebc.pe.grupoempodera.com/api/?cliente");
+    //   Map<String, String> headers = {"Content-type": "application/json"};
+    //   Response res = await http.post(Uri.parse(url), headers: headers, body: json);
+    //   int statusCode = res.statusCode;
+    //   setState(() {
+    //     // response = statusCode.toString();
+    //     print(statusCode);
+    //   });
+    // } catch (e) {
+    //   print(e.message);
+    //   return null;
+    // }
     OrderMessage(context, outcomeMsg);
   }
 
@@ -742,23 +743,24 @@ class _PaymentPageState extends State<PaymentPage> {
       "calificacion": false,
       "user": PetshopApp.sharedPreferences.getString(PetshopApp.userName),
       "nombreComercial": widget.aliadoModel.nombreComercial,
+      "pais": PetshopApp.sharedPreferences.getString(PetshopApp.userPais),
     });
 
-    try {
-      var json =
-          '{"filial": "01","id": "$productId","cliente": "${PetshopApp.sharedPreferences.getString(PetshopApp.userDocId)}","proveedor": "${widget.promotionModel.aliadoid}","emision": "$epDate","formapag": "$formapag","moneda": "PEN","items": [{ "producto": "${widget.promotionModel.promoid}","cantidad": 1,"precio": ${widget.totalPrice}] }';
-      var url = ("https://epcloud.ebc.pe.grupoempodera.com/api/?cliente");
-      Map<String, String> headers = {"Content-type": "application/json"};
-      Response res = await http.post(url, headers: headers, body: json);
-      int statusCode = res.statusCode;
-      setState(() {
-        // response = statusCode.toString();
-        print(statusCode);
-      });
-    } catch (e) {
-      print(e.message);
-      return null;
-    }
+    // try {
+    //   var json =
+    //       '{"filial": "01","id": "$productId","cliente": "${PetshopApp.sharedPreferences.getString(PetshopApp.userDocId)}","proveedor": "${widget.promotionModel.aliadoid}","emision": "$epDate","formapag": "$formapag","moneda": "PEN","items": [{ "producto": "${widget.promotionModel.promoid}","cantidad": 1,"precio": ${widget.totalPrice}] }';
+    //   var url = ("https://epcloud.ebc.pe.grupoempodera.com/api/?cliente");
+    //   Map<String, String> headers = {"Content-type": "application/json"};
+    //   Response res = await http.post(Uri.parse(url), headers: headers, body: json);
+    //   int statusCode = res.statusCode;
+    //   setState(() {
+    //     // response = statusCode.toString();
+    //     print(statusCode);
+    //   });
+    // } catch (e) {
+    //   print(e.message);
+    //   return null;
+    // }
     // FirebaseFirestore.instance
     //     .collection('Ordenes')
     //     .doc(productId)
@@ -1184,22 +1186,23 @@ class _PaymentPageState extends State<PaymentPage> {
       "user": PetshopApp.sharedPreferences.getString(PetshopApp.userName),
       "nombreComercial": widget.aliadoModel.nombreComercial,
       "localidadId": widget.locationModel.localidadId,
+      "pais": PetshopApp.sharedPreferences.getString(PetshopApp.userPais),
     });
-    try {
-      var json =
-          '{"filial": "01","id": "$productId","cliente": "${PetshopApp.sharedPreferences.getString(PetshopApp.userDocId)}","proveedor": "${widget.serviceModel.aliadoId}","emision": "$epDate","formapag": "$formapag","moneda": "PEN","items": [{ "producto": "${widget.serviceModel.servicioId}","cantidad": 1,"precio": ${widget.totalPrice}] }';
-      var url = ("https://epcloud.ebc.pe.grupoempodera.com/api/?cliente");
-      Map<String, String> headers = {"Content-type": "application/json"};
-      Response res = await http.post(url, headers: headers, body: json);
-      int statusCode = res.statusCode;
-      setState(() {
-        // response = statusCode.toString();
-        print(statusCode);
-      });
-    } catch (e) {
-      print(e.message);
-      return null;
-    }
+    // try {
+    //   var json =
+    //       '{"filial": "01","id": "$productId","cliente": "${PetshopApp.sharedPreferences.getString(PetshopApp.userDocId)}","proveedor": "${widget.serviceModel.aliadoId}","emision": "$epDate","formapag": "$formapag","moneda": "PEN","items": [{ "producto": "${widget.serviceModel.servicioId}","cantidad": 1,"precio": ${widget.totalPrice}] }';
+    //   var url = ("https://epcloud.ebc.pe.grupoempodera.com/api/?cliente");
+    //   Map<String, String> headers = {"Content-type": "application/json"};
+    //   Response res = await http.post(Uri.parse(url), headers: headers, body: json);
+    //   int statusCode = res.statusCode;
+    //   setState(() {
+    //     // response = statusCode.toString();
+    //     print(statusCode);
+    //   });
+    // } catch (e) {
+    //   print(e.message);
+    //   return null;
+    // }
 
     // FirebaseFirestore.instance
     //     .collection('Ordenes')
@@ -1574,7 +1577,7 @@ class _PaymentPageState extends State<PaymentPage> {
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
         .collection("Petpoints")
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
-    likeRef.updateData({
+    likeRef.update({
       'ppAcumulados': FieldValue.increment(widget.totalPrice),
       'ppCanjeados': widget.value == true
           ? FieldValue.increment(ppAcumulados)
@@ -1623,7 +1626,7 @@ class _PaymentPageState extends State<PaymentPage> {
           ErrorMessage(context, 'Debe completar los datos de su registro');
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => UsuarioInfo()),
+            MaterialPageRoute(builder: (context) => UsuarioInfo(petModel: widget.petModel, defaultChoiceIndex: widget.defaultChoiceIndex,)),
           );
         }
       });
@@ -1685,7 +1688,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
   sendEmail(_email, nombreCompleto, orderId, aliadoAvatar) async {
     await http.get(
-        'https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=$_email&username=$nombreCompleto&orderId=$orderId&logoAliado=$aliadoAvatar');
+        Uri.parse('https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=$_email&username=$nombreCompleto&orderId=$orderId&logoAliado=$aliadoAvatar'));
     print('$_email $nombreCompleto $orderId $aliadoAvatar');
   }
 
@@ -1813,22 +1816,23 @@ class _PaymentPageState extends State<PaymentPage> {
       "delivery": widget.delivery,
       "user": PetshopApp.sharedPreferences.getString(PetshopApp.userName),
       "nombreComercial": widget.cartModel.nombreComercial,
+      "pais": PetshopApp.sharedPreferences.getString(PetshopApp.userPais),
     });
-    try {
-      var json =
-          '{"filial": "01","id": "$productId","cliente": "${PetshopApp.sharedPreferences.getString(PetshopApp.userDocId)}","proveedor": "${widget.cartModel.aliadoId}","emision": "$epDate","formapag": "$formapag","moneda": "PEN","items": [{ "producto": "Productos","cantidad": 1,"precio": ${widget.totalPrice}] }';
-      var url = ("https://epcloud.ebc.pe.grupoempodera.com/api/?cliente");
-      Map<String, String> headers = {"Content-type": "application/json"};
-      Response res = await http.post(url, headers: headers, body: json);
-      int statusCode = res.statusCode;
-      setState(() {
-        // response = statusCode.toString();
-        print(statusCode);
-      });
-    } catch (e) {
-      print(e.message);
-      return null;
-    }
+    // try {
+    //   var json =
+    //       '{"filial": "01","id": "$productId","cliente": "${PetshopApp.sharedPreferences.getString(PetshopApp.userDocId)}","proveedor": "${widget.cartModel.aliadoId}","emision": "$epDate","formapag": "$formapag","moneda": "PEN","items": [{ "producto": "Productos","cantidad": 1,"precio": ${widget.totalPrice}] }';
+    //   var url = ("https://epcloud.ebc.pe.grupoempodera.com/api/?cliente");
+    //   Map<String, String> headers = {"Content-type": "application/json"};
+    //   Response res = await http.post(Uri.parse(url), headers: headers, body: json);
+    //   int statusCode = res.statusCode;
+    //   setState(() {
+    //     // response = statusCode.toString();
+    //     print(statusCode);
+    //   });
+    // } catch (e) {
+    //   print(e.message);
+    //   return null;
+    // }
 
     setState(() {
       db
@@ -1873,7 +1877,7 @@ class _PaymentPageState extends State<PaymentPage> {
           .doc(productId)
           .collection('Items')
           .doc(CarritoModel.fromSnapshot(allPasteService).productoId)
-          .setData({
+          .set({
         "aliadoId": CarritoModel.fromSnapshot(allPasteService).aliadoId,
         "iId": CarritoModel.fromSnapshot(allPasteService).iId,
         "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),

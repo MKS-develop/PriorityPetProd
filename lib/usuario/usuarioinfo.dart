@@ -888,47 +888,41 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                   onPressed: () {
                     if (_dateTextEditingController.text == '') {
                       showDialog(
-                          context: context,
-                          child: new ChoosePetAlertDialog(
+                          builder: (context) => new ChoosePetAlertDialog(
                             message:
                             "Por favor indique su fecha de nacimiento.",
-                          ));
+                          ), context: context);
                     }
                     if (_nameTextEditingController.text == '') {
                       showDialog(
-                          context: context,
-                          child: new ChoosePetAlertDialog(
+                          builder: (context) => new ChoosePetAlertDialog(
                             message: "Por favor indique su nombre.",
-                          ));
+                          ), context: context);
                     }
                     if (_lastnameTextEditingController.text == '') {
                       showDialog(
-                          context: context,
-                          child: new ChoosePetAlertDialog(
+                          builder: (context) => new ChoosePetAlertDialog(
                             message: "Por favor indique su apellido.",
-                          ));
+                          ), context: context);
                     }
                     if (_idTextEditingController.text == '') {
                       showDialog(
-                          context: context,
-                          child: new ChoosePetAlertDialog(
+                          builder: (context) => new ChoosePetAlertDialog(
                             message: "Por favor indique su identificación.",
-                          ));
+                          ), context: context);
                     }
 
                     if (_addressTextEditingController.text == '') {
                       showDialog(
-                          context: context,
-                          child: new ChoosePetAlertDialog(
+                          builder: (context) => new ChoosePetAlertDialog(
                             message: "Por favor indique su dirección.",
-                          ));
+                          ), context: context);
                     }
                     if (ciudad == null) {
                       showDialog(
-                          context: context,
-                          child: new ChoosePetAlertDialog(
+                          builder: (context) => new ChoosePetAlertDialog(
                             message: "Por favor indique su tipo de documento.",
-                          ));
+                          ), context: context);
                     } else {
                       if (_nameTextEditingController.text.isNotEmpty &&
                           _lastnameTextEditingController.text.isNotEmpty &&

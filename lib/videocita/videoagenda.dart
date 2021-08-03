@@ -316,7 +316,7 @@ class _VideoAgendaState extends State<VideoAgenda> {
                           ),
                         ),
                         Text(
-                          (widget.serviceModel.precio).toString(),
+                          (widget.serviceModel.precio).toStringAsFixed(2),
                           style: TextStyle(
                             color: Color(0xFF57419D),
                             fontSize: 22,
@@ -552,8 +552,7 @@ class _VideoAgendaState extends State<VideoAgenda> {
                                 if (fecha == null &&
                                     widget.serviceModel.tipoAgenda == 'Free') {
                                   showDialog(
-                                    context: context,
-                                    child: AlertDialog(
+                                    builder: (context) => AlertDialog(
                                       title: Row(
                                         children: [
                                           Icon(
@@ -569,7 +568,7 @@ class _VideoAgendaState extends State<VideoAgenda> {
                                           ),
                                         ],
                                       ),
-                                    ),
+                                    ), context: context,
                                   );
                                 } else if (fecha != null &&
                                     widget.serviceModel.tipoAgenda == 'Free') {
@@ -604,8 +603,7 @@ class _VideoAgendaState extends State<VideoAgenda> {
                                     'Slots') {
                                   if (hora == null) {
                                     showDialog(
-                                      context: context,
-                                      child: AlertDialog(
+                                      builder: (context) => AlertDialog(
                                         title: Row(
                                           children: [
                                             Icon(
@@ -621,13 +619,12 @@ class _VideoAgendaState extends State<VideoAgenda> {
                                             ),
                                           ],
                                         ),
-                                      ),
+                                      ), context: context,
                                     );
                                   }
                                   if (fecha == null) {
                                     showDialog(
-                                      context: context,
-                                      child: AlertDialog(
+                                      builder: (context) => AlertDialog(
                                         title: Row(
                                           children: [
                                             Icon(
@@ -643,7 +640,7 @@ class _VideoAgendaState extends State<VideoAgenda> {
                                             ),
                                           ],
                                         ),
-                                      ),
+                                      ), context: context,
                                     );
                                   }
                                   if (hora != null && fecha != null) {

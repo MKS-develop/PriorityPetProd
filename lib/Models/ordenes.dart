@@ -19,7 +19,7 @@ class OrderModel {
       nombreComercial,
       videoId,
       petthumbnailUrl;
-  int cantidad, total, precio, ppGeneradosD, sumaTotal, delivery;
+  dynamic cantidad, total, precio, ppGeneradosD, sumaTotal, delivery;
   bool tieneDelivery, calificacion;
 
   Timestamp createdOn, date;

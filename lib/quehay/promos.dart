@@ -303,11 +303,10 @@ class _PromoHomeState extends State<PromoHome> {
                                         if (model == null) {
                                           {
                                             showDialog(
-                                                context: context,
-                                                child: new ChoosePetAlertDialog(
+                                                builder: (context) => new ChoosePetAlertDialog(
                                                   message:
                                                       "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
-                                                ));
+                                                ), context: context);
                                           }
                                         } else {
                                           Navigator.push(

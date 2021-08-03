@@ -256,6 +256,19 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
                                   height: 5,
                                 ),
                                 Text(
+
+                                  '${widget.productoModel.pesoValor} ${widget.productoModel.pesoUnidad}',
+                                  style: TextStyle(
+                                    color: Color(0xFF57419D),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.right,
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
                                   widget.productoModel.dirigido,
                                   style: TextStyle(fontSize: 14),
                                 ),
@@ -276,22 +289,8 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
                                 SizedBox(
                                   height: 9,
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      widget.productoModel.presentacion != null
-                                          ? widget.productoModel.presentacion
-                                          : '',
-                                      style: TextStyle(
-                                        color: Color(0xFF57419D),
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      textAlign: TextAlign.right,
-                                    ),
-                                  ],
-                                ),
+
+
                                 Row(
                                   children: [
                                     Text("Marcar favorito"),
@@ -316,7 +315,7 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
                                                     .sharedPreferences
                                                     .getString(
                                                         PetshopApp.userUID))
-                                                .setData({
+                                                .set({
                                               'like': false,
                                               'uid': PetshopApp
                                                   .sharedPreferences
@@ -442,7 +441,7 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
                                 ),
                               ),
                               Text(
-                                (total + delivery).toString(),
+                                (total + delivery).toStringAsFixed(2),
                                 style: TextStyle(
                                   color: Color(0xFF57419D),
                                   fontSize: 22,
@@ -553,6 +552,7 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
       "cantidad": int.parse(cant),
       "productoId": itemID,
       "titulo": widget.productoModel.titulo,
+      "createdOn": DateTime.now(),
     });
 
     // List tempCartList = PetshopApp.sharedPreferences.getStringList(PetshopApp.userCartList);

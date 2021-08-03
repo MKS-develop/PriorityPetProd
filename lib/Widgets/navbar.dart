@@ -204,8 +204,8 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         .collection('Dueños')
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
         .collection('Cart')
-        .getDocuments()
-        .then((val) => val.documents);
+        .get()
+        .then((val) => val.docs);
 
     for (int i = 0; i < list_of_locations.length; i++) {
       FirebaseFirestore.instance
@@ -222,10 +222,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
 
   CreateListofServices(QuerySnapshot snapshot) async {
     setState(() {
-      counterN = snapshot.documents.length;
+      counterN = snapshot.docs.length;
     });
 
-    var docs = snapshot.documents;
+    var docs = snapshot.docs;
     for (var Doc in docs) {
       setState(() {
         totalList.add(1);

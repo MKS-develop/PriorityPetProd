@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CarritoModel {
   String iId, aliadoId, productoId, uid, titulo, nombreComercial;
-  dynamic cantidad, total, precio;
+  int cantidad;
+  // dynamic total;
+  dynamic precio;
   Timestamp createdOn;
 
   CarritoModel({
@@ -13,23 +15,23 @@ class CarritoModel {
     this.cantidad,
     this.precio,
     this.createdOn,
-    this.total,
+    // this.total,
     this.titulo,
     this.nombreComercial,
   });
 
   Map<String, dynamic> toJson() => {
-        'aliadoId': aliadoId,
-        'productoId': productoId,
-        'cantidad': cantidad,
-        'precio': precio,
-        'createdOn': createdOn,
-        'total': total,
-        'uid': uid,
-        'iId': iId,
-        'titulo': titulo,
-        'nombreComercial': nombreComercial,
-      };
+    'aliadoId': aliadoId,
+    'productoId': productoId,
+    'cantidad': cantidad,
+    'precio': precio,
+    'createdOn': createdOn,
+    // 'total': total,
+    'uid': uid,
+    'iId': iId,
+    'titulo': titulo,
+    'nombreComercial': nombreComercial,
+  };
 
   CarritoModel.fromSnapshot(DocumentSnapshot snapshot) {
     uid = snapshot['uid'];
@@ -39,7 +41,7 @@ class CarritoModel {
     cantidad = snapshot['cantidad'];
     precio = snapshot['precio'];
     createdOn = snapshot['createdOn'];
-    total = snapshot['total'];
+    // total = snapshot['total'];
     titulo = snapshot['titulo'];
     nombreComercial = snapshot['nombreComercial'];
   }

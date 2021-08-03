@@ -271,7 +271,7 @@ class _CambioServicioState extends State<CambioServicio> {
                                       builder: (context, dataSnapshot) {
                                         if (dataSnapshot.hasData) {
                                           if (dataSnapshot
-                                                  .data.documents.length ==
+                                                  .data.docs.length ==
                                               0) {
                                             return Center(child: Text(''));
                                           }
@@ -647,8 +647,7 @@ class _CambioServicioState extends State<CambioServicio> {
                                                         if (fecha == null &&
                                                             item.hora == null) {
                                                           showDialog(
-                                                            context: context,
-                                                            child: AlertDialog(
+                                                            builder: (context) => AlertDialog(
                                                               title: Row(
                                                                 children: [
                                                                   Icon(
@@ -668,7 +667,7 @@ class _CambioServicioState extends State<CambioServicio> {
                                                                   ),
                                                                 ],
                                                               ),
-                                                            ),
+                                                            ), context: context,
                                                           );
                                                         } else if (fecha !=
                                                                 null &&
@@ -689,9 +688,7 @@ class _CambioServicioState extends State<CambioServicio> {
                                                             null) {
                                                           if (hora == null) {
                                                             showDialog(
-                                                              context: context,
-                                                              child:
-                                                                  AlertDialog(
+                                                              builder: (context) => AlertDialog(
                                                                 title: Row(
                                                                   children: [
                                                                     Icon(
@@ -711,14 +708,12 @@ class _CambioServicioState extends State<CambioServicio> {
                                                                     ),
                                                                   ],
                                                                 ),
-                                                              ),
+                                                              ), context: context,
                                                             );
                                                           }
                                                           if (fecha == null) {
                                                             showDialog(
-                                                              context: context,
-                                                              child:
-                                                                  AlertDialog(
+                                                              builder: (context) => AlertDialog(
                                                                 title: Row(
                                                                   children: [
                                                                     Icon(
@@ -738,7 +733,7 @@ class _CambioServicioState extends State<CambioServicio> {
                                                                     ),
                                                                   ],
                                                                 ),
-                                                              ),
+                                                              ), context: context,
                                                             );
                                                           }
                                                           if (hora != null &&
@@ -943,7 +938,7 @@ class _CambioServicioState extends State<CambioServicio> {
           .doc(item.servicioid)
           .collection("Agenda")
           .doc(item.fecha)
-          .updateData({
+          .update({
         "horasDia": FieldValue.arrayUnion(vale),
         "horasReservadas": FieldValue.arrayRemove(vale),
       });
@@ -951,13 +946,13 @@ class _CambioServicioState extends State<CambioServicio> {
           .collection('Ordenes')
           .doc(widget.orderModel.oid);
 
-      databaseReference.updateData({
+      databaseReference.update({
         "date": date,
         "hora": hora,
         "fecha": fecha == null ? fecha : fecha.trim(),
       });
 
-      databaseReference.collection('Items').doc(item.servicioid).updateData({
+      databaseReference.collection('Items').doc(item.servicioid).update({
         "date": date,
         "hora": hora,
         "fecha": fecha == null ? fecha : fecha.trim(),
@@ -971,7 +966,7 @@ class _CambioServicioState extends State<CambioServicio> {
           .doc(item.servicioid)
           .collection("Agenda")
           .doc(fecha)
-          .updateData({
+          .update({
         "horasDia": FieldValue.arrayRemove(val),
         "horasReservadas": FieldValue.arrayUnion(val),
       });
@@ -992,7 +987,7 @@ class _CambioServicioState extends State<CambioServicio> {
           .doc(item.promoid)
           .collection("Agenda")
           .doc(item.fecha)
-          .updateData({
+          .update({
         "horasDia": FieldValue.arrayUnion(vale),
         "horasReservadas": FieldValue.arrayRemove(vale),
       });
@@ -1000,13 +995,13 @@ class _CambioServicioState extends State<CambioServicio> {
           .collection('Ordenes')
           .doc(widget.orderModel.oid);
 
-      databaseReference.updateData({
+      databaseReference.update({
         "date": date,
         "hora": hora,
         "fecha": fecha == null ? fecha : fecha.trim(),
       });
 
-      databaseReference.collection('Items').doc(item.promoid).updateData({
+      databaseReference.collection('Items').doc(item.promoid).update({
         "date": date,
         "hora": hora,
         "fecha": fecha == null ? fecha : fecha.trim(),
@@ -1018,7 +1013,7 @@ class _CambioServicioState extends State<CambioServicio> {
           .doc(item.promoid)
           .collection("Agenda")
           .doc(fecha)
-          .updateData({
+          .update({
         "horasDia": FieldValue.arrayRemove(val),
         "horasReservadas": FieldValue.arrayUnion(val),
       });

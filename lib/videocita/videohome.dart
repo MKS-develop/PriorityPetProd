@@ -177,7 +177,7 @@ class _VideoHomeState extends State<VideoHome> {
                     fontWeight: FontWeight.bold),
               ),
               Text(
-                (widget.serviceModel.precio).toString(),
+                (widget.serviceModel.precio).toStringAsFixed(2),
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,

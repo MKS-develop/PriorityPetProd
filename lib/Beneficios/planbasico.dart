@@ -308,8 +308,7 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
                                   // );
 
                                   showDialog(
-                                      context: context,
-                                      child: AlertDialog(
+                                      builder: (context) => AlertDialog(
                                           shape: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(20.0)),
@@ -481,7 +480,7 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
                                                         ),
                                                       ],
                                                     )),
-                                              ]))));
+                                              ]))), context: context);
                                 },
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5)),
@@ -574,14 +573,14 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
     //   "tieneDomicilio": _value,
     //   "domicilio": recojo,
     // });
-    addplan.setData({
+    addplan.set({
       "status": 'Activo',
       "precio": int.parse((precio).toString()),
       "createdOn": DateTime.now(),
       "tipoPlan": planid,
       "oid": productId,
     });
-    databaseReference.setData({
+    databaseReference.set({
       "oid": productId,
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
       "precio": int.parse((precio).toString()),

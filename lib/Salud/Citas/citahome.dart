@@ -177,7 +177,7 @@ class _CitaHomeState extends State<CitaHome> {
                     fontWeight: FontWeight.bold),
               ),
               Text(
-                (widget.serviceModel.precio).toString(),
+                (widget.serviceModel.precio).toStringAsFixed(2),
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -303,6 +303,8 @@ class _CitaHomeState extends State<CitaHome> {
                         builder: (context) => ChatPage(
                               petModel: widget.petModel,
                               aliado: widget.aliadoModel.aliadoId,
+                          defaultChoiceIndex:
+                          widget.defaultChoiceIndex,
                             )),
                   );
                 },

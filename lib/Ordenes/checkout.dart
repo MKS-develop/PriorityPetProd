@@ -21,10 +21,10 @@ class CheckOutPage extends StatefulWidget {
           .collection('Dueños')
           .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
           .collection('Cart') //your collectionref
-          .getDocuments()
+          .get()
           .then((value) {
         var count = 0;
-        count = value.documents.length;
+        count = value.docs.length;
         print(count);
         return count;
       });
@@ -124,16 +124,16 @@ class _CheckOutPageState extends State<CheckOutPage> {
         .collection('Dueños')
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
         .collection('Cart')
-        .getDocuments();
-    final int documents = qSnap.documents.length;
+        .get();
+    final int documents = qSnap.docs.length;
     print(documents);
 
     QuerySnapshot _myDoc = await FirebaseFirestore.instance
         .collection('Dueños')
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
         .collection('Cart')
-        .getDocuments();
-    List<DocumentSnapshot> _myDocCount = _myDoc.documents;
+        .get();
+    List<DocumentSnapshot> _myDocCount = _myDoc.docs;
     print(_myDocCount.length);
 
     // Count of Documents in Collection

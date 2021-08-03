@@ -137,7 +137,7 @@ class _ReclamosPageState extends State<ReclamosPage> {
                             builder: (BuildContext context,
                                 AsyncSnapshot<QuerySnapshot> snapshot) {
                               if (!snapshot.hasData ||
-                                  snapshot.data.documents.length == 0) {
+                                  snapshot.data.docs.length == 0) {
                                 return Center(
                                     child: Column(children: [
                                   Text(

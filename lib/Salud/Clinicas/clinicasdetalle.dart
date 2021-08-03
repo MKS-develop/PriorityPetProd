@@ -499,7 +499,7 @@ class _ClinicasDetalleState extends State<ClinicasDetalle> {
     var databaseReference =
         FirebaseFirestore.instance.collection('Ordenes').doc(productId);
 
-    databaseReference.collection('Items').doc(itemID).setData({
+    databaseReference.collection('Items').doc(itemID).set({
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
       "nombreComercial": widget.aliadoModel.nombreComercial,
       "petthumbnailUrl": widget.petModel.petthumbnailUrl,
@@ -519,7 +519,7 @@ class _ClinicasDetalleState extends State<ClinicasDetalle> {
       "domicilio": recojo,
       "nombre": widget.petModel.nombre,
     });
-    databaseReference.setData({
+    databaseReference.set({
       "aliadoId": widget.serviceModel.aliadoId,
       "oid": productId,
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),

@@ -23,6 +23,12 @@ class PushNotificationsProvider {
     print("=== FCM Token ===");
     print(token);
 
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //
+    // });
+
+
+
     _firebaseMessaging.configure(
         onMessage: onMessage,
         onBackgroundMessage: Platform.isIOS ? null : onBackgroundMessage,
@@ -82,8 +88,8 @@ class PushNotificationsProvider {
       token = documentSnapshot.data()['token'];
     });
 
-    await http.post(
-      'https://fcm.googleapis.com/fcm/send',
+    await http.post(Uri.parse(
+      'https://fcm.googleapis.com/fcm/send'),
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization': 'key=$serverToken',
@@ -128,8 +134,8 @@ class PushNotificationsProvider {
         .then((DocumentSnapshot documentSnapshot) =>
     {token = documentSnapshot['token']});
 
-    await http.post(
-      'https://fcm.googleapis.com/fcm/send',
+    await http.post(Uri.parse(
+      'https://fcm.googleapis.com/fcm/send'),
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization': 'key=$serverToken',

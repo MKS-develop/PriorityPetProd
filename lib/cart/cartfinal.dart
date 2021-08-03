@@ -294,7 +294,7 @@ class _CartFinalState extends State<CartFinal> {
                                     ),
                                   ),
                                   Text(
-                                    precio.toString(),
+                                    precio.toStringAsFixed(2),
                                     style: TextStyle(
                                       color: Color(0xFF57419D),
                                       fontSize: 15,
@@ -527,7 +527,7 @@ class _CartFinalState extends State<CartFinal> {
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           Text(
-                                            cart.sumaTotal.toString(),
+                                            cart.sumaTotal.toStringAsFixed(2),
                                             style: TextStyle(
                                                 fontSize: 18.0,
                                                 color: Color(0xFF57419D),
@@ -686,7 +686,7 @@ class _CartFinalState extends State<CartFinal> {
                                       //       fontWeight: FontWeight.bold),
                                       // ),
                                       Text(
-                                        '${PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda)} ${(totalPet).toStringAsPrecision(3)}',
+                                        '${PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda)} ${(totalPet).toStringAsFixed(2)}',
                                         style: TextStyle(
                                             fontSize: 16.0,
                                             color: Colors.red,
@@ -768,7 +768,7 @@ class _CartFinalState extends State<CartFinal> {
                                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                                               children: [
                                                                                 Text(PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda), style: TextStyle(fontFamily: 'Product Sans', color: Colors.white, fontSize: 16.0, fontWeight: FontWeight.bold)),
-                                                                                Text((ali.delivery).toStringAsPrecision(3), style: TextStyle(fontFamily: 'Product Sans', color: Colors.white, fontSize: 16.0, fontWeight: FontWeight.bold)),
+                                                                                Text((ali.delivery).toStringAsFixed(2), style: TextStyle(fontFamily: 'Product Sans', color: Colors.white, fontSize: 16.0, fontWeight: FontWeight.bold)),
                                                                               ],
                                                                             ),
                                                                           ),
@@ -847,7 +847,7 @@ class _CartFinalState extends State<CartFinal> {
                                                                             ),
                                                                           ),
                                                                           Text(
-                                                                            ali.delivery.toString(),
+                                                                            ali.delivery.toStringAsFixed(2),
                                                                             style:
                                                                                 TextStyle(
                                                                               color: Color(0xFF57419D),
@@ -900,7 +900,7 @@ class _CartFinalState extends State<CartFinal> {
                                             (cart.sumaTotal -
                                                     totalPet +
                                                     delivery)
-                                                .toStringAsPrecision(4),
+                                                .toStringAsFixed(2),
                                             style: TextStyle(
                                                 fontSize: 18.0,
                                                 color: Color(0xFF57419D),
@@ -935,7 +935,7 @@ class _CartFinalState extends State<CartFinal> {
                                                               widget.petModel,
                                                           cartModel: cart,
                                                           tituloCategoria:
-                                                              tituloCategoria,
+                                                          'Producto',
                                                           totalPrice:
                                                               totalPrice,
                                                           delivery: delivery,
@@ -982,7 +982,7 @@ class _CartFinalState extends State<CartFinal> {
     var databaseReference =
         FirebaseFirestore.instance.collection('Ordenes').doc(productId);
 
-    await databaseReference.setData({
+    await databaseReference.set({
       "aliadoId": cart.aliadoId,
       "oid": productId,
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
@@ -995,6 +995,7 @@ class _CartFinalState extends State<CartFinal> {
       "delivery": delivery,
       "user": PetshopApp.sharedPreferences.getString(PetshopApp.userName),
       "nombreComercial": cart.nombreComercial,
+      "pais": PetshopApp.sharedPreferences.getString(PetshopApp.userPais),
     });
     // then((value) => databaseReference.snapshots().listen(onData))
 
@@ -1029,7 +1030,7 @@ class _CartFinalState extends State<CartFinal> {
           .doc(productId)
           .collection('Items')
           .doc(CarritoModel.fromSnapshot(allPasteService).productoId)
-          .setData({
+          .set({
         "aliadoId": CarritoModel.fromSnapshot(allPasteService).aliadoId,
         "iId": CarritoModel.fromSnapshot(allPasteService).iId,
         "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),

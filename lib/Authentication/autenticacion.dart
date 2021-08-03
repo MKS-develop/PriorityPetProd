@@ -519,11 +519,10 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
                                         splashColor: Color(0xFF57419D),
                                         onPressed: () {
                                           showDialog(
-                                              context: context,
-                                              child: new ChoosePetAlertDialog(
+                                              builder: (context) => new ChoosePetAlertDialog(
                                                 message:
                                                     "Se reserva el derecho de editar, actualizar, modificar, suspender, eliminar o finalizar los servicios ofrecidos por la Aplicación, incluyendo todo o parte de su contenido, sin necesidad de previo aviso, así como de modificar la forma o tipo de acceso a esta.",
-                                              ));
+                                              ), context: context);
                                         },
                                       ),
                                     ),
@@ -1179,8 +1178,7 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
   }
 
   sendEmail(_email, nombreCompleto) async {
-    await http.get(
-        'https://us-central1-priority-pet.cloudfunctions.net/sendWelcomeEmailDuenos?dest=$_email&username=$nombreCompleto');
+    await http.get(Uri.parse('https://us-central1-priority-pet.cloudfunctions.net/sendWelcomeEmailDuenos?dest=$_email&username=$nombreCompleto'));
   }
 
   void loginUser() async {

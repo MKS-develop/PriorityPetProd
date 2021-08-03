@@ -62,7 +62,7 @@ class _SignUpHelpScreenState extends State<SignUpHelpScreen> {
                           .collection("Dueños")
                           .doc(PetshopApp.sharedPreferences
                               .getString(PetshopApp.userUID));
-                      bienv.updateData({
+                      bienv.update({
                         'bienvenida': false,
                       });
                     },
@@ -258,7 +258,7 @@ class _SignUpHelpScreenState extends State<SignUpHelpScreen> {
                       .collection("Dueños")
                       .doc(PetshopApp.sharedPreferences
                           .getString(PetshopApp.userUID));
-                  bienv.updateData({
+                  bienv.update({
                     'bienvenida': false,
                   });
                   Route route = MaterialPageRoute(builder: (_) => StoreHome());

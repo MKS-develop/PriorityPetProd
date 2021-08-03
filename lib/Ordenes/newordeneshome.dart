@@ -336,7 +336,7 @@ class _NewOrdenesHomeState extends State<NewOrdenesHome> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             SizedBox(
-                              width: 100,
+                              width: 120,
                               height: 30,
                               child: RaisedButton(
                                 onPressed: () {},
@@ -366,6 +366,7 @@ class _NewOrdenesHomeState extends State<NewOrdenesHome> {
                                       builder: (context) => ChatPage(
                                             petModel: widget.petModel,
                                             aliado: order.aliadoId,
+                                        defaultChoiceIndex: widget.defaultChoiceIndex,
                                           )),
                                 );
                               },

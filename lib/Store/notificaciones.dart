@@ -80,7 +80,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
         "Content-type": "application/json",
         "Authorization": _prk
       };
-      Response res = await http.delete(url, headers: headers);
+      Response res = await http.delete(Uri.parse(url), headers: headers);
       int statusCode = await res.statusCode;
 
 
@@ -142,8 +142,8 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
             isEqualTo:
                 PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
         .where("calificacion", isEqualTo: false)
-        .getDocuments()
-        .then((val) => val.documents);
+        .get()
+        .then((val) => val.docs);
 
     for (int i = 0; i < list.length; i++) {
       FirebaseFirestore.instance
@@ -158,7 +158,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
 
   CreateList(QuerySnapshot snapshot) async {
     ordenes = [];
-    var docs = snapshot.documents;
+    var docs = snapshot.docs;
     for (var Doc in docs) {
       setState(() {
         allResults.add(OrderModel.fromJson(Doc.data()));
@@ -175,9 +175,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
       var usuario = PetshopApp.sharedPreferences.getString(PetshopApp.userName);
       //   for(OrderModel order in allResults){
       showDialog(
-        context: context,
-        barrierColor: Colors.white.withOpacity(0),
-        child: AlertDialog(
+        builder: (context) => AlertDialog(
           // title: Text('Su pago ha sido aprobado.'),
           content: SingleChildScrollView(
             child: ListBody(
@@ -238,21 +236,22 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
               ],
             ),
           ),
-        ),
+        ), context: context,
+        barrierColor: Colors.white.withOpacity(0),
       );
     }
   }
 
   updateFields(aliadoId, oid) async {
     var ratingSum = await db.collection('Aliados').doc(aliadoId);
-    ratingSum.updateData({
+    ratingSum.update({
       'totalRatings':
           FieldValue.increment(int.parse(ratingC.toStringAsFixed(0))),
       'countRatings': FieldValue.increment(1),
     });
 
     var checkRef = await db.collection('Ordenes').doc(oid);
-    checkRef.updateData({
+    checkRef.update({
       'calificacion': true,
     });
   }

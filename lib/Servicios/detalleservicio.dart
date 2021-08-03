@@ -254,9 +254,9 @@ class _DetallesServicioState extends State<DetallesServicio> {
                                     fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.left),
                             Text(
-                                (widget.serviceModel.precio).toString() !=
+                                (widget.serviceModel.precio).toStringAsFixed(2) !=
                                         'null'
-                                    ? (widget.serviceModel.precio).toString()
+                                    ? (widget.serviceModel.precio).toStringAsFixed(2)
                                     : '0',
                                 style: TextStyle(
                                     fontSize: 20,

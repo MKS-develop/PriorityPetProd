@@ -236,12 +236,12 @@ class _ServicioPageState extends State<ServicioPage> {
                                   } else {
                                     List<String> list = [];
                                     for (int i = 0;
-                                        i < dataSnapshot.data.documents.length;
+                                        i < dataSnapshot.data.docs.length;
                                         i++) {
                                       DocumentSnapshot razas =
-                                          dataSnapshot.data.documents[i];
+                                          dataSnapshot.data.docs[i];
                                       list.add(
-                                        razas.documentID,
+                                        razas.id,
                                       );
                                     }
                                     return Container(

@@ -434,12 +434,12 @@ class _EditarMascotaState extends State<EditarMascota>
                                         for (int i = 0;
                                             i <
                                                 dataSnapshot
-                                                    .data.documents.length;
+                                                    .data.docs.length;
                                             i++) {
                                           DocumentSnapshot razas =
-                                              dataSnapshot.data.documents[i];
+                                              dataSnapshot.data.docs[i];
                                           list.add(
-                                            razas.documentID,
+                                            razas.id,
                                           );
                                         }
                                         return Container(
@@ -676,7 +676,7 @@ class _EditarMascotaState extends State<EditarMascota>
                                                   ),
                                                 ),
                                               ),
-                                              value: "${sex.documentID}",
+                                              value: "${sex.id}",
                                             ),
                                           );
                                         }
@@ -826,8 +826,7 @@ class _EditarMascotaState extends State<EditarMascota>
 
   popUp() {
     showDialog(
-        context: context,
-        child: AlertDialog(
+        builder: (context) => AlertDialog(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0)),
             // title: Text('Su pago ha sido aprobado.'),
@@ -914,7 +913,7 @@ class _EditarMascotaState extends State<EditarMascota>
                       ),
                     ],
                   )),
-            ]))));
+            ]))), context: context);
   }
 
   Future<void> Message(BuildContext context, String error) async {
