@@ -291,7 +291,8 @@ class _APCrearPagoState extends State<APCrearPago> {
     try {
       var nombre = PetshopApp.sharedPreferences.getString(PetshopApp.userNombre);
       var apellido = PetshopApp.sharedPreferences.getString(PetshopApp.userApellido);
-      var cedula = PetshopApp.sharedPreferences.getString(PetshopApp.userDocId);
+      var numeroDocumento = PetshopApp.sharedPreferences.getString(PetshopApp.userDocId);
+      //var tipoDocument = PetshopApp.sharedPreferences.getString(PetshopApp.);
       
       Map<String, String> headers = {
         "Content-type": "application/json",
@@ -304,7 +305,7 @@ class _APCrearPagoState extends State<APCrearPago> {
         "caja": widget.aliadoModel.email,
         "nombre": nombre,
         "apellido": apellido,
-        "documento": cedula,
+        "documento": numeroDocumento,
         "monto": widget.totalPrice.toString(),
         "nombreZelle": _nombrePagadorController.text,
         "apellidoZelle": _apellidoPagadorController.text,

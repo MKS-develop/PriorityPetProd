@@ -574,7 +574,7 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
     var newDateYear = new DateTime(date.year + 1, date.month, date.day);
     var newDateMonth = new DateTime(date.year, date.month + 1, date.day);
     addplan.set({
-      "culqiOrderId": pagoId,
+      "pagoId": pagoId,
       "status": 'Activo',
       "precio": _totalPrice,
       "createdOn": DateTime.now(),
@@ -586,7 +586,7 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
           _tituloCategoriaOrden == 'Plan Mensual' ? newDateMonth : newDateYear,
     });
     databaseReference.set({
-      "culqiOrderId": pagoId,
+      "pagoId": pagoId,
       "oid": productId,
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
       "precio": _totalPrice,

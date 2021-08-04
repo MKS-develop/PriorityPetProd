@@ -1022,7 +1022,7 @@ class _CartFinalState extends State<CartFinal> {
       "tipoOrden": 'Producto',
       "createdOn": DateTime.now(),
       "status": estadoOrden,
-      "ppGeneradosD": totalPrice,
+      "ppGeneradosD": petPoints,
       "tieneDelivery": value2,
       "delivery": delivery,
       "user": PetshopApp.sharedPreferences.getString(PetshopApp.userName),

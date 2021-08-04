@@ -877,7 +877,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
       "nombre": widget.petModel.nombre,
     });
     databaseReference.set({
-      "culqiOrderId": pagoId,
+      "pagoId": pagoId,
       "aliadoId": widget.serviceModel.aliadoId,
       "oid": productId,
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
@@ -888,7 +888,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
       "statusCita": "Por confirmar",
       "mid": widget.petModel.mid,
       "fecha": fecha == null ? fecha : fecha.trim(),
-      "ppGeneradosD": int.parse((_totalPrice).toString()),
+      "ppGeneradosD": int.parse((petPoints).toString()),
       "date": date,
       "calificacion": false,
       "user": PetshopApp.sharedPreferences.getString(PetshopApp.userName),

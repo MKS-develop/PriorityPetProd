@@ -103,7 +103,7 @@ class _PaymentPageState extends State<PaymentPage> {
   String type;
   String cardType;
   String cardBrand;
-  String culqiOrderId;
+  String pagoId;
   String outcomeMsgError = 'Hubo un problema con su pago';
   List _cartResults = [];
   String epDate;
@@ -582,7 +582,7 @@ class _PaymentPageState extends State<PaymentPage> {
       // print('la marca de tarjeta es ${culqi.card_brand}');
       setState(() {
         // response = statusCode.toString();
-        culqiOrderId = culqi.id;
+        pagoId = culqi.id;
         type = nuevo['source']['source']['type'];
         cardType = nuevo['source']['source']['iin']['card_type'];
         cardBrand = nuevo['source']['source']['iin']['card_brand'];
@@ -697,7 +697,7 @@ class _PaymentPageState extends State<PaymentPage> {
     var newDateYear = new DateTime(date.year + 1, date.month, date.day);
     var newDateMonth = new DateTime(date.year, date.month + 1, date.day);
     addplan.set({
-      "culqiOrderId": culqiOrderId,
+      "pagoId": pagoId,
       "status": 'Activo',
       "precio": widget.totalPrice,
       "createdOn": DateTime.now(),
@@ -709,7 +709,7 @@ class _PaymentPageState extends State<PaymentPage> {
           widget.tituloCategoria == 'Plan Mensual' ? newDateMonth : newDateYear,
     });
     databaseReference.set({
-      "culqiOrderId": culqiOrderId,
+      "pagoId": pagoId,
       "oid": productId,
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
       "precio": widget.totalPrice,
@@ -770,7 +770,7 @@ class _PaymentPageState extends State<PaymentPage> {
       "nombre": widget.petModel.nombre,
     });
     databaseReference.set({
-      "culqiOrderId": culqiOrderId,
+      "pagoId": pagoId,
       "aliadoId": widget.promotionModel.aliadoid,
       "oid": productId,
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
@@ -1214,7 +1214,7 @@ class _PaymentPageState extends State<PaymentPage> {
       "nombre": widget.petModel.nombre,
     });
     databaseReference.set({
-      "culqiOrderId": culqiOrderId,
+      "pagoId": pagoId,
       "aliadoId": widget.serviceModel.aliadoId,
       "oid": productId,
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
@@ -1664,7 +1664,7 @@ class _PaymentPageState extends State<PaymentPage> {
     });
     databaseReference.set({
       "videoId": id,
-      "culqiOrderId": culqiOrderId,
+      "pagoId": pagoId,
       "aliadoId": widget.serviceModel.aliadoId,
       "oid": productId,
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),

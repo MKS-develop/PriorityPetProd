@@ -854,7 +854,7 @@ class _VideoAgendaState extends State<VideoAgenda> {
     });
     databaseReference.set({
       "videoId": id,
-      "culqiOrderId": pagoId,
+      "pagoId": pagoId,
       "pagoId": pagoId,
       "aliadoId": widget.serviceModel.aliadoId,
       "oid": productId,

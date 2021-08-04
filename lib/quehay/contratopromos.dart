@@ -687,7 +687,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                           value: _value,
                                           date: date,
                                           defaultChoiceIndex: widget.defaultChoiceIndex,
-
+                                          onSuccess: _respuestaPago,
                                         )),
                                   );
                                   // AddOrder(
@@ -881,7 +881,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
       "nombre": widget.petModel.nombre,
     });
     databaseReference.set({
-      "culqiOrderId": pagoId,
+      "pagoId": pagoId,
       "aliadoId": widget.promotionModel.aliadoid,
       "oid": productId,
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
@@ -890,11 +890,11 @@ class _ContratoPromosState extends State<ContratoPromos> {
           ? 'Promoción'
           : 'Servicio',
       'createdOn': DateTime.now(),
-      "status": "Por confirmar",
+      "status": estadoOrden,
       "statusCita": "Por confirmar",
       "mid": widget.petModel.mid,
       "fecha": fecha == null ? fecha : fecha.trim(),
-      "ppGeneradosD": int.parse((_totalPrice).toString()),
+      "ppGeneradosD": int.parse((petPoints).toString()),
       "date": date,
       "calificacion": false,
       "user": PetshopApp.sharedPreferences.getString(PetshopApp.userName),

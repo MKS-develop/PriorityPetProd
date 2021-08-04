@@ -905,7 +905,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
       "nombre": widget.petModel.nombre,
     });
     databaseReference.set({
-      "culqiOrderId": pagoId,
+      "pagoId": pagoId,
       "aliadoId": widget.serviceModel.aliadoId,
       "oid": productId,
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
@@ -916,7 +916,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
       "statusCita": "Por confirmar",
       "mid": widget.petModel.mid,
       "fecha": fecha == null ? fecha : fecha.trim(),
-      "ppGeneradosD": int.parse((_totalPrice).toString()),
+      "ppGeneradosD": int.parse((petPoints).toString()),
       "date": date,
       "calificacion": false,
       "user": PetshopApp.sharedPreferences.getString(PetshopApp.userName),
