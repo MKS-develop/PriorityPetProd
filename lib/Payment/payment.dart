@@ -41,15 +41,15 @@ class PaymentPage extends StatefulWidget {
   final dynamic totalPrice;
   final String hora;
   final String fecha;
-  final int recojo;
-  final int delivery;
+  final dynamic recojo;
+  final dynamic delivery;
   final bool value;
   final bool value2;
   final Timestamp date;
   final PromotionModel promotionModel;
   final PlanModel planModel;
   final int defaultChoiceIndex;
-  final Function(String, String, int) onSuccess;
+  final Function(String, String, dynamic) onSuccess;
 
   PaymentPage(
       {this.promotionModel,

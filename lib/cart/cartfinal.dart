@@ -912,9 +912,7 @@ class _CartFinalState extends State<CartFinal> {
                                     ],
                                   ),
                                 ),
-                                PetshopApp.sharedPreferences
-                                            .getString(PetshopApp.userPais) ==
-                                        "Perú"
+                                PetshopApp.pasarelaDisponible()
                                     ? Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: SizedBox(
@@ -1066,7 +1064,7 @@ class _CartFinalState extends State<CartFinal> {
           : FieldValue.increment(0),
     });
 
-    
+
   }
 
   AddOrder(BuildContext context, CartModel cart) async {

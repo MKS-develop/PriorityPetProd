@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_shop/Config/config.dart';
-import 'file:///Users/jesussalazar/Documents/Dev/FlutterProjects/PriorityPetProd/lib/Models/Chats.dart';
+//import 'file:///Users/jesussalazar/Documents/Dev/FlutterProjects/PriorityPetProd/lib/Models/Chats.dart';
 import 'package:pet_shop/Models/Message.dart';
 import 'package:pet_shop/Models/alidados.dart';
 import 'package:pet_shop/Models/ordenes.dart';

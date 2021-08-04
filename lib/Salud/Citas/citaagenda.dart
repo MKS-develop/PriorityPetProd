@@ -569,8 +569,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
                         ),
                       )
                     : Container(),
-                PetshopApp.sharedPreferences.getString(PetshopApp.userPais) ==
-                        "Perú"
+                PetshopApp.pasarelaDisponible()
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -838,7 +837,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
     );
   }
 
-  Future<void> _respuestaPago(String pagoId, String estadoPago, int montoAprobado) async {
+  Future<void> _respuestaPago(String pagoId, String estadoPago, dynamic montoAprobado) async {
     int petPoints = 0;
 
     String estadoOrden;

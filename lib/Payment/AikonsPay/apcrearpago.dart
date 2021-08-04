@@ -18,7 +18,7 @@ class APCrearPago extends StatefulWidget {
   final PetModel petModel;
   final dynamic totalPrice;
   final AliadoModel aliadoModel;
-  final Future<void> Function(String, String, int) onSuccess;
+  final Future<void> Function(String, String, dynamic) onSuccess;
   final int defaultChoiceIndex;
 
   const APCrearPago({

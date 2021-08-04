@@ -811,7 +811,7 @@ class _VideoAgendaState extends State<VideoAgenda> {
     );
   }
 
-  Future<void> _respuestaPago(String pagoId, String estadoPago, int montoAprobado) async {
+  Future<void> _respuestaPago(String pagoId, String estadoPago, dynamic montoAprobado) async {
     int petPoints = 0;
 
     String estadoOrden;

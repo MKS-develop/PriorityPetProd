@@ -552,7 +552,7 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
     );
   }
 
-  Future<void> _respuestaPago(String pagoId, String estadoPago, int montoAprobado) async {
+  Future<void> _respuestaPago(String pagoId, String estadoPago, dynamic montoAprobado) async {
 
     String estadoOrden;
     if(estadoPago == PagoEnum.pagoAprobado) {

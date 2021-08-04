@@ -584,8 +584,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
                         ),
                       )
                     : Container(),
-                PetshopApp.sharedPreferences.getString(PetshopApp.userPais) ==
-                        "Perú"
+                PetshopApp.pasarelaDisponible()
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -866,7 +865,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
     );
   }
 
-  Future<void> _respuestaPago(String pagoId, String estadoPago, int montoAprobado) async {
+  Future<void> _respuestaPago(String pagoId, String estadoPago, dynamic montoAprobado) async {
     int petPoints = 0;
 
     String estadoOrden;
