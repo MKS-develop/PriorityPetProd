@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_shop/Config/config.dart';
+import 'package:pet_shop/Config/enums.dart';
 
 import 'package:pet_shop/Models/Producto.dart';
 import 'package:pet_shop/Models/Cart.dart';
@@ -10,6 +11,7 @@ import 'package:pet_shop/Models/item.dart';
 import 'package:pet_shop/Models/ordenes.dart';
 import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
+import 'package:pet_shop/Payment/AikonsPay/apcrearpago.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
 import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
@@ -441,6 +443,13 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                                                 Text(item.precio.toString()),
                                               ],
                                             ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                    'Monto aprobado: ${PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda)}'),
+                                                Text(widget.orderModel.montoAprobado.toString()),
+                                              ],
+                                            ),
                                             SizedBox(
                                               height: 10.0,
                                             ),
@@ -558,6 +567,9 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                                 ),
                               )
                             : Container(),
+                            widget.orderModel.status == OrdenEnum.pagoIncompleto ? 
+                              _btnRegistrarNuevoPago(context) 
+                              : Container(height: 0.0, width: 0.0),
                       ],
                     ),
                   ),
@@ -1154,6 +1166,45 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _btnRegistrarNuevoPago(BuildContext context) {
+    SizedBox(
+      width: 100,
+      height: 30,
+      child: RaisedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => APCrearPago(
+                petModel: model,
+                aliadoModel: AliadoModel(),
+                totalPrice: widget.orderModel.precio - widget.orderModel.montoAprobado,
+                defaultChoiceIndex: widget.defaultChoiceIndex,
+                onSuccess: (ref, esta, mon) async {
+                  Navigator.of(context).pop();
+                }                   
+              )
+            ),
+          );
+        },
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5)),
+        color: Colors.red,
+        padding: EdgeInsets.all(0.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Registrar pago',
+                style: TextStyle(
+                    fontFamily: 'Product Sans',
+                    color: Colors.white,
+                    fontSize: 14.0)),
+          ],
         ),
       ),
     );
