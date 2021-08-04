@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_shop/Config/config.dart';
+import 'package:pet_shop/Config/enums.dart';
 import 'package:pet_shop/Models/Cart.dart';
 import 'package:pet_shop/Models/Promo.dart';
 import 'package:pet_shop/Models/alidados.dart';
@@ -73,6 +74,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
   int ppCanjeados = 0;
   double ppvalor = 0;
   String tituloCategoria = "Servicio";
+  dynamic _totalPrice;
 
   bool get wantKeepAlive => true;
   File file;
@@ -615,7 +617,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                 } else if (fecha != null &&
                                     widget.serviceModel.tipoAgenda == 'Free') {
                                   // AddOrder(widget.serviceModel.servicioId, context);
-                                  int totalPrice = (widget.serviceModel.precio +
+                                  _totalPrice = (widget.serviceModel.precio +
                                           recojo +
                                           delivery -
                                           totalPet)
@@ -629,7 +631,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                             serviceModel: widget.serviceModel,
                                             locationModel: widget.locationModel,
                                             tituloCategoria: tituloCategoria,
-                                            totalPrice: totalPrice,
+                                            totalPrice: _totalPrice,
                                             hora: hora,
                                             fecha: fecha,
                                             recojo: recojo,
@@ -638,7 +640,9 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                             value: _value,
                                             date: date,
                                             defaultChoiceIndex:
-                                                widget.defaultChoiceIndex)),
+                                                widget.defaultChoiceIndex,
+                                            onSuccess: _respuestaPago,
+                                          )),
                                   );
                                 } else if (widget.serviceModel.tipoAgenda ==
                                     'Slots') {
@@ -686,7 +690,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                   }
                                   if (hora != null && fecha != null) {
                                     // AddOrder(widget.serviceModel.servicioId, context);
-                                    int totalPrice =
+                                    _totalPrice =
                                         (widget.serviceModel.precio +
                                                 recojo +
                                                 delivery -
@@ -701,7 +705,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                               serviceModel: widget.serviceModel,
                                               locationModel: widget.locationModel,
                                               tituloCategoria: tituloCategoria,
-                                                totalPrice: totalPrice,
+                                                totalPrice: _totalPrice,
                                                 hora: hora,
                                                 fecha: fecha,
                                                 recojo: recojo,
@@ -710,7 +714,8 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                                 value: _value,
                                                 date: date,
                                               defaultChoiceIndex:
-                                              widget.defaultChoiceIndex
+                                              widget.defaultChoiceIndex,
+                                              onSuccess: _respuestaPago,
                                               )),
                                     );
                                   }
@@ -860,6 +865,106 @@ class _ContratoServicioState extends State<ContratoServicio> {
       ),
     );
   }
+
+  Future<void> _respuestaPago(String pagoId, String estadoPago, int montoAprobado) async {
+    int petPoints = 0;
+
+    String estadoOrden;
+    if(estadoPago == PagoEnum.pagoAprobado) {
+      estadoOrden = OrdenEnum.aprobada;
+      petPoints = _totalPrice;
+    }
+    else {
+      estadoOrden = OrdenEnum.pendiente;
+    }
+
+    Navigator.of(context, rootNavigator: true).pop();
+    //OrderMessage(context, outcomeMsg);
+    var databaseReference =
+        FirebaseFirestore.instance.collection('Ordenes').doc(productId);
+
+    databaseReference
+        .collection('Items')
+        .doc(widget.serviceModel.servicioId)
+        .set({
+      "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+      "nombreComercial": widget.aliadoModel.nombreComercial,
+      "petthumbnailUrl": widget.petModel.petthumbnailUrl,
+      "titulo": widget.serviceModel.titulo,
+      "oid": productId,
+      "aliadoId": widget.serviceModel.aliadoId,
+      "servicioid": widget.serviceModel.servicioId,
+      "date": date,
+      "hora": hora,
+      "fecha": fecha == null ? fecha : fecha.trim(),
+      "precio": _totalPrice,
+      "mid": widget.petModel.mid,
+      "tieneDelivery": _value2,
+      "delivery": delivery,
+      "tieneDomicilio": _value,
+      "domicilio": recojo,
+      "nombre": widget.petModel.nombre,
+    });
+    databaseReference.set({
+      "culqiOrderId": pagoId,
+      "aliadoId": widget.serviceModel.aliadoId,
+      "oid": productId,
+      "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+      "precio": _totalPrice,
+      "tipoOrden": 'Servicio',
+      'createdOn': DateTime.now(),
+      "status": estadoOrden,
+      "statusCita": "Por confirmar",
+      "mid": widget.petModel.mid,
+      "fecha": fecha == null ? fecha : fecha.trim(),
+      "ppGeneradosD": int.parse((_totalPrice).toString()),
+      "date": date,
+      "calificacion": false,
+      "user": PetshopApp.sharedPreferences.getString(PetshopApp.userName),
+      "nombreComercial": widget.aliadoModel.nombreComercial,
+      "localidadId": widget.locationModel.localidadId,
+      "pais": PetshopApp.sharedPreferences.getString(PetshopApp.userPais),
+    });
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => StoreHome()),
+      (Route<dynamic> route) => false,
+    );
+    sendEmail(
+        PetshopApp.sharedPreferences.getString(PetshopApp.userEmail),
+        PetshopApp.sharedPreferences.getString(PetshopApp.userName),
+        productId,
+        ali.avatar);
+    pushProvider.sendNotificaction(widget.serviceModel.aliadoId, productId);
+    var val = []; //blank list for add elements which you want to delete
+    val.add(hora);
+    db
+        .collection("Localidades")
+        .doc(widget.serviceModel.localidadId)
+        .collection("Servicios")
+        .doc(widget.serviceModel.servicioId)
+        .collection("Agenda")
+        .doc(fecha)
+        .update({
+      "horasDia": FieldValue.arrayRemove(val),
+      "horasReservadas": FieldValue.arrayUnion(val),
+    });
+
+    var likeRef = db
+        .collection("Dueños")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
+        .collection("Petpoints")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
+    likeRef.update({
+      'ppAcumulados': FieldValue.increment(petPoints),
+      'ppCanjeados': _value == true
+          ? FieldValue.increment(ppAcumulados)
+          : FieldValue.increment(0),
+    });
+  }
+
+
 
   deleteDate() {
     var a = DateTime.now();

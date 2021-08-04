@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_shop/Config/config.dart';
+import 'package:pet_shop/Config/enums.dart';
 import 'package:pet_shop/Models/Cart.dart';
 import 'package:pet_shop/Models/Promo.dart';
 import 'package:pet_shop/Models/alidados.dart';
@@ -16,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import '../Widgets/myDrawer.dart';
+import 'package:http/http.dart' as http;
 
 int cantidad = 1;
 
@@ -580,7 +582,9 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                             value: _value,
                                             date: date,
                                             defaultChoiceIndex:
-                                                widget.defaultChoiceIndex)),
+                                                widget.defaultChoiceIndex,
+                                            onSuccess: _respuestaPago,
+                                          )),
                                   );
                                 } else if (widget.promotionModel.tipoAgenda ==
                                     'Slots') {
@@ -628,7 +632,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                   }
                                   if (hora != null && fecha != null) {
                                     // AddOrder(widget.promotionModel.promoid, context);
-                                    int totalPrice = (pro.precio +
+                                    _totalPrice = (pro.precio +
                                             recojo +
                                             delivery -
                                             totalPet)
@@ -642,7 +646,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                               promotionModel:
                                                   widget.promotionModel,
                                               tituloCategoria: tituloCategoria,
-                                              totalPrice: totalPrice,
+                                              totalPrice: _totalPrice,
                                               hora: hora,
                                               fecha: fecha,
                                               recojo: recojo,
@@ -651,7 +655,9 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                               value: _value,
                                               date: date,
                                               defaultChoiceIndex:
-                                                  widget.defaultChoiceIndex)),
+                                                  widget.defaultChoiceIndex,
+                                              onSuccess: _respuestaPago,
+                                            )),
                                     );
                                   }
                                 }
@@ -834,6 +840,109 @@ class _ContratoPromosState extends State<ContratoPromos> {
         ),
       ),
     );
+  }
+
+  Future<void> _respuestaPago(String pagoId, String estadoPago, int montoAprobado) async {
+    int petPoints = 0;
+
+    String estadoOrden;
+    if(estadoPago == PagoEnum.pagoAprobado) {
+      estadoOrden = OrdenEnum.aprobada;
+      petPoints = _totalPrice;
+    }
+    else {
+      estadoOrden = OrdenEnum.pendiente;
+    }
+    
+    Navigator.of(context, rootNavigator: true).pop();
+    //OrderMessage(context, outcomeMsg);
+    var databaseReference =
+        FirebaseFirestore.instance.collection('Ordenes').doc(productId);
+
+    databaseReference
+        .collection('Items')
+        .doc(widget.promotionModel.promoid)
+        .set({
+      "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+      "nombreComercial": widget.aliadoModel.nombreComercial,
+      "petthumbnailUrl": widget.petModel.petthumbnailUrl,
+      "titulo": widget.promotionModel.titulo,
+      "oid": productId,
+      "aliadoId": widget.promotionModel.aliadoid,
+      "promoid": widget.promotionModel.promoid,
+      "date": date,
+      "hora": hora,
+      "fecha": fecha == null ? fecha : fecha.trim(),
+      "precio": _totalPrice,
+      "mid": widget.petModel.mid,
+      "tieneDelivery": _value2,
+      "delivery": delivery,
+      "tieneDomicilio": _value,
+      "domicilio": recojo,
+      "nombre": widget.petModel.nombre,
+    });
+    databaseReference.set({
+      "culqiOrderId": pagoId,
+      "aliadoId": widget.promotionModel.aliadoid,
+      "oid": productId,
+      "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+      "precio": _totalPrice,
+      "tipoOrden": widget.promotionModel.tipoPromocion == 'Producto'
+          ? 'Promoción'
+          : 'Servicio',
+      'createdOn': DateTime.now(),
+      "status": "Por confirmar",
+      "statusCita": "Por confirmar",
+      "mid": widget.petModel.mid,
+      "fecha": fecha == null ? fecha : fecha.trim(),
+      "ppGeneradosD": int.parse((_totalPrice).toString()),
+      "date": date,
+      "calificacion": false,
+      "user": PetshopApp.sharedPreferences.getString(PetshopApp.userName),
+      "nombreComercial": widget.aliadoModel.nombreComercial,
+      "pais": PetshopApp.sharedPreferences.getString(PetshopApp.userPais),
+    });
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => StoreHome()),
+      (Route<dynamic> route) => false,
+    );
+    sendEmail(
+        PetshopApp.sharedPreferences.getString(PetshopApp.userEmail),
+        PetshopApp.sharedPreferences.getString(PetshopApp.userName),
+        productId,
+        ali.avatar);
+    pushProvider.sendNotificaction(widget.promotionModel.aliadoid, productId);
+    var val = []; //blank list for add elements which you want to delete
+    val.add(hora);
+    db
+        .collection("Promociones")
+        .doc(widget.promotionModel.promoid)
+        .collection("Agenda")
+        .doc(fecha)
+        .update({
+      "horasDia": FieldValue.arrayRemove(val),
+      "horasReservadas": FieldValue.arrayUnion(val),
+    });
+
+    var likeRef = db
+        .collection("Dueños")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
+        .collection("Petpoints")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
+    likeRef.update({
+      'ppAcumulados': FieldValue.increment(petPoints),
+      'ppCanjeados': _value == true
+          ? FieldValue.increment(ppAcumulados)
+          : FieldValue.increment(0),
+    });
+  }
+
+  sendEmail(_email, nombreCompleto, orderId, aliadoAvatar) async {
+    await http.get(
+        Uri.parse('https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=$_email&username=$nombreCompleto&orderId=$orderId&logoAliado=$aliadoAvatar'));
+    print('$_email $nombreCompleto $orderId $aliadoAvatar');
   }
 
   deleteDate() {

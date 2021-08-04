@@ -47,4 +47,22 @@ class PetshopApp {
   static final String paymentDetails = 'paymentDetails';
   static final String orderTime = 'orderTime';
   static final String isSuccess = 'isSuccess';
+
+  static final List<String> pasarelasHabilitadas = ["Venezuela", "Perú"];
+
+  static bool pasarelaDisponible() {
+    return pasarelasHabilitadas.indexOf(PetshopApp.sharedPreferences.getString(PetshopApp.userPais)) != -1;
+  }
+
+  static bool esPeru() {
+    return PetshopApp.sharedPreferences.getString(PetshopApp.userPais) == "Perú";
+  }
+
+  static bool esVenezuela() {
+    return PetshopApp.sharedPreferences.getString(PetshopApp.userPais) == "Venezuela";
+  }
+
+  static bool esColombia() {
+    return PetshopApp.sharedPreferences.getString(PetshopApp.userPais) == "Colombia";
+  }
 }

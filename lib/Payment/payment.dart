@@ -27,6 +27,8 @@ import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import 'package:pet_shop/usuario/usuarioinfo.dart';
 
+import 'AikonsPay/apcrearpago.dart';
+
 class PaymentPage extends StatefulWidget {
   final PetModel petModel;
   final Producto productoModel;
@@ -46,6 +48,7 @@ class PaymentPage extends StatefulWidget {
   final PromotionModel promotionModel;
   final PlanModel planModel;
   final int defaultChoiceIndex;
+  final Function(String, String, int) onSuccess;
 
   PaymentPage(
       {this.promotionModel,
@@ -65,7 +68,9 @@ class PaymentPage extends StatefulWidget {
       this.value,
       this.date,
       this.planModel,
-      this.defaultChoiceIndex});
+      this.defaultChoiceIndex,
+      this.onSuccess,
+    });
 
   @override
   _PaymentPageState createState() => _PaymentPageState();
@@ -162,6 +167,24 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
+    if(PetshopApp.esPeru()) {
+      return _culqiWidget(context);
+    }
+    else if(PetshopApp.esVenezuela()) {
+      return APCrearPago(
+        aliadoModel: widget.aliadoModel,
+        petModel: widget.petModel,
+        defaultChoiceIndex: widget.defaultChoiceIndex,
+        totalPrice: widget.totalPrice,
+        onSuccess: widget.onSuccess,
+      );
+    }
+    else {
+      return Container();
+    }
+  }
+
+  Widget _culqiWidget(BuildContext context) {
     double _screenWidth = MediaQuery.of(context).size.width,
         _screenHeight = MediaQuery.of(context).size.height;
     // CulqiTokenizer tokenizer = CulqiTokenizer(card);

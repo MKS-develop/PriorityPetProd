@@ -53,6 +53,7 @@ dependencies:
   #  contact_picker: any
   #  flutter_sms: any
   flutter_share_me: ^0.9.2
+  shortid: ^0.1.1
 
 dev_dependencies:
   intl_translation: ^0.17.1

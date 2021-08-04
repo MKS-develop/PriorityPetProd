@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:pet_shop/Config/config.dart';
+import 'package:pet_shop/Config/enums.dart';
 
 import 'package:pet_shop/Models/Product.dart';
 import 'package:pet_shop/Models/Cart.dart';
@@ -941,6 +942,17 @@ class _CartFinalState extends State<CartFinal> {
                                                           delivery: delivery,
                                                           value2: _value2,
                                                           value: _value,
+                                                          onSuccess: (pagoId, estadoPago, montoAprobado) {
+                                                            _respuestaPago(
+                                                              pagoId, 
+                                                              estadoPago, 
+                                                              montoAprobado, 
+                                                              cart, 
+                                                              totalPrice,
+                                                              delivery,
+                                                              _value,
+                                                              _value2);
+                                                          },
                                                         )),
                                               );
                                             },
@@ -977,6 +989,83 @@ class _CartFinalState extends State<CartFinal> {
   //   }),
   // );
   // }
+
+  Future<void> _respuestaPago(
+    String pagoId, 
+    String estadoPago, 
+    int montoAprobado, 
+    CartModel cart,
+    int totalPrice,
+    int localDelivery,
+    bool value,
+    bool value2
+  ) async{
+    int petPoints = 0;
+
+    String estadoOrden;
+    if(estadoPago == PagoEnum.pagoAprobado) {
+      estadoOrden = OrdenEnum.aprobada;
+      petPoints = totalPrice;
+    }
+    else {
+      estadoOrden = OrdenEnum.pendiente;
+    }
+
+    Navigator.of(context, rootNavigator: true).pop();
+    //OrderMessage(context, outcomeMsg);
+    var databaseReference =
+        FirebaseFirestore.instance.collection('Ordenes').doc(productId);
+
+    await databaseReference.set({
+      "aliadoId": cart.aliadoId,
+      "oid": productId,
+      "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+      "precio": totalPrice,
+      "tipoOrden": 'Producto',
+      "createdOn": DateTime.now(),
+      "status": estadoOrden,
+      "ppGeneradosD": totalPrice,
+      "tieneDelivery": value2,
+      "delivery": delivery,
+      "user": PetshopApp.sharedPreferences.getString(PetshopApp.userName),
+      "nombreComercial": cart.nombreComercial,
+      "pais": PetshopApp.sharedPreferences.getString(PetshopApp.userPais),
+    });
+
+    setState(() {
+      db
+          .collection('Dueños')
+          .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
+          .collection('Cart')
+          .doc(cart.aliadoId)
+          .collection('Items')
+          .get()
+          .then((snapshot) {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          doc.reference.delete();
+        }
+        ;
+      });
+      db
+          .collection('Dueños')
+          .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
+          .collection('Cart')
+          .doc(cart.aliadoId)
+          .delete();
+    });
+
+    var likeRef = db
+        .collection("Dueños")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
+        .collection("Petpoints")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
+    likeRef.update({
+      'ppAcumulados': FieldValue.increment(petPoints),
+      'ppCanjeados': value == true
+          ? FieldValue.increment(ppAcumulados)
+          : FieldValue.increment(0),
+    });
+  }
 
   AddOrder(BuildContext context, CartModel cart) async {
     var databaseReference =

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_shop/Config/config.dart';
+import 'package:pet_shop/Config/enums.dart';
 import 'package:pet_shop/Models/Cart.dart';
 import 'package:pet_shop/Models/Promo.dart';
 import 'package:pet_shop/Models/alidados.dart';
@@ -20,6 +21,7 @@ import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
 import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:http/http.dart' as http;
 
 int cantidad = 1;
 
@@ -77,6 +79,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
   int ppCanjeados = 0;
   String tituloCategoria = "Servicio";
   double totalPet = 0;
+  dynamic _totalPrice;
 
   @override
   void initState() {
@@ -599,7 +602,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                 } else if (fecha != null &&
                                     widget.serviceModel.tipoAgenda == 'Free') {
                                   // AddOrder(widget.serviceModel.servicioId, context);
-                                  int totalPrice = (widget.serviceModel.precio +
+                                  _totalPrice = (widget.serviceModel.precio +
                                           recojo +
                                           delivery -
                                           totalPet)
@@ -613,7 +616,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                               serviceModel: widget.serviceModel,
                                               locationModel: widget.locationModel,
                                               tituloCategoria: tituloCategoria,
-                                              totalPrice: totalPrice,
+                                              totalPrice: _totalPrice,
                                               hora: hora,
                                               fecha: fecha,
                                               recojo: recojo,
@@ -623,6 +626,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                               date: date,
                                           defaultChoiceIndex:
                                           widget.defaultChoiceIndex,
+                                              onSuccess: _respuestaPago,
                                             )),
                                   );
                                 } else if (widget.serviceModel.tipoAgenda ==
@@ -671,7 +675,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                   }
                                   if (hora != null && fecha != null) {
                                     // AddOrder(widget.serviceModel.servicioId, context);
-                                    int totalPrice =
+                                    _totalPrice =
                                         (widget.serviceModel.precio +
                                                 recojo +
                                                 delivery -
@@ -690,7 +694,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                                     widget.locationModel,
                                                 tituloCategoria:
                                                     tituloCategoria,
-                                                totalPrice: totalPrice,
+                                                totalPrice: _totalPrice,
                                                 hora: hora,
                                                 fecha: fecha,
                                                 recojo: recojo,
@@ -700,6 +704,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                                 date: date,
                                             defaultChoiceIndex:
                                             widget.defaultChoiceIndex,
+                                                onSuccess: _respuestaPago,
                                               )),
                                     );
                                   }
@@ -831,6 +836,110 @@ class _CitaAgendaState extends State<CitaAgenda> {
         ),
       ),
     );
+  }
+
+  Future<void> _respuestaPago(String pagoId, String estadoPago, int montoAprobado) async {
+    int petPoints = 0;
+
+    String estadoOrden;
+    if(estadoPago == PagoEnum.pagoAprobado) {
+      estadoOrden = OrdenEnum.aprobada;
+      petPoints = _totalPrice;
+    }
+    else {
+      estadoOrden = OrdenEnum.pendiente;
+    }
+
+    Navigator.of(context, rootNavigator: true).pop();
+    //OrderMessage(context, outcomeMsg);
+    var databaseReference =
+        FirebaseFirestore.instance.collection('Ordenes').doc(productId);
+
+    databaseReference
+        .collection('Items')
+        .doc(widget.serviceModel.servicioId)
+        .set({
+      "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+      "nombreComercial": widget.aliadoModel.nombreComercial,
+      "petthumbnailUrl": widget.petModel.petthumbnailUrl,
+      "titulo": widget.serviceModel.titulo,
+      "oid": productId,
+      "aliadoId": widget.serviceModel.aliadoId,
+      "servicioid": widget.serviceModel.servicioId,
+      "date": date,
+      "hora": hora,
+      "fecha": fecha == null ? fecha : fecha.trim(),
+      "precio": _totalPrice,
+      "mid": widget.petModel.mid,
+      "tieneDelivery": _value2,
+      "delivery": delivery,
+      "tieneDomicilio": _value,
+      "domicilio": recojo,
+      "nombre": widget.petModel.nombre,
+    });
+    databaseReference.set({
+      "culqiOrderId": pagoId,
+      "aliadoId": widget.serviceModel.aliadoId,
+      "oid": productId,
+      "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+      "precio": _totalPrice,
+      "tipoOrden": 'Servicio',
+      'createdOn': DateTime.now(),
+      "status": estadoOrden,
+      "statusCita": "Por confirmar",
+      "mid": widget.petModel.mid,
+      "fecha": fecha == null ? fecha : fecha.trim(),
+      "ppGeneradosD": int.parse((_totalPrice).toString()),
+      "date": date,
+      "calificacion": false,
+      "user": PetshopApp.sharedPreferences.getString(PetshopApp.userName),
+      "nombreComercial": widget.aliadoModel.nombreComercial,
+      "localidadId": widget.locationModel.localidadId,
+      "pais": PetshopApp.sharedPreferences.getString(PetshopApp.userPais),
+    });
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => StoreHome()),
+      (Route<dynamic> route) => false,
+    );
+    sendEmail(
+        PetshopApp.sharedPreferences.getString(PetshopApp.userEmail),
+        PetshopApp.sharedPreferences.getString(PetshopApp.userName),
+        productId,
+        ali.avatar);
+    pushProvider.sendNotificaction(widget.serviceModel.aliadoId, productId);
+    var val = []; //blank list for add elements which you want to delete
+    val.add(hora);
+    db
+        .collection("Localidades")
+        .doc(widget.serviceModel.localidadId)
+        .collection("Servicios")
+        .doc(widget.serviceModel.servicioId)
+        .collection("Agenda")
+        .doc(fecha)
+        .update({
+      "horasDia": FieldValue.arrayRemove(val),
+      "horasReservadas": FieldValue.arrayUnion(val),
+    });
+
+    var likeRef = db
+        .collection("Dueños")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
+        .collection("Petpoints")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
+    likeRef.update({
+      'ppAcumulados': FieldValue.increment(petPoints),
+      'ppCanjeados': _value == true
+          ? FieldValue.increment(ppAcumulados)
+          : FieldValue.increment(0),
+    });
+  }
+
+  sendEmail(_email, nombreCompleto, orderId, aliadoAvatar) async {
+    await http.get(
+        Uri.parse('https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=$_email&username=$nombreCompleto&orderId=$orderId&logoAliado=$aliadoAvatar'));
+    print('$_email $nombreCompleto $orderId $aliadoAvatar');
   }
 
 // AddOrder(String itemID, BuildContext context) {

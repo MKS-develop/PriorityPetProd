@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_shop/Config/config.dart';
+import 'package:pet_shop/Config/enums.dart';
 import 'package:pet_shop/Models/Cart.dart';
 import 'package:pet_shop/Models/Promo.dart';
 import 'package:pet_shop/Models/alidados.dart';
@@ -20,6 +21,8 @@ import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
 import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:http/http.dart' as http;
+import 'package:shortid/shortid.dart';
 
 int cantidad = 1;
 
@@ -77,6 +80,7 @@ class _VideoAgendaState extends State<VideoAgenda> {
   int ppCanjeados = 0;
   String tituloCategoria = "Videoconsulta";
   double totalPet = 0;
+  dynamic _totalPrice;
 
   @override
   void initState() {
@@ -540,8 +544,7 @@ class _VideoAgendaState extends State<VideoAgenda> {
                         ),
                       )
                     : Container(),
-                PetshopApp.sharedPreferences.getString(PetshopApp.userPais) ==
-                        "Perú"
+                PetshopApp.pasarelaDisponible()
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -573,7 +576,7 @@ class _VideoAgendaState extends State<VideoAgenda> {
                                 } else if (fecha != null &&
                                     widget.serviceModel.tipoAgenda == 'Free') {
                                   // AddOrder(widget.serviceModel.servicioId, context);
-                                  int totalPrice = (widget.serviceModel.precio +
+                                  _totalPrice = (widget.serviceModel.precio +
                                           recojo +
                                           delivery -
                                           totalPet)
@@ -587,7 +590,7 @@ class _VideoAgendaState extends State<VideoAgenda> {
                                               serviceModel: widget.serviceModel,
                                               locationModel: location,
                                               tituloCategoria: tituloCategoria,
-                                              totalPrice: totalPrice,
+                                              totalPrice: _totalPrice,
                                               hora: hora,
                                               fecha: fecha,
                                               recojo: recojo,
@@ -597,6 +600,7 @@ class _VideoAgendaState extends State<VideoAgenda> {
                                               date: date,
                                           defaultChoiceIndex:
                                           widget.defaultChoiceIndex,
+                                            onSuccess: _respuestaPago,
                                             )),
                                   );
                                 } else if (widget.serviceModel.tipoAgenda ==
@@ -645,7 +649,7 @@ class _VideoAgendaState extends State<VideoAgenda> {
                                   }
                                   if (hora != null && fecha != null) {
                                     // AddOrder(widget.serviceModel.servicioId, context);
-                                    int totalPrice =
+                                    _totalPrice =
                                         (widget.serviceModel.precio +
                                                 recojo +
                                                 delivery -
@@ -663,7 +667,7 @@ class _VideoAgendaState extends State<VideoAgenda> {
                                                     widget.locationModel,
                                                 tituloCategoria:
                                                     tituloCategoria,
-                                                totalPrice: totalPrice,
+                                                totalPrice: _totalPrice,
                                                 hora: hora,
                                                 fecha: fecha,
                                                 recojo: recojo,
@@ -673,6 +677,7 @@ class _VideoAgendaState extends State<VideoAgenda> {
                                                 date: date,
                                             defaultChoiceIndex:
                                             widget.defaultChoiceIndex,
+                                            onSuccess: _respuestaPago,
                                               )),
                                     );
                                   }
@@ -804,6 +809,129 @@ class _VideoAgendaState extends State<VideoAgenda> {
         ),
       ),
     );
+  }
+
+  Future<void> _respuestaPago(String pagoId, String estadoPago, int montoAprobado) async {
+    int petPoints = 0;
+
+    String estadoOrden;
+    if(estadoPago == PagoEnum.pagoAprobado) {
+      estadoOrden = OrdenEnum.aprobada;
+      petPoints = _totalPrice;
+    }
+    else {
+      estadoOrden = OrdenEnum.pendiente;
+    }
+
+    var databaseReference =
+        FirebaseFirestore.instance.collection('Ordenes').doc(productId);
+    final id = shortid.generate();
+    databaseReference
+        .collection('Items')
+        .doc(widget.serviceModel.servicioId)
+        .set({
+      "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+      "nombreComercial": widget.aliadoModel.nombreComercial,
+      "petthumbnailUrl": widget.petModel != null
+          ? widget.petModel.petthumbnailUrl
+          : PetshopApp.sharedPreferences.getString(PetshopApp.userAvatarUrl),
+      "titulo": widget.serviceModel.titulo,
+      "oid": productId,
+      "aliadoId": widget.serviceModel.aliadoId,
+      "servicioid": widget.serviceModel.servicioId,
+      "date": date,
+      "hora": hora,
+      "fecha": fecha == null ? fecha : fecha.trim(),
+      "precio": _totalPrice,
+      "mid": widget.petModel != null ? widget.petModel.mid : 'Dueño',
+      // "tieneDelivery": widget.value2,
+      // "delivery": widget.delivery,
+      // "tieneDomicilio": widget.value,
+      // "domicilio": widget.recojo,
+      "nombre": widget.petModel != null
+          ? widget.petModel.nombre
+          : PetshopApp.sharedPreferences.getString(PetshopApp.userName),
+    });
+    databaseReference.set({
+      "videoId": id,
+      "culqiOrderId": pagoId,
+      "pagoId": pagoId,
+      "aliadoId": widget.serviceModel.aliadoId,
+      "oid": productId,
+      "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+      "precio": _totalPrice,
+      "tipoOrden": 'Videoconsulta',
+      'createdOn': DateTime.now(),
+      "status": estadoOrden,
+      "statusCita": "Por confirmar",
+      "mid": widget.petModel != null ? widget.petModel.mid : 'Dueño',
+      "fecha": fecha == null ? fecha : fecha.trim(),
+      "ppGeneradosD": int.parse((petPoints).toString()),
+      "date": date,
+      "calificacion": false,
+      "user": PetshopApp.sharedPreferences.getString(PetshopApp.userName),
+      "nombreComercial": widget.aliadoModel.nombreComercial,
+      "localidadId": widget.locationModel.localidadId,
+      "pais": PetshopApp.sharedPreferences.getString(PetshopApp.userPais),
+    });
+    /*try {
+      var json =
+          '{"filial": "01","id": "$productId","cliente": "${PetshopApp.sharedPreferences.getString(PetshopApp.userDocId)}","proveedor": "${widget.serviceModel.aliadoId}","emision": "$epDate","formapag": "$formapag","moneda": "PEN","items": [{ "producto": "${widget.serviceModel.servicioId}","cantidad": 1,"precio": ${widget.totalPrice}] }';
+      var url = ("https://epcloud.ebc.pe.grupoempodera.com/api/?cliente");
+      Map<String, String> headers = {"Content-type": "application/json"};
+      Response res = await http.post(url, headers: headers, body: json);
+      int statusCode = res.statusCode;
+      setState(() {
+        // response = statusCode.toString();
+        print(statusCode);
+      });
+    } catch (e) {
+      print(e.message);
+      return null;
+    }*/
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => StoreHome()),
+      (Route<dynamic> route) => false,
+    );
+    sendEmail(
+        PetshopApp.sharedPreferences.getString(PetshopApp.userEmail),
+        PetshopApp.sharedPreferences.getString(PetshopApp.userName),
+        productId,
+        ali.avatar);
+    pushProvider.sendNotificaction(widget.serviceModel.aliadoId, productId);
+    var val = []; //blank list for add elements which you want to delete
+    val.add(hora);
+    db
+        .collection("Localidades")
+        .doc(widget.serviceModel.localidadId)
+        .collection("Servicios")
+        .doc(widget.serviceModel.servicioId)
+        .collection("Agenda")
+        .doc(fecha)
+        .update({
+      "horasDia": FieldValue.arrayRemove(val),
+      "horasReservadas": FieldValue.arrayUnion(val),
+    });
+
+    var likeRef = db
+        .collection("Dueños")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
+        .collection("Petpoints")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
+    likeRef.update({
+      'ppAcumulados': FieldValue.increment(petPoints),
+      'ppCanjeados': _value == true
+          ? FieldValue.increment(ppAcumulados)
+          : FieldValue.increment(0),
+    });
+  }
+
+  sendEmail(_email, nombreCompleto, orderId, aliadoAvatar) async {
+    await http.get(
+        'https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=$_email&username=$nombreCompleto&orderId=$orderId&logoAliado=$aliadoAvatar');
+    print('$_email $nombreCompleto $orderId $aliadoAvatar');
   }
 
   // AddOrder(String itemID, BuildContext context) {
