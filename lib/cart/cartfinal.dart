@@ -50,6 +50,7 @@ class _CartFinalState extends State<CartFinal> {
   bool carrito = true;
   bool noti = false;
   bool home = false;
+  AliadoModel _aliadoActual;
 
   @override
   void initState() {
@@ -719,6 +720,7 @@ class _CartFinalState extends State<CartFinal> {
                                             AliadoModel ali =
                                                 AliadoModel.fromJson(
                                                     dataSnapshot.data.data());
+                                            _aliadoActual = ali;
                                             return Padding(
                                               padding:
                                                   const EdgeInsets.all(2.0),
@@ -930,6 +932,7 @@ class _CartFinalState extends State<CartFinal> {
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         PaymentPage(
+                                                          aliadoModel: _aliadoActual,
                                                           petModel:
                                                               widget.petModel,
                                                           cartModel: cart,
@@ -1009,7 +1012,7 @@ class _CartFinalState extends State<CartFinal> {
       estadoOrden = OrdenEnum.pendiente;
     }
 
-    Navigator.of(context, rootNavigator: true).pop();
+    //Navigator.of(context, rootNavigator: true).pop();
     //OrderMessage(context, outcomeMsg);
     var databaseReference =
         FirebaseFirestore.instance.collection('Ordenes').doc(productId);
@@ -1064,7 +1067,15 @@ class _CartFinalState extends State<CartFinal> {
           : FieldValue.increment(0),
     });
 
-
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => StoreHome(
+                petModel: widget.petModel,
+            defaultChoiceIndex: widget
+                .defaultChoiceIndex,
+              )),
+    );
   }
 
   AddOrder(BuildContext context, CartModel cart) async {

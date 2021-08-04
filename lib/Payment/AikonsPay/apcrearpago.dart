@@ -7,6 +7,7 @@ import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/Config/enums.dart';
 import 'package:pet_shop/Models/alidados.dart';
 import 'package:pet_shop/Models/pet.dart';
+import 'package:pet_shop/Store/storehome.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
 import 'package:pet_shop/Widgets/customTextField.dart';
 import 'package:pet_shop/Widgets/myDrawer.dart';
@@ -263,6 +264,15 @@ class _APCrearPagoState extends State<APCrearPago> {
                     color: const Color(0xFF57419D),
                     onPressed: () {
                       _registrarPago();
+                      /*Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => StoreHome(
+                                  petModel: widget.petModel,
+                              defaultChoiceIndex: widget
+                                  .defaultChoiceIndex,
+                                )),
+                      );*/
                     },
                   ),
                 )
@@ -299,22 +309,26 @@ class _APCrearPagoState extends State<APCrearPago> {
         "x-api-key": _apiKey
       };
 
-      Map<String, String> jsonPago = {
+      var totalPrice = widget.totalPrice is int ? 
+        widget.totalPrice.toDouble() : 
+        double.parse(widget.totalPrice);
+
+      Map<String, dynamic> jsonPago = {
         "moneda": "USD",
         "metodo": "ZELLE",
         "caja": widget.aliadoModel.email,
         "nombre": nombre,
         "apellido": apellido,
         "documento": numeroDocumento,
-        "monto": widget.totalPrice.toString(),
+        "monto": totalPrice,
         "nombreZelle": _nombrePagadorController.text,
         "apellidoZelle": _apellidoPagadorController.text,
         "tipoDocumento": "v"
       };
 
-      Response response = await http.post(_serviceUrl, headers: headers, body: jsonEncode(jsonPago));
+      Response response = await http.post(_serviceUrl, headers: headers, body: jsonEncode(jsonPago)) ;
       int statusCode = response.statusCode;
-      var bodyResponse = await jsonDecode(response.body);
+      var bodyResponse = jsonDecode(response.body);
       if(statusCode == 200) {
         _referencia = bodyResponse["referencia"];
         _mostrarMensaje(
@@ -329,6 +343,7 @@ class _APCrearPagoState extends State<APCrearPago> {
           false
         );
       }
+      
     } on Exception catch(exception) {
       _mostrarMensaje(
         "Se ha producido un error en la operación. Intenta nuevamente",
@@ -382,6 +397,7 @@ class _APCrearPagoState extends State<APCrearPago> {
     ).then((result) {
       if(success)
         widget.onSuccess(_referencia, PagoEnum.pagoPendiente, 0);
+        
     });
   }
 }
