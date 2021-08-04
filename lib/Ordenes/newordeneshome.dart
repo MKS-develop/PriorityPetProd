@@ -333,11 +333,12 @@ class _NewOrdenesHomeState extends State<NewOrdenesHome> {
                           })
                       : Container(),
                   order.tipoOrden != 'Plan'
-                      ? Row(
+                      ? 
+                      Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             SizedBox(
-                              width: 120,
+                              width: 160,
                               height: 30,
                               child: RaisedButton(
                                 onPressed: () {},

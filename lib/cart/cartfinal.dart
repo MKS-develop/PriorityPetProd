@@ -1065,6 +1065,8 @@ class _CartFinalState extends State<CartFinal> {
           ? FieldValue.increment(ppAcumulados)
           : FieldValue.increment(0),
     });
+
+    
   }
 
   AddOrder(BuildContext context, CartModel cart) async {

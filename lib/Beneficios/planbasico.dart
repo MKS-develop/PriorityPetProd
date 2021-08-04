@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:pet_shop/Config/config.dart';
+import 'package:pet_shop/Config/enums.dart';
 import 'package:pet_shop/Models/plan.dart';
 import 'package:pet_shop/Payment/payment.dart';
 import 'package:pet_shop/Store/storehome.dart';
@@ -33,6 +34,8 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
   String productId = DateTime.now().millisecondsSinceEpoch.toString();
   String tituloCategoria = "Plan";
   PlanModel plan;
+  String _tituloCategoriaOrden;
+  dynamic _totalPrice;
 
   @override
   void initState() {
@@ -352,10 +355,11 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
                                                                             rootNavigator:
                                                                                 true)
                                                                         .pop();
-                                                                    int totalPrice = widget
+                                                                    _totalPrice = widget
                                                                         .planModel
                                                                         .montoMensual
                                                                         .toInt();
+                                                                    _tituloCategoriaOrden = 'Plan Mensual';
                                                                     Navigator
                                                                         .push(
                                                                       context,
@@ -363,9 +367,11 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
                                                                           builder: (context) => PaymentPage(
                                                                               petModel: model,
                                                                               planModel: plan,
-                                                                              tituloCategoria: 'Plan Mensual',
-                                                                              totalPrice: totalPrice,
-                                                                              defaultChoiceIndex: widget.defaultChoiceIndex)),
+                                                                              tituloCategoria: _tituloCategoriaOrden,
+                                                                              totalPrice: _totalPrice,
+                                                                              defaultChoiceIndex: widget.defaultChoiceIndex,
+                                                                              onSuccess: _respuestaPago,
+                                                                              )),
                                                                     );
                                                                   },
                                                                   shape: RoundedRectangleBorder(
@@ -424,10 +430,11 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
                                                                             rootNavigator:
                                                                                 true)
                                                                         .pop();
-                                                                    int totalPrice = widget
+                                                                    _totalPrice = widget
                                                                         .planModel
                                                                         .montoAnual
                                                                         .toInt();
+                                                                    _tituloCategoriaOrden = 'Plan Anual';
                                                                     Navigator
                                                                         .push(
                                                                       context,
@@ -436,8 +443,9 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
                                                                               PaymentPage(
                                                                                 petModel: widget.petModel,
                                                                                 planModel: widget.planModel,
-                                                                                tituloCategoria: 'Plan Anual',
-                                                                                totalPrice: totalPrice,
+                                                                                tituloCategoria: _tituloCategoriaOrden,
+                                                                                totalPrice: _totalPrice,
+                                                                                onSuccess: _respuestaPago,
                                                                               )),
                                                                     );
                                                                   },
@@ -542,6 +550,73 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
         ),
       ),
     );
+  }
+
+  Future<void> _respuestaPago(String pagoId, String estadoPago, int montoAprobado) async {
+
+    String estadoOrden;
+    if(estadoPago == PagoEnum.pagoAprobado) {
+      estadoOrden = OrdenEnum.aprobada;
+    }
+    else {
+      estadoOrden = OrdenEnum.pendiente;
+    }
+
+    var databaseReference =
+        FirebaseFirestore.instance.collection('Ordenes').doc(productId);
+
+    var addplan = FirebaseFirestore.instance
+        .collection('Dueños')
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
+        .collection('Plan')
+        .doc(widget.petModel.mid);
+    var date = new DateTime.now();
+    var newDateYear = new DateTime(date.year + 1, date.month, date.day);
+    var newDateMonth = new DateTime(date.year, date.month + 1, date.day);
+    addplan.set({
+      "culqiOrderId": pagoId,
+      "status": 'Activo',
+      "precio": _totalPrice,
+      "createdOn": DateTime.now(),
+      "tipoPlan": widget.planModel.planid,
+      "oid": productId,
+      "mid": widget.petModel.mid,
+      "vigencia_desde": DateTime.now(),
+      "vigencia_hasta":
+          _tituloCategoriaOrden == 'Plan Mensual' ? newDateMonth : newDateYear,
+    });
+    databaseReference.set({
+      "culqiOrderId": pagoId,
+      "oid": productId,
+      "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+      "precio": _totalPrice,
+      "status": estadoOrden,
+      "tipoOrden": 'Plan',
+      'createdOn': DateTime.now(),
+      "tipoPlan": widget.planModel.planid,
+      "mid": widget.petModel.mid,
+      "vigencia_desde": DateTime.now(),
+      "vigencia_hasta":
+          _tituloCategoriaOrden == 'Plan Mensual' ? newDateMonth : newDateYear,
+      "petthumbnailUrl": widget.petModel.petthumbnailUrl,
+      "pais": PetshopApp.sharedPreferences.getString(PetshopApp.userPais),
+    });
+    // try {
+    //   var json =
+    //       '{"filial": "01","id": "$productId","cliente": "${PetshopApp.sharedPreferences.getString(PetshopApp.userDocId)}","proveedor": "20606516453","emision": "$epDate","formapag": "$formapag","moneda": "PEN","items": [{ "producto": "${widget.planModel.planid}","cantidad": 1,"precio": ${widget.totalPrice}] }';
+    //   var url = ("https://epcloud.ebc.pe.grupoempodera.com/api/?cliente");
+    //   Map<String, String> headers = {"Content-type": "application/json"};
+    //   Response res = await http.post(Uri.parse(url), headers: headers, body: json);
+    //   int statusCode = res.statusCode;
+    //   setState(() {
+    //     // response = statusCode.toString();
+    //     print(statusCode);
+    //   });
+    // } catch (e) {
+    //   print(e.message);
+    //   return null;
+    // }
+    //OrderMessage(context, outcomeMsg);
   }
 
   AddOrder(String itemID, BuildContext context, int precio, planid) async {
