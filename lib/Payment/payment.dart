@@ -26,6 +26,7 @@ import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
 import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import 'package:pet_shop/usuario/usuarioinfo.dart';
+import 'package:shortid/shortid.dart';
 
 import 'AikonsPay/apcrearpago.dart';
 
@@ -610,7 +611,9 @@ class _PaymentPageState extends State<PaymentPage> {
             context,
             MaterialPageRoute(
                 builder: (context) => StoreHome(
-                      petModel: model,
+                      petModel: widget.petModel,
+                  defaultChoiceIndex: widget
+                      .defaultChoiceIndex,
                     )),
           );
         }
@@ -621,7 +624,9 @@ class _PaymentPageState extends State<PaymentPage> {
             context,
             MaterialPageRoute(
                 builder: (context) => StoreHome(
-                      petModel: model,
+                      petModel: widget.petModel,
+                  defaultChoiceIndex: widget
+                      .defaultChoiceIndex,
                     )),
           );
         }
@@ -633,8 +638,22 @@ class _PaymentPageState extends State<PaymentPage> {
             context,
             MaterialPageRoute(
                 builder: (context) => StoreHome(
-                      petModel: model,
+                      petModel: widget.petModel,
+                  defaultChoiceIndex: widget
+                      .defaultChoiceIndex,
                     )),
+          );
+        }
+        if (widget.tituloCategoria == 'Videoconsulta') {
+          Navigator.of(context, rootNavigator: true).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => StoreHome(
+                  petModel: widget.petModel,
+                  defaultChoiceIndex: widget
+                      .defaultChoiceIndex,
+                )),
           );
         }
 
@@ -646,9 +665,12 @@ class _PaymentPageState extends State<PaymentPage> {
             context,
             MaterialPageRoute(
                 builder: (context) => StoreHome(
-                      petModel: model,
+                      petModel: widget.petModel,
+                  defaultChoiceIndex: widget
+                      .defaultChoiceIndex,
                     )),
           );
+          addVideoToOrders();
         }
       } else {
         Navigator.of(context, rootNavigator: true).pop();
@@ -1574,6 +1596,113 @@ class _PaymentPageState extends State<PaymentPage> {
       context,
       MaterialPageRoute(builder: (context) => StoreHome()),
       (Route<dynamic> route) => false,
+    );
+    sendEmail(
+        PetshopApp.sharedPreferences.getString(PetshopApp.userEmail),
+        PetshopApp.sharedPreferences.getString(PetshopApp.userName),
+        productId,
+        ali.avatar);
+    pushProvider.sendNotificaction(widget.serviceModel.aliadoId, productId);
+    var val = []; //blank list for add elements which you want to delete
+    val.add(widget.hora);
+    db
+        .collection("Localidades")
+        .doc(widget.serviceModel.localidadId)
+        .collection("Servicios")
+        .doc(widget.serviceModel.servicioId)
+        .collection("Agenda")
+        .doc(widget.fecha)
+        .update({
+      "horasDia": FieldValue.arrayRemove(val),
+      "horasReservadas": FieldValue.arrayUnion(val),
+    });
+
+    var likeRef = db
+        .collection("Dueños")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
+        .collection("Petpoints")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
+    likeRef.update({
+      'ppAcumulados': FieldValue.increment(widget.totalPrice),
+      'ppCanjeados': widget.value == true
+          ? FieldValue.increment(ppAcumulados)
+          : FieldValue.increment(0),
+    });
+  }
+
+  addVideoToOrders() async {
+    Navigator.of(context, rootNavigator: true).pop();
+    OrderMessage(context, outcomeMsg);
+    var databaseReference =
+    FirebaseFirestore.instance.collection('Ordenes').doc(productId);
+    final id = shortid.generate();
+    databaseReference
+        .collection('Items')
+        .doc(widget.serviceModel.servicioId)
+        .set({
+      "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+      "nombreComercial": widget.aliadoModel.nombreComercial,
+      "petthumbnailUrl": widget.petModel != null
+          ? widget.petModel.petthumbnailUrl
+          : PetshopApp.sharedPreferences.getString(PetshopApp.userAvatarUrl),
+      "titulo": widget.serviceModel.titulo,
+      "oid": productId,
+      "aliadoId": widget.serviceModel.aliadoId,
+      "servicioid": widget.serviceModel.servicioId,
+      "date": widget.date,
+      "hora": widget.hora,
+      "fecha": widget.fecha == null ? widget.fecha : widget.fecha.trim(),
+      "precio": widget.totalPrice,
+      "mid": widget.petModel != null ? widget.petModel.mid : 'Dueño',
+      // "tieneDelivery": widget.value2,
+      // "delivery": widget.delivery,
+      // "tieneDomicilio": widget.value,
+      // "domicilio": widget.recojo,
+      "nombre": widget.petModel != null
+          ? widget.petModel.nombre
+          : PetshopApp.sharedPreferences.getString(PetshopApp.userName),
+    });
+    databaseReference.set({
+      "videoId": id,
+      "culqiOrderId": culqiOrderId,
+      "aliadoId": widget.serviceModel.aliadoId,
+      "oid": productId,
+      "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+      "precio": widget.totalPrice,
+      "tipoOrden": 'Videoconsulta',
+      'createdOn': DateTime.now(),
+      "status": "Por confirmar",
+      "statusCita": "Por confirmar",
+      "mid": widget.petModel != null ? widget.petModel.mid : 'Dueño',
+      "fecha": widget.fecha == null ? widget.fecha : widget.fecha.trim(),
+      "ppGeneradosD": int.parse((widget.totalPrice).toString()),
+      "date": widget.date,
+      "calificacion": false,
+      "user": PetshopApp.sharedPreferences.getString(PetshopApp.userName),
+      "nombreComercial": widget.aliadoModel.nombreComercial,
+      "localidadId": widget.locationModel.localidadId,
+      "pais": PetshopApp.sharedPreferences.getString(PetshopApp.userPais),
+    });
+    // try {
+    //   var json =
+    //       '{"filial": "01","id": "$productId","cliente": "${PetshopApp.sharedPreferences.getString(PetshopApp.userDocId)}","proveedor": "${widget.serviceModel.aliadoId}","emision": "$epDate","formapag": "$formapag","moneda": "PEN","items": [{ "producto": "${widget.serviceModel.servicioId}","cantidad": 1,"precio": ${widget.totalPrice}] }';
+    //   var url = ("https://epcloud.ebc.pe.grupoempodera.com/api/?cliente");
+    //   Map<String, String> headers = {"Content-type": "application/json"};
+    //   Response res = await http.post(url, headers: headers, body: json);
+    //   int statusCode = res.statusCode;
+    //   setState(() {
+    //     // response = statusCode.toString();
+    //     print(statusCode);
+    //   });
+    // } catch (e) {
+    //   print(e.message);
+    //   return null;
+    // }
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => StoreHome()),
+          (Route<dynamic> route) => false,
     );
     sendEmail(
         PetshopApp.sharedPreferences.getString(PetshopApp.userEmail),
