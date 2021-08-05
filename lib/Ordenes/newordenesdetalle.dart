@@ -536,7 +536,12 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                               )
                             : Container(),
                         SizedBox(height: 15),
-                        widget.orderModel.status != 'Cancelada'
+                        
+                            widget.orderModel.status == OrdenEnum.pagoIncompleto ? 
+                              _btnRegistrarNuevoPago(context) 
+                              : Container(height: 0.0, width: 0.0),
+                          SizedBox(height: 15),
+                          widget.orderModel.status != 'Cancelada'
                             ? SizedBox(
                                 width: 100,
                                 height: 30,
@@ -567,9 +572,6 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                                 ),
                               )
                             : Container(),
-                            widget.orderModel.status == OrdenEnum.pagoIncompleto ? 
-                              _btnRegistrarNuevoPago(context) 
-                              : Container(height: 0.0, width: 0.0),
                       ],
                     ),
                   ),
@@ -1172,7 +1174,7 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
   }
 
   Widget _btnRegistrarNuevoPago(BuildContext context) {
-    SizedBox(
+    return SizedBox(
       width: 100,
       height: 30,
       child: RaisedButton(
@@ -1194,7 +1196,7 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
         },
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5)),
-        color: Colors.red,
+        color: Color(0xFF57419D),
         padding: EdgeInsets.all(0.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

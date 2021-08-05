@@ -326,27 +326,36 @@ class _APCrearPagoState extends State<APCrearPago> {
         "tipoDocumento": "v"
       };
 
-      Response response = await http.post(_serviceUrl, headers: headers, body: jsonEncode(jsonPago)) ;
-      int statusCode = response.statusCode;
-      var bodyResponse = jsonDecode(response.body);
-      if(statusCode == 200) {
-        _referencia = bodyResponse["referencia"];
+      http.post(_serviceUrl, headers: headers, body: jsonEncode(jsonPago))
+      .then((Response response) {
+        int statusCode = response.statusCode;
+        var bodyResponse = jsonDecode(response.body);
+        if(statusCode == 200) {
+          _referencia = bodyResponse["referencia"];
+          _mostrarMensaje(
+            "$nombre, tu pago ha sido registrado con éxito. Te notificaremos cuando este sea aprobado",
+            "Continuar",
+            true
+          );
+        } else {
+          _mostrarMensaje(
+            "Se ha producido un error en la operación. Intenta nuevamente",
+            "Continuar",
+            false
+          );
+        }
+      })
+      .catchError((error){
         _mostrarMensaje(
-          "$nombre, tu pago ha sido registrado con éxito. Te notificaremos cuando este sea aprobado",
-          "Continuar",
-          true
-        );
-      } else {
-        _mostrarMensaje(
-          "Se ha producido un error en la operación. Intenta nuevamente",
+          "La pasarela de pago no se encuentra disponible. Intenta nuevamente",
           "Continuar",
           false
         );
-      }
-      
+      });
+
     } on Exception catch(exception) {
       _mostrarMensaje(
-        "Se ha producido un error en la operación. Intenta nuevamente",
+        "La pasarela de pago no se encuentra disponible. Intenta nuevamente",
         "Continuar",
         false
       );
