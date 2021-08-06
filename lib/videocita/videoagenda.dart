@@ -858,7 +858,6 @@ class _VideoAgendaState extends State<VideoAgenda> {
     databaseReference.set({
       "videoId": id,
       "pagoId": pagoId,
-      "pagoId": pagoId,
       "aliadoId": widget.serviceModel.aliadoId,
       "oid": productId,
       "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
