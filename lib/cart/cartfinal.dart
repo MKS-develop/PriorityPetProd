@@ -1028,6 +1028,7 @@ class _CartFinalState extends State<CartFinal> {
       "tipoOrden": 'Producto',
       "createdOn": DateTime.now(),
       "status": estadoOrden,
+      "pagoId": pagoId,
       "ppGeneradosD": petPoints,
       "tieneDelivery": value2,
       "delivery": delivery,

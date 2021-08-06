@@ -552,7 +552,7 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                           SizedBox(height: 15),
                           widget.orderModel.status != 'Cancelada'
                             ? SizedBox(
-                                width: 100,
+                                width: 120,
                                 height: 30,
                                 child: RaisedButton(
                                   onPressed: () {
@@ -1194,7 +1194,7 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
 
   Widget _btnRegistrarNuevoPago(BuildContext context) {
     return SizedBox(
-      width: 100,
+      width: 120,
       height: 30,
       child: RaisedButton(
         onPressed: () {
@@ -1206,7 +1206,14 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                 aliadoModel: AliadoModel(),
                 totalPrice: widget.orderModel.precio - widget.orderModel.montoAprobado,
                 defaultChoiceIndex: widget.defaultChoiceIndex,
-                onSuccess: (ref, esta, mon) async {
+                onSuccess: (pagoId, esta, mon) async {
+                  FirebaseFirestore.instance
+                        .collection('Ordenes')
+                        .doc(order.oid)
+                        .update({
+                          "pagoId": pagoId,
+                          "status": OrdenEnum.pendiente 
+                        });
                   Navigator.of(context).pop();
                 }                   
               )
