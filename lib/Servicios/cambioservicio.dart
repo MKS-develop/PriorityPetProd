@@ -203,6 +203,9 @@ class _CambioServicioState extends State<CambioServicio> {
                                     child: Image.network(
                                       ali.avatar,
                                       fit: BoxFit.cover,
+                                      errorBuilder: (context, object, stacktrace) {
+                                        return Container();
+                                      },
                                     ),
                                   ),
                                   SizedBox(

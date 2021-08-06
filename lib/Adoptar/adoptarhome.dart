@@ -178,6 +178,9 @@ class _AdoptarHomeState extends State<AdoptarHome> {
                             height: 90,
                             width: 75,
                             fit: BoxFit.cover,
+                            errorBuilder: (context, object, stacktrace) {
+                              return Container();
+                            },
                           ),
                         ),
                         SizedBox(

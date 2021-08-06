@@ -401,11 +401,19 @@ class _NewOrdenesHomeState extends State<NewOrdenesHome> {
                                       backgroundColor: Colors.transparent,
                                       backgroundImage: order.petthumbnailUrl ==
                                               null
-                                          ? NetworkImage(PetshopApp
-                                              .sharedPreferences
-                                              .getString(
-                                                  PetshopApp.userAvatarUrl))
-                                          : NetworkImage(order.petthumbnailUrl),
+                                          ? Image.network(
+                                              PetshopApp.sharedPreferences
+                                                .getString(PetshopApp.userAvatarUrl),
+                                              errorBuilder: (context, object, stacktrace) {
+                                                return Container();
+                                              },
+                                            ).image
+                                          : Image.network(
+                                              order.petthumbnailUrl,
+                                              errorBuilder: (context, object, stacktrace) {
+                                                return Container();
+                                              },
+                                            ).image,
                                     ),
                                   ),
                                 ),

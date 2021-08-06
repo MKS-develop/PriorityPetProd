@@ -178,6 +178,9 @@ class _ClinicasDetalleState extends State<ClinicasDetalle> {
                             height: 100,
                             width: 100,
                             fit: BoxFit.cover,
+                            errorBuilder: (context, object, stacktrace) {
+                              return Container();
+                            },
                           ),
                         ),
                         SizedBox(

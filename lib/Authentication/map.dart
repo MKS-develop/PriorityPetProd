@@ -68,9 +68,19 @@ class _MapHomeState extends State<MapHome> {
                         child: CircleAvatar(
                           backgroundColor: Colors.transparent,
                           backgroundImage: widget.petModel == null
-                              ? NetworkImage(PetshopApp.sharedPreferences
-                                  .getString(PetshopApp.userAvatarUrl))
-                              : NetworkImage(widget.petModel.petthumbnailUrl),
+                              ? Image.network(
+                                  PetshopApp.sharedPreferences
+                                    .getString(PetshopApp.userAvatarUrl),
+                                  errorBuilder: (context, object, stacktrace) {
+                                    return Container();
+                                  },
+                                ).image
+                              : Image.network(
+                                  widget.petModel.petthumbnailUrl,
+                                  errorBuilder: (context, object, stacktrace) {
+                                    return Container();
+                                  },
+                                ).image,
                         ),
                       ),
                     ),

@@ -138,9 +138,12 @@ class _ChatPageState extends State<ChatPage> {
                                           width: 40,
                                           child: CircleAvatar(
                                             backgroundColor: Colors.white,
-                                            backgroundImage: NetworkImage(
-                                                    snapshot.data["avatar"]) ??
-                                                'Cargando',
+                                            backgroundImage: Image.network(
+                                              snapshot.data["avatar"],
+                                              errorBuilder: (context, object, stacktrace) {
+                                                return Container();
+                                              },
+                                            ).image ?? 'Cargando',
                                           ),
                                         ),
                                         SizedBox(

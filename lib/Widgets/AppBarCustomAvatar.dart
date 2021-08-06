@@ -44,9 +44,17 @@ Widget AppBarCustomAvatar(context, petmodel, defaultChoiceIndex) {
                   child: CircleAvatar(
                     backgroundColor: Colors.white,
                     backgroundImage: petmodel == null
-                        ? NetworkImage(PetshopApp.sharedPreferences
-                        .getString(PetshopApp.userAvatarUrl))
-                        : NetworkImage(petmodel.petthumbnailUrl),
+                        ? Image.network(PetshopApp.sharedPreferences
+                        .getString(PetshopApp.userAvatarUrl),
+                        errorBuilder: (context, object, stacktrace) {
+                          return Container();
+                        },).image
+                        : Image.network(
+                          petmodel.petthumbnailUrl,
+                          errorBuilder: (context, object, stacktrace) {
+                            return Container();
+                          },
+                        ).image,
                   ),
                 ),
               ),

@@ -102,10 +102,13 @@ class _RegistroMascotaState extends State<RegistroMascota>
                       width: 50,
                       child: CircleAvatar(
                         backgroundColor: Colors.white,
-                        backgroundImage: NetworkImage(
+                        backgroundImage: Image.network(
                           PetshopApp.sharedPreferences
-                              .getString(PetshopApp.userAvatarUrl),
-                        ),
+                            .getString(PetshopApp.userAvatarUrl),
+                          errorBuilder: (context, object, stacktrace) {
+                            return Container();
+                          },
+                        ).image,
                       ),
                     ),
                   )

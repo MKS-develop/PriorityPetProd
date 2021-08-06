@@ -576,6 +576,9 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                   child: Image.network(
                                     product.urlImagen,
                                     fit: BoxFit.cover,
+                                    errorBuilder: (context, object, stacktrace) {
+                                      return Container();
+                                    },
                                   ),
                                 ),
                                 SizedBox(
@@ -839,6 +842,9 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                         child: Image.network(
                                           product.urlImagen,
                                           fit: BoxFit.cover,
+                                          errorBuilder: (context, object, stacktrace) {
+                                            return Container();
+                                          },
                                         ),
                                       ),
                                     ],

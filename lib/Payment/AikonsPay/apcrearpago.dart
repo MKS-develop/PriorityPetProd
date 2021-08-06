@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,7 @@ class _APCrearPagoState extends State<APCrearPago> {
   String _correoTexto = "Debes realizar el pago zelle a la dirección de correo electrónico.";
   String _titularTexto = "a nombre del titular de la cuenta";
   String _referencia;
+  HttpClient client;
 
   @override
     void initState() {
@@ -303,6 +305,15 @@ class _APCrearPagoState extends State<APCrearPago> {
       var apellido = PetshopApp.sharedPreferences.getString(PetshopApp.userApellido);
       var numeroDocumento = PetshopApp.sharedPreferences.getString(PetshopApp.userDocId);
       //var tipoDocument = PetshopApp.sharedPreferences.getString(PetshopApp.);
+
+      HttpClient client = new HttpClient();
+        client.badCertificateCallback = ((X509Certificate cert, String host, int port) {
+        /*final isValidHost = host == "api.my_app";
+        return isValidHost;*/
+        return true;
+      });
+
+      client.connectionTimeout = Duration(seconds: 10);
       
       Map<String, String> headers = {
         "Content-type": "application/json",
@@ -326,10 +337,33 @@ class _APCrearPagoState extends State<APCrearPago> {
         "tipoDocumento": "v"
       };
 
-      http.post(_serviceUrl, headers: headers, body: jsonEncode(jsonPago))
-      .then((Response response) {
+
+      /*var response = await http.post(_serviceUrl, headers: headers, body: jsonEncode(jsonPago))
+        .timeout(
+          Duration(seconds: 10), 
+          onTimeout: () {
+            _mostrarMensaje(
+              "La pasarela de pago no se encuentra disponible. Intenta nuevamente",
+              "Continuar",
+              false
+            );
+
+            return Response("", 500);
+          }
+        );*/
+      HttpClientRequest request = await client.postUrl(Uri.parse(_serviceUrl));
+
+      request.headers.set('content-type', 'application/json');
+
+      request.headers.set('x-api-key', _apiKey);
+
+      request.add(utf8.encode(json.encode(jsonPago)));
+
+      HttpClientResponse response = await request.close();
+      
+      response.transform(utf8.decoder).listen((responseBody) {
         int statusCode = response.statusCode;
-        var bodyResponse = jsonDecode(response.body);
+        var bodyResponse = jsonDecode(responseBody);
         if(statusCode == 200) {
           _referencia = bodyResponse["referencia"];
           _mostrarMensaje(
@@ -344,14 +378,10 @@ class _APCrearPagoState extends State<APCrearPago> {
             false
           );
         }
-      })
-      .catchError((error){
-        _mostrarMensaje(
-          "La pasarela de pago no se encuentra disponible. Intenta nuevamente",
-          "Continuar",
-          false
-        );
       });
+      
+     
+      
 
     } on Exception catch(exception) {
       _mostrarMensaje(
@@ -362,8 +392,8 @@ class _APCrearPagoState extends State<APCrearPago> {
     }
   }
 
-  void _mostrarMensaje(String mensaje, String textoBoton, bool success) {
-    showDialog(
+  void _mostrarMensaje(String mensaje, String textoBoton, bool success) async {
+    await showDialog(
       context: context,
       barrierColor: Colors.white.withOpacity(0),
       child: AlertDialog(
@@ -408,5 +438,13 @@ class _APCrearPagoState extends State<APCrearPago> {
         widget.onSuccess(_referencia, PagoEnum.pagoPendiente, 0);
         
     });
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
   }
 }

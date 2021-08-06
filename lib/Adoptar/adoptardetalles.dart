@@ -166,6 +166,9 @@ class _AdoptarDetallesState extends State<AdoptarDetalles>
                             height: 155,
                             width: 120,
                             fit: BoxFit.cover,
+                            errorBuilder: (context, object, stacktrace) {
+                              return Container();
+                            },
                           ),
                         ),
                         SizedBox(

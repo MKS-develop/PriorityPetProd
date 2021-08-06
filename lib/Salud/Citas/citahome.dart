@@ -131,6 +131,9 @@ class _CitaHomeState extends State<CitaHome> {
               child: Image(
                 image: NetworkImage(widget.aliadoModel.avatar),
                 fit: BoxFit.cover,
+                errorBuilder: (context, object, stacktrace) {
+                  return Container();
+                },
               ),
             ),
           ),

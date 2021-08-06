@@ -728,6 +728,9 @@ class _ServicioPageState extends State<ServicioPage> {
                                           child: Image.network(
                                             aliado.avatar,
                                             fit: BoxFit.cover,
+                                            errorBuilder: (context, object, stacktrace) {
+                                              return Container();
+                                            },
                                           ),
                                         ),
                                         SizedBox(
@@ -893,6 +896,9 @@ class _ServicioPageState extends State<ServicioPage> {
                       child: Image.network(
                         servicio.urlImagen,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, object, stacktrace) {
+                          return Container();
+                        },
                       ),
                     ),
                     SizedBox(

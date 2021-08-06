@@ -200,9 +200,12 @@ class _MascotasHomeState extends State<MascotasHome> {
                         width: 60,
                         color: Colors.transparent,
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage(
+                          backgroundImage: Image.network(
                             model.petthumbnailUrl,
-                          ),
+                            errorBuilder: (context, object, stacktrace) {
+                              return Container();
+                            },
+                          ).image,
                         ),
                       ),
                     ),

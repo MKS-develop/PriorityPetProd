@@ -166,6 +166,9 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
                                   width: 140,
                                   child: Image.network(
                                     widget.productoModel.urlImagen,
+                                    errorBuilder: (context, object, stacktrace) {
+                                      return Container();
+                                    },
                                   )),
                               SizedBox(
                                 height: 8.0,

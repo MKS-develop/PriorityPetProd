@@ -123,6 +123,9 @@ class _DetallesServicioState extends State<DetallesServicio> {
                       child: Image.network(
                         widget.aliadoModel.avatar,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, object, stacktrace) {
+                          return Container();
+                        },
                       ),
                     ),
                     SizedBox(

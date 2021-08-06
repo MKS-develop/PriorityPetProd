@@ -425,14 +425,24 @@ class _EventosPendientesHomeState extends State<EventosPendientesHome> {
                                                                       .transparent,
                                                               backgroundImage: model ==
                                                                       null
-                                                                  ? NetworkImage(PetshopApp
-                                                                      .sharedPreferences
-                                                                      .getString(
-                                                                          PetshopApp
-                                                                              .userAvatarUrl))
-                                                                  : NetworkImage(
-                                                                      model
-                                                                          .petthumbnailUrl),
+                                                                  ? Image(
+                                                                      image: NetworkImage(
+                                                                        PetshopApp
+                                                                        .sharedPreferences
+                                                                        .getString(
+                                                                          PetshopApp.userAvatarUrl
+                                                                        )
+                                                                      ),
+                                                                      errorBuilder: (context, object, stacktrace) {
+                                                                        return Container();
+                                                                      },
+                                                                    ).image
+                                                                  : Image(
+                                                                      image: NetworkImage(model.petthumbnailUrl),
+                                                                      errorBuilder: (context, object, stacktrace) {
+                                                                        return Container();
+                                                                      },
+                                                                    ).image
                                                             ),
                                                           ),
                                                         ),

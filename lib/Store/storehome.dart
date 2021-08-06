@@ -339,11 +339,14 @@ class _StoreHomeState extends State<StoreHome> {
                           width: 50,
                           child: CircleAvatar(
                             backgroundColor: Colors.white,
-                            backgroundImage: NetworkImage(
+                            backgroundImage: Image.network(
                               PetshopApp.sharedPreferences
                                   .getString(PetshopApp.userAvatarUrl) ??
                                   'Cargando',
-                            ),
+                              errorBuilder: (context, object, stacktrace) {
+                                return Container();
+                              },
+                            ).image,
                           ),
                         ),
                       )
@@ -1051,9 +1054,12 @@ class _StoreHomeState extends State<StoreHome> {
                   width: 72,
                   child: CircleAvatar(
                     backgroundColor: Colors.white,
-                    backgroundImage: NetworkImage(
+                    backgroundImage: Image.network(
                       model.petthumbnailUrl,
-                    ),
+                      errorBuilder: (context, object, stacktrace) {
+                        return Container();
+                      },
+                    ).image,
                   ),
                 ),
               ),
@@ -1120,7 +1126,12 @@ class _StoreHomeState extends State<StoreHome> {
                                   colorFilter: new ColorFilter.mode(
                                       Colors.black.withOpacity(0.6),
                                       BlendMode.dstATop),
-                                  image: new NetworkImage(contenido.urlImagen),
+                                  image: Image.network(
+                                    contenido.urlImagen, 
+                                    errorBuilder: (context, object, stacktrace) {
+                                      return Container(height: 0.0, width: 0.0,);
+                                    },
+                                  ).image,
                                   fit: BoxFit.cover,
                                 ),
                                 borderRadius:

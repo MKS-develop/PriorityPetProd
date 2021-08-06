@@ -50,9 +50,12 @@ class MyDrawer extends StatelessWidget {
                   },
                   child: CircleAvatar(
                     backgroundColor: Theme.of(context).platform == TargetPlatform.iOS ? Color(0xFF57419D) : Colors.white,
-                    backgroundImage: NetworkImage(
-                        PetshopApp.sharedPreferences.getString(PetshopApp.userAvatarUrl)
-                    ),
+                    backgroundImage: Image.network(
+                        PetshopApp.sharedPreferences.getString(PetshopApp.userAvatarUrl),
+                        errorBuilder: (context, object, stacktrace) {
+                          return Container();
+                        },
+                    ).image,
                   ),
                 ),
               ),

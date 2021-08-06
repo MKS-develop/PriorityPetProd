@@ -677,6 +677,9 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                                           child: Image.network(
                                             aliado.avatar,
                                             fit: BoxFit.cover,
+                                            errorBuilder: (context, object, stacktrace) {
+                                              return Container();
+                                            },
                                           ),
                                         ),
                                         SizedBox(

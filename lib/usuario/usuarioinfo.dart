@@ -280,10 +280,15 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                                   : CircleAvatar(
                                   radius: _screenWidth * 0.1,
                                   backgroundColor: Colors.white,
-                                  backgroundImage: NetworkImage(PetshopApp
+                                  backgroundImage: Image.network(
+                                    PetshopApp
                                       .sharedPreferences
-                                      .getString(
-                                      PetshopApp.userAvatarUrl))),
+                                      .getString(PetshopApp.userAvatarUrl),
+                                    errorBuilder: (context, object, stacktrace) {
+                                      return Container();
+                                    },
+                                  ).image
+                                ),
                             )),
 
                         // CircleAvatar(

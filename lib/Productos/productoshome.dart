@@ -626,6 +626,9 @@ class _ProductosHomeState extends State<ProductosHome> {
                                       height: 77,
                                       width: 66,
                                       fit: BoxFit.cover,
+                                      errorBuilder: (context, object, stacktrace) {
+                                        return Container();
+                                      },
                                     ),
                                   ),
                                   SizedBox(

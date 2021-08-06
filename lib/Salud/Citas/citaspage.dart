@@ -669,6 +669,9 @@ class _CitasPageState extends State<CitasPage> {
                           width: 75.0,
                           height: 75.0,
                           fit: BoxFit.fill,
+                          errorBuilder: (context, object, stacktrace) {
+                            return Container();
+                          },
                         ),
                       ),
                       SizedBox(

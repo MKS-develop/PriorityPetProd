@@ -123,6 +123,9 @@ class _CartPageState extends State<CartPage> {
                                       height: 70.0,
                                       child: Image.network(
                                         product.urlImagen,
+                                        errorBuilder: (context, object, stacktrace) {
+                                          return Container();
+                                        },
                                       )),
                                   SizedBox(
                                     width: 12.0,

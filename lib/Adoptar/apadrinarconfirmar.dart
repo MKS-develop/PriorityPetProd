@@ -190,6 +190,9 @@ class _ApadrinarConfirmarState extends State<ApadrinarConfirmar> {
                         height: 150,
                         width: 120,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, object, stacktrace) {
+                          return Container();
+                        },
                       ),
                     ),
                     SizedBox(

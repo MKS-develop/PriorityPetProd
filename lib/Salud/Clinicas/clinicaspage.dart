@@ -530,6 +530,9 @@ class _ClinicasPageState extends State<ClinicasPage> {
                           width: 70.0,
                           height: 70.0,
                           fit: BoxFit.fill,
+                          errorBuilder: (context, object, stacktrace) {
+                            return Container();
+                          },
                         ),
                       ),
                       SizedBox(

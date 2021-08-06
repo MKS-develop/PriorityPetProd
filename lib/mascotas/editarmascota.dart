@@ -131,10 +131,13 @@ class _EditarMascotaState extends State<EditarMascota>
                       width: 50,
                       child: CircleAvatar(
                         backgroundColor: Colors.white,
-                        backgroundImage: NetworkImage(
+                        backgroundImage: Image.network(
                           PetshopApp.sharedPreferences
-                              .getString(PetshopApp.userAvatarUrl),
-                        ),
+                            .getString(PetshopApp.userAvatarUrl),
+                          errorBuilder: (context, object, stacktrace) {
+                            return Container();
+                          },
+                        ).image,
                       ),
                     ),
                   )
@@ -212,8 +215,14 @@ class _EditarMascotaState extends State<EditarMascota>
                                       : CircleAvatar(
                                           radius: _screenWidth * 0.2,
                                           backgroundColor: Colors.white,
-                                          backgroundImage: NetworkImage(widget
-                                              .petModel.petthumbnailUrl))),
+                                          backgroundImage: Image.network(
+                                            widget.petModel.petthumbnailUrl,
+                                            errorBuilder: (context, object, stacktrace) {
+                                              return Container();
+                                            },
+                                          ).image
+                                        )
+                                      ),
 
                               // CircleAvatar(
                               //   radius: _screenWidth * 0.085,

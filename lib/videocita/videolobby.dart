@@ -484,6 +484,9 @@ class _VideoLobbyState extends State<VideoLobby> {
               child: Image(
                 image: NetworkImage(aliadoAvatar),
                 fit: BoxFit.cover,
+                errorBuilder: (context, object, stacktrace) {
+                  return Container();
+                },
               ),
             ),
           ),

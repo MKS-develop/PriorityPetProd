@@ -276,6 +276,9 @@ class _PromoHomeState extends State<PromoHome> {
                               child: Image.network(
                                 pro.urlImagen,
                                 fit: BoxFit.cover,
+                                errorBuilder: (context, object, stacktrace) {
+                                  return Container();
+                                },
                               ),
                             ),
                             SizedBox(
@@ -376,6 +379,9 @@ class _PromoHomeState extends State<PromoHome> {
                     width: 100.0,
                     height: 100.0,
                     fit: BoxFit.fill,
+                    errorBuilder: (context, object, stacktrace) {
+                      return Container();
+                    },
                   ),
                 ),
                 SizedBox(

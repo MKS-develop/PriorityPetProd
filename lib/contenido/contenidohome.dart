@@ -175,7 +175,12 @@ class _ContenidoHomeState extends State<ContenidoHome> {
                         color: Colors.transparent,
                         image: new DecorationImage(
                           image:
-                              new NetworkImage(widget.contenidoModel.urlImagen),
+                              new Image.network(
+                                widget.contenidoModel.urlImagen,
+                                errorBuilder: (context, object, stacktrace) {
+                                  return Container();
+                                },
+                              ).image,
                           fit: BoxFit.cover,
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(20.0))),

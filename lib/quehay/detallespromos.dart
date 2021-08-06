@@ -117,6 +117,9 @@ class _DetallesPromoState extends State<DetallesPromo> {
                       child: Image.network(
                         widget.promotionModel.urlImagen,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, object, stacktrace) {
+                          return Container();
+                        },
                       ),
                     ),
                     SizedBox(

@@ -467,9 +467,19 @@ class _ConfirmCancelState extends State<ConfirmCancel> {
                             child: CircleAvatar(
                               backgroundColor: Colors.transparent,
                               backgroundImage: model == null
-                                  ? NetworkImage(PetshopApp.sharedPreferences
-                                      .getString(PetshopApp.userAvatarUrl))
-                                  : NetworkImage(model.petthumbnailUrl),
+                                  ? Image.network(
+                                      PetshopApp.sharedPreferences
+                                        .getString(PetshopApp.userAvatarUrl),
+                                      errorBuilder: (context, object, stacktrace) {
+                                        return Container();
+                                      },
+                                    ).image
+                                  : Image.network(
+                                      model.petthumbnailUrl,
+                                      errorBuilder: (context, object, stacktrace) {
+                                        return Container();
+                                      },
+                                    ).image,
                             ),
                           ),
                         ),

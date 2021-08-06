@@ -164,6 +164,9 @@ class _VideoAgendaState extends State<VideoAgenda> {
                       child: Image.network(
                         widget.aliadoModel.avatar,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, object, stacktrace) {
+                          return Container();
+                        },
                       ),
                     ),
                     SizedBox(

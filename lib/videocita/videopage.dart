@@ -585,6 +585,9 @@ class _VideoPageState extends State<VideoPage> {
                           width: 75.0,
                           height: 75.0,
                           fit: BoxFit.fill,
+                          errorBuilder: (context, object, stacktrace) {
+                            return Container();
+                          },
                         ),
                       ),
                       SizedBox(

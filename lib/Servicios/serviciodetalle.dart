@@ -125,6 +125,9 @@ class _ServicioDetalleState extends State<ServicioDetalle> {
                               child: Image.network(
                                 widget.servicioModel.urlImagen,
                                 fit: BoxFit.fill,
+                                errorBuilder: (context, object, stacktrace) {
+                                  return Container();
+                                },
                               )),
                           SizedBox(
                             height: 15.0,

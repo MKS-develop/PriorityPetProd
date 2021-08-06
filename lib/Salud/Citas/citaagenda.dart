@@ -163,6 +163,9 @@ class _CitaAgendaState extends State<CitaAgenda> {
                       child: Image.network(
                         widget.aliadoModel.avatar,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, object, stacktrace) {
+                          return Container();
+                        },
                       ),
                     ),
                     SizedBox(
