@@ -852,7 +852,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
       estadoOrden = OrdenEnum.pendiente;
     }
 
-    Navigator.of(context, rootNavigator: true).pop();
+    //Navigator.of(context, rootNavigator: true).pop();
     //OrderMessage(context, outcomeMsg);
     var databaseReference =
         FirebaseFirestore.instance.collection('Ordenes').doc(productId);
