@@ -320,9 +320,14 @@ class _APCrearPagoState extends State<APCrearPago> {
         "x-api-key": _apiKey
       };
 
-      var totalPrice = widget.totalPrice is int ? 
-        widget.totalPrice.toDouble() : 
-        double.parse(widget.totalPrice);
+      double totalPrice = 0;
+      if(widget.totalPrice is int) 
+        totalPrice = widget.totalPrice.toDouble();
+      else if(widget.totalPrice is String) 
+        totalPrice = double.parse(widget.totalPrice);
+      else
+        totalPrice = widget.totalPrice;
+
 
       Map<String, dynamic> jsonPago = {
         "moneda": "USD",
