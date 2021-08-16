@@ -114,6 +114,8 @@ class _AddCreditCardPageState extends State<AddCreditCardPage> {
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -253,7 +255,8 @@ class _AddCreditCardPageState extends State<AddCreditCardPage> {
         "Authorization": "$_prk"
       };
 
-      Response res = await http.post(Uri.parse(url), headers: headers, body: json);
+      Response res =
+          await http.post(Uri.parse(url), headers: headers, body: json);
       int statusCode = res.statusCode;
       final nuevo = jsonDecode(res.body);
       //
@@ -291,8 +294,9 @@ class _AddCreditCardPageState extends State<AddCreditCardPage> {
     });
     showDialog(
         builder: (context) => new ChoosePetAlertDialog(
-          message: "Tarjeta añadida exitosamente",
-        ), context: context);
+              message: "Tarjeta añadida exitosamente",
+            ),
+        context: context);
     setState(() {
       Navigator.of(context, rootNavigator: true).pop();
     });

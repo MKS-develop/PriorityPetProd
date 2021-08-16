@@ -78,6 +78,8 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -162,23 +164,31 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                                                     child: CircleAvatar(
                                                       backgroundColor:
                                                           Colors.transparent,
-                                                      backgroundImage: model ==
-                                                              null
-                                                          ? Image.network(
-                                                              PetshopApp
-                                                                .sharedPreferences
-                                                                .getString(PetshopApp
-                                                                  .userAvatarUrl),
-                                                              errorBuilder: (context, object, stacktrace) {
-                                                                return Container();
-                                                              },
-                                                            ).image
-                                                          : Image.network(
-                                                              model.petthumbnailUrl,
-                                                              errorBuilder: (context, object, stacktrace) {
-                                                                return Container();
-                                                              },
-                                                            ).image,
+                                                      backgroundImage:
+                                                          model == null
+                                                              ? Image.network(
+                                                                  PetshopApp
+                                                                      .sharedPreferences
+                                                                      .getString(
+                                                                          PetshopApp
+                                                                              .userAvatarUrl),
+                                                                  errorBuilder:
+                                                                      (context,
+                                                                          object,
+                                                                          stacktrace) {
+                                                                    return Container();
+                                                                  },
+                                                                ).image
+                                                              : Image.network(
+                                                                  model
+                                                                      .petthumbnailUrl,
+                                                                  errorBuilder:
+                                                                      (context,
+                                                                          object,
+                                                                          stacktrace) {
+                                                                    return Container();
+                                                                  },
+                                                                ).image,
                                                     ),
                                                   ),
                                                 ),
@@ -456,7 +466,9 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                                               children: [
                                                 Text(
                                                     'Monto aprobado: ${PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda)}'),
-                                                Text(widget.orderModel.montoAprobado.toString()),
+                                                Text(widget
+                                                    .orderModel.montoAprobado
+                                                    .toString()),
                                               ],
                                             ),
                                             SizedBox(
@@ -545,12 +557,11 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                               )
                             : Container(),
                         SizedBox(height: 15),
-                        
-                            widget.orderModel.status == OrdenEnum.pagoIncompleto ? 
-                              _btnRegistrarNuevoPago(context) 
-                              : Container(height: 0.0, width: 0.0),
-                          SizedBox(height: 15),
-                          widget.orderModel.status != 'Cancelada'
+                        widget.orderModel.status == OrdenEnum.pagoIncompleto
+                            ? _btnRegistrarNuevoPago(context)
+                            : Container(height: 0.0, width: 0.0),
+                        SizedBox(height: 15),
+                        widget.orderModel.status != 'Cancelada'
                             ? SizedBox(
                                 width: 120,
                                 height: 30,
@@ -735,33 +746,36 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                       ),
                     ],
                   )),
-            ]))), context: context);
+            ]))),
+        context: context);
   }
 
   confirmaCancel() {
     showDialog(
         builder: (context) => AlertDialog(
-            // title: Text('Su pago ha sido aprobado.'),
-            content: SingleChildScrollView(
-                child: ListBody(children: <Widget>[
-          Container(
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                children: [
-                  Text(
-                      '¿Cuál es el motivo por el que estás cancelando la Orden?',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(
-                    '1) ¿Seleccionaste el producto o servicio incorrecto? S/N',
-                  ),
-                  Row(
+                // title: Text('Su pago ha sido aprobado.'),
+                content: SingleChildScrollView(
+                    child: ListBody(children: <Widget>[
+              Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
                     children: [
-                      Text('Si', style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                          '¿Cuál es el motivo por el que estás cancelando la Orden?',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                        '1) ¿Seleccionaste el producto o servicio incorrecto? S/N',
+                      ),
+                      Row(
+                        children: [
+                          Text('Si',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      ),
                     ],
-                  ),
-                ],
-              )),
-        ]))), context: context);
+                  )),
+            ]))),
+        context: context);
   }
 
   showConfirmationDialog(BuildContext context) {
@@ -844,14 +858,16 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                               backgroundImage: model == null
                                   ? Image.network(
                                       PetshopApp.sharedPreferences
-                                        .getString(PetshopApp.userAvatarUrl),
-                                      errorBuilder: (context, object, stacktrace) {
+                                          .getString(PetshopApp.userAvatarUrl),
+                                      errorBuilder:
+                                          (context, object, stacktrace) {
                                         return Container();
                                       },
                                     ).image
                                   : Image.network(
                                       model.petthumbnailUrl,
-                                      errorBuilder: (context, object, stacktrace) {
+                                      errorBuilder:
+                                          (context, object, stacktrace) {
                                         return Container();
                                       },
                                     ).image,
@@ -1201,27 +1217,25 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => APCrearPago(
-                petModel: model,
-                aliadoModel: AliadoModel(),
-                totalPrice: widget.orderModel.precio - widget.orderModel.montoAprobado,
-                defaultChoiceIndex: widget.defaultChoiceIndex,
-                onSuccess: (pagoId, esta, mon) async {
-                  FirebaseFirestore.instance
-                        .collection('Ordenes')
-                        .doc(order.oid)
-                        .update({
-                          "pagoId": pagoId,
-                          "status": OrdenEnum.pendiente 
-                        });
-                  Navigator.of(context).pop();
-                }                   
-              )
-            ),
+                builder: (context) => APCrearPago(
+                    petModel: model,
+                    aliadoModel: AliadoModel(),
+                    totalPrice: widget.orderModel.precio -
+                        widget.orderModel.montoAprobado,
+                    defaultChoiceIndex: widget.defaultChoiceIndex,
+                    onSuccess: (pagoId, esta, mon) async {
+                      FirebaseFirestore.instance
+                          .collection('Ordenes')
+                          .doc(order.oid)
+                          .update({
+                        "pagoId": pagoId,
+                        "status": OrdenEnum.pendiente
+                      });
+                      Navigator.of(context).pop();
+                    })),
           );
         },
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         color: Color(0xFF57419D),
         padding: EdgeInsets.all(0.0),
         child: Column(

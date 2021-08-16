@@ -96,6 +96,15 @@ class _UsuarioInfoState extends State<UsuarioInfo>
     _getprK();
     _getGeo();
     getCiudades(PetshopApp.sharedPreferences.getString(PetshopApp.userPais));
+    if (PetshopApp.sharedPreferences.getString(PetshopApp.geoAddress) == null) {
+      FirebaseFirestore.instance
+          .collection("Dueños")
+          .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
+          .get()
+          .then((dataSnapshot) {
+        PetshopApp.sharedPreferences.setString(PetshopApp.geoAddress, dataSnapshot.data()[PetshopApp.geoAddress]);
+          });
+    }
 
     if (PetshopApp.sharedPreferences.getString(PetshopApp.userNombre) != null) {
       _nameTextEditingController.value = TextEditingValue(
@@ -311,7 +320,15 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                         // ),
                       ],
                     ),
-
+                    // TextField(
+                    //   keyboardType: TextInputType.text,
+                    //   textCapitalization: TextCapitalization.sentences,
+                    //   style: TextStyle(
+                    //       fontSize: 30.0,
+                    //       color: Colors.black,
+                    //       fontWeight: FontWeight.bold
+                    //   ),
+                    // ),
                     SizedBox(height: 20),
 
                     Padding(

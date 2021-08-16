@@ -35,6 +35,7 @@ class CitaAgenda extends StatefulWidget {
   final PromotionModel promotionModel;
   final EspecialidadesModel especialidadesModel;
   final int defaultChoiceIndex;
+  final GeoPoint userLatLong;
 
   CitaAgenda(
       {this.petModel,
@@ -43,7 +44,8 @@ class CitaAgenda extends StatefulWidget {
       this.locationModel,
       this.serviceModel,
       this.especialidadesModel,
-      this.defaultChoiceIndex});
+      this.defaultChoiceIndex,
+      this.userLatLong});
 
   @override
   _CitaAgendaState createState() => _CitaAgendaState();
@@ -122,6 +124,8 @@ class _CitaAgendaState extends State<CitaAgenda> {
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -599,7 +603,8 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                           ),
                                         ],
                                       ),
-                                    ), context: context,
+                                    ),
+                                    context: context,
                                   );
                                 } else if (fecha != null &&
                                     widget.serviceModel.tipoAgenda == 'Free') {
@@ -616,7 +621,8 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                               petModel: widget.petModel,
                                               aliadoModel: widget.aliadoModel,
                                               serviceModel: widget.serviceModel,
-                                              locationModel: widget.locationModel,
+                                              locationModel:
+                                                  widget.locationModel,
                                               tituloCategoria: tituloCategoria,
                                               totalPrice: _totalPrice,
                                               hora: hora,
@@ -626,8 +632,8 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                               value2: _value2,
                                               value: _value,
                                               date: date,
-                                          defaultChoiceIndex:
-                                          widget.defaultChoiceIndex,
+                                              defaultChoiceIndex:
+                                                  widget.defaultChoiceIndex,
                                               onSuccess: _respuestaPago,
                                             )),
                                   );
@@ -651,7 +657,8 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                             ),
                                           ],
                                         ),
-                                      ), context: context,
+                                      ),
+                                      context: context,
                                     );
                                   }
                                   if (fecha == null) {
@@ -672,17 +679,17 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                             ),
                                           ],
                                         ),
-                                      ), context: context,
+                                      ),
+                                      context: context,
                                     );
                                   }
                                   if (hora != null && fecha != null) {
                                     // AddOrder(widget.serviceModel.servicioId, context);
-                                    _totalPrice =
-                                        (widget.serviceModel.precio +
-                                                recojo +
-                                                delivery -
-                                                totalPet)
-                                            .toInt();
+                                    _totalPrice = (widget.serviceModel.precio +
+                                            recojo +
+                                            delivery -
+                                            totalPet)
+                                        .toInt();
 
                                     Navigator.push(
                                       context,
@@ -704,8 +711,8 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                                 value2: _value2,
                                                 value: _value,
                                                 date: date,
-                                            defaultChoiceIndex:
-                                            widget.defaultChoiceIndex,
+                                                defaultChoiceIndex:
+                                                    widget.defaultChoiceIndex,
                                                 onSuccess: _respuestaPago,
                                               )),
                                     );
@@ -840,15 +847,15 @@ class _CitaAgendaState extends State<CitaAgenda> {
     );
   }
 
-  Future<void> _respuestaPago(String pagoId, String estadoPago, dynamic montoAprobado) async {
+  Future<void> _respuestaPago(
+      String pagoId, String estadoPago, dynamic montoAprobado) async {
     int petPoints = 0;
 
     String estadoOrden;
-    if(estadoPago == PagoEnum.pagoAprobado) {
+    if (estadoPago == PagoEnum.pagoAprobado) {
       estadoOrden = OrdenEnum.aprobada;
       petPoints = _totalPrice;
-    }
-    else {
+    } else {
       estadoOrden = OrdenEnum.pendiente;
     }
 
@@ -939,8 +946,8 @@ class _CitaAgendaState extends State<CitaAgenda> {
   }
 
   sendEmail(_email, nombreCompleto, orderId, aliadoAvatar) async {
-    await http.get(
-        Uri.parse('https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=$_email&username=$nombreCompleto&orderId=$orderId&logoAliado=$aliadoAvatar'));
+    await http.get(Uri.parse(
+        'https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=$_email&username=$nombreCompleto&orderId=$orderId&logoAliado=$aliadoAvatar'));
     print('$_email $nombreCompleto $orderId $aliadoAvatar');
   }
 

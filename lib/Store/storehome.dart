@@ -82,9 +82,7 @@ class _StoreHomeState extends State<StoreHome> {
 
     setState(() {
       _defaultChoiceIndex = widget.defaultChoiceIndex;
-
     });
-
   }
 
   _getUserData() async {
@@ -97,7 +95,7 @@ class _StoreHomeState extends State<StoreHome> {
       });
 
       DocumentReference documentReference =
-      FirebaseFirestore.instance.collection("Dueños").doc(user.uid);
+          FirebaseFirestore.instance.collection("Dueños").doc(user.uid);
       await documentReference.get().then((dataSnapshot) {
         setState(() {
           PetshopApp.sharedPreferences.setString(
@@ -128,8 +126,8 @@ class _StoreHomeState extends State<StoreHome> {
             PetshopApp.sharedPreferences.setString(
                 PetshopApp.userFechaNac,
                 DateTime.fromMicrosecondsSinceEpoch(dataSnapshot
-                    .data()[(PetshopApp.userFechaNac)]
-                    .microsecondsSinceEpoch)
+                        .data()[(PetshopApp.userFechaNac)]
+                        .microsecondsSinceEpoch)
                     .toString());
 
             // PetshopApp.sharedPreferences.setString(PetshopApp.userFechaNac, formatter.format((dataSnapshot.data()[(PetshopApp.userFechaNac)]).toDate()));
@@ -169,8 +167,8 @@ class _StoreHomeState extends State<StoreHome> {
     List list = await FirebaseFirestore.instance
         .collection('Ordenes')
         .where("uid",
-        isEqualTo:
-        PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
+            isEqualTo:
+                PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
         .where("calificacion", isEqualTo: false)
         .get()
         .then((val) => val.docs);
@@ -200,7 +198,7 @@ class _StoreHomeState extends State<StoreHome> {
   }
 
   search() {
-    for (int i = 0; i < ordenes.length; i++) {
+    for (int i = 1; i < ordenes.length; i++) {
       var nombreComercial = ordenes[i].nombreComercial;
       var usuario = PetshopApp.sharedPreferences.getString(PetshopApp.userName);
       //   for(OrderModel order in allResults){
@@ -249,8 +247,8 @@ class _StoreHomeState extends State<StoreHome> {
                 SizedBox(
                   child: RaisedButton(
                     onPressed: () {
-                      Navigator.of(context, rootNavigator: true).pop();
                       updateFields(ordenes[i].aliadoId, ordenes[i].oid);
+                      Navigator.of(context, rootNavigator: true).pop();
                     },
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5)),
@@ -266,7 +264,8 @@ class _StoreHomeState extends State<StoreHome> {
               ],
             ),
           ),
-        ), context: context,
+        ),
+        context: context,
         barrierColor: Colors.white.withOpacity(0),
       );
     }
@@ -276,7 +275,7 @@ class _StoreHomeState extends State<StoreHome> {
     var ratingSum = await db.collection('Aliados').doc(aliadoId);
     ratingSum.update({
       'totalRatings':
-      FieldValue.increment(int.parse(ratingC.toStringAsFixed(0))),
+          FieldValue.increment(int.parse(ratingC.toStringAsFixed(0))),
       'countRatings': FieldValue.increment(1),
     });
 
@@ -312,7 +311,11 @@ class _StoreHomeState extends State<StoreHome> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => StoreHome(petModel: widget.petModel, defaultChoiceIndex: _defaultChoiceIndex,)),
+                    MaterialPageRoute(
+                        builder: (context) => StoreHome(
+                              petModel: widget.petModel,
+                              defaultChoiceIndex: _defaultChoiceIndex,
+                            )),
                   );
                 },
                 child: Image.asset(
@@ -327,7 +330,11 @@ class _StoreHomeState extends State<StoreHome> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => UsuarioInfo(petModel: model, defaultChoiceIndex: _defaultChoiceIndex,)),
+                      MaterialPageRoute(
+                          builder: (context) => UsuarioInfo(
+                                petModel: model,
+                                defaultChoiceIndex: _defaultChoiceIndex,
+                              )),
                     );
                   },
                   child: Stack(
@@ -341,7 +348,7 @@ class _StoreHomeState extends State<StoreHome> {
                             backgroundColor: Colors.white,
                             backgroundImage: Image.network(
                               PetshopApp.sharedPreferences
-                                  .getString(PetshopApp.userAvatarUrl) ??
+                                      .getString(PetshopApp.userAvatarUrl) ??
                                   'Cargando',
                               errorBuilder: (context, object, stacktrace) {
                                 return Container();
@@ -357,13 +364,22 @@ class _StoreHomeState extends State<StoreHome> {
             ),
           ),
         ),
-        bottomNavigationBar:
-        CustomBottomNavigationBar(home: home, cart: carrito, noti: noti, petmodel: model, defaultChoiceIndex: _defaultChoiceIndex),
-        drawer: MyDrawer(petModel: model, defaultChoiceIndex: _defaultChoiceIndex,),
+        bottomNavigationBar: CustomBottomNavigationBar(
+            home: home,
+            cart: carrito,
+            noti: noti,
+            petmodel: model,
+            defaultChoiceIndex: _defaultChoiceIndex),
+        drawer: MyDrawer(
+          petModel: model,
+          defaultChoiceIndex: _defaultChoiceIndex,
+        ),
         body: Container(
           height: MediaQuery.of(context).size.height,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -418,8 +434,8 @@ class _StoreHomeState extends State<StoreHome> {
                           stream: db
                               .collection("Mascotas")
                               .where("uid",
-                              isEqualTo: PetshopApp.sharedPreferences
-                                  .getString(PetshopApp.userUID))
+                                  isEqualTo: PetshopApp.sharedPreferences
+                                      .getString(PetshopApp.userUID))
                               .snapshots(),
                           builder: (context, dataSnapshot) {
                             if (!dataSnapshot.hasData) {
@@ -434,16 +450,16 @@ class _StoreHomeState extends State<StoreHome> {
                                   scrollDirection: Axis.horizontal,
                                   shrinkWrap: true,
                                   itemBuilder: (
-                                      context,
-                                      index,
-                                      ) {
+                                    context,
+                                    index,
+                                  ) {
                                     PetModel model = PetModel.fromJson(
                                         dataSnapshot.data.docs[index].data());
                                     return ChoiceChip(
                                       label: sourceInfo(model, context),
                                       disabledColor: Colors.transparent,
                                       labelPadding:
-                                      EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                          EdgeInsets.fromLTRB(0, 0, 0, 0),
                                       selected: _defaultChoiceIndex == index,
                                       selectedColor: Color(0xFF57419D),
                                       onSelected: (bool selected) {
@@ -451,13 +467,13 @@ class _StoreHomeState extends State<StoreHome> {
                                         print(model.nombre);
                                         setState(() {
                                           _defaultChoiceIndex =
-                                          selected ? index : 0;
+                                              selected ? index : 0;
                                           print(_defaultChoiceIndex);
                                         });
                                       },
                                       backgroundColor: Colors.white,
                                       labelStyle:
-                                      TextStyle(color: Colors.transparent),
+                                          TextStyle(color: Colors.transparent),
                                     );
                                   },
                                 ),
@@ -479,17 +495,21 @@ class _StoreHomeState extends State<StoreHome> {
                               if (model == null) {
                                 {
                                   showDialog(
-                                      builder: (context) => new ChoosePetAlertDialog(
-                                        message:
-                                        "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
-                                      ), context: context);
+                                      builder: (context) =>
+                                          new ChoosePetAlertDialog(
+                                            message:
+                                                "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
+                                          ),
+                                      context: context);
                                 }
                               } else {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          SaludHome(petModel: model, defaultChoiceIndex: _defaultChoiceIndex)),
+                                      builder: (context) => SaludHome(
+                                          petModel: model,
+                                          defaultChoiceIndex:
+                                              _defaultChoiceIndex)),
                                 );
                               }
                             },
@@ -531,31 +551,38 @@ class _StoreHomeState extends State<StoreHome> {
                               if (model == null) {
                                 {
                                   showDialog(
-                                      builder: (context) => new ChoosePetAlertDialog(
-                                        message:
-                                        "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
-                                      ), context: context);
+                                      builder: (context) =>
+                                          new ChoosePetAlertDialog(
+                                            message:
+                                                "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
+                                          ),
+                                      context: context);
                                 }
                               }
                               if (PetshopApp.sharedPreferences
-                                  .getString(PetshopApp.userPais) ==
-                                  "Perú" &&
+                                          .getString(PetshopApp.userPais) ==
+                                      "Perú" &&
                                   model != null) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          PlanesHome(petModel: model, defaultChoiceIndex: _defaultChoiceIndex,)),
+                                      builder: (context) => PlanesHome(
+                                            petModel: model,
+                                            defaultChoiceIndex:
+                                                _defaultChoiceIndex,
+                                          )),
                                 );
                               }
                               if (PetshopApp.sharedPreferences
-                                  .getString(PetshopApp.userPais) !=
+                                      .getString(PetshopApp.userPais) !=
                                   "Perú") {
                                 showDialog(
-                                    builder: (context) => new ChoosePetAlertDialog(
-                                      message:
-                                      "No estan disponibles planes para tu pais",
-                                    ), context: context);
+                                    builder: (context) =>
+                                        new ChoosePetAlertDialog(
+                                          message:
+                                              "No estan disponibles planes para tu pais",
+                                        ),
+                                    context: context);
                               }
                             },
                             child: Stack(
@@ -596,17 +623,22 @@ class _StoreHomeState extends State<StoreHome> {
                               if (model == null) {
                                 {
                                   showDialog(
-                                      builder: (context) => new ChoosePetAlertDialog(
-                                        message:
-                                        "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
-                                      ), context: context);
+                                      builder: (context) =>
+                                          new ChoosePetAlertDialog(
+                                            message:
+                                                "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
+                                          ),
+                                      context: context);
                                 }
                               } else {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          PromoHome(petModel: model, defaultChoiceIndex: _defaultChoiceIndex,)),
+                                      builder: (context) => PromoHome(
+                                            petModel: model,
+                                            defaultChoiceIndex:
+                                                _defaultChoiceIndex,
+                                          )),
                                 );
                               }
                             },
@@ -648,17 +680,22 @@ class _StoreHomeState extends State<StoreHome> {
                               if (model == null) {
                                 {
                                   showDialog(
-                                      builder: (context) => new ChoosePetAlertDialog(
-                                        message:
-                                        "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
-                                      ), context: context);
+                                      builder: (context) =>
+                                          new ChoosePetAlertDialog(
+                                            message:
+                                                "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
+                                          ),
+                                      context: context);
                                 }
                               } else {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          ServiciosHome(petModel: model, defaultChoiceIndex: _defaultChoiceIndex,)),
+                                      builder: (context) => ServiciosHome(
+                                            petModel: model,
+                                            defaultChoiceIndex:
+                                                _defaultChoiceIndex,
+                                          )),
                                 );
                               }
                             },
@@ -703,8 +740,10 @@ class _StoreHomeState extends State<StoreHome> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      ProductosHome(petModel: model, defaultChoiceIndex: _defaultChoiceIndex,)),
+                                  builder: (context) => ProductosHome(
+                                        petModel: model,
+                                        defaultChoiceIndex: _defaultChoiceIndex,
+                                      )),
                             );
                           },
                           child: Stack(
@@ -753,8 +792,10 @@ class _StoreHomeState extends State<StoreHome> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      EventosPendientesHome(petModel: model, defaultChoiceIndex: _defaultChoiceIndex,)),
+                                  builder: (context) => EventosPendientesHome(
+                                        petModel: model,
+                                        defaultChoiceIndex: _defaultChoiceIndex,
+                                      )),
                             );
                           },
                           child: Stack(
@@ -803,8 +844,10 @@ class _StoreHomeState extends State<StoreHome> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      AdoptarHome(petModel: model, defaultChoiceIndex: _defaultChoiceIndex,)),
+                                  builder: (context) => AdoptarHome(
+                                        petModel: model,
+                                        defaultChoiceIndex: _defaultChoiceIndex,
+                                      )),
                             );
                           },
                           child: Stack(
@@ -852,9 +895,10 @@ class _StoreHomeState extends State<StoreHome> {
                           onTap: () {
                             showDialog(
                                 builder: (context) => new ChoosePetAlertDialog(
-                                  message:
-                                  "Esta función estará disponible próximamente...",
-                                ), context: context);
+                                      message:
+                                          "Esta función estará disponible próximamente...",
+                                    ),
+                                context: context);
                           },
                           child: Stack(
                             alignment: Alignment.center,
@@ -937,8 +981,8 @@ class _StoreHomeState extends State<StoreHome> {
                                 stream: FirebaseFirestore.instance
                                     .collection("Contenido")
                                     .where("pais",
-                                    isEqualTo: PetshopApp.sharedPreferences
-                                        .getString(PetshopApp.userPais))
+                                        isEqualTo: PetshopApp.sharedPreferences
+                                            .getString(PetshopApp.userPais))
                                     .where("isApproved", isEqualTo: true)
                                     .snapshots(),
                                 builder: (context, dataSnapshot) {
@@ -952,16 +996,16 @@ class _StoreHomeState extends State<StoreHome> {
                                     child: ListView.builder(
                                         scrollDirection: Axis.horizontal,
                                         itemCount:
-                                        dataSnapshot.data.docs.length,
+                                            dataSnapshot.data.docs.length,
                                         shrinkWrap: true,
                                         itemBuilder: (
-                                            context,
-                                            index,
-                                            ) {
+                                          context,
+                                          index,
+                                        ) {
                                           ContenidoModel contenido =
-                                          ContenidoModel.fromJson(
-                                              dataSnapshot.data.docs[index]
-                                                  .data());
+                                              ContenidoModel.fromJson(
+                                                  dataSnapshot.data.docs[index]
+                                                      .data());
                                           return sourceInfo2(
                                               contenido, context);
                                         }),
@@ -1036,9 +1080,9 @@ class _StoreHomeState extends State<StoreHome> {
   }
 
   Widget sourceInfo(
-      PetModel model,
-      BuildContext context,
-      ) {
+    PetModel model,
+    BuildContext context,
+  ) {
     return InkWell(
       child: Padding(
         padding: EdgeInsets.all(0),
@@ -1071,9 +1115,9 @@ class _StoreHomeState extends State<StoreHome> {
   }
 
   Widget sourceInfo2(
-      ContenidoModel contenido,
-      BuildContext context,
-      ) {
+    ContenidoModel contenido,
+    BuildContext context,
+  ) {
     return InkWell(
         child: StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
@@ -1099,9 +1143,9 @@ class _StoreHomeState extends State<StoreHome> {
                     itemCount: 1,
                     shrinkWrap: true,
                     itemBuilder: (
-                        context,
-                        index,
-                        ) {
+                      context,
+                      index,
+                    ) {
                       AliadoModel aliado = AliadoModel.fromJson(
                           dataSnapshot.data.docs[index].data());
                       return GestureDetector(
@@ -1110,9 +1154,11 @@ class _StoreHomeState extends State<StoreHome> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ContenidoHome(
-                                  petModel: model,
-                                  contenidoModel: contenido,
-                                  aliadoModel: aliado, defaultChoiceIndex: _defaultChoiceIndex,)),
+                                      petModel: model,
+                                      contenidoModel: contenido,
+                                      aliadoModel: aliado,
+                                      defaultChoiceIndex: _defaultChoiceIndex,
+                                    )),
                           );
                         },
                         child: Padding(
@@ -1127,15 +1173,19 @@ class _StoreHomeState extends State<StoreHome> {
                                       Colors.black.withOpacity(0.6),
                                       BlendMode.dstATop),
                                   image: Image.network(
-                                    contenido.urlImagen, 
-                                    errorBuilder: (context, object, stacktrace) {
-                                      return Container(height: 0.0, width: 0.0,);
+                                    contenido.urlImagen,
+                                    errorBuilder:
+                                        (context, object, stacktrace) {
+                                      return Container(
+                                        height: 0.0,
+                                        width: 0.0,
+                                      );
                                     },
                                   ).image,
                                   fit: BoxFit.cover,
                                 ),
                                 borderRadius:
-                                BorderRadius.all(Radius.circular(20.0))),
+                                    BorderRadius.all(Radius.circular(20.0))),
                             child: Padding(
                               padding: const EdgeInsets.all(12.0),
                               child: Column(

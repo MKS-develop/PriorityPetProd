@@ -75,6 +75,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
   double ppvalor = 0;
   String tituloCategoria = "Servicio";
   dynamic _totalPrice;
+  double rating = 0;
 
   bool get wantKeepAlive => true;
   File file;
@@ -105,7 +106,8 @@ class _ContratoServicioState extends State<ContratoServicio> {
     });
 
     _getPetpoints();
-    http.get(Uri.parse('https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=jesusgsb@gmail.com'));
+    http.get(Uri.parse(
+        'https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=jesusgsb@gmail.com'));
   }
 
   // eliminarFecha(){
@@ -132,14 +134,14 @@ class _ContratoServicioState extends State<ContratoServicio> {
   }
 
   sendEmail(_email, nombreCompleto, orderId, aliadoAvatar) async {
-    await http.get(
-        Uri.parse('https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=$_email&username=$nombreCompleto&orderId=$orderId&logoAliado=$aliadoAvatar'));
+    await http.get(Uri.parse(
+        'https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=$_email&username=$nombreCompleto&orderId=$orderId&logoAliado=$aliadoAvatar'));
     print('$_email $nombreCompleto $orderId $aliadoAvatar');
   }
 
   sendEmail2(_email, nombreCompleto) async {
-    await http.get(
-        Uri.parse('https://us-central1-priority-pet.cloudfunctions.net/sendWelcomeEmailDuenos?dest=$_email&username=$nombreCompleto'));
+    await http.get(Uri.parse(
+        'https://us-central1-priority-pet.cloudfunctions.net/sendWelcomeEmailDuenos?dest=$_email&username=$nombreCompleto'));
   }
 
   ScrollController controller = ScrollController();
@@ -157,8 +159,10 @@ class _ContratoServicioState extends State<ContratoServicio> {
     double _screenWidth = MediaQuery.of(context).size.width,
         _screenHeight = MediaQuery.of(context).size.height;
 
-    double rating =
-        widget.aliadoModel.totalRatings / widget.aliadoModel.countRatings;
+    if (widget.aliadoModel.totalRatings != null) {
+      rating =
+          widget.aliadoModel.totalRatings / widget.aliadoModel.countRatings;
+    }
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -174,6 +178,8 @@ class _ContratoServicioState extends State<ContratoServicio> {
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -235,11 +241,17 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                   color: Color(0xFF57419D),
                                   fontWeight: FontWeight.bold),
                               textAlign: TextAlign.left),
-                          Text(widget.locationModel.direccionLocalidad,
-                              style: TextStyle(
-                                fontSize: 13,
-                              ),
-                              textAlign: TextAlign.left),
+                          widget.locationModel.mapAddress != null
+                              ? Text(widget.locationModel.mapAddress,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                  ),
+                                  textAlign: TextAlign.left)
+                              : Text(widget.locationModel.direccionLocalidad,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                  ),
+                                  textAlign: TextAlign.left),
                           SizedBox(
                             height: 10,
                           ),
@@ -248,7 +260,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
                             children: [
                               Text(
                                   rating.toString() != 'NaN'
-                                      ? rating.toStringAsPrecision(2)
+                                      ? rating.toStringAsPrecision(1)
                                       : '0',
                                   style: TextStyle(
                                       fontSize: 20, color: Colors.orange),
@@ -288,9 +300,11 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                 ),
                               ),
                               Text(
-                                (widget.serviceModel.domicilio).toStringAsFixed(2) !=
+                                (widget.serviceModel.domicilio)
+                                            .toStringAsFixed(2) !=
                                         'null'
-                                    ? (widget.serviceModel.domicilio).toStringAsFixed(2)
+                                    ? (widget.serviceModel.domicilio)
+                                        .toStringAsFixed(2)
                                     : '0',
                                 style: TextStyle(
                                   color: Color(0xFF57419D),
@@ -349,9 +363,11 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                 ),
                               ),
                               Text(
-                                (widget.serviceModel.delivery).toStringAsFixed(2) !=
+                                (widget.serviceModel.delivery)
+                                            .toStringAsFixed(2) !=
                                         'null'
-                                    ? (widget.serviceModel.delivery).toStringAsFixed(2)
+                                    ? (widget.serviceModel.delivery)
+                                        .toStringAsFixed(2)
                                     : '0',
                                 style: TextStyle(
                                   color: Color(0xFF57419D),
@@ -614,7 +630,8 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                           ),
                                         ],
                                       ),
-                                    ), context: context,
+                                    ),
+                                    context: context,
                                   );
                                 } else if (fecha != null &&
                                     widget.serviceModel.tipoAgenda == 'Free') {
@@ -628,23 +645,24 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => PaymentPage(
-                                            petModel: widget.petModel,
-                                            aliadoModel: widget.aliadoModel,
-                                            serviceModel: widget.serviceModel,
-                                            locationModel: widget.locationModel,
-                                            tituloCategoria: tituloCategoria,
-                                            totalPrice: _totalPrice,
-                                            hora: hora,
-                                            fecha: fecha,
-                                            recojo: recojo,
-                                            delivery: delivery,
-                                            value2: _value2,
-                                            value: _value,
-                                            date: date,
-                                            defaultChoiceIndex:
-                                                widget.defaultChoiceIndex,
-                                            onSuccess: _respuestaPago,
-                                          )),
+                                              petModel: widget.petModel,
+                                              aliadoModel: widget.aliadoModel,
+                                              serviceModel: widget.serviceModel,
+                                              locationModel:
+                                                  widget.locationModel,
+                                              tituloCategoria: tituloCategoria,
+                                              totalPrice: _totalPrice,
+                                              hora: hora,
+                                              fecha: fecha,
+                                              recojo: recojo,
+                                              delivery: delivery,
+                                              value2: _value2,
+                                              value: _value,
+                                              date: date,
+                                              defaultChoiceIndex:
+                                                  widget.defaultChoiceIndex,
+                                              onSuccess: _respuestaPago,
+                                            )),
                                   );
                                 } else if (widget.serviceModel.tipoAgenda ==
                                     'Slots') {
@@ -666,7 +684,8 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                             ),
                                           ],
                                         ),
-                                      ), context: context,
+                                      ),
+                                      context: context,
                                     );
                                   }
                                   if (fecha == null) {
@@ -687,26 +706,29 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                             ),
                                           ],
                                         ),
-                                      ), context: context,
+                                      ),
+                                      context: context,
                                     );
                                   }
                                   if (hora != null && fecha != null) {
                                     // AddOrder(widget.serviceModel.servicioId, context);
-                                    _totalPrice =
-                                        (widget.serviceModel.precio +
-                                                recojo +
-                                                delivery -
-                                                totalPet)
-                                            .toInt();
+                                    _totalPrice = (widget.serviceModel.precio +
+                                            recojo +
+                                            delivery -
+                                            totalPet)
+                                        .toInt();
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => PaymentPage(
-                                              petModel: widget.petModel,
-                                              aliadoModel: widget.aliadoModel,
-                                              serviceModel: widget.serviceModel,
-                                              locationModel: widget.locationModel,
-                                              tituloCategoria: tituloCategoria,
+                                                petModel: widget.petModel,
+                                                aliadoModel: widget.aliadoModel,
+                                                serviceModel:
+                                                    widget.serviceModel,
+                                                locationModel:
+                                                    widget.locationModel,
+                                                tituloCategoria:
+                                                    tituloCategoria,
                                                 totalPrice: _totalPrice,
                                                 hora: hora,
                                                 fecha: fecha,
@@ -715,9 +737,9 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                                 value2: _value2,
                                                 value: _value,
                                                 date: date,
-                                              defaultChoiceIndex:
-                                              widget.defaultChoiceIndex,
-                                              onSuccess: _respuestaPago,
+                                                defaultChoiceIndex:
+                                                    widget.defaultChoiceIndex,
+                                                onSuccess: _respuestaPago,
                                               )),
                                     );
                                   }
@@ -868,15 +890,15 @@ class _ContratoServicioState extends State<ContratoServicio> {
     );
   }
 
-  Future<void> _respuestaPago(String pagoId, String estadoPago, dynamic montoAprobado) async {
+  Future<void> _respuestaPago(
+      String pagoId, String estadoPago, dynamic montoAprobado) async {
     int petPoints = 0;
 
     String estadoOrden;
-    if(estadoPago == PagoEnum.pagoAprobado) {
+    if (estadoPago == PagoEnum.pagoAprobado) {
       estadoOrden = OrdenEnum.aprobada;
       petPoints = _totalPrice;
-    }
-    else {
+    } else {
       estadoOrden = OrdenEnum.pendiente;
     }
 
@@ -965,8 +987,6 @@ class _ContratoServicioState extends State<ContratoServicio> {
           : FieldValue.increment(0),
     });
   }
-
-
 
   deleteDate() {
     var a = DateTime.now();

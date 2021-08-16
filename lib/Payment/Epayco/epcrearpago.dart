@@ -13,13 +13,12 @@ class EPCrearPago extends StatefulWidget {
   final Function(String, String, int) onSuccess;
   final int defaultChoiceIndex;
 
-  const EPCrearPago({
-    @required this.petModel,
-    @required this.totalPrice,
-    @required this.aliadoModel,
-    @required this.defaultChoiceIndex,
-    this.onSuccess
-  });
+  const EPCrearPago(
+      {@required this.petModel,
+      @required this.totalPrice,
+      @required this.aliadoModel,
+      @required this.defaultChoiceIndex,
+      this.onSuccess});
 
   @override
   _EPCrearPagoState createState() => _EPCrearPagoState();
@@ -28,27 +27,32 @@ class EPCrearPago extends StatefulWidget {
 class _EPCrearPagoState extends State<EPCrearPago> {
   @override
   Widget build(BuildContext context) {
-    var simbolo = PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda);
+    var simbolo =
+        PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda);
     double _screenWidth = MediaQuery.of(context).size.width,
         _screenHeight = MediaQuery.of(context).size.height;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel, widget.defaultChoiceIndex),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
         drawer: MyDrawer(),
         body: Container(
-          height: _screenHeight,
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-              fit: BoxFit.cover,
+            height: _screenHeight,
+            decoration: new BoxDecoration(
+              image: new DecorationImage(
+                colorFilter: new ColorFilter.mode(
+                    Colors.white.withOpacity(0.3), BlendMode.dstATop),
+                image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16.0,
-          ),
-          child: Container() /*SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+            ),
+            child:
+                Container() /*SingleChildScrollView(
             child: Column(
               children: <Widget>[
                 
@@ -239,7 +243,7 @@ class _EPCrearPagoState extends State<EPCrearPago> {
               ],
             ),
           ),*/
-        ),
+            ),
       ),
     );
   }
@@ -257,7 +261,7 @@ class _EPCrearPagoState extends State<EPCrearPago> {
     });*/
   }
 
-  void _registrarPago() async{
+  void _registrarPago() async {
     /*try {
       var nombre = PetshopApp.sharedPreferences.getString(PetshopApp.userNombre);
       var apellido = PetshopApp.sharedPreferences.getString(PetshopApp.userApellido);

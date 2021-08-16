@@ -64,6 +64,8 @@ class _EventosPendientesHomeState extends State<EventosPendientesHome> {
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -420,30 +422,30 @@ class _EventosPendientesHomeState extends State<EventosPendientesHome> {
                                                             height: 50,
                                                             width: 50,
                                                             child: CircleAvatar(
-                                                              backgroundColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              backgroundImage: model ==
-                                                                      null
-                                                                  ? Image(
-                                                                      image: NetworkImage(
-                                                                        PetshopApp
-                                                                        .sharedPreferences
-                                                                        .getString(
-                                                                          PetshopApp.userAvatarUrl
-                                                                        )
-                                                                      ),
-                                                                      errorBuilder: (context, object, stacktrace) {
-                                                                        return Container();
-                                                                      },
-                                                                    ).image
-                                                                  : Image(
-                                                                      image: NetworkImage(model.petthumbnailUrl),
-                                                                      errorBuilder: (context, object, stacktrace) {
-                                                                        return Container();
-                                                                      },
-                                                                    ).image
-                                                            ),
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .transparent,
+                                                                backgroundImage:
+                                                                    model ==
+                                                                            null
+                                                                        ? Image(
+                                                                            image:
+                                                                                NetworkImage(PetshopApp.sharedPreferences.getString(PetshopApp.userAvatarUrl)),
+                                                                            errorBuilder: (context,
+                                                                                object,
+                                                                                stacktrace) {
+                                                                              return Container();
+                                                                            },
+                                                                          ).image
+                                                                        : Image(
+                                                                            image:
+                                                                                NetworkImage(model.petthumbnailUrl),
+                                                                            errorBuilder: (context,
+                                                                                object,
+                                                                                stacktrace) {
+                                                                              return Container();
+                                                                            },
+                                                                          ).image),
                                                           ),
                                                         ),
                                                         order.videoId != null
@@ -586,9 +588,8 @@ class _EventosPendientesHomeState extends State<EventosPendientesHome> {
                                 FirebaseFirestore.instance
                                     .collection('Ordenes')
                                     .doc(order.oid)
-                                    .update({
-                                  "statusCita": "Confirmada"
-                                }).then((result) {
+                                    .update({"statusCita": "Confirmada"}).then(
+                                        (result) {
                                   print("new USer true");
                                 }).catchError((onError) {
                                   print("onError");
@@ -626,9 +627,8 @@ class _EventosPendientesHomeState extends State<EventosPendientesHome> {
                                 FirebaseFirestore.instance
                                     .collection('Ordenes')
                                     .doc(order.oid)
-                                    .update({
-                                  "statusCita": "Cancelada"
-                                }).then((result) {
+                                    .update({"statusCita": "Cancelada"}).then(
+                                        (result) {
                                   print("new USer true");
                                 }).catchError((onError) {
                                   print("onError");

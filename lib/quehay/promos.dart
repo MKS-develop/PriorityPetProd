@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/DialogBox/choosepetDialog.dart';
 import 'package:pet_shop/Models/alidados.dart';
+import 'package:pet_shop/Models/location.dart';
 import 'package:pet_shop/Models/petfriendly.dart';
 import 'package:pet_shop/Store/storehome.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -71,6 +72,8 @@ class _PromoHomeState extends State<PromoHome> {
           height: MediaQuery.of(context).size.height,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -128,7 +131,7 @@ class _PromoHomeState extends State<PromoHome> {
                             style: TextStyle(
                                 color:
                                     select ? Colors.white : Color(0xFF57419D),
-                                fontSize: 20),
+                                fontSize: 16),
                           ),
                           color:
                               select ? Color(0xFF57419D) : Color(0xFFBDD7D6)),
@@ -156,7 +159,7 @@ class _PromoHomeState extends State<PromoHome> {
                             style: TextStyle(
                                 color:
                                     select ? Color(0xFF57419D) : Colors.white,
-                                fontSize: 20),
+                                fontSize: 16),
                           ),
                           color:
                               select ? Color(0xFFBDD7D6) : Color(0xFF57419D)),
@@ -258,101 +261,135 @@ class _PromoHomeState extends State<PromoHome> {
                     itemCount: 1,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (
-                      context,
-                      index,
-                    ) {
+                    itemBuilder: (context,
+                        index,) {
                       AliadoModel ali =
-                          AliadoModel.fromJson(dataSnapshot.data.data());
+                      AliadoModel.fromJson(dataSnapshot.data.data());
 
-                      return Container(
-                        height: 150,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Container(
-                              height: 140,
-                              width: 140,
-                              child: Image.network(
-                                pro.urlImagen,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, object, stacktrace) {
-                                  return Container();
-                                },
-                              ),
-                            ),
-                            SizedBox(
-                              width: 14.0,
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.4,
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Flexible(
-                                          child: Text(pro.titulo,
-                                              style: TextStyle(fontSize: 16),
-                                              textAlign: TextAlign.left)),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: RaisedButton(
-                                      onPressed: () {
-                                        if (model == null) {
-                                          {
-                                            showDialog(
-                                                builder: (context) => new ChoosePetAlertDialog(
-                                                  message:
-                                                      "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
-                                                ), context: context);
-                                          }
-                                        } else {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    DetallesPromo(
-                                                      petModel: model,
-                                                      promotionModel: pro,
-                                                      aliadoModel: ali,
-                                                      defaultChoiceIndex: widget
-                                                          .defaultChoiceIndex,
-                                                    )),
-                                          );
-                                        }
-                                      },
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
-                                      color: Color(0xFFEB9448),
-                                      padding: EdgeInsets.all(10.0),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text("Más información",
-                                              style: TextStyle(
-                                                  fontFamily: 'Product Sans',
-                                                  color: Colors.white,
-                                                  fontSize: 18.0)),
-                                        ],
-                                      ),
+                      return StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection("Localidades")
+                              .where("aliadoId", isEqualTo: ali.aliadoId)
+                              .snapshots(),
+                          builder: (context, dataSnapshot) {
+                            if (!dataSnapshot.hasData) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            return ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: 1,
+                                shrinkWrap: true,
+                                itemBuilder: (context,
+                                    index,) {
+                                  LocationModel location = LocationModel
+                                      .fromJson(
+                                      dataSnapshot.data.docs[index].data());
+                                  return Container(
+                                    height: 150,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .spaceEvenly,
+                                      children: [
+                                        Container(
+                                          height: 140,
+                                          width: 140,
+                                          child: Image.network(
+                                            pro.urlImagen,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, object,
+                                                stacktrace) {
+                                              return Container();
+                                            },
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 14.0,
+                                        ),
+                                        Container(
+                                          width: MediaQuery
+                                              .of(context)
+                                              .size
+                                              .width * 0.4,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment
+                                                    .start,
+                                                children: [
+                                                  Flexible(
+                                                      child: Text(pro.titulo,
+                                                          style: TextStyle(
+                                                              fontSize: 16),
+                                                          textAlign: TextAlign
+                                                              .left)),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                width: double.infinity,
+                                                child: RaisedButton(
+                                                  onPressed: () {
+                                                    if (model == null) {
+                                                      {
+                                                        showDialog(
+                                                            builder: (
+                                                                context) =>
+                                                            new ChoosePetAlertDialog(
+                                                              message:
+                                                              "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
+                                                            ),
+                                                            context: context);
+                                                      }
+                                                    } else {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (
+                                                                context) =>
+                                                                DetallesPromo(
+                                                                  petModel: model,
+                                                                  promotionModel: pro,
+                                                                  aliadoModel: ali,
+                                                                  locationModel: location,
+                                                                  defaultChoiceIndex: widget
+                                                                      .defaultChoiceIndex,
+                                                                )),
+                                                      );
+                                                    }
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.circular(5)),
+                                                  color: Color(0xFFEB9448),
+                                                  padding: EdgeInsets.all(10.0),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                    children: [
+                                                      Text("Más información",
+                                                          style: TextStyle(
+                                                              fontFamily: 'Product Sans',
+                                                              color: Colors
+                                                                  .white,
+                                                              fontSize: 18.0)),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
+                                  );
+                                }
+                            );
+                          });
                     });
-              }),
-        ],
+              }),],
       ),
     );
   }

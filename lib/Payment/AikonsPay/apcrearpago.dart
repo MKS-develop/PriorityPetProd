@@ -16,60 +16,63 @@ import 'package:pet_shop/Widgets/navbar.dart';
 import 'package:http/http.dart' as http;
 
 class APCrearPago extends StatefulWidget {
-  
   final PetModel petModel;
   final dynamic totalPrice;
   final AliadoModel aliadoModel;
   final Future<void> Function(String, String, dynamic) onSuccess;
   final int defaultChoiceIndex;
 
-  const APCrearPago({
-    @required this.petModel,
-    @required this.totalPrice,
-    @required this.aliadoModel,
-    @required this.defaultChoiceIndex,
-    @required this.onSuccess
-  });
+  const APCrearPago(
+      {@required this.petModel,
+      @required this.totalPrice,
+      @required this.aliadoModel,
+      @required this.defaultChoiceIndex,
+      @required this.onSuccess});
 
   @override
   _APCrearPagoState createState() => _APCrearPagoState();
 }
 
 class _APCrearPagoState extends State<APCrearPago> {
-
   TextEditingController _nombrePagadorController = TextEditingController();
   TextEditingController _apellidoPagadorController = TextEditingController();
-  String _apiKey = "2210d88da6603d941145cfdd60a47e246ce1142b3db9eba07ba63a46e99f00f9";
+  String _apiKey =
+      "2210d88da6603d941145cfdd60a47e246ce1142b3db9eba07ba63a46e99f00f9";
   String _serviceUrl = "https://aikonspay.com/api/pasarela/ppcv";
   String _titularCuenta = "";
   String _correoCuenta = "";
   String _montoTexto = "Monto que debes transferir";
-  String _correoTexto = "Debes realizar el pago zelle a la dirección de correo electrónico.";
+  String _correoTexto =
+      "Debes realizar el pago zelle a la dirección de correo electrónico.";
   String _titularTexto = "a nombre del titular de la cuenta";
   String _referencia;
   HttpClient client;
 
   @override
-    void initState() {
-      _getKey();
-      super.initState();
-    }
+  void initState() {
+    _getKey();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var simbolo = PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda);
+    var simbolo =
+        PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda);
     double _screenWidth = MediaQuery.of(context).size.width,
         _screenHeight = MediaQuery.of(context).size.height;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBarCustomAvatar(context, widget.petModel, widget.defaultChoiceIndex),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar: CustomBottomNavigationBar(),
         drawer: MyDrawer(),
         body: Container(
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -80,7 +83,6 @@ class _APCrearPagoState extends State<APCrearPago> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -103,25 +105,23 @@ class _APCrearPagoState extends State<APCrearPago> {
                     ),
                   ],
                 ),
-
                 SizedBox(
                   height: 15,
                 ),
                 Row(
                   children: [
-                    Expanded(child: Padding(
+                    Expanded(
+                        child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: Text(
                         _montoTexto,
                         style: TextStyle(
                           fontSize: 14,
                         ),
-                        
                       ),
                     ))
                   ],
                 ),
-                
                 SizedBox(
                   height: 15,
                 ),
@@ -133,56 +133,50 @@ class _APCrearPagoState extends State<APCrearPago> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                
                 SizedBox(
                   height: 15,
                 ),
                 Row(
                   children: [
-                    Expanded(child: Padding(
+                    Expanded(
+                        child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: Text(
                         _correoTexto,
                         style: TextStyle(
                           fontSize: 14,
                         ),
-                        
                       ),
                     ))
                   ],
                 ),
-                
                 SizedBox(
                   height: 15,
                 ),
-                Text(
-                  _correoCuenta,
-                  style: TextStyle(
-                    color: Color(0xFF57419D),
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.left
-                ),
-
+                Text(_correoCuenta,
+                    style: TextStyle(
+                      color: Color(0xFF57419D),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.left),
                 SizedBox(
                   height: 15,
                 ),
                 Row(
                   children: [
-                    Expanded(child: Padding(
+                    Expanded(
+                        child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: Text(
                         _titularTexto,
                         style: TextStyle(
                           fontSize: 14,
                         ),
-                        
                       ),
                     ))
                   ],
                 ),
-                
                 SizedBox(
                   height: 15,
                 ),
@@ -197,23 +191,20 @@ class _APCrearPagoState extends State<APCrearPago> {
                 SizedBox(
                   height: 15,
                 ),
-
                 Row(
                   children: [
-                    Expanded(child: Padding(
+                    Expanded(
+                        child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: Text(
                         "Por último, debes ingresar el nombre apellido del titular de la cuenta desde la cual estás realizando el pago.",
                         style: TextStyle(
                           fontSize: 14,
                         ),
-                        
                       ),
                     ))
                   ],
                 ),
-
-                
                 SizedBox(
                   height: 20,
                 ),
@@ -227,7 +218,6 @@ class _APCrearPagoState extends State<APCrearPago> {
                     ),
                   ),
                 ),
-
                 SizedBox(
                   height: 5,
                 ),
@@ -241,11 +231,9 @@ class _APCrearPagoState extends State<APCrearPago> {
                     ),
                   ),
                 ),
-
                 SizedBox(
                   height: 30,
                 ),
-
                 SizedBox(
                   width: _screenWidth * 0.8,
                   child: RaisedButton(
@@ -288,7 +276,7 @@ class _APCrearPagoState extends State<APCrearPago> {
 
   void _getKey() {
     DocumentReference documentReference =
-      FirebaseFirestore.instance.collection("Aikonspay").doc("config");
+        FirebaseFirestore.instance.collection("Aikonspay").doc("config");
     documentReference.get().then((dataSnapshot) {
       setState(() {
         _apiKey = dataSnapshot.data()["key"];
@@ -299,35 +287,38 @@ class _APCrearPagoState extends State<APCrearPago> {
     });
   }
 
-  void _registrarPago() async{
+  void _registrarPago() async {
     try {
-      var nombre = PetshopApp.sharedPreferences.getString(PetshopApp.userNombre);
-      var apellido = PetshopApp.sharedPreferences.getString(PetshopApp.userApellido);
-      var numeroDocumento = PetshopApp.sharedPreferences.getString(PetshopApp.userDocId);
+      var nombre =
+          PetshopApp.sharedPreferences.getString(PetshopApp.userNombre);
+      var apellido =
+          PetshopApp.sharedPreferences.getString(PetshopApp.userApellido);
+      var numeroDocumento =
+          PetshopApp.sharedPreferences.getString(PetshopApp.userDocId);
       //var tipoDocument = PetshopApp.sharedPreferences.getString(PetshopApp.);
 
       HttpClient client = new HttpClient();
-        client.badCertificateCallback = ((X509Certificate cert, String host, int port) {
+      client.badCertificateCallback =
+          ((X509Certificate cert, String host, int port) {
         /*final isValidHost = host == "api.my_app";
         return isValidHost;*/
         return true;
       });
 
       client.connectionTimeout = Duration(seconds: 10);
-      
+
       Map<String, String> headers = {
         "Content-type": "application/json",
         "x-api-key": _apiKey
       };
 
       double totalPrice = 0;
-      if(widget.totalPrice is int) 
+      if (widget.totalPrice is int)
         totalPrice = widget.totalPrice.toDouble();
-      else if(widget.totalPrice is String) 
+      else if (widget.totalPrice is String)
         totalPrice = double.parse(widget.totalPrice);
       else
         totalPrice = widget.totalPrice;
-
 
       Map<String, dynamic> jsonPago = {
         "moneda": "USD",
@@ -341,7 +332,6 @@ class _APCrearPagoState extends State<APCrearPago> {
         "apellidoZelle": _apellidoPagadorController.text,
         "tipoDocumento": "v"
       };
-
 
       /*var response = await http.post(_serviceUrl, headers: headers, body: jsonEncode(jsonPago))
         .timeout(
@@ -365,35 +355,28 @@ class _APCrearPagoState extends State<APCrearPago> {
       request.add(utf8.encode(json.encode(jsonPago)));
 
       HttpClientResponse response = await request.close();
-      
+
       response.transform(utf8.decoder).listen((responseBody) {
         int statusCode = response.statusCode;
         var bodyResponse = jsonDecode(responseBody);
-        if(statusCode == 200) {
+        if (statusCode == 200) {
           _referencia = bodyResponse["referencia"];
           _mostrarMensaje(
-            "$nombre, tu pago ha sido registrado con éxito. Te notificaremos cuando este sea aprobado",
-            "Continuar",
-            true
-          );
+              "$nombre, tu pago ha sido registrado con éxito. Te notificaremos cuando este sea aprobado",
+              "Continuar",
+              true);
         } else {
           _mostrarMensaje(
-            "Se ha producido un error en la operación. Intenta nuevamente",
-            "Continuar",
-            false
-          );
+              "Se ha producido un error en la operación. Intenta nuevamente",
+              "Continuar",
+              false);
         }
       });
-      
-     
-      
-
-    } on Exception catch(exception) {
+    } on Exception catch (exception) {
       _mostrarMensaje(
-        "La pasarela de pago no se encuentra disponible. Intenta nuevamente",
-        "Continuar",
-        false
-      );
+          "La pasarela de pago no se encuentra disponible. Intenta nuevamente",
+          "Continuar",
+          false);
     }
   }
 
@@ -413,7 +396,6 @@ class _APCrearPagoState extends State<APCrearPago> {
               SizedBox(
                 height: 14,
               ),
-              
               SizedBox(
                 height: 10,
               ),
@@ -439,17 +421,16 @@ class _APCrearPagoState extends State<APCrearPago> {
         ),
       ),
     ).then((result) {
-      if(success)
-        widget.onSuccess(_referencia, PagoEnum.pagoPendiente, 0);
-        
+      if (success) widget.onSuccess(_referencia, PagoEnum.pagoPendiente, 0);
     });
   }
 }
 
-class MyHttpOverrides extends HttpOverrides{
+class MyHttpOverrides extends HttpOverrides {
   @override
-  HttpClient createHttpClient(SecurityContext context){
+  HttpClient createHttpClient(SecurityContext context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }

@@ -7,6 +7,7 @@ import 'package:pet_shop/Models/Cart.dart';
 import 'package:pet_shop/Models/Promo.dart';
 import 'package:pet_shop/Models/alidados.dart';
 import 'package:pet_shop/Models/daymodel.dart';
+import 'package:pet_shop/Models/location.dart';
 import 'package:pet_shop/Payment/payment.dart';
 import 'package:pet_shop/Store/PushNotificationsProvider.dart';
 import 'package:pet_shop/Store/storehome.dart';
@@ -28,12 +29,13 @@ class ContratoPromos extends StatefulWidget {
   final PromotionModel promotionModel;
   final AliadoModel aliadoModel;
   final int defaultChoiceIndex;
+  final LocationModel locationModel;
 
   ContratoPromos(
       {this.petModel,
       this.promotionModel,
       this.aliadoModel,
-      this.defaultChoiceIndex});
+      this.defaultChoiceIndex, this.locationModel});
 
   @override
   _ContratoPromosState createState() => _ContratoPromosState();
@@ -69,6 +71,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
   int ppCanjeados = 0;
   double ppvalor = 0;
   String tituloCategoria = "Promocion";
+  double rating = 0;
 
   @override
   void initState() {
@@ -120,8 +123,10 @@ class _ContratoPromosState extends State<ContratoPromos> {
     double _screenWidth = MediaQuery.of(context).size.width,
         _screenHeight = MediaQuery.of(context).size.height;
 
-    double rating =
-        widget.aliadoModel.totalRatings / widget.aliadoModel.countRatings;
+    if (widget.aliadoModel.totalRatings != null) {
+      rating =
+          widget.aliadoModel.totalRatings / widget.aliadoModel.countRatings;
+    }
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -136,6 +141,8 @@ class _ContratoPromosState extends State<ContratoPromos> {
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -199,11 +206,18 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                   color: Color(0xFF57419D),
                                   fontWeight: FontWeight.bold),
                               textAlign: TextAlign.left),
-                          Text(widget.aliadoModel.direccion,
-                              style: TextStyle(
-                                fontSize: 13,
-                              ),
-                              textAlign: TextAlign.left),
+                          widget.locationModel.mapAddress != null ?
+                          Text(widget.locationModel.mapAddress,
+                            style: TextStyle(
+                              fontSize: 13,
+                            ),
+                          ):
+
+                          Text(widget.locationModel.direccionLocalidad,
+                            style: TextStyle(
+                              fontSize: 13,
+                            ),
+                          ),
                           SizedBox(
                             height: 10,
                           ),
@@ -555,7 +569,8 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                           ),
                                         ],
                                       ),
-                                    ), context: context,
+                                    ),
+                                    context: context,
                                   );
                                 } else if (fecha != null &&
                                     widget.promotionModel.tipoAgenda ==
@@ -570,23 +585,23 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => PaymentPage(
-                                            petModel: widget.petModel,
-                                            aliadoModel: widget.aliadoModel,
-                                            promotionModel:
-                                                widget.promotionModel,
-                                            tituloCategoria: tituloCategoria,
-                                            totalPrice: totalPrice,
-                                            hora: hora,
-                                            fecha: fecha,
-                                            recojo: recojo,
-                                            delivery: delivery,
-                                            value2: _value2,
-                                            value: _value,
-                                            date: date,
-                                            defaultChoiceIndex:
-                                                widget.defaultChoiceIndex,
-                                            onSuccess: _respuestaPago,
-                                          )),
+                                              petModel: widget.petModel,
+                                              aliadoModel: widget.aliadoModel,
+                                              promotionModel:
+                                                  widget.promotionModel,
+                                              tituloCategoria: tituloCategoria,
+                                              totalPrice: totalPrice,
+                                              hora: hora,
+                                              fecha: fecha,
+                                              recojo: recojo,
+                                              delivery: delivery,
+                                              value2: _value2,
+                                              value: _value,
+                                              date: date,
+                                              defaultChoiceIndex:
+                                                  widget.defaultChoiceIndex,
+                                              onSuccess: _respuestaPago,
+                                            )),
                                   );
                                 } else if (widget.promotionModel.tipoAgenda ==
                                     'Slots') {
@@ -608,7 +623,8 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                             ),
                                           ],
                                         ),
-                                      ), context: context,
+                                      ),
+                                      context: context,
                                     );
                                   }
                                   if (fecha == null) {
@@ -629,7 +645,8 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                             ),
                                           ],
                                         ),
-                                      ), context: context,
+                                      ),
+                                      context: context,
                                     );
                                   }
                                   if (hora != null && fecha != null) {
@@ -643,6 +660,38 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => PaymentPage(
+                                                petModel: widget.petModel,
+                                                aliadoModel: widget.aliadoModel,
+                                                promotionModel:
+                                                    widget.promotionModel,
+                                                tituloCategoria:
+                                                    tituloCategoria,
+                                                totalPrice: _totalPrice,
+                                                hora: hora,
+                                                fecha: fecha,
+                                                recojo: recojo,
+                                                delivery: delivery,
+                                                value2: _value2,
+                                                value: _value,
+                                                date: date,
+                                                defaultChoiceIndex:
+                                                    widget.defaultChoiceIndex,
+                                                onSuccess: _respuestaPago,
+                                              )),
+                                    );
+                                  }
+                                }
+
+                                if (widget.promotionModel.tipoPromocion ==
+                                    'Producto') {
+                                  _totalPrice = (pro.precio +
+                                      recojo +
+                                      delivery -
+                                      totalPet);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => PaymentPage(
                                               petModel: widget.petModel,
                                               aliadoModel: widget.aliadoModel,
                                               promotionModel:
@@ -660,38 +709,6 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                                   widget.defaultChoiceIndex,
                                               onSuccess: _respuestaPago,
                                             )),
-                                    );
-                                  }
-                                }
-
-                                if (widget.promotionModel.tipoPromocion ==
-                                    'Producto') {
-                                  _totalPrice = (pro.precio +
-                                      recojo +
-                                      delivery -
-                                      totalPet)
-                                  ;
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => PaymentPage(
-                                          petModel: widget.petModel,
-                                          aliadoModel: widget.aliadoModel,
-                                          promotionModel:
-                                          widget.promotionModel,
-                                          tituloCategoria:
-                                          tituloCategoria,
-                                          totalPrice: _totalPrice,
-                                          hora: hora,
-                                          fecha: fecha,
-                                          recojo: recojo,
-                                          delivery: delivery,
-                                          value2: _value2,
-                                          value: _value,
-                                          date: date,
-                                          defaultChoiceIndex: widget.defaultChoiceIndex,
-                                          onSuccess: _respuestaPago,
-                                        )),
                                   );
                                   // AddOrder(
                                   //     widget.promotionModel.promoid, context);
@@ -844,18 +861,18 @@ class _ContratoPromosState extends State<ContratoPromos> {
     );
   }
 
-  Future<void> _respuestaPago(String pagoId, String estadoPago, dynamic montoAprobado) async {
+  Future<void> _respuestaPago(
+      String pagoId, String estadoPago, dynamic montoAprobado) async {
     int petPoints = 0;
 
     String estadoOrden;
-    if(estadoPago == PagoEnum.pagoAprobado) {
+    if (estadoPago == PagoEnum.pagoAprobado) {
       estadoOrden = OrdenEnum.aprobada;
       petPoints = _totalPrice;
-    }
-    else {
+    } else {
       estadoOrden = OrdenEnum.pendiente;
     }
-    
+
     Navigator.of(context, rootNavigator: true).pop();
     //OrderMessage(context, outcomeMsg);
     var databaseReference =
@@ -942,8 +959,8 @@ class _ContratoPromosState extends State<ContratoPromos> {
   }
 
   sendEmail(_email, nombreCompleto, orderId, aliadoAvatar) async {
-    await http.get(
-        Uri.parse('https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=$_email&username=$nombreCompleto&orderId=$orderId&logoAliado=$aliadoAvatar'));
+    await http.get(Uri.parse(
+        'https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=$_email&username=$nombreCompleto&orderId=$orderId&logoAliado=$aliadoAvatar'));
     print('$_email $nombreCompleto $orderId $aliadoAvatar');
   }
 

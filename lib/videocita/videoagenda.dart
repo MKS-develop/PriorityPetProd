@@ -123,6 +123,8 @@ class _VideoAgendaState extends State<VideoAgenda> {
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -574,7 +576,8 @@ class _VideoAgendaState extends State<VideoAgenda> {
                                           ),
                                         ],
                                       ),
-                                    ), context: context,
+                                    ),
+                                    context: context,
                                   );
                                 } else if (fecha != null &&
                                     widget.serviceModel.tipoAgenda == 'Free') {
@@ -601,9 +604,9 @@ class _VideoAgendaState extends State<VideoAgenda> {
                                               value2: _value2,
                                               value: _value,
                                               date: date,
-                                          defaultChoiceIndex:
-                                          widget.defaultChoiceIndex,
-                                            onSuccess: _respuestaPago,
+                                              defaultChoiceIndex:
+                                                  widget.defaultChoiceIndex,
+                                              onSuccess: _respuestaPago,
                                             )),
                                   );
                                 } else if (widget.serviceModel.tipoAgenda ==
@@ -626,7 +629,8 @@ class _VideoAgendaState extends State<VideoAgenda> {
                                             ),
                                           ],
                                         ),
-                                      ), context: context,
+                                      ),
+                                      context: context,
                                     );
                                   }
                                   if (fecha == null) {
@@ -647,17 +651,17 @@ class _VideoAgendaState extends State<VideoAgenda> {
                                             ),
                                           ],
                                         ),
-                                      ), context: context,
+                                      ),
+                                      context: context,
                                     );
                                   }
                                   if (hora != null && fecha != null) {
                                     // AddOrder(widget.serviceModel.servicioId, context);
-                                    _totalPrice =
-                                        (widget.serviceModel.precio +
-                                                recojo +
-                                                delivery -
-                                                totalPet)
-                                            .toInt();
+                                    _totalPrice = (widget.serviceModel.precio +
+                                            recojo +
+                                            delivery -
+                                            totalPet)
+                                        .toInt();
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -678,9 +682,9 @@ class _VideoAgendaState extends State<VideoAgenda> {
                                                 value2: _value2,
                                                 value: _value,
                                                 date: date,
-                                            defaultChoiceIndex:
-                                            widget.defaultChoiceIndex,
-                                            onSuccess: _respuestaPago,
+                                                defaultChoiceIndex:
+                                                    widget.defaultChoiceIndex,
+                                                onSuccess: _respuestaPago,
                                               )),
                                     );
                                   }
@@ -814,15 +818,15 @@ class _VideoAgendaState extends State<VideoAgenda> {
     );
   }
 
-  Future<void> _respuestaPago(String pagoId, String estadoPago, dynamic montoAprobado) async {
+  Future<void> _respuestaPago(
+      String pagoId, String estadoPago, dynamic montoAprobado) async {
     int petPoints = 0;
 
     String estadoOrden;
-    if(estadoPago == PagoEnum.pagoAprobado) {
+    if (estadoPago == PagoEnum.pagoAprobado) {
       estadoOrden = OrdenEnum.aprobada;
       petPoints = _totalPrice;
-    }
-    else {
+    } else {
       estadoOrden = OrdenEnum.pendiente;
     }
 

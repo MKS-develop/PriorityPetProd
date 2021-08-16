@@ -11,11 +11,13 @@ class ProductoModel {
       urlImagen,
       tipoMascota,
       presentacion,
+  localidadId,
   pesoValor,
   pesoUnidad;
-  int cantidad;
+  dynamic cantidad;
   dynamic precio, delivery;
   Timestamp createdOn;
+
 
   ProductoModel({
     this.titulo,
@@ -34,6 +36,7 @@ class ProductoModel {
     this.presentacion,
     this.pesoUnidad,
     this.pesoValor,
+    this.localidadId,
   });
 
   factory ProductoModel.fromFireStore(DocumentSnapshot doc) {
@@ -54,7 +57,8 @@ class ProductoModel {
       tipoMascota: data['tipoMascota'],
       presentacion: data['presentacion'],
       pesoUnidad: data['pesoUnidad'],
-      pesoValor: data['pesoValor']
+      pesoValor: data['pesoValor'],
+      localidadId: data['localidadId'],
     );
   }
 
@@ -75,6 +79,7 @@ class ProductoModel {
     cantidad = snapshot['cantidad'];
     pesoValor = snapshot['pesoValor'];
     pesoUnidad = snapshot['pesoUnidad'];
+    localidadId = snapshot['localidadId'];
   }
 
   Map<String, dynamic> toJson() => {

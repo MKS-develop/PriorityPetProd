@@ -92,6 +92,8 @@ class _ContenidoHomeState extends State<ContenidoHome> {
           height: MediaQuery.of(context).size.height,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -174,13 +176,12 @@ class _ContenidoHomeState extends State<ContenidoHome> {
                     decoration: BoxDecoration(
                         color: Colors.transparent,
                         image: new DecorationImage(
-                          image:
-                              new Image.network(
-                                widget.contenidoModel.urlImagen,
-                                errorBuilder: (context, object, stacktrace) {
-                                  return Container();
-                                },
-                              ).image,
+                          image: new Image.network(
+                            widget.contenidoModel.urlImagen,
+                            errorBuilder: (context, object, stacktrace) {
+                              return Container();
+                            },
+                          ).image,
                           fit: BoxFit.cover,
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(20.0))),

@@ -70,6 +70,8 @@ class _ConfirmCancelState extends State<ConfirmCancel> {
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -392,7 +394,8 @@ class _ConfirmCancelState extends State<ConfirmCancel> {
               ],
             ),
           ),
-        ), context: context,
+        ),
+        context: context,
       );
     });
     Navigator.push(
@@ -408,27 +411,29 @@ class _ConfirmCancelState extends State<ConfirmCancel> {
   confirmaCancel() {
     showDialog(
         builder: (context) => AlertDialog(
-            // title: Text('Su pago ha sido aprobado.'),
-            content: SingleChildScrollView(
-                child: ListBody(children: <Widget>[
-          Container(
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                children: [
-                  Text(
-                      '¿Cuál es el motivo por el que estás cancelando la Orden?',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(
-                    '1) ¿Seleccionaste el producto o servicio incorrecto? S/N',
-                  ),
-                  Row(
+                // title: Text('Su pago ha sido aprobado.'),
+                content: SingleChildScrollView(
+                    child: ListBody(children: <Widget>[
+              Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
                     children: [
-                      Text('Si', style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                          '¿Cuál es el motivo por el que estás cancelando la Orden?',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                        '1) ¿Seleccionaste el producto o servicio incorrecto? S/N',
+                      ),
+                      Row(
+                        children: [
+                          Text('Si',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      ),
                     ],
-                  ),
-                ],
-              )),
-        ]))), context: context);
+                  )),
+            ]))),
+        context: context);
   }
 
   Widget sourceInfo(
@@ -469,14 +474,16 @@ class _ConfirmCancelState extends State<ConfirmCancel> {
                               backgroundImage: model == null
                                   ? Image.network(
                                       PetshopApp.sharedPreferences
-                                        .getString(PetshopApp.userAvatarUrl),
-                                      errorBuilder: (context, object, stacktrace) {
+                                          .getString(PetshopApp.userAvatarUrl),
+                                      errorBuilder:
+                                          (context, object, stacktrace) {
                                         return Container();
                                       },
                                     ).image
                                   : Image.network(
                                       model.petthumbnailUrl,
-                                      errorBuilder: (context, object, stacktrace) {
+                                      errorBuilder:
+                                          (context, object, stacktrace) {
                                         return Container();
                                       },
                                     ).image,

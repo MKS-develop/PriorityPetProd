@@ -98,12 +98,12 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Material(
         child: Container(
-      decoration: new BoxDecoration(
-        image: new DecorationImage(
-          image: new AssetImage("diseñador/SplashScreen2.png"),
-          fit: BoxFit.cover,
-        ),
-      ),
-    ));
+          decoration: new BoxDecoration(
+            image: new DecorationImage(
+              image: new AssetImage("diseñador/SplashScreen2.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ));
   }
 }

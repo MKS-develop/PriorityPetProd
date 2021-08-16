@@ -71,6 +71,8 @@ class _AddReclamosPageState extends State<AddReclamosPage> {
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -195,28 +197,35 @@ class _AddReclamosPageState extends State<AddReclamosPage> {
                                     Container(
                                       width: _screenWidth * 0.8,
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
                                           StreamBuilder<QuerySnapshot>(
                                               stream: FirebaseFirestore.instance
                                                   .collection("Ordenes")
-                                                  .where('uid', isEqualTo: PetshopApp.sharedPreferences.get(PetshopApp.userUID))
+                                                  .where('uid',
+                                                      isEqualTo: PetshopApp
+                                                          .sharedPreferences
+                                                          .get(PetshopApp
+                                                              .userUID))
                                                   // .orderBy('createdOn', descending: false)
                                                   .snapshots(),
                                               builder: (context, dataSnapshot) {
                                                 if (!dataSnapshot.hasData) {
                                                   return Center(
-                                                    child: CircularProgressIndicator(),
+                                                    child:
+                                                        CircularProgressIndicator(),
                                                   );
                                                 } else {
                                                   List<String> list = [];
                                                   for (int i = 0;
-                                                  i <
-                                                      dataSnapshot
-                                                          .data.docs.length;
-                                                  i++) {
+                                                      i <
+                                                          dataSnapshot
+                                                              .data.docs.length;
+                                                      i++) {
                                                     DocumentSnapshot razas =
-                                                    dataSnapshot.data.docs[i];
+                                                        dataSnapshot
+                                                            .data.docs[i];
                                                     list.add(
                                                       razas.id,
                                                     );
@@ -226,26 +235,34 @@ class _AddReclamosPageState extends State<AddReclamosPage> {
                                                     decoration: BoxDecoration(
                                                       color: Colors.white,
                                                       border: Border.all(
-                                                        color: Color(0xFF7f9d9D),
+                                                        color:
+                                                            Color(0xFF7f9d9D),
                                                         width: 1.0,
                                                       ),
-                                                      borderRadius: BorderRadius.all(
-                                                          Radius.circular(10.0)),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10.0)),
                                                     ),
                                                     padding:
-                                                    EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                                        EdgeInsets.fromLTRB(
+                                                            15, 0, 0, 0),
                                                     margin: EdgeInsets.all(5.0),
-
-                                                    child: DropdownSearch<String>(
+                                                    child:
+                                                        DropdownSearch<String>(
                                                       dropdownSearchDecoration:
-                                                      InputDecoration(
+                                                          InputDecoration(
                                                         hintStyle: TextStyle(
                                                             fontSize: 16.0,
-                                                            color: Color(0xFF7f9d9D)),
-                                                        disabledBorder: InputBorder.none,
-                                                        focusedBorder: InputBorder.none,
+                                                            color: Color(
+                                                                0xFF7f9d9D)),
+                                                        disabledBorder:
+                                                            InputBorder.none,
+                                                        focusedBorder:
+                                                            InputBorder.none,
                                                         enabled: false,
-                                                        border: InputBorder.none,
+                                                        border:
+                                                            InputBorder.none,
                                                       ),
                                                       mode: Mode.BOTTOM_SHEET,
                                                       maxHeight: 300,
@@ -260,19 +277,18 @@ class _AddReclamosPageState extends State<AddReclamosPage> {
                                                       items: list,
                                                       // label: "Menu mode",
                                                       hint:
-                                                      "Ingrese un número de orden si es necesario",
+                                                          "Ingrese un número de orden si es necesario",
 
-                                                      popupItemDisabled: (String s) =>
-                                                          s.startsWith('I'),
+                                                      popupItemDisabled:
+                                                          (String s) =>
+                                                              s.startsWith('I'),
                                                       onChanged: (value) {
                                                         setState(() {
                                                           numeroOrden = value;
                                                         });
                                                       },
-                                                      selectedItem:
-                                                      numeroOrden,
+                                                      selectedItem: numeroOrden,
                                                     ),
-
                                                   );
                                                 }
                                               }),

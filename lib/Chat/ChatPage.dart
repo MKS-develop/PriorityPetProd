@@ -68,6 +68,8 @@ class _ChatPageState extends State<ChatPage> {
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -139,21 +141,28 @@ class _ChatPageState extends State<ChatPage> {
                                           child: CircleAvatar(
                                             backgroundColor: Colors.white,
                                             backgroundImage: Image.network(
-                                              snapshot.data["avatar"],
-                                              errorBuilder: (context, object, stacktrace) {
-                                                return Container();
-                                              },
-                                            ).image ?? 'Cargando',
+                                                  snapshot.data["avatar"],
+                                                  errorBuilder: (context,
+                                                      object, stacktrace) {
+                                                    return Container();
+                                                  },
+                                                ).image ??
+                                                'Cargando',
                                           ),
                                         ),
                                         SizedBox(
                                           width: 9,
                                         ),
-                                        Text(snapshot.data["nombre"],
-                                            style: TextStyle(
-                                                color: primaryColor,
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 19.0)),
+                                        Container(
+                                          width: _screenWidth * 0.6,
+                                          child: Expanded(
+                                            child: Text(snapshot.data["nombre"],
+                                                style: TextStyle(
+                                                    color: primaryColor,
+                                                    fontWeight: FontWeight.w700,
+                                                    fontSize: 19.0)),
+                                          ),
+                                        ),
                                       ],
                                     );
                                   })
@@ -427,7 +436,7 @@ class _ChatPageState extends State<ChatPage> {
                       ),
                     ),
                     SizedBox(
-                      width: 60,
+                      width: 61,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [

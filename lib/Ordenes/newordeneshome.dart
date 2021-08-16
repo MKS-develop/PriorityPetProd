@@ -59,6 +59,8 @@ class _NewOrdenesHomeState extends State<NewOrdenesHome> {
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -98,7 +100,9 @@ class _NewOrdenesHomeState extends State<NewOrdenesHome> {
                             isEqualTo: PetshopApp.sharedPreferences
                                 .getString(PetshopApp.userUID)
                                 .toString())
-                        .where('pais', isEqualTo: PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
+                        .where('pais',
+                            isEqualTo: PetshopApp.sharedPreferences
+                                .getString(PetshopApp.userPais))
                         .orderBy('createdOn', descending: true)
                         .snapshots(),
                     builder: (context, dataSnapshot) {
@@ -333,8 +337,7 @@ class _NewOrdenesHomeState extends State<NewOrdenesHome> {
                           })
                       : Container(),
                   order.tipoOrden != 'Plan'
-                      ? 
-                      Row(
+                      ? Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             SizedBox(
@@ -368,7 +371,8 @@ class _NewOrdenesHomeState extends State<NewOrdenesHome> {
                                       builder: (context) => ChatPage(
                                             petModel: widget.petModel,
                                             aliado: order.aliadoId,
-                                        defaultChoiceIndex: widget.defaultChoiceIndex,
+                                            defaultChoiceIndex:
+                                                widget.defaultChoiceIndex,
                                           )),
                                 );
                               },
@@ -403,14 +407,17 @@ class _NewOrdenesHomeState extends State<NewOrdenesHome> {
                                               null
                                           ? Image.network(
                                               PetshopApp.sharedPreferences
-                                                .getString(PetshopApp.userAvatarUrl),
-                                              errorBuilder: (context, object, stacktrace) {
+                                                  .getString(
+                                                      PetshopApp.userAvatarUrl),
+                                              errorBuilder: (context, object,
+                                                  stacktrace) {
                                                 return Container();
                                               },
                                             ).image
                                           : Image.network(
                                               order.petthumbnailUrl,
-                                              errorBuilder: (context, object, stacktrace) {
+                                              errorBuilder: (context, object,
+                                                  stacktrace) {
                                                 return Container();
                                               },
                                             ).image,

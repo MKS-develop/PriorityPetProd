@@ -18,7 +18,6 @@
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore_web-0.2.1+2" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/android_intent-0.3.7+7" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/google_map_location_picker-4.1.6" />
-      <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-0.5.0+1" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/image_picker-0.6.7+22" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_messaging-7.0.3" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-1.0.11" />
@@ -26,6 +25,12 @@
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/geolocator-6.2.1" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/package_info-0.4.3+4" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/geocoder-0.2.1" />
+      <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-0.0.4+8" />
+      <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-0.0.4+3" />
+      <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-0.0.1+2" />
+      <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-1.6.28" />
+      <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/device_info-1.0.0" />
+      <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/native_pdf_renderer-2.4.0" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

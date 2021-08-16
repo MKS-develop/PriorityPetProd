@@ -17,6 +17,7 @@ import 'package:pet_shop/Widgets/ktitle.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import '../Widgets/myDrawer.dart';
 import 'serviciodetalle.dart';
+import 'dart:math' show cos, sqrt, asin;
 
 double width;
 
@@ -55,6 +56,7 @@ class _ServicioPageState extends State<ServicioPage> {
 
   ServiceModel servicio;
   PetModel model;
+  GeoPoint userLatLong;
 
   String productId = DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -67,6 +69,18 @@ class _ServicioPageState extends State<ServicioPage> {
     finalServicesList = [];
     MastersList(ciudad);
     getCiudades(PetshopApp.sharedPreferences.getString(PetshopApp.userPais));
+    getLatLong();
+  }
+
+  getLatLong() {
+    DocumentReference documentReference = FirebaseFirestore.instance
+        .collection("Dueños")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
+    documentReference.get().then((dataSnapshot) {
+      setState(() {
+        userLatLong = (dataSnapshot.data()["location"]);
+      });
+    });
   }
 
   @override
@@ -176,6 +190,8 @@ class _ServicioPageState extends State<ServicioPage> {
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -478,7 +494,7 @@ class _ServicioPageState extends State<ServicioPage> {
                                           setState(() {
                                             _categoria = value;
                                             ciudad = value;
-                                            _resultsList=[];
+                                            _resultsList = [];
                                             _allResults = [];
                                             MastersList(value);
                                           });
@@ -617,7 +633,9 @@ class _ServicioPageState extends State<ServicioPage> {
                         ],
                       )
                     : Container(
-                        height: _screenHeight,
+                        height: 99 *
+                double.parse(
+                _resultsList.length.toString()),
                         width: _screenWidth,
                         child: Column(
                           children: [
@@ -646,6 +664,9 @@ class _ServicioPageState extends State<ServicioPage> {
   }
 
   Widget sourceInfo2(ServiceModel servicio, BuildContext context) {
+    dynamic totalD = 0;
+    double rating = 0;
+
     return InkWell(
       child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
@@ -689,6 +710,29 @@ class _ServicioPageState extends State<ServicioPage> {
                             ) {
                               AliadoModel aliado = AliadoModel.fromJson(
                                   dataSnapshot.data.docs[index].data());
+                              if (userLatLong !=null && location.location != null) {
+                                var p = 0.017453292519943295;
+                                var c = cos;
+                                var a = 0.5 -
+                                    c((location.location.latitude != null
+                                                ? location.location.latitude
+                                                : 0 - userLatLong.latitude) *
+                                            p) /
+                                        2 +
+                                    c(userLatLong.latitude * p) *
+                                        c(location.location.latitude * p) *
+                                        (1 -
+                                            c((location.location.longitude -
+                                                    userLatLong.longitude) *
+                                                p)) /
+                                        2;
+                                totalD = 12742 * asin(sqrt(a));
+                              }
+
+                              if (aliado.totalRatings != null) {
+                                rating =
+                                    aliado.totalRatings / aliado.countRatings;
+                              }
                               return GestureDetector(
                                 onTap: () {
                                   Navigator.push(
@@ -700,11 +744,13 @@ class _ServicioPageState extends State<ServicioPage> {
                                             aliadoModel: aliado,
                                             defaultChoiceIndex:
                                                 widget.defaultChoiceIndex,
-                                            locationModel: location)),
+                                            locationModel: location,
+                                            userLatLong: userLatLong)),
                                   );
                                 },
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(2, 8, 2, 8),
                                   child: SizedBox(
                                     width: MediaQuery.of(context).size.width,
                                     child: Row(
@@ -728,7 +774,8 @@ class _ServicioPageState extends State<ServicioPage> {
                                           child: Image.network(
                                             aliado.avatar,
                                             fit: BoxFit.cover,
-                                            errorBuilder: (context, object, stacktrace) {
+                                            errorBuilder:
+                                                (context, object, stacktrace) {
                                               return Container();
                                             },
                                           ),
@@ -740,8 +787,8 @@ class _ServicioPageState extends State<ServicioPage> {
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width *
-                                              0.62,
-                                          height: 70,
+                                              0.5,
+                                          height: 73,
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -763,14 +810,28 @@ class _ServicioPageState extends State<ServicioPage> {
                                                               FontWeight.bold),
                                                       textAlign:
                                                           TextAlign.left),
-                                                  Text(
-                                                      location
-                                                          .direccionLocalidad,
-                                                      style: TextStyle(
-                                                        fontSize: 13,
-                                                      ),
-                                                      textAlign:
-                                                          TextAlign.left),
+                                                  location.mapAddress != null
+                                                      ? Text(
+                                                          location.mapAddress,
+                                                          maxLines: 2,
+                                                          style: TextStyle(
+                                                            fontSize: 13,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.left)
+                                                      : Text(
+                                                          location.mapAddress !=
+                                                                  null
+                                                              ? location
+                                                                  .mapAddress
+                                                              : location
+                                                                  .direccionLocalidad,
+                                                          maxLines: 2,
+                                                          style: TextStyle(
+                                                            fontSize: 13,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.left),
                                                 ],
                                               ),
                                               Row(
@@ -778,22 +839,12 @@ class _ServicioPageState extends State<ServicioPage> {
                                                     MainAxisAlignment.end,
                                                 children: [
                                                   Text(
-                                                      (aliado.totalRatings /
-                                                                      aliado
-                                                                          .countRatings)
-                                                                  .toString() !=
-                                                              'NaN'
-                                                          ? (aliado.totalRatings /
-                                                                  aliado
-                                                                      .countRatings)
-                                                              .toStringAsPrecision(
-                                                                  2)
+                                                      rating.toString() != 'NaN'
+                                                          ? rating.toStringAsPrecision(1)
                                                           : '0',
                                                       style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Colors.orange),
-                                                      textAlign:
-                                                          TextAlign.left),
+                                                          fontSize: 16, color: Colors.orange),
+                                                      textAlign: TextAlign.left),
                                                   SizedBox(
                                                     width: 8,
                                                   ),
@@ -807,6 +858,36 @@ class _ServicioPageState extends State<ServicioPage> {
                                             ],
                                           ),
                                         ),
+                                        totalD != 0
+                                            ? SizedBox(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 9,
+                                                    ),
+                                                    Icon(
+                                                      Icons.location_on_rounded,
+                                                      color: secondaryColor,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 3,
+                                                    ),
+
+                                                    Text(
+                                                        totalD < 500.00
+                                                            ? '${totalD.toStringAsFixed(1)} Km'
+                                                            : '+500 Km',
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                        ),
+                                                        textAlign:
+                                                            TextAlign.center),
+                                                  ],
+                                                ),
+                                              )
+                                            : Container(),
                                       ],
                                     ),
                                   ),
