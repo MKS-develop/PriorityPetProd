@@ -51,27 +51,27 @@ class PaymentPage extends StatefulWidget {
   final int defaultChoiceIndex;
   final Function(String, String, dynamic) onSuccess;
 
-  PaymentPage(
-      {this.promotionModel,
-      this.petModel,
-      this.productoModel,
-      this.cartModel,
-      this.serviceModel,
-      this.locationModel,
-      this.aliadoModel,
-      this.tituloCategoria,
-      this.totalPrice,
-      this.hora,
-      this.recojo,
-      this.delivery,
-      this.fecha,
-      this.value2,
-      this.value,
-      this.date,
-      this.planModel,
-      this.defaultChoiceIndex,
-      this.onSuccess,
-    });
+  PaymentPage({
+    this.promotionModel,
+    this.petModel,
+    this.productoModel,
+    this.cartModel,
+    this.serviceModel,
+    this.locationModel,
+    this.aliadoModel,
+    this.tituloCategoria,
+    this.totalPrice,
+    this.hora,
+    this.recojo,
+    this.delivery,
+    this.fecha,
+    this.value2,
+    this.value,
+    this.date,
+    this.planModel,
+    this.defaultChoiceIndex,
+    this.onSuccess,
+  });
 
   @override
   _PaymentPageState createState() => _PaymentPageState();
@@ -168,10 +168,9 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    if(PetshopApp.esPeru()) {
+    if (PetshopApp.esPeru()) {
       return _culqiWidget(context);
-    }
-    else if(PetshopApp.esVenezuela()) {
+    } else if (PetshopApp.esVenezuela()) {
       return APCrearPago(
         aliadoModel: widget.aliadoModel,
         petModel: widget.petModel,
@@ -179,8 +178,7 @@ class _PaymentPageState extends State<PaymentPage> {
         totalPrice: widget.totalPrice,
         onSuccess: widget.onSuccess,
       );
-    }
-    else {
+    } else {
       return Container();
     }
   }
@@ -210,6 +208,8 @@ class _PaymentPageState extends State<PaymentPage> {
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -376,114 +376,127 @@ class _PaymentPageState extends State<PaymentPage> {
                             if (selectedobscurecard != null) {
                               showDialog(
                                   builder: (context) => AlertDialog(
-                                      // title: Text('Su pago ha sido aprobado.'),
-                                      content: SingleChildScrollView(
-                                          child: ListBody(children: <Widget>[
-                                    Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                                '¿Desea confirmar su compra? ${PetshopApp.sharedPreferences
-                                                    .getString(PetshopApp.simboloMoneda)}${widget.totalPrice.toStringAsFixed(2)} serán debitados de la tarjeta $selectedobscurecard',
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
+                                          // title: Text('Su pago ha sido aprobado.'),
+                                          content: SingleChildScrollView(
+                                              child:
+                                                  ListBody(children: <Widget>[
+                                        Container(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: Column(
                                               children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(6.0),
-                                                  child: SizedBox(
-                                                    width: _screenWidth * 0.25,
-                                                    child: RaisedButton(
-                                                      onPressed: () {
-                                                        // AddOrder(productId, context, widget.planModel.montoMensual, widget.planModel.planid);
-                                                        addCulqi();
-                                                        Navigator.of(context,
-                                                                rootNavigator:
-                                                                    true)
-                                                            .pop();
-                                                        _loadingDialog(context);
-                                                      },
-                                                      shape:
-                                                          RoundedRectangleBorder(
+                                                Text(
+                                                    '¿Desea confirmar su compra? ${PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda)}${widget.totalPrice.toStringAsFixed(2)} serán debitados de la tarjeta $selectedobscurecard',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              6.0),
+                                                      child: SizedBox(
+                                                        width:
+                                                            _screenWidth * 0.25,
+                                                        child: RaisedButton(
+                                                          onPressed: () {
+                                                            // AddOrder(productId, context, widget.planModel.montoMensual, widget.planModel.planid);
+                                                            addCulqi();
+                                                            Navigator.of(
+                                                                    context,
+                                                                    rootNavigator:
+                                                                        true)
+                                                                .pop();
+                                                            _loadingDialog(
+                                                                context);
+                                                          },
+                                                          shape: RoundedRectangleBorder(
                                                               borderRadius:
                                                                   BorderRadius
                                                                       .circular(
                                                                           5)),
-                                                      color: Color(0xFFEB9448),
-                                                      padding:
-                                                          EdgeInsets.all(10.0),
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Text("Confirmar",
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                      'Product Sans',
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize:
-                                                                      16.0)),
-                                                        ],
+                                                          color:
+                                                              Color(0xFFEB9448),
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  10.0),
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Text("Confirmar",
+                                                                  style: TextStyle(
+                                                                      fontFamily:
+                                                                          'Product Sans',
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          16.0)),
+                                                            ],
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: SizedBox(
-                                                    width: _screenWidth * 0.25,
-                                                    child: RaisedButton(
-                                                      onPressed: () {
-                                                        // AddOrder(productId, context, widget.planModel.montoAnual, widget.planModel.planid);
-                                                        Navigator.of(context,
-                                                                rootNavigator:
-                                                                    true)
-                                                            .pop();
-                                                      },
-                                                      shape:
-                                                          RoundedRectangleBorder(
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: SizedBox(
+                                                        width:
+                                                            _screenWidth * 0.25,
+                                                        child: RaisedButton(
+                                                          onPressed: () {
+                                                            // AddOrder(productId, context, widget.planModel.montoAnual, widget.planModel.planid);
+                                                            Navigator.of(
+                                                                    context,
+                                                                    rootNavigator:
+                                                                        true)
+                                                                .pop();
+                                                          },
+                                                          shape: RoundedRectangleBorder(
                                                               borderRadius:
                                                                   BorderRadius
                                                                       .circular(
                                                                           5)),
-                                                      color: Color(0xFF57419D),
-                                                      padding:
-                                                          EdgeInsets.all(10.0),
-                                                      child: Column(
-                                                        children: [
-                                                          Text("Cancelar",
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                      'Product Sans',
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize:
-                                                                      16.0)),
-                                                        ],
+                                                          color:
+                                                              Color(0xFF57419D),
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  10.0),
+                                                          child: Column(
+                                                            children: [
+                                                              Text("Cancelar",
+                                                                  style: TextStyle(
+                                                                      fontFamily:
+                                                                          'Product Sans',
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          16.0)),
+                                                            ],
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
+                                                  ],
                                                 ),
                                               ],
-                                            ),
-                                          ],
-                                        )),
-                                  ]))), context: context);
+                                            )),
+                                      ]))),
+                                  context: context);
                             } else {
                               showDialog(
-                                  builder: (context) => new ChoosePetAlertDialog(
-                                    message:
-                                        "Por favor seleccione un método de pago.",
-                                  ), context: context);
+                                  builder: (context) =>
+                                      new ChoosePetAlertDialog(
+                                        message:
+                                            "Por favor seleccione un método de pago.",
+                                      ),
+                                  context: context);
                             }
 
                             // AddOrder(productId, context, widget.planModel.montoAnual, widget.planModel.planid);
@@ -569,7 +582,8 @@ class _PaymentPageState extends State<PaymentPage> {
         "Authorization": "$_prk"
       };
 
-      Response res = await http.post(Uri.parse(url), headers: headers, body: json);
+      Response res =
+          await http.post(Uri.parse(url), headers: headers, body: json);
       int statusCode = res.statusCode;
       var nuevo = await jsonDecode(res.body);
       //
@@ -612,8 +626,7 @@ class _PaymentPageState extends State<PaymentPage> {
             MaterialPageRoute(
                 builder: (context) => StoreHome(
                       petModel: widget.petModel,
-                  defaultChoiceIndex: widget
-                      .defaultChoiceIndex,
+                      defaultChoiceIndex: widget.defaultChoiceIndex,
                     )),
           );
         }
@@ -625,8 +638,7 @@ class _PaymentPageState extends State<PaymentPage> {
             MaterialPageRoute(
                 builder: (context) => StoreHome(
                       petModel: widget.petModel,
-                  defaultChoiceIndex: widget
-                      .defaultChoiceIndex,
+                      defaultChoiceIndex: widget.defaultChoiceIndex,
                     )),
           );
         }
@@ -639,8 +651,7 @@ class _PaymentPageState extends State<PaymentPage> {
             MaterialPageRoute(
                 builder: (context) => StoreHome(
                       petModel: widget.petModel,
-                  defaultChoiceIndex: widget
-                      .defaultChoiceIndex,
+                      defaultChoiceIndex: widget.defaultChoiceIndex,
                     )),
           );
         }
@@ -650,10 +661,9 @@ class _PaymentPageState extends State<PaymentPage> {
             context,
             MaterialPageRoute(
                 builder: (context) => StoreHome(
-                  petModel: widget.petModel,
-                  defaultChoiceIndex: widget
-                      .defaultChoiceIndex,
-                )),
+                      petModel: widget.petModel,
+                      defaultChoiceIndex: widget.defaultChoiceIndex,
+                    )),
           );
         }
 
@@ -666,8 +676,7 @@ class _PaymentPageState extends State<PaymentPage> {
             MaterialPageRoute(
                 builder: (context) => StoreHome(
                       petModel: widget.petModel,
-                  defaultChoiceIndex: widget
-                      .defaultChoiceIndex,
+                      defaultChoiceIndex: widget.defaultChoiceIndex,
                     )),
           );
           addVideoToOrders();
@@ -1634,7 +1643,7 @@ class _PaymentPageState extends State<PaymentPage> {
     Navigator.of(context, rootNavigator: true).pop();
     OrderMessage(context, outcomeMsg);
     var databaseReference =
-    FirebaseFirestore.instance.collection('Ordenes').doc(productId);
+        FirebaseFirestore.instance.collection('Ordenes').doc(productId);
     final id = shortid.generate();
     databaseReference
         .collection('Items')
@@ -1702,7 +1711,7 @@ class _PaymentPageState extends State<PaymentPage> {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => StoreHome()),
-          (Route<dynamic> route) => false,
+      (Route<dynamic> route) => false,
     );
     sendEmail(
         PetshopApp.sharedPreferences.getString(PetshopApp.userEmail),
@@ -1778,7 +1787,11 @@ class _PaymentPageState extends State<PaymentPage> {
           ErrorMessage(context, 'Debe completar los datos de su registro');
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => UsuarioInfo(petModel: widget.petModel, defaultChoiceIndex: widget.defaultChoiceIndex,)),
+            MaterialPageRoute(
+                builder: (context) => UsuarioInfo(
+                      petModel: widget.petModel,
+                      defaultChoiceIndex: widget.defaultChoiceIndex,
+                    )),
           );
         }
       });
@@ -1839,8 +1852,8 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   sendEmail(_email, nombreCompleto, orderId, aliadoAvatar) async {
-    await http.get(
-        Uri.parse('https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=$_email&username=$nombreCompleto&orderId=$orderId&logoAliado=$aliadoAvatar'));
+    await http.get(Uri.parse(
+        'https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=$_email&username=$nombreCompleto&orderId=$orderId&logoAliado=$aliadoAvatar'));
     print('$_email $nombreCompleto $orderId $aliadoAvatar');
   }
 

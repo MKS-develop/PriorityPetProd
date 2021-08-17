@@ -4,8 +4,10 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
+import 'package:native_pdf_view/native_pdf_view.dart';
 import 'package:pet_shop/Authentication/resetpassword.dart';
 import 'package:pet_shop/DialogBox/choosepetDialog.dart';
+import 'package:pet_shop/Store/pdf.dart';
 import 'package:pet_shop/Store/storehome.dart';
 import 'package:pet_shop/Widgets/customTextField.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,7 +23,6 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:http/http.dart' as http;
 
 class AutenticacionPage extends StatefulWidget {
-
   @override
   _AutenticacionPageState createState() => _AutenticacionPageState();
 }
@@ -44,6 +45,8 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
   bool _value = false;
   bool bienvenida;
   String errorMessage;
+  static final int _initialPage = 2;
+  int _actualPageNumber = _initialPage, _allPagesCount = 0;
 
   String _paises;
   var referidos = [];
@@ -72,6 +75,7 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     double _screenWidth = MediaQuery.of(context).size.width,
         _screenHeight = MediaQuery.of(context).size.height;
@@ -82,6 +86,8 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -518,11 +524,17 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
                                         color: Color(0xFF57419D),
                                         splashColor: Color(0xFF57419D),
                                         onPressed: () {
-                                          showDialog(
-                                              builder: (context) => new ChoosePetAlertDialog(
-                                                message:
-                                                    "Se reserva el derecho de editar, actualizar, modificar, suspender, eliminar o finalizar los servicios ofrecidos por la Aplicación, incluyendo todo o parte de su contenido, sin necesidad de previo aviso, así como de modificar la forma o tipo de acceso a esta.",
-                                              ), context: context);
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => MyApp()),
+                                          );
+
+                                          // showDialog(
+                                          //     builder: (context) => new ChoosePetAlertDialog(
+                                          //       message:
+                                          //           "Se reserva el derecho de editar, actualizar, modificar, suspender, eliminar o finalizar los servicios ofrecidos por la Aplicación, incluyendo todo o parte de su contenido, sin necesidad de previo aviso, así como de modificar la forma o tipo de acceso a esta.",
+                                          //     ), context: context);
                                         },
                                       ),
                                     ),
@@ -602,20 +614,25 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
                       ),
 
                 registro == true
-                    ? Container(
-                        width: _screenWidth * 0.84,
-                        child: RaisedButton(
-                          onPressed: _value ? () => uploadAndSaveImage() : null,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          color: Color(0xFF57419D),
-                          padding: EdgeInsets.all(15.0),
-                          child: Text("Regístrate",
-                              style: TextStyle(
-                                  fontFamily: 'Product Sans',
-                                  color: Colors.white,
-                                  fontSize: 20.0)),
-                        ))
+                    ? Column(
+                        children: [
+                          Container(
+                              width: _screenWidth * 0.84,
+                              child: RaisedButton(
+                                onPressed:
+                                    _value ? () => uploadAndSaveImage() : null,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                color: Color(0xFF57419D),
+                                padding: EdgeInsets.all(15.0),
+                                child: Text("Regístrate",
+                                    style: TextStyle(
+                                        fontFamily: 'Product Sans',
+                                        color: Colors.white,
+                                        fontSize: 20.0)),
+                              )),
+                        ],
+                      )
                     : Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
@@ -1178,7 +1195,8 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
   }
 
   sendEmail(_email, nombreCompleto) async {
-    await http.get(Uri.parse('https://us-central1-priority-pet.cloudfunctions.net/sendWelcomeEmailDuenos?dest=$_email&username=$nombreCompleto'));
+    await http.get(Uri.parse(
+        'https://us-central1-priority-pet.cloudfunctions.net/sendWelcomeEmailDuenos?dest=$_email&username=$nombreCompleto'));
   }
 
   void loginUser() async {
@@ -1294,10 +1312,10 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
           PetshopApp.codigoTexto, dataSnapshot.data()[PetshopApp.codigoTexto]);
       PetshopApp.sharedPreferences.setString(PetshopApp.tipoDocumento,
           dataSnapshot.data()[PetshopApp.tipoDocumento]);
-      PetshopApp.sharedPreferences.setString(PetshopApp.geoAddress,
-          dataSnapshot.data()[PetshopApp.geoAddress]);
-      PetshopApp.sharedPreferences.setString(PetshopApp.geolocation,
-          dataSnapshot.data()[PetshopApp.geolocation]);
+      PetshopApp.sharedPreferences.setString(
+          PetshopApp.geoAddress, dataSnapshot.data()[PetshopApp.geoAddress]);
+      PetshopApp.sharedPreferences.setString(
+          PetshopApp.geolocation, dataSnapshot.data()[PetshopApp.geolocation]);
 
       PetshopApp.sharedPreferences.setString(PetshopApp.userTelefono,
           dataSnapshot.data()[PetshopApp.userTelefono]);

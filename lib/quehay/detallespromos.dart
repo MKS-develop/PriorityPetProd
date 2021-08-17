@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'package:pet_shop/Authentication/map.dart';
 import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/DialogBox/choosepetDialog.dart';
 import 'package:pet_shop/Models/alidados.dart';
+import 'package:pet_shop/Models/location.dart';
 import 'package:pet_shop/Store/storehome.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -20,11 +22,13 @@ class DetallesPromo extends StatefulWidget {
   final PromotionModel promotionModel;
   final AliadoModel aliadoModel;
   final int defaultChoiceIndex;
+  final LocationModel locationModel;
   DetallesPromo(
       {this.petModel,
       this.promotionModel,
       this.aliadoModel,
-      this.defaultChoiceIndex});
+      this.defaultChoiceIndex, this.locationModel
+      });
 
   @override
   _DetallesPromoState createState() => _DetallesPromoState();
@@ -38,6 +42,8 @@ class _DetallesPromoState extends State<DetallesPromo> {
   bool _isSelected;
   List<String> _choices;
   int _defaultChoiceIndex;
+  double rating = 0;
+  GeoPoint userLatLong;
 
   String productId = DateTime.now().millisecondsSinceEpoch.toString();
   @override
@@ -49,6 +55,18 @@ class _DetallesPromoState extends State<DetallesPromo> {
     changeAli(widget.aliadoModel);
     _isSelected = false;
     _defaultChoiceIndex = 0;
+    getLatLong();
+  }
+
+  getLatLong() {
+    DocumentReference documentReference = FirebaseFirestore.instance
+        .collection("Dueños")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
+    documentReference.get().then((dataSnapshot) {
+      setState(() {
+        userLatLong = (dataSnapshot.data()["location"]);
+      });
+    });
   }
 
   ScrollController controller = ScrollController();
@@ -60,9 +78,11 @@ class _DetallesPromoState extends State<DetallesPromo> {
   Widget build(BuildContext context) {
     double _screenWidth = MediaQuery.of(context).size.width,
         _screenHeight = MediaQuery.of(context).size.height;
+    if (widget.aliadoModel.totalRatings != null) {
+      rating =
+          widget.aliadoModel.totalRatings / widget.aliadoModel.countRatings;
+    }
 
-    double rating =
-        widget.aliadoModel.totalRatings / widget.aliadoModel.countRatings;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -77,6 +97,8 @@ class _DetallesPromoState extends State<DetallesPromo> {
           height: MediaQuery.of(context).size.height,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -127,7 +149,7 @@ class _DetallesPromoState extends State<DetallesPromo> {
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.59,
-                      height: 100.0,
+                      height: 110.0,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -138,28 +160,59 @@ class _DetallesPromoState extends State<DetallesPromo> {
                                   color: Color(0xFF57419D),
                                   fontWeight: FontWeight.bold),
                               textAlign: TextAlign.left),
-                          Text(widget.aliadoModel.direccion,
-                              style: TextStyle(
-                                fontSize: 13,
-                              ),
-                              textAlign: TextAlign.left),
+                          widget.locationModel.mapAddress != null ?
+                          Text(widget.locationModel.mapAddress,
+                            style: TextStyle(
+                              fontSize: 13,
+                            ),
+                          ):
+
+                          Text(widget.locationModel.direccionLocalidad,
+                            style: TextStyle(
+                              fontSize: 13,
+                            ),
+                          ),
                           SizedBox(
                             height: 10,
                           ),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                  rating.toString() != 'NaN'
-                                      ? rating.toStringAsPrecision(2)
-                                      : '0',
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.orange),
-                                  textAlign: TextAlign.left),
-                              Icon(
-                                Icons.star,
-                                color: Colors.orange,
-                              )
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      rating.toString() != 'NaN'
+                                          ? rating.toStringAsPrecision(2)
+                                          : '0',
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.orange),
+                                      textAlign: TextAlign.left),
+                                  Icon(
+                                    Icons.star,
+                                    color: Colors.orange,
+                                  )
+                                ],
+                              ),
+                              widget.locationModel.location != null ?
+                              Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: GestureDetector(
+                                  onTap: () {
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => MapHome(petModel: widget.petModel, defaultChoiceIndex:
+                                      widget.defaultChoiceIndex, locationModel: widget.locationModel, aliadoModel: widget.aliadoModel, userLatLong: userLatLong)),
+                                    );
+                                  },
+                                  child: Image.asset(
+                                    'diseñador/drawable/Grupo197.png',
+                                    fit: BoxFit.contain,
+                                    height: 33,
+                                  ),
+                                ),
+                              ): Container(),
                             ],
                           ),
                         ],
@@ -253,7 +306,8 @@ class _DetallesPromoState extends State<DetallesPromo> {
                             Text(
                                 (widget.promotionModel.precio).toString() !=
                                         'null'
-                                    ? (widget.promotionModel.precio).toStringAsFixed(2)
+                                    ? (widget.promotionModel.precio)
+                                        .toStringAsFixed(2)
                                     : '0',
                                 style: TextStyle(
                                     fontSize: 20,
@@ -279,19 +333,24 @@ class _DetallesPromoState extends State<DetallesPromo> {
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 ContratoPromos(
-                                                  petModel: model,
-                                                  promotionModel: pro,
-                                                  aliadoModel: ali,
-                                                  defaultChoiceIndex: widget
-                                                      .defaultChoiceIndex,
+                                                  petModel: widget.petModel,
+                                                  promotionModel:
+                                                      widget.promotionModel,
+                                                  aliadoModel:
+                                                      widget.aliadoModel,
+                                                  defaultChoiceIndex:
+                                                      widget.defaultChoiceIndex,
+                                                  locationModel: widget.locationModel,
                                                 )),
                                       );
                                     } else {
                                       showDialog(
-                                          builder: (context) => new ChoosePetAlertDialog(
-                                            message:
-                                                "Esto es una campaña sólo informativa, sin costo alguno.",
-                                          ), context: context);
+                                          builder: (context) =>
+                                              new ChoosePetAlertDialog(
+                                                message:
+                                                    "Esto es una campaña sólo informativa, sin costo alguno.",
+                                              ),
+                                          context: context);
                                     }
                                   },
                                   shape: RoundedRectangleBorder(

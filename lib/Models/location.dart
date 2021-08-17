@@ -10,6 +10,8 @@ class LocationModel{
   String ciudad;
   List<dynamic> telefonos;
   Timestamp createdOn;
+  GeoPoint location;
+  String mapAddress;
 
   LocationModel({
     this.aliadoId,
@@ -20,7 +22,9 @@ class LocationModel{
     this.direccionDetallada,
     this.ciudad,
     this.telefonos,
-    this.createdOn
+    this.createdOn,
+    this.location,
+    this.mapAddress,
   });
 
   LocationModel.fromJson(Map<String, dynamic> json){
@@ -33,6 +37,8 @@ class LocationModel{
     ciudad = json['ciudad'];
     telefonos = json['telefonos'];
     createdOn = json['createdOn'];
+    location = json['location'];
+    mapAddress = json['mapAddress'];
   }
 
   Map<String, dynamic> toJson(){
@@ -46,6 +52,8 @@ class LocationModel{
     data['ciudad'] = this.ciudad;
     data['telefonos'] = this.telefonos;
     data['createdOn'] = this.createdOn;
+    data['location'] = this.location;
+    data['mapAddress'] = this.mapAddress;
 
     return data;
   }

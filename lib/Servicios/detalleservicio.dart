@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:pet_shop/Authentication/map.dart';
 import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/DialogBox/choosepetDialog.dart';
 import 'package:pet_shop/Models/Servicio.dart';
@@ -26,13 +27,14 @@ class DetallesServicio extends StatefulWidget {
   final LocationModel locationModel;
   final ServicioModel servicioModel;
   final int defaultChoiceIndex;
+  final GeoPoint userLatLong;
   DetallesServicio(
       {this.petModel,
       this.serviceModel,
       this.aliadoModel,
       this.locationModel,
       this.servicioModel,
-      this.defaultChoiceIndex});
+      this.defaultChoiceIndex, this.userLatLong});
 
   @override
   _DetallesServicioState createState() => _DetallesServicioState();
@@ -42,6 +44,7 @@ class _DetallesServicioState extends State<DetallesServicio> {
   ServiceModel service;
   AliadoModel ali;
   LocationModel location;
+  double rating = 0;
 
   PetModel model;
   DateTime selectedDate = DateTime.now();
@@ -66,9 +69,12 @@ class _DetallesServicioState extends State<DetallesServicio> {
   Widget build(BuildContext context) {
     double _screenWidth = MediaQuery.of(context).size.width,
         _screenHeight = MediaQuery.of(context).size.height;
+if(widget.aliadoModel.totalRatings !=null){
+  rating =
+      widget.aliadoModel.totalRatings / widget.aliadoModel.countRatings;
+}
 
-    double rating =
-        widget.aliadoModel.totalRatings / widget.aliadoModel.countRatings;
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -83,7 +89,11 @@ class _DetallesServicioState extends State<DetallesServicio> {
           height: MediaQuery.of(context).size.height,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3),
+                  BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+
               fit: BoxFit.cover,
             ),
           ),
@@ -133,7 +143,7 @@ class _DetallesServicioState extends State<DetallesServicio> {
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.60,
-                      height: 100.0,
+                      height: 110.0,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -144,6 +154,14 @@ class _DetallesServicioState extends State<DetallesServicio> {
                                   color: Color(0xFF57419D),
                                   fontWeight: FontWeight.bold),
                               textAlign: TextAlign.left),
+
+                          widget.locationModel.mapAddress != null ?
+                          Text(widget.locationModel.mapAddress,
+                              style: TextStyle(
+                                fontSize: 13,
+                              ),
+                              textAlign: TextAlign.left):
+
                           Text(widget.locationModel.direccionLocalidad,
                               style: TextStyle(
                                 fontSize: 13,
@@ -153,20 +171,45 @@ class _DetallesServicioState extends State<DetallesServicio> {
                             height: 10,
                           ),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                  rating.toString() != 'NaN'
-                                      ? rating.toStringAsPrecision(2)
-                                      : '0',
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.orange),
-                                  textAlign: TextAlign.left),
-                              Icon(
-                                Icons.star,
-                                color: Colors.orange,
-                              )
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      rating.toString() != 'NaN'
+                                          ? rating.toStringAsPrecision(1)
+                                          : '0',
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.orange),
+                                      textAlign: TextAlign.left),
+                                  Icon(
+                                    Icons.star,
+                                    color: Colors.orange,
+                                  ),
+                                ],
+                              ),
+                              widget.locationModel.location != null ?
+                              Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: GestureDetector(
+                                  onTap: () {
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => MapHome(petModel: widget.petModel, defaultChoiceIndex:
+                                      widget.defaultChoiceIndex, locationModel: widget.locationModel, aliadoModel: widget.aliadoModel, userLatLong: widget.userLatLong)),
+                                    );
+                                  },
+                                  child: Image.asset(
+                                    'diseñador/drawable/Grupo197.png',
+                                    fit: BoxFit.contain,
+                                    height: 33,
+                                  ),
+                                ),
+                              ): Container(),
                             ],
+
                           ),
                         ],
                       ),

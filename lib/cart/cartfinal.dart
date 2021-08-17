@@ -11,8 +11,10 @@ import 'package:pet_shop/Models/item.dart';
 import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_shop/Payment/payment.dart';
+import 'package:pet_shop/Productos/productoshome.dart';
 import 'package:pet_shop/Store/storehome.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
+import 'package:pet_shop/Widgets/ktitle.dart';
 import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import 'package:http/http.dart' as http;
@@ -238,7 +240,8 @@ class _CartFinalState extends State<CartFinal> {
                                       height: 70.0,
                                       child: Image.network(
                                         product.urlImagen,
-                                        errorBuilder: (context, object, stacktrace) {
+                                        errorBuilder:
+                                            (context, object, stacktrace) {
                                           return Container();
                                         },
                                       )),
@@ -398,6 +401,8 @@ class _CartFinalState extends State<CartFinal> {
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -917,63 +922,100 @@ class _CartFinalState extends State<CartFinal> {
                                     ],
                                   ),
                                 ),
-                                PetshopApp.pasarelaDisponible()
-                                    ? Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: SizedBox(
-                                          width: double.infinity,
-                                          child: RaisedButton(
-                                            onPressed: () {
-                                              // AddOrder(context, cart);
-                                              getAliadoSnapshots(cart.aliadoId);
-                                              int totalPrice = (cart.sumaTotal -
-                                                      totalPet +
-                                                      delivery)
-                                                  .toInt();
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        PaymentPage(
-                                                          aliadoModel: _aliadoActual,
-                                                          petModel:
-                                                              widget.petModel,
-                                                          cartModel: cart,
-                                                          tituloCategoria:
-                                                          'Producto',
-                                                          totalPrice:
-                                                              totalPrice,
-                                                          delivery: delivery,
-                                                          value2: _value2,
-                                                          value: _value,
-                                                          onSuccess: (pagoId, estadoPago, montoAprobado) {
-                                                            _respuestaPago(
-                                                              pagoId, 
-                                                              estadoPago, 
-                                                              montoAprobado, 
-                                                              cart, 
-                                                              totalPrice,
-                                                              delivery,
-                                                              _value,
-                                                              _value2);
-                                                          },
-                                                        )),
-                                              );
-                                            },
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5)),
-                                            color: Color(0xFFEB9448),
-                                            padding: EdgeInsets.all(10.0),
-                                            child: Text("Pagar",
-                                                style: TextStyle(
-                                                    fontFamily: 'Product Sans',
-                                                    color: Colors.white,
-                                                    fontSize: 18.0)),
-                                          ),
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: SizedBox(
+                                        width: _screenWidth*0.5,
+                                        child: RaisedButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => ProductosHome(
+                                                    petModel: widget.petModel,
+                                                    defaultChoiceIndex: widget.defaultChoiceIndex,
+                                                  )),
+                                            );
+
+
+                                          },
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(5)),
+                                          color: secondaryColor,
+                                          padding: EdgeInsets.all(10.0),
+                                          child: Text("Agregar otro producto",
+                                              style: TextStyle(
+                                                  fontFamily: 'Product Sans',
+                                                  color: Colors.white,
+                                                  fontSize: 16.0)),
                                         ),
-                                      )
-                                    : Container(),
+                                      ),
+                                    ),
+                                    PetshopApp.pasarelaDisponible()
+                                        ? Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: SizedBox(
+                                              width: _screenWidth*0.32,
+                                              child: RaisedButton(
+                                                onPressed: () {
+                                                  // AddOrder(context, cart);
+                                                  getAliadoSnapshots(cart.aliadoId);
+                                                  int totalPrice = (cart.sumaTotal -
+                                                          totalPet +
+                                                          delivery)
+                                                      .toInt();
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            PaymentPage(
+                                                              aliadoModel:
+                                                                  _aliadoActual,
+                                                              petModel:
+                                                                  widget.petModel,
+                                                              cartModel: cart,
+                                                              tituloCategoria:
+                                                                  'Producto',
+                                                              totalPrice:
+                                                                  totalPrice,
+                                                              delivery: delivery,
+                                                              value2: _value2,
+                                                              value: _value,
+                                                              onSuccess: (pagoId,
+                                                                  estadoPago,
+                                                                  montoAprobado) {
+                                                                _respuestaPago(
+                                                                    pagoId,
+                                                                    estadoPago,
+                                                                    montoAprobado,
+                                                                    cart,
+                                                                    totalPrice,
+                                                                    delivery,
+                                                                    _value,
+                                                                    _value2);
+                                                              },
+                                                            )),
+                                                  );
+                                                },
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(5)),
+                                                color: primaryColor,
+                                                padding: EdgeInsets.all(10.0),
+                                                child: Text("Pagar",
+                                                    style: TextStyle(
+                                                        fontFamily: 'Product Sans',
+                                                        color: Colors.white,
+                                                        fontSize: 18.0)),
+                                              ),
+                                            ),
+                                          )
+                                        : Container(),
+                                  ],
+                                ),
                               ],
                             );
                           });
@@ -995,23 +1037,21 @@ class _CartFinalState extends State<CartFinal> {
   // }
 
   Future<void> _respuestaPago(
-    String pagoId, 
-    String estadoPago, 
-    int montoAprobado, 
-    CartModel cart,
-    int totalPrice,
-    int localDelivery,
-    bool value,
-    bool value2
-  ) async{
+      String pagoId,
+      String estadoPago,
+      int montoAprobado,
+      CartModel cart,
+      int totalPrice,
+      int localDelivery,
+      bool value,
+      bool value2) async {
     int petPoints = 0;
 
     String estadoOrden;
-    if(estadoPago == PagoEnum.pagoAprobado) {
+    if (estadoPago == PagoEnum.pagoAprobado) {
       estadoOrden = OrdenEnum.aprobada;
       petPoints = totalPrice;
-    }
-    else {
+    } else {
       estadoOrden = OrdenEnum.pendiente;
     }
 
@@ -1076,8 +1116,7 @@ class _CartFinalState extends State<CartFinal> {
       MaterialPageRoute(
           builder: (context) => StoreHome(
                 petModel: widget.petModel,
-            defaultChoiceIndex: widget
-                .defaultChoiceIndex,
+                defaultChoiceIndex: widget.defaultChoiceIndex,
               )),
     );
   }

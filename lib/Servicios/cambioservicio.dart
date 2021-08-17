@@ -247,7 +247,7 @@ class _CambioServicioState extends State<CambioServicio> {
                                                         'NaN'
                                                     ? (ali.totalRatings /
                                                             ali.countRatings)
-                                                        .toString()
+                                                        .toStringAsFixed(2)
                                                     : '0',
                                                 style: TextStyle(
                                                     fontSize: 20,

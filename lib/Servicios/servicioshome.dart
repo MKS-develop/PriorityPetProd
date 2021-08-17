@@ -8,10 +8,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
+import 'package:pet_shop/Widgets/ktitle.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import '../Widgets/myDrawer.dart';
 import 'detalleservicio.dart';
-
+import 'dart:math' show cos, sqrt, asin;
 double width;
 
 class ServiciosHome extends StatefulWidget {
@@ -32,6 +33,7 @@ class _ServiciosHomeState extends State<ServiciosHome> {
   List _resultsList = [];
   static List<ServiceModel> finalServicesList = [];
   Future resultsLoaded;
+  GeoPoint userLatLong;
 
   @override
   void initState() {
@@ -41,6 +43,18 @@ class _ServiciosHomeState extends State<ServiciosHome> {
     _allResults = [];
     finalServicesList = [];
     changePet(widget.petModel);
+    getLatLong();
+  }
+
+  getLatLong() {
+    DocumentReference documentReference = FirebaseFirestore.instance
+        .collection("Dueños")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
+    documentReference.get().then((dataSnapshot) {
+      setState(() {
+        userLatLong = (dataSnapshot.data()["location"]);
+      });
+    });
   }
 
   @override
@@ -142,6 +156,8 @@ class _ServiciosHomeState extends State<ServiciosHome> {
       height: MediaQuery.of(context).size.height,
       decoration: new BoxDecoration(
         image: new DecorationImage(
+          colorFilter: new ColorFilter.mode(
+              Colors.white.withOpacity(0.3), BlendMode.dstATop),
           image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
           fit: BoxFit.cover,
         ),
@@ -597,6 +613,9 @@ class _ServiciosHomeState extends State<ServiciosHome> {
   }
 
   Widget sourceInfo2(ServiceModel servicio, BuildContext context) {
+    double totalD = 0;
+    double rating = 0;
+
     return InkWell(
       child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
@@ -614,9 +633,9 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                 itemCount: 1,
                 shrinkWrap: true,
                 itemBuilder: (
-                  context,
-                  index,
-                ) {
+                    context,
+                    index,
+                    ) {
                   LocationModel location = LocationModel.fromJson(
                       dataSnapshot.data.docs[index].data());
                   return StreamBuilder<QuerySnapshot>(
@@ -635,11 +654,33 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                             itemCount: 1,
                             shrinkWrap: true,
                             itemBuilder: (
-                              context,
-                              index,
-                            ) {
+                                context,
+                                index,
+                                ) {
                               AliadoModel aliado = AliadoModel.fromJson(
                                   dataSnapshot.data.docs[index].data());
+                              if (location.location != null) {
+                                var p = 0.017453292519943295;
+                                var c = cos;
+                                var a = 0.5 -
+                                    c((location.location.latitude != null
+                                        ? location.location.latitude
+                                        : 0 - userLatLong.latitude) *
+                                        p) /
+                                        2 +
+                                    c(userLatLong.latitude * p) *
+                                        c(location.location.latitude * p) *
+                                        (1 -
+                                            c((location.location.longitude -
+                                                userLatLong.longitude) *
+                                                p)) /
+                                        2;
+                                totalD = 12742 * asin(sqrt(a));
+                              }
+                              if (aliado.totalRatings != null) {
+                                rating =
+                                    aliado.totalRatings / aliado.countRatings;
+                              }
                               return GestureDetector(
                                 onTap: () {
                                   Navigator.push(
@@ -649,16 +690,20 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                                             petModel: model,
                                             serviceModel: servicio,
                                             aliadoModel: aliado,
-                                            locationModel: location)),
+                                            defaultChoiceIndex:
+                                            widget.defaultChoiceIndex,
+                                            locationModel: location,
+                                            userLatLong: userLatLong)),
                                   );
                                 },
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding:
+                                  const EdgeInsets.fromLTRB(2, 8, 2, 8),
                                   child: SizedBox(
                                     width: MediaQuery.of(context).size.width,
                                     child: Row(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Container(
                                           height: 70,
@@ -677,7 +722,8 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                                           child: Image.network(
                                             aliado.avatar,
                                             fit: BoxFit.cover,
-                                            errorBuilder: (context, object, stacktrace) {
+                                            errorBuilder:
+                                                (context, object, stacktrace) {
                                               return Container();
                                             },
                                           ),
@@ -687,62 +733,66 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                                         ),
                                         Container(
                                           width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.62,
-                                          height: 70,
+                                              .size
+                                              .width *
+                                              0.5,
+                                          height: 73,
                                           child: Column(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                             children: [
                                               Column(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.start,
+                                                MainAxisAlignment.start,
                                                 children: [
                                                   Text(aliado.nombreComercial,
                                                       style: TextStyle(
-                                                          fontSize: 15,
+                                                          fontSize: 17,
                                                           color:
-                                                              Color(0xFF57419D),
+                                                          Color(0xFF57419D),
                                                           fontWeight:
-                                                              FontWeight.bold),
+                                                          FontWeight.bold),
                                                       textAlign:
-                                                          TextAlign.left),
-                                                  Text(
-                                                      location
-                                                          .direccionLocalidad,
+                                                      TextAlign.left),
+                                                  location.mapAddress != null
+                                                      ? Text(
+                                                      location.mapAddress,
+                                                      maxLines: 2,
                                                       style: TextStyle(
                                                         fontSize: 13,
                                                       ),
                                                       textAlign:
-                                                          TextAlign.left),
+                                                      TextAlign.left)
+                                                      : Text(
+                                                      location.mapAddress !=
+                                                          null
+                                                          ? location
+                                                          .mapAddress
+                                                          : location
+                                                          .direccionLocalidad,
+                                                      maxLines: 2,
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                      ),
+                                                      textAlign:
+                                                      TextAlign.left),
                                                 ],
                                               ),
                                               Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.end,
+                                                MainAxisAlignment.end,
                                                 children: [
                                                   Text(
-                                                      (aliado.totalRatings /
-                                                                      aliado
-                                                                          .countRatings)
-                                                                  .toString() !=
-                                                              'NaN'
-                                                          ? (aliado.totalRatings /
-                                                                  aliado
-                                                                      .countRatings)
-                                                              .toStringAsPrecision(
-                                                                  2)
+                                                      rating.toString() != 'NaN'
+                                                          ? rating.toStringAsPrecision(1)
                                                           : '0',
                                                       style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Colors.orange),
-                                                      textAlign:
-                                                          TextAlign.left),
+                                                          fontSize: 16, color: Colors.orange),
+                                                      textAlign: TextAlign.left),
                                                   SizedBox(
                                                     width: 8,
                                                   ),
@@ -756,6 +806,35 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                                             ],
                                           ),
                                         ),
+                                        totalD != 0
+                                            ? SizedBox(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                height: 9,
+                                              ),
+                                              Icon(
+                                                Icons.location_on_rounded,
+                                                color: secondaryColor,
+                                              ),
+                                              SizedBox(
+                                                height: 3,
+                                              ),
+                                              Text(
+                                                  totalD < 500
+                                                      ? '${totalD.toStringAsFixed(1)} Km'
+                                                      : '+500 Km',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                  ),
+                                                  textAlign:
+                                                  TextAlign.center),
+                                            ],
+                                          ),
+                                        )
+                                            : Container(),
                                       ],
                                     ),
                                   ),

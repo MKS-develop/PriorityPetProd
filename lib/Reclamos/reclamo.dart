@@ -68,6 +68,8 @@ class _ReclamoPageState extends State<ReclamoPage> {
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -229,12 +231,15 @@ class _ReclamoPageState extends State<ReclamoPage> {
         .delete()
         .then((value) {
       Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ReclamosPage(
-                    petModel: widget.petModel,
-                    defaultChoiceIndex: widget.defaultChoiceIndex,),
-          ),  (route) => false,);
+        context,
+        MaterialPageRoute(
+          builder: (context) => ReclamosPage(
+            petModel: widget.petModel,
+            defaultChoiceIndex: widget.defaultChoiceIndex,
+          ),
+        ),
+        (route) => false,
+      );
     });
   }
 }

@@ -70,6 +70,8 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
           height: MediaQuery.of(context).size.height,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -359,18 +361,20 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
                                                                         .planModel
                                                                         .montoMensual
                                                                         .toInt();
-                                                                    _tituloCategoriaOrden = 'Plan Mensual';
+                                                                    _tituloCategoriaOrden =
+                                                                        'Plan Mensual';
                                                                     Navigator
                                                                         .push(
                                                                       context,
                                                                       MaterialPageRoute(
-                                                                          builder: (context) => PaymentPage(
-                                                                              petModel: model,
-                                                                              planModel: plan,
-                                                                              tituloCategoria: _tituloCategoriaOrden,
-                                                                              totalPrice: _totalPrice,
-                                                                              defaultChoiceIndex: widget.defaultChoiceIndex,
-                                                                              onSuccess: _respuestaPago,
+                                                                          builder: (context) =>
+                                                                              PaymentPage(
+                                                                                petModel: model,
+                                                                                planModel: plan,
+                                                                                tituloCategoria: _tituloCategoriaOrden,
+                                                                                totalPrice: _totalPrice,
+                                                                                defaultChoiceIndex: widget.defaultChoiceIndex,
+                                                                                onSuccess: _respuestaPago,
                                                                               )),
                                                                     );
                                                                   },
@@ -434,7 +438,8 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
                                                                         .planModel
                                                                         .montoAnual
                                                                         .toInt();
-                                                                    _tituloCategoriaOrden = 'Plan Anual';
+                                                                    _tituloCategoriaOrden =
+                                                                        'Plan Anual';
                                                                     Navigator
                                                                         .push(
                                                                       context,
@@ -488,7 +493,8 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
                                                         ),
                                                       ],
                                                     )),
-                                              ]))), context: context);
+                                              ]))),
+                                      context: context);
                                 },
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5)),
@@ -552,13 +558,12 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
     );
   }
 
-  Future<void> _respuestaPago(String pagoId, String estadoPago, dynamic montoAprobado) async {
-
+  Future<void> _respuestaPago(
+      String pagoId, String estadoPago, dynamic montoAprobado) async {
     String estadoOrden;
-    if(estadoPago == PagoEnum.pagoAprobado) {
+    if (estadoPago == PagoEnum.pagoAprobado) {
       estadoOrden = OrdenEnum.aprobada;
-    }
-    else {
+    } else {
       estadoOrden = OrdenEnum.pendiente;
     }
 

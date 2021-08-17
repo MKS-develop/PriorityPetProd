@@ -1,19 +1,23 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:pet_shop/Authentication/map.dart';
 import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/Models/Cart.dart';
 import 'package:pet_shop/Models/Product.dart';
 import 'package:pet_shop/Models/alidados.dart';
+import 'package:pet_shop/Models/location.dart';
 import 'package:pet_shop/Models/prod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
+import 'package:pet_shop/Widgets/ktitle.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import 'package:pet_shop/cart/cartfinal.dart';
 import '../Widgets/myDrawer.dart';
+import 'dart:math' show cos, sqrt, asin;
 
 int cantidad = 1;
 
@@ -26,6 +30,7 @@ class AlimentoDetalle extends StatefulWidget {
   final CartModel cartModel;
   final AliadoModel aliadoModel;
   final int defaultChoiceIndex;
+  final LocationModel locationModel;
 
   AlimentoDetalle(
       {this.petModel,
@@ -33,7 +38,8 @@ class AlimentoDetalle extends StatefulWidget {
       this.productoModel,
       this.cartModel,
       this.aliadoModel,
-      this.defaultChoiceIndex});
+      this.defaultChoiceIndex,
+      this.locationModel});
 
   @override
   _AlimentoDetalleState createState() => _AlimentoDetalleState();
@@ -56,10 +62,13 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
   String productId = DateTime.now().millisecondsSinceEpoch.toString();
   dynamic sumaTotal = 0;
   final db = FirebaseFirestore.instance;
+  GeoPoint userLatLong;
+  double totalD;
 
   @override
   void initState() {
     super.initState();
+    getLatLong();
     getFavorites();
     DocumentReference documentReference = db
         .collection('Dueños')
@@ -74,7 +83,16 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
       print('Suma Total: $sumaTotal');
     });
   }
-
+  getLatLong() {
+    DocumentReference documentReference = FirebaseFirestore.instance
+        .collection("Dueños")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
+    documentReference.get().then((dataSnapshot) {
+      setState(() {
+        userLatLong = (dataSnapshot.data()["location"]);
+      });
+    });
+  }
   getFavorites() {
     DocumentReference documentReference = FirebaseFirestore.instance
         .collection("Productos")
@@ -99,6 +117,31 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
   Widget build(BuildContext context) {
     double _screenWidth = MediaQuery.of(context).size.width,
         _screenHeight = MediaQuery.of(context).size.height;
+    if (widget.locationModel.location != null && userLatLong !=null) {
+      var p = 0.017453292519943295;
+      var c = cos;
+      var a = 0.5 -
+          c((widget.locationModel.location.latitude !=
+              null
+              ? widget.locationModel
+              .location.latitude
+              : 0 -
+              userLatLong
+                  .latitude) *
+              p) /
+              2 +
+          c(userLatLong.latitude * p) *
+              c(widget.locationModel.location.latitude *
+                  p) *
+              (1 -
+                  c((widget.locationModel.location
+                      .longitude -
+                      userLatLong
+                          .longitude) *
+                      p)) /
+              2;
+      totalD = 12742 * asin(sqrt(a));
+    }
 
     dynamic total = widget.productoModel.precio;
     total = total * cantidad;
@@ -118,6 +161,8 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -151,219 +196,256 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
                   ],
                 ),
                 Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: _screenWidth,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        height: 140.0,
+                        width: 140,
+                        child: Image.network(
+                          widget.productoModel.urlImagen,
+                          errorBuilder:
+                              (context, object, stacktrace) {
+                            return Container();
+                          },
+                        )),
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                  height: 140.0,
-                                  width: 140,
-                                  child: Image.network(
-                                    widget.productoModel.urlImagen,
-                                    errorBuilder: (context, object, stacktrace) {
-                                      return Container();
-                                    },
-                                  )),
-                              SizedBox(
-                                height: 8.0,
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            widget.productoModel.titulo,
+                            style: TextStyle(
+                              color: Color(0xFF57419D),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            '${widget.productoModel.pesoValor} ${widget.productoModel.pesoUnidad}',
+                            style: TextStyle(
+                              color: Color(0xFF57419D),
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.right,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            widget.productoModel.dirigido,
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            widget.aliadoModel.nombreComercial,
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Color(0xFF57419D),
+                                fontWeight: FontWeight.bold),
+                          ),
+                          widget.locationModel.mapAddress != null ?
+                          Text(widget.locationModel.mapAddress,
+                              style: TextStyle(
+                                fontSize: 13,
                               ),
+                              ):
+
+                          Text(widget.locationModel.direccionLocalidad,
+                              style: TextStyle(
+                                fontSize: 13,
+                              ),
+                              ),
+                          SizedBox(
+                            height: 9,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  SizedBox(
-                                    width: 53.0,
-                                    child: RaisedButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          cantidad--;
-                                          if (cantidad < 1) {
-                                            cantidad = 1;
-                                          }
-                                        });
-                                      },
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
-                                      color: Color(0xFFBBD7D6),
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Text("-",
-                                          style: TextStyle(
-                                              fontFamily: 'Product Sans',
-                                              color: Color(0xFF57419D),
-                                              fontSize: 18.0,
-                                              fontWeight: FontWeight.bold)),
-                                    ),
-                                  ),
+                                  widget.locationModel.location !=null && userLatLong != null ?
                                   Padding(
-                                    padding:
-                                        EdgeInsets.fromLTRB(15, 15, 15, 15),
-                                    child: Text(
-                                      cantidad.toString(),
-                                      style: TextStyle(
-                                        color: Color(0xFF57419D),
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => MapHome(petModel: widget.petModel, defaultChoiceIndex:
+                                          widget.defaultChoiceIndex, locationModel: widget.locationModel, aliadoModel: widget.aliadoModel, userLatLong: userLatLong)),
+                                        );
+                                      },
+                                      child: Image.asset(
+                                        'diseñador/drawable/Grupo197.png',
+                                        fit: BoxFit.contain,
+                                        height: 29,
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 53.0,
-                                    child: RaisedButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          cantidad++;
-                                        });
-                                      },
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
-                                      color: Color(0xFFBBD7D6),
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Text("+",
-                                          style: TextStyle(
-                                              fontFamily: 'Product Sans',
-                                              color: Color(0xFF57419D),
-                                              fontSize: 18.0,
-                                              fontWeight: FontWeight.bold)),
-                                    ),
-                                  ),
+                                  ): Container(),
+                                  totalD!= null ?
+                                  Text(
+                                      totalD <
+                                          500
+                                          ? '${totalD.toStringAsFixed(1)} Km'
+                                          : '+500 Km',
+                                      style:
+                                      TextStyle(
+                                        fontSize:
+                                        12,
+                                      ),
+                                      textAlign:
+                                      TextAlign
+                                          .center): Container(),
                                 ],
+                              ),
+
+
+                              // Text("Marcar favorito"),
+                              IconButton(
+                                icon: check
+                                    ? Icon(Icons.favorite)
+                                    : Icon(
+                                    Icons.favorite_border_outlined),
+                                color: Colors.grey,
+                                iconSize: 35,
+                                onPressed: () {
+                                  setState(() {
+                                    if (check) {
+                                      check = false;
+
+                                      FirebaseFirestore.instance
+                                          .collection("Productos")
+                                          .doc(widget
+                                          .productoModel.productoId)
+                                          .collection('Favoritos')
+                                          .doc(PetshopApp
+                                          .sharedPreferences
+                                          .getString(
+                                          PetshopApp.userUID))
+                                          .set({
+                                        'like': false,
+                                        'uid': PetshopApp
+                                            .sharedPreferences
+                                            .getString(
+                                            PetshopApp.userUID),
+                                      }).then((result) {
+                                        print("new USer true");
+                                      }).catchError((onError) {
+                                        print("onError");
+                                      });
+                                    } else {
+                                      check = true;
+
+                                      FirebaseFirestore.instance
+                                          .collection("Productos")
+                                          .doc(widget
+                                          .productoModel.productoId)
+                                          .collection('Favoritos')
+                                          .doc(PetshopApp
+                                          .sharedPreferences
+                                          .getString(
+                                          PetshopApp.userUID))
+                                          .set({
+                                        'like': true,
+                                        'uid': PetshopApp
+                                            .sharedPreferences
+                                            .getString(
+                                            PetshopApp.userUID),
+                                      }).then((result) {
+                                        print("new USer true");
+                                      }).catchError((onError) {
+                                        print("onError");
+                                      });
+                                    }
+                                  });
+                                },
                               ),
                             ],
                           ),
-                          SizedBox(
-                            width: 6,
-                          ),
-                          Flexible(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget.productoModel.titulo,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+
+                              SizedBox(
+                                width: 53.0,
+                                child: RaisedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      cantidad--;
+                                      if (cantidad < 1) {
+                                        cantidad = 1;
+                                      }
+                                    });
+                                  },
+
+                                  shape: RoundedRectangleBorder(side: BorderSide(color: secondaryColor),
+
+                                      borderRadius:
+                                      BorderRadius.circular(5)),
+
+                                  color: Colors.white,
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Text("-",
+                                      style: TextStyle(
+                                          fontFamily: 'Product Sans',
+                                          color: primaryColor,
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                EdgeInsets.fromLTRB(15, 15, 15, 15),
+                                child: Text(
+                                  cantidad.toString(),
                                   style: TextStyle(
                                     color: Color(0xFF57419D),
-                                    fontSize: 18,
+                                    fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                  textAlign: TextAlign.left,
                                 ),
-                                SizedBox(
-                                  height: 5,
+                              ),
+                              SizedBox(
+                                width: 53.0,
+                                child: RaisedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      cantidad++;
+                                    });
+                                  },
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.circular(5)),
+                                  color: primaryColor,
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Text("+",
+                                      style: TextStyle(
+                                          fontFamily: 'Product Sans',
+                                          color: Colors.white,
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold)),
                                 ),
-                                Text(
-
-                                  '${widget.productoModel.pesoValor} ${widget.productoModel.pesoUnidad}',
-                                  style: TextStyle(
-                                    color: Color(0xFF57419D),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  textAlign: TextAlign.right,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  widget.productoModel.dirigido,
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                ),
-                                Text(
-                                  widget.aliadoModel.nombreComercial,
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: Color(0xFF57419D),
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  widget.aliadoModel.direccion,
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                                SizedBox(
-                                  height: 9,
-                                ),
+                              ),
 
 
-                                Row(
-                                  children: [
-                                    Text("Marcar favorito"),
-                                    IconButton(
-                                      icon: check
-                                          ? Icon(Icons.favorite)
-                                          : Icon(
-                                              Icons.favorite_border_outlined),
-                                      color: Color(0xFF57419D),
-                                      iconSize: 38,
-                                      onPressed: () {
-                                        setState(() {
-                                          if (check) {
-                                            check = false;
-
-                                            FirebaseFirestore.instance
-                                                .collection("Productos")
-                                                .doc(widget
-                                                    .productoModel.productoId)
-                                                .collection('Favoritos')
-                                                .doc(PetshopApp
-                                                    .sharedPreferences
-                                                    .getString(
-                                                        PetshopApp.userUID))
-                                                .set({
-                                              'like': false,
-                                              'uid': PetshopApp
-                                                  .sharedPreferences
-                                                  .getString(
-                                                      PetshopApp.userUID),
-                                            }).then((result) {
-                                              print("new USer true");
-                                            }).catchError((onError) {
-                                              print("onError");
-                                            });
-                                          } else {
-                                            check = true;
-
-                                            FirebaseFirestore.instance
-                                                .collection("Productos")
-                                                .doc(widget
-                                                    .productoModel.productoId)
-                                                .collection('Favoritos')
-                                                .doc(PetshopApp
-                                                    .sharedPreferences
-                                                    .getString(
-                                                        PetshopApp.userUID))
-                                                .set({
-                                              'like': true,
-                                              'uid': PetshopApp
-                                                  .sharedPreferences
-                                                  .getString(
-                                                      PetshopApp.userUID),
-                                            }).then((result) {
-                                              print("new USer true");
-                                            }).catchError((onError) {
-                                              print("onError");
-                                            });
-                                          }
-                                        });
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                            ],
                           ),
                         ],
                       ),
-                    ),
+
+
 
                     // Row(
                     //     mainAxisAlignment: MainAxisAlignment.end,
@@ -416,51 +498,31 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
                     //     ),
                     //   ],
                     // ),
-                    SizedBox(
-                      height: 80,
-                    ),
+
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SizedBox(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(
-                                'Total: ',
-                                style: TextStyle(
-                                  color: Color(0xFF57419D),
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                PetshopApp.sharedPreferences
-                                    .getString(PetshopApp.simboloMoneda),
-                                style: TextStyle(
-                                  color: Color(0xFF57419D),
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                (total + delivery).toStringAsFixed(2),
-                                style: TextStyle(
-                                  color: Color(0xFF57419D),
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
+                        Text(
+                          'Total: ',
+                          style: TextStyle(
+                            color: Color(0xFF57419D),
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          '${PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda)} ${(total + delivery).toStringAsFixed(2)}',
+                          style: TextStyle(
+                            color: Color(0xFF57419D),
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
                     ),
+
                     SizedBox(
-                      height: 60,
-                    ),
-                    SizedBox(
-                      width: double.infinity,
+                      width: _screenWidth*0.38,
                       child: RaisedButton(
                         onPressed: () {
                           checkItemInCart(widget.productoModel.productoId, cant,
@@ -475,15 +537,16 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
                                         widget.defaultChoiceIndex)),
                           );
                         },
-                        shape: RoundedRectangleBorder(
+                        shape: RoundedRectangleBorder(side: BorderSide(color: primaryColor),
                             borderRadius: BorderRadius.circular(5)),
-                        color: Color(0xFFEB9448),
+                        color: Colors.white,
                         padding: EdgeInsets.all(10.0),
-                        child: Text("Agregar a mi pedido",
-                            style: TextStyle(
-                                fontFamily: 'Product Sans',
-                                color: Colors.white,
-                                fontSize: 18.0)),
+                        child: Icon(Icons.shopping_cart, color: primaryColor, size: 28,),
+                        // Text("Agregar a mi pedido",
+                        //     style: TextStyle(
+                        //         fontFamily: 'Product Sans',
+                        //         color: Colors.white,
+                        //         fontSize: 18.0)),
                       ),
                     ),
                   ],

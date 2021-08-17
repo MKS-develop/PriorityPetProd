@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'dart:math' show cos, sqrt, asin;
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:dropdownfield/dropdownfield.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,6 +17,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
+import 'package:pet_shop/Widgets/ktitle.dart';
 import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 
@@ -63,6 +64,8 @@ class _CitasPageState extends State<CitasPage> {
 
   String petImageUrl = "";
   String downloadUrl = "";
+  GeoPoint userLatLong;
+  double totalDist;
 
   bool get wantKeepAlive => true;
   File file;
@@ -76,10 +79,34 @@ class _CitasPageState extends State<CitasPage> {
     finalServicesList = [];
     getCiudades(PetshopApp.sharedPreferences.getString(PetshopApp.userPais));
     MastersList();
+    getLatLong();
     if (widget.tituloCat != null) {
       _searchTextEditingController.value =
           TextEditingValue(text: widget.tituloCat);
     }
+  }
+
+  getLatLong() {
+    DocumentReference documentReference = FirebaseFirestore.instance
+        .collection("Dueños")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
+    documentReference.get().then((dataSnapshot) {
+      setState(() {
+        userLatLong = (dataSnapshot.data()["location"]);
+      });
+    });
+  }
+
+  double calculateDistance(lat1, lon1, lat2, lon2) {
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 -
+        c((lat2 - lat1) * p) / 2 +
+        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+
+    totalDist = 12742 * asin(sqrt(a));
+
+    // return 12742 * asin(sqrt(a));
   }
 
   @override
@@ -210,6 +237,8 @@ class _CitasPageState extends State<CitasPage> {
           height: MediaQuery.of(context).size.height,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -297,6 +326,7 @@ class _CitasPageState extends State<CitasPage> {
                 //     ],
                 //   ),
                 // ),
+                // Text(userLatLong.latitude.toString()),
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                   child: Row(
@@ -787,6 +817,7 @@ class _CitasPageState extends State<CitasPage> {
     ServiceModel servicio,
     BuildContext context,
   ) {
+    double totalD = 0;
     return InkWell(
       child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
@@ -809,6 +840,26 @@ class _CitasPageState extends State<CitasPage> {
                 ) {
                   LocationModel location = LocationModel.fromJson(
                       dataSnapshot.data.docs[index].data());
+
+                  // calculateDistance(userLatLong.latitude, userLatLong.longitude, location.location.latitude, location.location.longitude);
+                  if (userLatLong !=null && location.location != null) {
+                    var p = 0.017453292519943295;
+                    var c = cos;
+                    var a = 0.5 -
+                        c((location.location.latitude != null
+                                    ? location.location.latitude
+                                    : 0 - userLatLong.latitude) *
+                                p) /
+                            2 +
+                        c(userLatLong.latitude * p) *
+                            c(location.location.latitude * p) *
+                            (1 -
+                                c((location.location.longitude -
+                                        userLatLong.longitude) *
+                                    p)) /
+                            2;
+                    totalD = 12742 * asin(sqrt(a));
+                  }
                   return StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection("Aliados")
@@ -840,12 +891,13 @@ class _CitasPageState extends State<CitasPage> {
                                             serviceModel: servicio,
                                             aliadoModel: aliado,
                                             locationModel: location,
-                                          defaultChoiceIndex:
-                                          widget.defaultChoiceIndex,)),
+                                            defaultChoiceIndex:
+                                                widget.defaultChoiceIndex,
+                                            userLatLong: userLatLong)),
                                   );
                                 },
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.all(3.0),
                                   child: SizedBox(
                                       width: MediaQuery.of(context).size.width,
                                       child: Row(
@@ -865,132 +917,198 @@ class _CitasPageState extends State<CitasPage> {
                                           SizedBox(
                                             width: 10.0,
                                           ),
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.60,
-                                            height: 85,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Column(
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.49,
+                                                height: 85,
+                                                child: Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   mainAxisAlignment:
-                                                      MainAxisAlignment.start,
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
                                                   children: [
-                                                    Text(aliado.nombreComercial,
-                                                        style: TextStyle(
-                                                            fontSize: 17,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                        textAlign:
-                                                            TextAlign.left),
-                                                    Text(
-                                                        location
-                                                            .direccionLocalidad,
-                                                        style: TextStyle(
-                                                          fontSize: 13,
-                                                        ),
-                                                        textAlign:
-                                                            TextAlign.left),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                            aliado
+                                                                .nombreComercial,
+                                                            style: TextStyle(
+                                                                fontSize: 17,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                            textAlign:
+                                                                TextAlign.left),
+                                                        location.mapAddress !=
+                                                                null
+                                                            ? Text(
+                                                                location
+                                                                    .mapAddress,
+                                                                maxLines: 2,
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 13,
+                                                                ),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left)
+                                                            : Text(
+                                                                location
+                                                                    .direccionLocalidad,
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 13,
+                                                                ),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left),
+                                                      ],
+                                                    ),
+                                                    StreamBuilder<
+                                                            QuerySnapshot>(
+                                                        stream: FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                "Aliados")
+                                                            .doc(servicio
+                                                                .aliadoId)
+                                                            .collection(
+                                                                "Especialidades")
+                                                            .snapshots(),
+                                                        builder: (context,
+                                                            dataSnapshot) {
+                                                          if (dataSnapshot
+                                                              .hasData) {
+                                                            if (dataSnapshot
+                                                                    .data
+                                                                    .docs
+                                                                    .length ==
+                                                                0) {
+                                                              return Center(
+                                                                  child:
+                                                                      Container());
+                                                            }
+                                                          }
+                                                          if (!dataSnapshot
+                                                              .hasData) {
+                                                            return Center(
+                                                              child:
+                                                                  CircularProgressIndicator(),
+                                                            );
+                                                          }
+                                                          return ListView
+                                                              .builder(
+                                                                  physics:
+                                                                      NeverScrollableScrollPhysics(),
+                                                                  itemCount:
+                                                                      dataSnapshot
+                                                                          .data
+                                                                          .docs
+                                                                          .length,
+                                                                  shrinkWrap:
+                                                                      true,
+                                                                  itemBuilder: (
+                                                                    context,
+                                                                    index,
+                                                                  ) {
+                                                                    EspecialidadesModel
+                                                                        especialidades =
+                                                                        EspecialidadesModel.fromJson(dataSnapshot
+                                                                            .data
+                                                                            .docs[index]
+                                                                            .data());
+
+                                                                    return Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text(
+                                                                          especialidades
+                                                                              .especialidad,
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                Colors.grey,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    );
+                                                                  });
+                                                        }),
+                                                    aliado.tipoAliado !=
+                                                            'Médico'
+                                                        ? Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                servicio.titulo,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .grey,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          )
+                                                        : Container(),
                                                   ],
                                                 ),
-                                                StreamBuilder<QuerySnapshot>(
-                                                    stream: FirebaseFirestore
-                                                        .instance
-                                                        .collection("Aliados")
-                                                        .doc(servicio.aliadoId)
-                                                        .collection(
-                                                            "Especialidades")
-                                                        .snapshots(),
-                                                    builder: (context,
-                                                        dataSnapshot) {
-                                                      if (dataSnapshot
-                                                          .hasData) {
-                                                        if (dataSnapshot.data
-                                                                .docs.length ==
-                                                            0) {
-                                                          return Center(
-                                                              child:
-                                                                  Container());
-                                                        }
-                                                      }
-                                                      if (!dataSnapshot
-                                                          .hasData) {
-                                                        return Center(
-                                                          child:
-                                                              CircularProgressIndicator(),
-                                                        );
-                                                      }
-                                                      return ListView.builder(
-                                                          physics:
-                                                              NeverScrollableScrollPhysics(),
-                                                          itemCount:
-                                                              dataSnapshot.data
-                                                                  .docs.length,
-                                                          shrinkWrap: true,
-                                                          itemBuilder: (
-                                                            context,
-                                                            index,
-                                                          ) {
-                                                            EspecialidadesModel
-                                                                especialidades =
-                                                                EspecialidadesModel.fromJson(
-                                                                    dataSnapshot
-                                                                        .data
-                                                                        .docs[
-                                                                            index]
-                                                                        .data());
-
-                                                            return Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Text(
-                                                                  especialidades
-                                                                      .especialidad,
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: Colors
-                                                                        .grey,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            );
-                                                          });
-                                                    }),
-                                                aliado.tipoAliado != 'Médico'
-                                                    ? Row(
+                                              ),
+                                              totalD != 0
+                                                  ? SizedBox(
+                                                      child: Column(
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
                                                                 .start,
                                                         children: [
-                                                          Text(
-                                                            servicio.titulo,
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.grey,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
+                                                          SizedBox(
+                                                            height: 9,
                                                           ),
+                                                          Icon(
+                                                            Icons
+                                                                .location_on_rounded,
+                                                            color:
+                                                                secondaryColor,
+                                                          ),
+                                                          SizedBox(
+                                                            height: 3,
+                                                          ),
+                                                          Text(
+                                                              totalD < 500
+                                                                  ? '${totalD.toStringAsFixed(1)} Km'
+                                                                  : '+500 Km',
+                                                              style: TextStyle(
+                                                                fontSize: 12,
+                                                              ),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center),
                                                         ],
-                                                      )
-                                                    : Container(),
-                                              ],
-                                            ),
+                                                      ),
+                                                    )
+                                                  : Container(),
+                                            ],
                                           ),
                                         ],
                                       )),

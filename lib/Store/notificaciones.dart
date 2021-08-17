@@ -15,6 +15,7 @@ import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
 import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import 'package:http/http.dart' as http;
+
 class NotificacionesPage extends StatefulWidget {
   final PetModel petModel;
   final Producto productoModel;
@@ -69,20 +70,18 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
     //   print(e.message);
     //   return null;
     // }
-
   }
 
-  deleteUser() async{
+  deleteUser() async {
     try {
-
-      var url = ("https://api.culqi.com/v2/customers/cus_live_UpWsKodzqCv0nDZa");
+      var url =
+          ("https://api.culqi.com/v2/customers/cus_live_UpWsKodzqCv0nDZa");
       Map<String, String> headers = {
         "Content-type": "application/json",
         "Authorization": _prk
       };
       Response res = await http.delete(Uri.parse(url), headers: headers);
       int statusCode = await res.statusCode;
-
 
       setState(() {
         // response = statusCode.toString();
@@ -95,6 +94,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
       return null;
     }
   }
+
   // calificarAliado() {
   //
   //   StreamBuilder<QuerySnapshot>(
@@ -126,12 +126,12 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
   // }
   _getprK() {
     DocumentReference documentReference =
-    FirebaseFirestore.instance.collection("Culqi").doc("Priv");
+        FirebaseFirestore.instance.collection("Culqi").doc("Priv");
     documentReference.get().then((dataSnapshot) {
       setState(() {
         _prk = (dataSnapshot.data()["prk"]);
       });
-        // deleteUser();
+      // deleteUser();
     });
   }
 
@@ -236,7 +236,8 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
               ],
             ),
           ),
-        ), context: context,
+        ),
+        context: context,
         barrierColor: Colors.white.withOpacity(0),
       );
     }
@@ -336,6 +337,8 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),

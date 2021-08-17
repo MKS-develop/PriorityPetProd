@@ -1,5 +1,7 @@
+
 import 'dart:io';
 
+import 'package:pet_shop/Authentication/map.dart';
 import 'package:pet_shop/Chat/ChatPage.dart';
 import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/Models/alidados.dart';
@@ -24,13 +26,14 @@ class CitaHome extends StatefulWidget {
   final AliadoModel aliadoModel;
   final LocationModel locationModel;
   final int defaultChoiceIndex;
+  final GeoPoint userLatLong;
 
   CitaHome(
       {this.petModel,
       this.aliadoModel,
       this.locationModel,
       this.serviceModel,
-      this.defaultChoiceIndex});
+      this.defaultChoiceIndex, this.userLatLong});
 
   @override
   _CitaHomeState createState() => _CitaHomeState();
@@ -75,6 +78,8 @@ class _CitaHomeState extends State<CitaHome> {
       height: MediaQuery.of(context).size.height,
       decoration: new BoxDecoration(
         image: new DecorationImage(
+          colorFilter: new ColorFilter.mode(
+              Colors.white.withOpacity(0.3), BlendMode.dstATop),
           image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
           fit: BoxFit.cover,
         ),
@@ -222,7 +227,7 @@ class _CitaHomeState extends State<CitaHome> {
                                 aliadoModel: widget.aliadoModel,
                                 locationModel: widget.locationModel,
                               defaultChoiceIndex:
-                              widget.defaultChoiceIndex,)),
+                              widget.defaultChoiceIndex, userLatLong: widget.userLatLong)),
                       );
                     },
                     child: Image.asset(
@@ -271,14 +276,16 @@ class _CitaHomeState extends State<CitaHome> {
                   'Ubicación',
                   style: TextStyle(fontSize: 13),
                 ),
+                widget.locationModel.location != null ?
                 Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: GestureDetector(
                     onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => StoreHome(petModel: model)),
-                      // );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MapHome(petModel: widget.petModel, defaultChoiceIndex:
+                        widget.defaultChoiceIndex, locationModel: widget.locationModel, aliadoModel: widget.aliadoModel, userLatLong: widget.userLatLong)),
+                      );
                     },
                     child: Image.asset(
                       'diseñador/drawable/Grupo197.png',
@@ -286,7 +293,7 @@ class _CitaHomeState extends State<CitaHome> {
                       height: 50,
                     ),
                   ),
-                ),
+                ): Container(),
               ],
             ),
           ],
@@ -368,7 +375,7 @@ class _CitaHomeState extends State<CitaHome> {
                     SizedBox(
                       height: 2.0,
                     ),
-                    Text(widget.locationModel.direccionLocalidad,
+                    Text(widget.locationModel.mapAddress != null ? widget.locationModel.mapAddress : widget.locationModel.direccionLocalidad,
                         style: TextStyle(fontSize: 12.0)),
                     SizedBox(
                       height: 2.0,

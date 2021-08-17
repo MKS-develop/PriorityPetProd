@@ -104,6 +104,8 @@ class _PlanesHomeState extends State<PlanesHome> {
           height: MediaQuery.of(context).size.height,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
@@ -164,16 +166,18 @@ class _PlanesHomeState extends State<PlanesHome> {
                                       width: MediaQuery.of(context).size.width *
                                           .80,
                                       child: Column(
-                                       crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: Text(
                                               'HOLA PETLOVER,',
                                               style: TextStyle(
-                                                  fontSize: 20.0,
-                                                  color: Color(0xFF1A3E4D),
-                                                  fontWeight: FontWeight.bold,),
+                                                fontSize: 20.0,
+                                                color: Color(0xFF1A3E4D),
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                               // )
                                             ),
                                           ),
@@ -251,7 +255,9 @@ class _PlanesHomeState extends State<PlanesHome> {
                                               // )
                                             ),
                                           ),
-                                          SizedBox(height: 110,),
+                                          SizedBox(
+                                            height: 110,
+                                          ),
                                           StreamBuilder<QuerySnapshot>(
                                               stream: FirebaseFirestore.instance
                                                   .collection("Planes")

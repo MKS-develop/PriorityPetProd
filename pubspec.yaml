@@ -1,7 +1,7 @@
 name: pet_shop
 description: petshop
 
-version: 1.0.26+26
+version: 1.0.30+30
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -26,7 +26,7 @@ dependencies:
 
   flutter_staggered_grid_view: ^0.3.0
   provider: ^4.3.2+2
-  path_provider: ^0.5.0+1
+  path_provider: ^1.1.2
   image: ^2.0.7
   intl: ^0.16.1
   intl_phone_field: ^1.4.2
@@ -35,7 +35,7 @@ dependencies:
   getflutter: ^1.0.11
   email_validator: ^1.0.4
   google_maps_flutter: ^1.2.0
-  google_map_location_picker: ^4.0.0
+  google_map_location_picker: ^4.1.6
   flutter_localizations:
     sdk: flutter
   charts_flutter: ^0.10.0
@@ -54,6 +54,7 @@ dependencies:
   #  flutter_sms: any
   flutter_share_me: ^0.9.2
   shortid: ^0.1.1
+  native_pdf_view: ^3.9.1
 
 dev_dependencies:
   intl_translation: ^0.17.1
@@ -97,3 +98,4 @@ flutter:
     - diseñador/Grupo592.png
     - assets/images/
     - assets/images/patas.png
+    - images/terminos.pdf

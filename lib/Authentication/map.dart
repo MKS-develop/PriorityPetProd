@@ -1,10 +1,18 @@
+import 'dart:async';
+import 'dart:typed_data';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pet_shop/Config/config.dart';
 
 import 'package:pet_shop/Models/Producto.dart';
 import 'package:pet_shop/Models/Cart.dart';
+import 'package:pet_shop/Models/alidados.dart';
+import 'package:pet_shop/Models/location.dart';
 import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_shop/Store/storehome.dart';
+import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
 import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 
@@ -13,8 +21,18 @@ class MapHome extends StatefulWidget {
   final Producto productoModel;
   final CartModel cartModel;
   final int defaultChoiceIndex;
+  final LocationModel locationModel;
+  final AliadoModel aliadoModel;
+  final GeoPoint userLatLong;
 
-  MapHome({this.petModel, this.productoModel, this.cartModel, this.defaultChoiceIndex});
+  MapHome(
+      {this.petModel,
+      this.productoModel,
+      this.cartModel,
+      this.defaultChoiceIndex,
+      this.locationModel,
+      this.aliadoModel,
+      this.userLatLong});
 
   @override
   _MapHomeState createState() => _MapHomeState();
@@ -24,6 +42,55 @@ class _MapHomeState extends State<MapHome> {
   PetModel model;
   CartModel cart;
   Producto producto;
+  List<Marker> customMarkers = [];
+  final Set<Marker> _markers = Set();
+  CameraPosition _initialPosition =
+      CameraPosition(target: LatLng(26.8206, 30.8025));
+  Completer<GoogleMapController> _controller = Completer();
+  final double _zoom = 14;
+
+  void _onMapCreated(GoogleMapController controller) {
+    _controller.complete(controller);
+  }
+
+  List<Marker> mapBitmapsToMarkers(List<Uint8List> bitmaps) {
+    bitmaps.asMap().forEach((mid, bmp) {
+      customMarkers.add(Marker(
+        markerId: MarkerId("${widget.aliadoModel.nombreComercial}"),
+        position: LatLng(widget.locationModel.location.latitude,
+            widget.locationModel.location.longitude),
+        icon: BitmapDescriptor.fromBytes(bmp),
+      ));
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _goToNewYork();
+    print(widget.locationModel.location.longitude);
+  }
+
+  Future<void> _goToNewYork() async {
+    double lat = widget.locationModel.location.latitude;
+    double long = widget.locationModel.location.longitude;
+    GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newLatLngZoom(
+        LatLng(widget.locationModel.location.latitude,
+            widget.locationModel.location.longitude),
+        _zoom));
+    setState(() {
+      _markers.add(
+        Marker(
+            markerId: MarkerId('${widget.aliadoModel.nombreComercial}'),
+            position: LatLng(widget.locationModel.location.latitude,
+                widget.locationModel.location.longitude),
+            infoWindow: InfoWindow(
+                title: '${widget.aliadoModel.nombreComercial}',
+                snippet: '${widget.locationModel.mapAddress}')),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,65 +99,9 @@ class _MapHomeState extends State<MapHome> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(90.0),
-          child: Padding(
-            padding: const EdgeInsets.only(
-              left: 10.0,
-              top: 20,
-              right: 16.0,
-            ),
-            child: AppBar(
-              iconTheme: IconThemeData(color: Colors.black),
-              backgroundColor: Colors.transparent, //No more green
-              elevation: 0.0,
-              title: GestureDetector(
-                onTap: () {
-                  print(DateTime.now());
-                  Route route = MaterialPageRoute(builder: (c) => StoreHome());
-                  Navigator.pushReplacement(context, route);
-                },
-                child: Image.asset(
-                  'diseñador/logo.png',
-                  fit: BoxFit.contain,
-                  height: 40,
-                ),
-              ),
-              centerTitle: true,
-              actions: <Widget>[
-                Stack(
-                  children: <Widget>[
-                    Material(
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      child: Container(
-                        height: 50,
-                        width: 50,
-                        child: CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          backgroundImage: widget.petModel == null
-                              ? Image.network(
-                                  PetshopApp.sharedPreferences
-                                    .getString(PetshopApp.userAvatarUrl),
-                                  errorBuilder: (context, object, stacktrace) {
-                                    return Container();
-                                  },
-                                ).image
-                              : Image.network(
-                                  widget.petModel.petthumbnailUrl,
-                                  errorBuilder: (context, object, stacktrace) {
-                                    return Container();
-                                  },
-                                ).image,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        appBar: AppBarCustomAvatar(
+            context, widget.petModel, widget.defaultChoiceIndex),
+        // bottomNavigationBar: CustomBottomNavigationBar(),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
@@ -99,49 +110,59 @@ class _MapHomeState extends State<MapHome> {
           height: _screenHeight,
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
               image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
               fit: BoxFit.cover,
             ),
           ),
           padding: const EdgeInsets.symmetric(
-            horizontal: 16.0,
+            horizontal: 0.0,
           ),
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    IconButton(
-                        icon: Icon(Icons.arrow_back_ios,
-                            color: Color(0xFF57419D)),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        }),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
-                      child: Text(
-                        "Map",
-                        style: TextStyle(
-                          color: Color(0xFF57419D),
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      IconButton(
+                          icon: Icon(Icons.arrow_back_ios,
+                              color: Color(0xFF57419D)),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          }),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                        child: Text(
+                          "Ubicación",
+                          style: TextStyle(
+                            color: Color(0xFF57419D),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 Container(
-                    // height: _screenHeight,
-                    // width: _screenWidth,
-                    // child: GoogleMap(
-                    //   initialCameraPosition: CameraPosition(
-                    //     target: LatLng(10.4806, -66.9036),
-                    //     zoom: 12.0,
-                    //   ),
-                    // ),
-
+                  height: _screenHeight * 0.75,
+                  width: _screenWidth,
+                  child: GoogleMap(
+                    markers: _markers,
+                    onMapCreated: _onMapCreated,
+                    zoomControlsEnabled: true,
+                    myLocationButtonEnabled: true,
+                    myLocationEnabled: true,
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(widget.userLatLong.latitude,
+                          widget.userLatLong.longitude),
+                      zoom: 12.0,
                     ),
+                  ),
+                ),
               ],
             ),
           ),
