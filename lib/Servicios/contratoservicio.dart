@@ -169,7 +169,10 @@ class _ContratoServicioState extends State<ContratoServicio> {
       home: Scaffold(
         appBar: AppBarCustomAvatar(
             context, widget.petModel, widget.defaultChoiceIndex),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
@@ -230,12 +233,14 @@ class _ContratoServicioState extends State<ContratoServicio> {
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.60,
-                      height: 100.0,
+                      height: 125.0,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(widget.aliadoModel.nombreComercial,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                   fontSize: 17,
                                   color: Color(0xFF57419D),
@@ -243,11 +248,15 @@ class _ContratoServicioState extends State<ContratoServicio> {
                               textAlign: TextAlign.left),
                           widget.locationModel.mapAddress != null
                               ? Text(widget.locationModel.mapAddress,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontSize: 13,
                                   ),
                                   textAlign: TextAlign.left)
                               : Text(widget.locationModel.direccionLocalidad,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontSize: 13,
                                   ),

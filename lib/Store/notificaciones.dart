@@ -50,8 +50,8 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
   @override
   void initState() {
     super.initState();
-    _getOrderStatus();
-    _getprK();
+    // _getOrderStatus();
+    // _getprK();
 
     // initState calificarAliado();
 
@@ -328,6 +328,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
           noti: noti,
           home: home,
           cart: carrito,
+          petModel: widget.petModel, defaultChoiceIndex: widget.defaultChoiceIndex,
         ),
         drawer: MyDrawer(
           petModel: widget.petModel,
@@ -359,7 +360,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => StoreHome()),
+                                builder: (context) => StoreHome(petModel: widget.petModel, defaultChoiceIndex: widget.defaultChoiceIndex,)),
                           );
                           // Navigator.pop(context);
                         }),

@@ -199,7 +199,7 @@ class _CartFinalState extends State<CartFinal> {
         child: Container(
           width: MediaQuery.of(context).size.width * 0.91,
           decoration: BoxDecoration(
-              color: Color(0xFFF4F6F8),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
                 color: Colors.grey,
@@ -392,7 +392,7 @@ class _CartFinalState extends State<CartFinal> {
         appBar: AppBarCustomAvatar(
             context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar:
-            CustomBottomNavigationBar(home: home, cart: carrito, noti: noti),
+            CustomBottomNavigationBar(home: home, cart: carrito, noti: noti, petModel: widget.petModel, defaultChoiceIndex: widget.defaultChoiceIndex,),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
@@ -423,14 +423,14 @@ class _CartFinalState extends State<CartFinal> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => StoreHome()),
+                                builder: (context) => StoreHome(petModel: widget.petModel, defaultChoiceIndex: widget.defaultChoiceIndex,)),
                           );
                           // Navigator.pop(context);
                         }),
                     Padding(
                       padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
                       child: Text(
-                        "Mis pedidos",
+                        "Carrito de productos",
                         style: TextStyle(
                           color: Color(0xFF57419D),
                           fontSize: 20,
@@ -446,6 +446,7 @@ class _CartFinalState extends State<CartFinal> {
                         .doc(PetshopApp.sharedPreferences
                             .getString(PetshopApp.userUID))
                         .collection('Cart')
+                    .where('pais', isEqualTo: PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
                         .snapshots(),
                     builder: (context, dataSnapshot) {
                       if (!dataSnapshot.hasData) {
@@ -571,9 +572,10 @@ class _CartFinalState extends State<CartFinal> {
                                             child: RaisedButton(
                                               onPressed: () {},
                                               shape: RoundedRectangleBorder(
+                                                  side: BorderSide(color: primaryColor),
                                                   borderRadius:
                                                       BorderRadius.circular(5)),
-                                              color: Color(0xFFBBD7D6),
+                                              color: Colors.white,
                                               padding: EdgeInsets.all(0.0),
                                               child: Text(
                                                   (ppAcumulados - ppCanjeados)
@@ -604,9 +606,10 @@ class _CartFinalState extends State<CartFinal> {
                                         child: RaisedButton(
                                           onPressed: () {},
                                           shape: RoundedRectangleBorder(
+                                              side: BorderSide(color: primaryColor),
                                               borderRadius:
                                                   BorderRadius.circular(5)),
-                                          color: Color(0xFFBBD7D6),
+                                          color: Colors.white,
                                           padding: EdgeInsets.all(0.0),
                                           child: Row(
                                             mainAxisAlignment:

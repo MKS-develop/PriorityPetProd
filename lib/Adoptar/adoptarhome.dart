@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pet_shop/Adoptar/adoptardetalles.dart';
 import 'package:pet_shop/Config/config.dart';
+import 'package:pet_shop/Models/alidados.dart';
 import 'package:pet_shop/Models/favoritos.dart';
 import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class _AdoptarHomeState extends State<AdoptarHome> {
         appBar: AppBarCustomAvatar(
             context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar:
-            CustomBottomNavigationBar(petmodel: widget.petModel),
+            CustomBottomNavigationBar(petModel: widget.petModel),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
@@ -157,191 +158,216 @@ class _AdoptarHomeState extends State<AdoptarHome> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      var likeRef = db.collection("Mascotas").doc(model.mid);
-                      likeRef.update({
-                        'views': FieldValue.increment(1),
-                      });
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AdoptarDetalles(
+    Container(
+      height: 140.0,
+      width: 75.0,
+      child: StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection('Aliados')
+          .doc(model.aliadoId)
+          .snapshots(),
+      builder: (context, dataSnapshot) {
+        if (!dataSnapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        return ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: 1,
+            shrinkWrap: true,
+            itemBuilder: (context,
+                index,) {
+              AliadoModel ali = AliadoModel.fromJson(
+                  dataSnapshot.data.data());
+              return GestureDetector(
+                onTap: () {
+                  var likeRef = db.collection("Mascotas").doc(model.mid);
+                  likeRef.update({
+                    'views': FieldValue.increment(1),
+                  });
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            AdoptarDetalles(
                                 petModel: model,
-                                defaultChoiceIndex: widget.defaultChoiceIndex)),
-                      );
-                    },
-                    child: Column(
+                                defaultChoiceIndex: widget.defaultChoiceIndex, aliadoModel: ali,)),
+                  );
+                },
+                child: Column(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.network(
+                        model.petthumbnailUrl,
+                        height: 90,
+                        width: 75,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, object, stacktrace) {
+                          return Container();
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: 3,
+                    ),
+                    Text(model.nombre,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color: Color(0xFF57419D), fontSize: 11)),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: Image.network(
-                            model.petthumbnailUrl,
-                            height: 90,
-                            width: 75,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, object, stacktrace) {
-                              return Container();
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          height: 3,
-                        ),
-                        Text(model.nombre,
-                            style: TextStyle(
-                                color: Color(0xFF57419D), fontSize: 12)),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Icon(
-                                  Icons.remove_red_eye,
-                                  size: 17,
-                                  color: Color(0xFF7F9D9D),
-                                ),
-                                Text(
-                                    model.views != null
-                                        ? model.views.toString()
-                                        : '0',
-                                    style: TextStyle(color: Color(0xFF7F9D9D))),
-                              ],
+                            Icon(
+                              Icons.remove_red_eye,
+                              size: 17,
+                              color: Color(0xFF7F9D9D),
                             ),
-                            Container(
+                            Text(
+                                model.views != null
+                                    ? model.views.toString()
+                                    : '0',
+                                style: TextStyle(color: Color(0xFF7F9D9D))),
+                          ],
+                        ),
+                        Container(
 // color: Colors.purple,
-                              height: 30.0,
-                              width: 40.0,
+                          height: 30.0,
+                          width: 40.0,
 
-                              child: StreamBuilder<QuerySnapshot>(
-                                  stream: FirebaseFirestore.instance
-                                      .collection('Mascotas')
-                                      .doc(model.mid)
-                                      .collection('Favoritos')
-                                      .where('uid',
-                                          isEqualTo: PetshopApp
-                                              .sharedPreferences
-                                              .getString(PetshopApp.userUID))
-                                      .snapshots(),
-                                  builder: (context, dataSnapshot) {
-                                    if (!dataSnapshot.hasData) {
-                                      return Row(
-                                        children: [
-                                          CircularProgressIndicator(),
-                                        ],
-                                      );
-                                    }
-                                    if (dataSnapshot.data.docs.length < 1) {
+                          child: StreamBuilder<QuerySnapshot>(
+                              stream: FirebaseFirestore.instance
+                                  .collection('Mascotas')
+                                  .doc(model.mid)
+                                  .collection('Favoritos')
+                                  .where('uid',
+                                  isEqualTo: PetshopApp
+                                      .sharedPreferences
+                                      .getString(PetshopApp.userUID))
+                                  .snapshots(),
+                              builder: (context, dataSnapshot) {
+                                if (!dataSnapshot.hasData) {
+                                  return Row(
+                                    children: [
+                                      CircularProgressIndicator(),
+                                    ],
+                                  );
+                                }
+                                if (dataSnapshot.data.docs.length < 1) {
+                                  return Column(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.end,
+                                    children: [
+                                      Icon(
+                                        Icons.favorite_border_outlined,
+                                        size: 17,
+                                        color: Color(0xFF7F9D9D),
+                                      ),
+                                    ],
+                                  );
+                                }
+
+                                return ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: 1,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context,
+                                        index,) {
+                                      FavoritosModel favorito =
+                                      FavoritosModel.fromJson(
+                                          dataSnapshot.data.docs[index]
+                                              .data());
                                       return Column(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.end,
+                                        MainAxisAlignment.start,
+                                        // crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Icon(
-                                            Icons.favorite_border_outlined,
-                                            size: 17,
-                                            color: Color(0xFF7F9D9D),
+                                          IconButton(
+                                            icon: favorito.like
+                                                ? Icon(Icons.favorite)
+                                                : Icon(Icons
+                                                .favorite_border_outlined),
+                                            color: Color(0xFF57419D),
+                                            iconSize: 17,
+                                            onPressed: () {
+                                              setState(() {
+                                                if (favorito.like) {
+                                                  favorito.like = false;
+
+                                                  FirebaseFirestore.instance
+                                                      .collection(
+                                                      'Mascotas')
+                                                      .doc(model.mid)
+                                                      .collection(
+                                                      'Favoritos')
+                                                      .doc(PetshopApp
+                                                      .sharedPreferences
+                                                      .getString(
+                                                      PetshopApp
+                                                          .userUID))
+                                                      .set({
+                                                    'like': false,
+                                                    'uid': PetshopApp
+                                                        .sharedPreferences
+                                                        .getString(
+                                                        PetshopApp
+                                                            .userUID),
+                                                  }).then((result) {
+                                                    print("new USer true");
+                                                  }).catchError((onError) {
+                                                    print("onError");
+                                                  });
+                                                } else {
+                                                  favorito.like = true;
+
+                                                  FirebaseFirestore.instance
+                                                      .collection(
+                                                      'Mascotas')
+                                                      .doc(model.mid)
+                                                      .collection(
+                                                      'Favoritos')
+                                                      .doc(PetshopApp
+                                                      .sharedPreferences
+                                                      .getString(
+                                                      PetshopApp
+                                                          .userUID))
+                                                      .set({
+                                                    'like': true,
+                                                    'uid': PetshopApp
+                                                        .sharedPreferences
+                                                        .getString(
+                                                        PetshopApp
+                                                            .userUID),
+                                                  }).then((result) {
+                                                    print("new USer true");
+                                                  }).catchError((onError) {
+                                                    print("onError");
+                                                  });
+                                                }
+                                              });
+                                            },
+                                          ),
+                                          SizedBox(
+                                            height: 100,
                                           ),
                                         ],
                                       );
-                                    }
-
-                                    return ListView.builder(
-                                        physics: NeverScrollableScrollPhysics(),
-                                        itemCount: 1,
-                                        shrinkWrap: true,
-                                        itemBuilder: (
-                                          context,
-                                          index,
-                                        ) {
-                                          FavoritosModel favorito =
-                                              FavoritosModel.fromJson(
-                                                  dataSnapshot.data.docs[index]
-                                                      .data());
-                                          return Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            // crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              IconButton(
-                                                icon: favorito.like
-                                                    ? Icon(Icons.favorite)
-                                                    : Icon(Icons
-                                                        .favorite_border_outlined),
-                                                color: Color(0xFF57419D),
-                                                iconSize: 17,
-                                                onPressed: () {
-                                                  setState(() {
-                                                    if (favorito.like) {
-                                                      favorito.like = false;
-
-                                                      FirebaseFirestore.instance
-                                                          .collection(
-                                                              'Mascotas')
-                                                          .doc(model.mid)
-                                                          .collection(
-                                                              'Favoritos')
-                                                          .doc(PetshopApp
-                                                              .sharedPreferences
-                                                              .getString(
-                                                                  PetshopApp
-                                                                      .userUID))
-                                                          .set({
-                                                        'like': false,
-                                                        'uid': PetshopApp
-                                                            .sharedPreferences
-                                                            .getString(
-                                                                PetshopApp
-                                                                    .userUID),
-                                                      }).then((result) {
-                                                        print("new USer true");
-                                                      }).catchError((onError) {
-                                                        print("onError");
-                                                      });
-                                                    } else {
-                                                      favorito.like = true;
-
-                                                      FirebaseFirestore.instance
-                                                          .collection(
-                                                              'Mascotas')
-                                                          .doc(model.mid)
-                                                          .collection(
-                                                              'Favoritos')
-                                                          .doc(PetshopApp
-                                                              .sharedPreferences
-                                                              .getString(
-                                                                  PetshopApp
-                                                                      .userUID))
-                                                          .set({
-                                                        'like': true,
-                                                        'uid': PetshopApp
-                                                            .sharedPreferences
-                                                            .getString(
-                                                                PetshopApp
-                                                                    .userUID),
-                                                      }).then((result) {
-                                                        print("new USer true");
-                                                      }).catchError((onError) {
-                                                        print("onError");
-                                                      });
-                                                    }
-                                                  });
-                                                },
-                                              ),
-                                              SizedBox(
-                                                height: 100,
-                                              ),
-                                            ],
-                                          );
-                                        });
-                                  }),
-                            ),
-                          ],
+                                    });
+                              }),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
+              );
+            }
+        );
+      }),
+    )],
               ),
             ],
           ),

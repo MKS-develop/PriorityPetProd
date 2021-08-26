@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pet_shop/Config/config.dart';
+import 'package:pet_shop/Models/alidados.dart';
 import 'package:pet_shop/Models/expedientechart.dart';
 import 'package:pet_shop/Models/temperaturachart.dart';
 import 'package:pet_shop/Store/storehome.dart';
@@ -22,8 +23,9 @@ double width;
 class AdoptarConfirmar extends StatefulWidget {
   final PetModel petModel;
   final int defaultChoiceIndex;
+  final AliadoModel aliadoModel;
 
-  AdoptarConfirmar({this.petModel, this.defaultChoiceIndex});
+  AdoptarConfirmar({this.petModel, this.defaultChoiceIndex, this.aliadoModel});
 
   @override
   _AdoptarConfirmarState createState() => _AdoptarConfirmarState();
@@ -125,7 +127,10 @@ class _AdoptarConfirmarState extends State<AdoptarConfirmar> {
         home: Scaffold(
             appBar: AppBarCustomAvatar(
                 context, widget.petModel, widget.defaultChoiceIndex),
-            bottomNavigationBar: CustomBottomNavigationBar(),
+            bottomNavigationBar: CustomBottomNavigationBar(
+              petModel: widget.petModel,
+              defaultChoiceIndex: widget.defaultChoiceIndex,
+            ),
             drawer: MyDrawer(
               petModel: widget.petModel,
               defaultChoiceIndex: widget.defaultChoiceIndex,
@@ -227,7 +232,7 @@ class _AdoptarConfirmarState extends State<AdoptarConfirmar> {
                                 builder: (context) => StoreHome(
                                     petModel: widget.petModel,
                                     defaultChoiceIndex:
-                                        widget.defaultChoiceIndex)),
+                                        widget.defaultChoiceIndex,)),
                           );
                         },
                         // uploading ? null : ()=> uploadImageAndSavePetInfo(),

@@ -287,7 +287,7 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
         appBar: AppBarCustomAvatar(
             context, widget.petModel, widget.defaultChoiceIndex),
         bottomNavigationBar:
-            CustomBottomNavigationBar(petmodel: widget.petModel),
+            CustomBottomNavigationBar(petModel: widget.petModel),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,

@@ -64,7 +64,10 @@ class _VideoHomeState extends State<VideoHome> {
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
         ),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: _fondo(),
       ),
     );
@@ -217,12 +220,12 @@ class _VideoHomeState extends State<VideoHome> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => VideoAgenda(
-                                petModel: model,
-                                serviceModel: widget.serviceModel,
-                                aliadoModel: widget.aliadoModel,
-                                locationModel: widget.locationModel,
-                              defaultChoiceIndex:
-                              widget.defaultChoiceIndex,)),
+                                  petModel: model,
+                                  serviceModel: widget.serviceModel,
+                                  aliadoModel: widget.aliadoModel,
+                                  locationModel: widget.locationModel,
+                                  defaultChoiceIndex: widget.defaultChoiceIndex,
+                                )),
                       );
                     },
                     child: Image.asset(
@@ -324,7 +327,7 @@ class _VideoHomeState extends State<VideoHome> {
           children: [
             SizedBox(
               width: 300.0,
-              height: 100.0,
+              height: 120.0,
               child: RaisedButton(
                 onPressed: () {
                   String tituloDetalle = "Alimento";
@@ -357,8 +360,28 @@ class _VideoHomeState extends State<VideoHome> {
                     SizedBox(
                       height: 2.0,
                     ),
-                    Text(widget.locationModel.direccionLocalidad,
-                        style: TextStyle(fontSize: 12.0)),
+                    widget.locationModel.mapAddress != null
+                        ? Text(
+                        widget.locationModel.mapAddress,
+                        maxLines: 2,
+                        style: TextStyle(
+                          fontSize: 13,
+                        ),
+                        textAlign:
+                        TextAlign.left)
+                        : Text(
+                        widget.locationModel.mapAddress !=
+                            null
+                            ? widget.locationModel
+                            .mapAddress
+                            : widget.locationModel
+                            .direccionLocalidad,
+                        maxLines: 2,
+                        style: TextStyle(
+                          fontSize: 13,
+                        ),
+                        textAlign:
+                        TextAlign.left),
                     SizedBox(
                       height: 2.0,
                     ),

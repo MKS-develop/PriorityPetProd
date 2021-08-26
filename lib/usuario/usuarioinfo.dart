@@ -222,7 +222,7 @@ class _UsuarioInfoState extends State<UsuarioInfo>
 
       appBar: AppBarCustom(context, widget.petModel, widget.defaultChoiceIndex),
       drawer: MyDrawer(),
-      bottomNavigationBar: CustomBottomNavigationBar(petmodel: widget.petModel),
+      bottomNavigationBar: CustomBottomNavigationBar(petModel: widget.petModel),
       body: Container(
         height: MediaQuery.of(context).size.height,
         decoration: new BoxDecoration(

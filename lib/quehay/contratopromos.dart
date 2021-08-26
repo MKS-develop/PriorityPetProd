@@ -35,7 +35,8 @@ class ContratoPromos extends StatefulWidget {
       {this.petModel,
       this.promotionModel,
       this.aliadoModel,
-      this.defaultChoiceIndex, this.locationModel});
+      this.defaultChoiceIndex,
+      this.locationModel});
 
   @override
   _ContratoPromosState createState() => _ContratoPromosState();
@@ -132,7 +133,10 @@ class _ContratoPromosState extends State<ContratoPromos> {
       home: Scaffold(
         appBar: AppBarCustomAvatar(
             context, widget.petModel, widget.defaultChoiceIndex),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
@@ -206,18 +210,19 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                   color: Color(0xFF57419D),
                                   fontWeight: FontWeight.bold),
                               textAlign: TextAlign.left),
-                          widget.locationModel.mapAddress != null ?
-                          Text(widget.locationModel.mapAddress,
-                            style: TextStyle(
-                              fontSize: 13,
-                            ),
-                          ):
-
-                          Text(widget.locationModel.direccionLocalidad,
-                            style: TextStyle(
-                              fontSize: 13,
-                            ),
-                          ),
+                          widget.locationModel.mapAddress != null
+                              ? Text(
+                                  widget.locationModel.mapAddress,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                  ),
+                                )
+                              : Text(
+                                  widget.locationModel.direccionLocalidad,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                  ),
+                                ),
                           SizedBox(
                             height: 10,
                           ),

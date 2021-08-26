@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:pet_shop/Authentication/map.dart';
@@ -33,7 +32,8 @@ class CitaHome extends StatefulWidget {
       this.aliadoModel,
       this.locationModel,
       this.serviceModel,
-      this.defaultChoiceIndex, this.userLatLong});
+      this.defaultChoiceIndex,
+      this.userLatLong});
 
   @override
   _CitaHomeState createState() => _CitaHomeState();
@@ -67,7 +67,10 @@ class _CitaHomeState extends State<CitaHome> {
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
         ),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: _fondo(),
       ),
     );
@@ -226,8 +229,8 @@ class _CitaHomeState extends State<CitaHome> {
                                 serviceModel: widget.serviceModel,
                                 aliadoModel: widget.aliadoModel,
                                 locationModel: widget.locationModel,
-                              defaultChoiceIndex:
-                              widget.defaultChoiceIndex, userLatLong: widget.userLatLong)),
+                                defaultChoiceIndex: widget.defaultChoiceIndex,
+                                userLatLong: widget.userLatLong)),
                       );
                     },
                     child: Image.asset(
@@ -272,28 +275,40 @@ class _CitaHomeState extends State<CitaHome> {
             // ),
             Column(
               children: [
-                Text(
-                  'Ubicación',
-                  style: TextStyle(fontSize: 13),
-                ),
-                widget.locationModel.location != null ?
-                Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MapHome(petModel: widget.petModel, defaultChoiceIndex:
-                        widget.defaultChoiceIndex, locationModel: widget.locationModel, aliadoModel: widget.aliadoModel, userLatLong: widget.userLatLong)),
-                      );
-                    },
-                    child: Image.asset(
-                      'diseñador/drawable/Grupo197.png',
-                      fit: BoxFit.contain,
-                      height: 50,
-                    ),
-                  ),
-                ): Container(),
+
+                widget.locationModel.location != null
+                    ? Column(
+                      children: [
+                        Text(
+                          'Ubicación',
+                          style: TextStyle(fontSize: 13),
+                        ),
+                        Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MapHome(
+                                          petModel: widget.petModel,
+                                          defaultChoiceIndex:
+                                              widget.defaultChoiceIndex,
+                                          locationModel: widget.locationModel,
+                                          aliadoModel: widget.aliadoModel,
+                                          userLatLong: widget.userLatLong)),
+                                );
+                              },
+                              child: Image.asset(
+                                'diseñador/drawable/Grupo197.png',
+                                fit: BoxFit.contain,
+                                height: 50,
+                              ),
+                            ),
+                          ),
+                      ],
+                    )
+                    : Container(),
               ],
             ),
           ],
@@ -313,8 +328,7 @@ class _CitaHomeState extends State<CitaHome> {
                         builder: (context) => ChatPage(
                               petModel: widget.petModel,
                               aliado: widget.aliadoModel.aliadoId,
-                          defaultChoiceIndex:
-                          widget.defaultChoiceIndex,
+                              defaultChoiceIndex: widget.defaultChoiceIndex,
                             )),
                   );
                 },
@@ -342,7 +356,7 @@ class _CitaHomeState extends State<CitaHome> {
           children: [
             SizedBox(
               width: 300.0,
-              height: 100.0,
+              height: 120.0,
               child: RaisedButton(
                 onPressed: () {
                   String tituloDetalle = "Alimento";
@@ -361,21 +375,19 @@ class _CitaHomeState extends State<CitaHome> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(widget.aliadoModel.nombreComercial,
-                            style: TextStyle(
-                                fontSize: 17,
-                                color: Color(0xFF57419D),
-                                fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.left),
-                      ],
-                    ),
+                    Text(widget.aliadoModel.nombreComercial,
+                        style: TextStyle(
+                            fontSize: 17,
+                            color: Color(0xFF57419D),
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.left),
                     SizedBox(
                       height: 2.0,
                     ),
-                    Text(widget.locationModel.mapAddress != null ? widget.locationModel.mapAddress : widget.locationModel.direccionLocalidad,
+                    Text(
+                        widget.locationModel.mapAddress != null
+                            ? widget.locationModel.mapAddress
+                            : widget.locationModel.direccionLocalidad,
                         style: TextStyle(fontSize: 12.0)),
                     SizedBox(
                       height: 2.0,

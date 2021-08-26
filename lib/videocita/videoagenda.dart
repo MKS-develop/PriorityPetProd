@@ -114,7 +114,10 @@ class _VideoAgendaState extends State<VideoAgenda> {
       home: Scaffold(
         appBar: AppBarCustomAvatar(
             context, widget.petModel, widget.defaultChoiceIndex),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
@@ -188,14 +191,30 @@ class _VideoAgendaState extends State<VideoAgenda> {
                                   color: Color(0xFF57419D),
                                   fontWeight: FontWeight.bold),
                               textAlign: TextAlign.left),
-                          Text(
-                              widget.locationModel.direccionLocalidad != null
-                                  ? widget.locationModel.direccionLocalidad
-                                  : "",
-                              style: TextStyle(
-                                fontSize: 15,
+                          widget.locationModel.mapAddress !=
+                              null
+                              ? Text(
+                              widget.locationModel
+                                  .mapAddress,
+                              maxLines: 2,
+                              style:
+                              TextStyle(
+                                fontSize: 13,
                               ),
-                              textAlign: TextAlign.left),
+                              textAlign:
+                              TextAlign
+                                  .left)
+                              : Text(
+                              widget.locationModel
+                                  .direccionLocalidad,
+                              maxLines: 2,
+                              style:
+                              TextStyle(
+                                fontSize: 13,
+                              ),
+                              textAlign:
+                              TextAlign
+                                  .left),
                           StreamBuilder<QuerySnapshot>(
                               stream: FirebaseFirestore.instance
                                   .collection("Aliados")

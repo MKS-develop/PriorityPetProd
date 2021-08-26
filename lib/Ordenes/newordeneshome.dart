@@ -1,19 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_shop/Chat/ChatPage.dart';
 import 'package:pet_shop/Config/config.dart';
 
 import 'package:pet_shop/Models/Producto.dart';
 import 'package:pet_shop/Models/Cart.dart';
-import 'package:pet_shop/Models/alidados.dart';
 import 'package:pet_shop/Models/item.dart';
 import 'package:pet_shop/Models/ordenes.dart';
 import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
-import 'package:pet_shop/Ordenes/ordenesdetalle.dart';
-import 'package:pet_shop/Store/PushNotificationsProvider.dart';
-import 'package:pet_shop/Store/storehome.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
 import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
@@ -50,7 +45,10 @@ class _NewOrdenesHomeState extends State<NewOrdenesHome> {
       home: Scaffold(
         appBar: AppBarCustomAvatar(
             context, widget.petModel, widget.defaultChoiceIndex),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,

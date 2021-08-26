@@ -6,22 +6,27 @@ import 'package:pet_shop/Adoptar/adoptarconfirmar.dart';
 import 'package:pet_shop/Adoptar/apadrinarconfirmar.dart';
 import 'package:pet_shop/Adoptar/historiaadopcion.dart';
 import 'package:pet_shop/Chat/ChatPage.dart';
+import 'package:pet_shop/Models/alidados.dart';
 import 'package:pet_shop/Models/pet.dart';
 import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
+import 'package:pet_shop/Widgets/ktitle.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import 'package:pet_shop/mascotas/mascotashome.dart';
 import '../Widgets/myDrawer.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_shop/Store/storehome.dart';
 
+import 'donarconfirmar.dart';
+
 double width;
 
 class AdoptarDetalles extends StatefulWidget {
   final PetModel petModel;
   final int defaultChoiceIndex;
+  final AliadoModel aliadoModel;
 
-  AdoptarDetalles({this.petModel, this.defaultChoiceIndex});
+  AdoptarDetalles({this.petModel, this.defaultChoiceIndex, this.aliadoModel});
 
   @override
   _AdoptarDetallesState createState() => _AdoptarDetallesState();
@@ -114,7 +119,7 @@ class _AdoptarDetallesState extends State<AdoptarDetalles>
         defaultChoiceIndex: widget.defaultChoiceIndex,
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
-        petmodel: widget.petModel,
+        petModel: widget.petModel,
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -158,150 +163,196 @@ class _AdoptarDetallesState extends State<AdoptarDetalles>
                       ],
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: Image.network(
-                            widget.petModel.petthumbnailUrl,
-                            height: 155,
-                            width: 120,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, object, stacktrace) {
-                              return Container();
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          width: 25.0,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.50,
-                          height: 170.0,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              // Text("Me interesa",
-                              //     style: TextStyle(
-                              //         fontSize: 17,
-                              //         color: Color(0xFF57419D),
-                              //         fontWeight: FontWeight.bold),
-                              //     textAlign: TextAlign.left),
-                              //
-                              // SizedBox(
-                              //   height: 10,
-                              // ),
-                              SizedBox(
-                                width: 160,
-                                child: RaisedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              ApadrinarConfirmar(
-                                                  petModel: widget.petModel,
-                                                  defaultChoiceIndex: widget
-                                                      .defaultChoiceIndex)),
-                                    );
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5)),
-                                  color: Color(0xFFEB9448),
-                                  padding: EdgeInsets.all(6.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text("Apadrinar",
-                                          style: TextStyle(
-                                              fontFamily: 'Product Sans',
-                                              color: Colors.black,
-                                              fontSize: 15.0)),
-                                    ],
-                                  ),
-                                ),
+                        Column(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image.network(
+                                widget.petModel.petthumbnailUrl,
+                                height: 155,
+                                width: 120,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, object, stacktrace) {
+                                  return Container();
+                                },
                               ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              SizedBox(
-                                width: 160,
-                                child: RaisedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              AdoptarConfirmar(
-                                                  petModel: widget.petModel,
-                                                  defaultChoiceIndex: widget
-                                                      .defaultChoiceIndex)),
-                                    );
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5)),
-                                  color: Color(0xFF57419D),
-                                  padding: EdgeInsets.all(6.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text("Adoptar",
-                                          style: TextStyle(
-                                              fontFamily: 'Product Sans',
-                                              color: Colors.white,
-                                              fontSize: 15.0)),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              SizedBox(
-                                width: 160,
-                                child: RaisedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ChatPage(
-                                              aliado: widget.petModel.aliadoId,
-                                              defaultChoiceIndex:
-                                                  widget.defaultChoiceIndex)),
-                                    );
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5)),
-                                  color: Color(0xFF7F9D9D),
-                                  padding: EdgeInsets.all(6.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text("Enviar mensaje",
-                                          style: TextStyle(
-                                              fontFamily: 'Product Sans',
-                                              color: Colors.white,
-                                              fontSize: 15.0)),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                            SizedBox(height: 5,),
+                            Text('${widget.petModel.nombre}', style: TextStyle(color: textColor, fontSize: 20, fontWeight: FontWeight.bold),),
+                          ],
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
-                    Text('Nombre: ${widget.petModel.nombre}'),
-                    Text('Sexo: ${widget.petModel.sexo}'),
-                    Text(
-                        'Raza: ${widget.petModel.raza == null ? 'Mestizo' : ''}'),
-                    Text(widget.petModel.edadMascota),
-                    Text('${widget.petModel.tamanoMascota}'),
-                    SizedBox(height: 2),
+                    SizedBox(
+                      height: 8.0,
+                    ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        // Text("Me interesa",
+                        //     style: TextStyle(
+                        //         fontSize: 17,
+                        //         color: Color(0xFF57419D),
+                        //         fontWeight: FontWeight.bold),
+                        //     textAlign: TextAlign.left),
+                        //
+                        // SizedBox(
+                        //   height: 10,
+                        // ),
+                        PetshopApp.sharedPreferences
+                            .getString(PetshopApp.userPais) != 'Venezuela' ?
+                        SizedBox(
+                          width: _screenWidth * 0.28,
+                          child: RaisedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ApadrinarConfirmar(
+                                            petModel: widget.petModel,
+                                            defaultChoiceIndex: widget
+                                                .defaultChoiceIndex, aliadoModel: widget.aliadoModel)),
+                              );
+                            },
+                            shape: RoundedRectangleBorder(
+                                side: BorderSide(color: primaryColor),
+                                borderRadius: BorderRadius.circular(5)),
+                            color: Colors.white,
+                            padding: EdgeInsets.all(6.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text("Apadrinar",
+                                    style: TextStyle(
+                                        fontFamily: 'Product Sans',
+                                        color: primaryColor,
+                                        fontSize: 15.0)),
+                              ],
+                            ),
+                          ),
+                        ) : Container(),
+                        SizedBox(
+                          width: 6,
+                        ),
+                        SizedBox(
+                          width: _screenWidth * 0.28,
+                          child: RaisedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        AdoptarConfirmar(
+                                            petModel: widget.petModel,
+                                            defaultChoiceIndex: widget
+                                                .defaultChoiceIndex, aliadoModel: widget.aliadoModel)),
+                              );
+                            },
+                            shape: RoundedRectangleBorder(
+                                side: BorderSide(color: primaryColor),
+                                borderRadius: BorderRadius.circular(5)),
+                            color: Colors.white,
+                            padding: EdgeInsets.all(6.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text("Adoptar",
+                                    style: TextStyle(
+                                        fontFamily: 'Product Sans',
+                                        color: primaryColor,
+                                        fontSize: 15.0)),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 6,
+                        ),
+                        SizedBox(
+                          width: _screenWidth * 0.28,
+                          child: RaisedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        DonarConfirmar(
+                                            petModel: widget.petModel,
+                                            defaultChoiceIndex: widget
+                                                .defaultChoiceIndex, aliadoModel: widget.aliadoModel)),
+                              );
+                            },
+                            shape: RoundedRectangleBorder(
+                                side: BorderSide(color: primaryColor),
+                                borderRadius: BorderRadius.circular(5)),
+                            color: Colors.white,
+                            padding: EdgeInsets.all(6.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text("Donar",
+                                    style: TextStyle(
+                                        fontFamily: 'Product Sans',
+                                        color: primaryColor,
+                                        fontSize: 15.0)),
+                              ],
+                            ),
+                          ),
+                        ),
+                        // SizedBox(
+                        //   width: 3,
+                        // ),
+                        // SizedBox(
+                        //   width: _screenWidth * 0.28,
+                        //   child: RaisedButton(
+                        //     onPressed: () {
+                        //       Navigator.push(
+                        //         context,
+                        //         MaterialPageRoute(
+                        //             builder: (context) => ChatPage(
+                        //                 aliado: widget.petModel.aliadoId,
+                        //                 defaultChoiceIndex:
+                        //                     widget.defaultChoiceIndex)),
+                        //       );
+                        //     },
+                        //     shape: RoundedRectangleBorder(
+                        //         borderRadius: BorderRadius.circular(5)),
+                        //     color: Color(0xFF7F9D9D),
+                        //     padding: EdgeInsets.all(6.0),
+                        //     child: Column(
+                        //       mainAxisAlignment: MainAxisAlignment.center,
+                        //       children: [
+                        //         Text("Enviar mensaje",
+                        //             style: TextStyle(
+                        //                 fontFamily: 'Product Sans',
+                        //                 color: Colors.white,
+                        //                 fontSize: 15.0)),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Sexo: ${widget.petModel.sexo}'),
+                            Text(
+                                'Raza: ${widget.petModel.raza == null ? 'Mestizo' : ''}'),
+                            Text(widget.petModel.edadMascota),
+                            Text('${widget.petModel.tamanoMascota}'),
+                          ],
+                        ),
+
                         Column(
                           children: [
                             IconButton(
@@ -320,7 +371,7 @@ class _AdoptarDetallesState extends State<AdoptarDetalles>
                                         .doc(widget.petModel.mid)
                                         .collection('Favoritos')
                                         .doc(PetshopApp.sharedPreferences
-                                            .getString(PetshopApp.userUID))
+                                        .getString(PetshopApp.userUID))
                                         .set({
                                       'like': false,
                                       'uid': PetshopApp.sharedPreferences
@@ -338,7 +389,7 @@ class _AdoptarDetallesState extends State<AdoptarDetalles>
                                         .doc(widget.petModel.mid)
                                         .collection('Favoritos')
                                         .doc(PetshopApp.sharedPreferences
-                                            .getString(PetshopApp.userUID))
+                                        .getString(PetshopApp.userUID))
                                         .set({
                                       'like': true,
                                       'uid': PetshopApp.sharedPreferences
@@ -352,19 +403,143 @@ class _AdoptarDetallesState extends State<AdoptarDetalles>
                                 });
                               },
                             ),
-                            Text(
-                              "Me gusta",
-                              style: TextStyle(
-                                color: Color(0xFF7F9D9D),
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            // Text(
+                            //   "Me gusta",
+                            //   style: TextStyle(
+                            //     color: Color(0xFF7F9D9D),
+                            //     fontSize: 20,
+                            //     fontWeight: FontWeight.bold,
+                            //   ),
+                            // ),
                           ],
                         ),
-                        SizedBox(width: 5),
+
                       ],
                     ),
+
+                    SizedBox(height: 15),
+                    Divider(color: textColor,),
+                    SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: _screenWidth * 0.8,
+                          child: StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection('Aliados')
+                                  .doc(widget.petModel.aliadoId)
+                                  .snapshots(),
+                              builder: (context, dataSnapshot) {
+                                if (!dataSnapshot.hasData) {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                                return ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: 1,
+                                    shrinkWrap: true,
+                                    itemBuilder: (
+                                        context,
+                                        index,
+                                        ) {
+                                      AliadoModel ali = AliadoModel.fromJson(
+                                          dataSnapshot.data.data());
+                                      return Row(
+                                        children: [
+                                        CircleAvatar(
+                                                      backgroundColor: Colors.white,
+                                                      backgroundImage: NetworkImage(
+                                                        widget.aliadoModel.avatar,
+                                                      ),
+                                        ),
+
+                                                  SizedBox(
+                                                    width: 9,
+                                                  ),
+                                                  Container(
+                                                    width: _screenWidth * 0.65,
+                                                    child: Text(widget.aliadoModel.nombre,
+                                                        style: TextStyle(
+                                                            color: primaryColor,
+                                                            fontWeight: FontWeight.w700,
+                                                            fontSize: 19.0)),
+                                                  ),
+
+                                        ],
+                                      );
+                                    });
+                              }),
+                        ),
+                        // StreamBuilder(
+                        //     stream: FirebaseFirestore.instance
+                        //         .collection("Aliados")
+                        //         .doc(widget.petModel.aliadoId)
+                        //         .snapshots(),
+                        //     // ignore: missing_return
+                        //     builder: (context, snapshot) {
+                        //       if (!snapshot.hasData) {
+                        //         return Text("Cargando...");
+                        //       }
+                        //       return Row(
+                        //         children: [
+                        //           Container(
+                        //             height: 40,
+                        //             width: 40,
+                        //             child: CircleAvatar(
+                        //               backgroundColor: Colors.white,
+                        //               backgroundImage: Image.network(
+                        //                 snapshot.data["avatar"],
+                        //                 errorBuilder: (context,
+                        //                     object, stacktrace) {
+                        //                   return Container();
+                        //                 },
+                        //               ).image ??
+                        //                   'Cargando',
+                        //             ),
+                        //           ),
+                        //           SizedBox(
+                        //             width: 9,
+                        //           ),
+                        //           Container(
+                        //             width: _screenWidth * 0.65,
+                        //             child: Expanded(
+                        //               child: Text(snapshot.data["nombre"],
+                        //                   style: TextStyle(
+                        //                       color: primaryColor,
+                        //                       fontWeight: FontWeight.w700,
+                        //                       fontSize: 19.0)),
+                        //             ),
+                        //           ),
+                        //         ],
+                        //       );
+                        //     }),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ChatPage(
+                                    petModel: widget.petModel,
+                                    aliado: widget.petModel.aliadoId,
+                                    defaultChoiceIndex:
+                                    widget.defaultChoiceIndex,
+                                  )),
+                            );
+                          },
+                          child: Image.asset(
+                            'images/msg1.png',
+                            fit: BoxFit.contain,
+                            height: 40,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 15),
+                    Divider(color: textColor,),
+                    SizedBox(height: 15),
+
                     Text("Esta es mi historia",
                         style: TextStyle(
                             fontSize: 17,

@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/Config/enums.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:pet_shop/Models/Producto.dart';
 import 'package:pet_shop/Models/Cart.dart';
 import 'package:pet_shop/Models/alidados.dart';
@@ -12,10 +13,11 @@ import 'package:pet_shop/Models/ordenes.dart';
 import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_shop/Payment/AikonsPay/apcrearpago.dart';
+import 'package:pet_shop/Store/storehome.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
 import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
-
+import 'package:http/http.dart' as http;
 import 'confirmcancel.dart';
 
 class NewOrdenesDetalle extends StatefulWidget {
@@ -45,6 +47,7 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
   bool _value2 = false;
   bool _value3 = false;
   bool _isChecked = false;
+  String _prk;
 
   List<String> _texts = [
     "I have confirm the data is correct",
@@ -55,13 +58,30 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
     // TODO: implement initState
     super.initState();
     changeOrd(widget.orderModel);
+    _getprK();
   }
 
+  _getprK() {
+    DocumentReference documentReference =
+    FirebaseFirestore.instance.collection("Culqi").doc("Priv");
+    documentReference.get().then((dataSnapshot) {
+      setState(() {
+        _prk = (dataSnapshot.data()["prk"]);
+      });
+      // deleteUser();
+    });
+  }
   @override
   Widget build(BuildContext context) {
     //initializeDateFormatting("es_VE", null).then((_) {});
     var formatter = DateFormat.yMd('es_VE');
     String formatted = formatter.format(widget.orderModel.createdOn.toDate());
+
+    var formatterDayMonthOnly = DateFormat.d('es_VE');
+    String formattedDayMonthOnly = formatterDayMonthOnly.format(widget.orderModel.createdOn.toDate());
+
+
+
     double _screenWidth = MediaQuery.of(context).size.width,
         _screenHeight = MediaQuery.of(context).size.height;
     return MaterialApp(
@@ -69,7 +89,10 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
       home: Scaffold(
         appBar: AppBarCustomAvatar(
             context, widget.petModel, widget.defaultChoiceIndex),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
@@ -127,7 +150,7 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         widget.orderModel.tipoOrden == 'Servicio' ||
-                                widget.orderModel.tipoOrden == 'Plan'
+                                widget.orderModel.tipoOrden == 'Plan' || widget.orderModel.tipoOrden == 'Donación' || widget.orderModel.tipoOrden == 'Apadrinar' || widget.orderModel.tipoOrden == 'Adopción'
                             ? StreamBuilder(
                                 stream: FirebaseFirestore.instance
                                     .collection('Mascotas')
@@ -252,7 +275,7 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                                                               FontWeight.bold),
                                                     ),
                                                     Text(
-                                                      model.raza,
+                                                      model.raza != null ? model.raza : 'Otra',
                                                       style: TextStyle(
                                                           color:
                                                               Color(0xFF57419D),
@@ -407,7 +430,7 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                                               children: [
                                                 Text(widget
                                                     .orderModel.tipoOrden),
-                                                Text(' :'),
+                                                Text(': '),
                                                 Expanded(
                                                     child: Text(item.titulo)),
                                               ],
@@ -462,6 +485,22 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                                                 Text(item.precio.toString()),
                                               ],
                                             ),
+                                            widget.orderModel.tipoOrden == 'Apadrinar'
+                                                ? Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Fecha de pagos los días: $formattedDayMonthOnly',
+                                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  'Itinerancia de cobro: Mensual',
+                                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                                ),
+                                              ],
+                                            )
+                                                : Container(),
+                                            PetshopApp.sharedPreferences.getString(PetshopApp.userPais) == 'Venezuela' ?
                                             Row(
                                               children: [
                                                 Text(
@@ -470,7 +509,7 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                                                     .orderModel.montoAprobado
                                                     .toString()),
                                               ],
-                                            ),
+                                            ): Container(),
                                             SizedBox(
                                               height: 10.0,
                                             ),
@@ -567,13 +606,21 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                                 height: 30,
                                 child: RaisedButton(
                                   onPressed: () {
-                                    Timestamp stamp = widget.orderModel.date;
-                                    DateTime date = stamp.toDate();
-                                    DateTime now =
-                                        DateTime.now(); // current time
-                                    if (now.isBefore(date)) {
-                                      popUp();
-                                    } else {}
+                                    if(widget.orderModel.tipoOrden == 'Apadrinar'){
+                                      popUp('¿Estas seguro que deseas cancelar la orden?');
+                                    }
+                                    if(widget.orderModel.date != null){
+                                      Timestamp stamp = widget.orderModel.date;
+                                      DateTime date = stamp.toDate();
+                                      DateTime now =
+                                      DateTime.now(); // current time
+                                      if (now.isBefore(date)) {
+                                        popUp('¿Estas seguro que deseas cancelar tu suscripción de apadrinaje?');
+                                      }
+                                    }
+
+
+
                                   },
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(5)),
@@ -661,7 +708,7 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
     return nuevo;
   }
 
-  popUp() {
+  popUp(msg) {
     showDialog(
         builder: (context) => AlertDialog(
             shape: RoundedRectangleBorder(
@@ -673,7 +720,7 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                   width: MediaQuery.of(context).size.width,
                   child: Column(
                     children: [
-                      Text('¿Estas seguro que deseas cancelar la orden?',
+                        Text(msg,
                           style: TextStyle(fontWeight: FontWeight.bold)),
                       Row(
                         children: [
@@ -685,16 +732,22 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                                 onPressed: () {
                                   // confirmaCancel();
                                   // showConfirmationDialog(context);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ConfirmCancel(
-                                              orderModel: order,
-                                              petModel: widget.petModel,
-                                              defaultChoiceIndex:
-                                                  widget.defaultChoiceIndex,
-                                            )),
-                                  );
+                                  if(widget.orderModel.tipoOrden == 'Apadrinar'){
+                                    deleteSubscription();
+                                  }
+                                  else{
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ConfirmCancel(
+                                            orderModel: order,
+                                            petModel: widget.petModel,
+                                            defaultChoiceIndex:
+                                            widget.defaultChoiceIndex,
+                                          )),
+                                    );
+
+                                  }
 
                                   Navigator.of(context, rootNavigator: true)
                                       .pop();
@@ -750,6 +803,70 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
         context: context);
   }
 
+
+  deleteSubscription() async {
+    try {
+      var url =
+      ("https://api.culqi.com/v2/subscriptions/${widget.orderModel.pagoId}");
+      Map<String, String> headers = {
+        "Content-type": "application/json",
+        "Authorization": _prk
+      };
+      Response res = await http.delete(Uri.parse(url), headers: headers);
+      int statusCode = await res.statusCode;
+
+      setState(() {
+        // response = statusCode.toString();
+
+        print(statusCode);
+        print('el cuerpo es ${res.body}');
+      });
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => StoreHome()),
+            (Route<dynamic> route) => false,
+      );
+      OrderMessage(context, 'Suscripción de apadrinaje suspendida con exito');
+    } catch (e) {
+      print(e.message);
+      return null;
+    }
+  }
+
+  Future<void> OrderMessage(BuildContext context, String error) async {
+    // Navigator.of(context, rootNavigator: true).pop();
+    return showDialog(
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.3),
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)), //this right here
+            child: Container(
+              height: 400,
+              child: Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.check_circle, color: Colors.green, size: 55.0),
+                    SizedBox(height: 20.0),
+                    Text(
+                      error,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 17.0,
+                          fontWeight: FontWeight.w300),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
   confirmaCancel() {
     showDialog(
         builder: (context) => AlertDialog(
@@ -1066,13 +1183,18 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                   height: 30,
                   child: RaisedButton(
                     onPressed: () {
-                      Timestamp stamp = widget.orderModel.date;
-                      DateTime date = stamp.toDate();
-                      DateTime now = DateTime.now(); // current time
-
-                      if (now.isBefore(date)) {
-                        popUp();
-                      } else {}
+                      if(widget.orderModel.tipoOrden == 'Apadrinar'){
+                        popUp('¿Estas seguro que deseas cancelar la orden?');
+                      }
+                      if(widget.orderModel.date != null){
+                        Timestamp stamp = widget.orderModel.date;
+                        DateTime date = stamp.toDate();
+                        DateTime now =
+                        DateTime.now(); // current time
+                        if (now.isBefore(date)) {
+                          popUp('¿Estas seguro que deseas cancelar tu suscripción de apadrinaje?');
+                        }
+                      }
                     },
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5)),

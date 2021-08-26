@@ -378,7 +378,10 @@ class _ReferidosPageState extends State<ReferidosPage> {
                   )
                 ],
               )),
-              bottomNavigationBar: CustomBottomNavigationBar(),
+              bottomNavigationBar: CustomBottomNavigationBar(
+                petModel: widget.petModel,
+                defaultChoiceIndex: widget.defaultChoiceIndex,
+              ),
             );
           } else {
             return Container();

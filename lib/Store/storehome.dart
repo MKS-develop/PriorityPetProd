@@ -9,6 +9,7 @@ import 'package:pet_shop/Models/alidados.dart';
 import 'package:pet_shop/Models/contenido.dart';
 import 'package:pet_shop/Models/ordenes.dart';
 import 'package:pet_shop/Models/pet.dart';
+import 'package:pet_shop/Payment/payment.dart';
 import 'package:pet_shop/Productos/productoshome.dart';
 import 'package:pet_shop/Salud/saludhome.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,8 @@ class StoreHome extends StatefulWidget {
 
 class _StoreHomeState extends State<StoreHome> {
   List allResults = [];
+  List petResults = [];
+  List pet = [];
   PetModel model;
   ContenidoModel contenido;
   AliadoModel aliado;
@@ -45,6 +48,8 @@ class _StoreHomeState extends State<StoreHome> {
   bool home = true;
   bool noti = false;
   bool carrito = false;
+  String quality;
+  String nombreComercial;
 
   ScrollController controller = ScrollController();
   String userImageUrl = "";
@@ -55,6 +60,9 @@ class _StoreHomeState extends State<StoreHome> {
   @override
   void initState() {
     _getUserData();
+    _getQuality();
+    _getOrderStatus();
+    _getPetStatus();
 
     super.initState();
     setState(() {
@@ -76,12 +84,24 @@ class _StoreHomeState extends State<StoreHome> {
       print('la bienvenida esta en: $bienvenida');
     });
 
-    _getOrderStatus();
+
     // if(model !=null){
     print('La vaina es $model');
 
     setState(() {
       _defaultChoiceIndex = widget.defaultChoiceIndex;
+    });
+  }
+
+  _getQuality(){
+    DocumentReference documentReference = FirebaseFirestore.instance
+        .collection("Configuraciones")
+        .doc('3yqqjyVkTHHkg8yDIdS1');
+    documentReference.get().then((dataSnapshot) {
+
+      quality = (dataSnapshot.data()["quality"]);
+
+
     });
   }
 
@@ -198,9 +218,11 @@ class _StoreHomeState extends State<StoreHome> {
   }
 
   search() {
-    for (int i = 1; i < ordenes.length; i++) {
+    for (int i = 0; i <= ordenes.length; i++) {
       var nombreComercial = ordenes[i].nombreComercial;
-      var usuario = PetshopApp.sharedPreferences.getString(PetshopApp.userName);
+      var usuario = PetshopApp.sharedPreferences.getString(PetshopApp.userNombre);
+      var aliadoId = ordenes[i].aliadoId;
+      var oid = ordenes[i].oid;
       //   for(OrderModel order in allResults){
       showDialog(
         builder: (context) => AlertDialog(
@@ -223,7 +245,7 @@ class _StoreHomeState extends State<StoreHome> {
                   height: 14,
                 ),
                 RatingBar.builder(
-                  initialRating: 3,
+                  initialRating: 0,
                   minRating: 1,
                   direction: Axis.horizontal,
                   allowHalfRating: false,
@@ -247,8 +269,20 @@ class _StoreHomeState extends State<StoreHome> {
                 SizedBox(
                   child: RaisedButton(
                     onPressed: () {
-                      updateFields(ordenes[i].aliadoId, ordenes[i].oid);
-                      Navigator.of(context, rootNavigator: true).pop();
+                      // Navigator.of(context, rootNavigator: true).pop(context);
+                       Navigator.pop(context, true);
+                      // updateFields(aliadoId, oid);
+                      // var ratingSum = db.collection('Aliados').doc(aliadoId);
+                      // ratingSum.update({
+                      //   'totalRatings':
+                      //   FieldValue.increment(int.parse(ratingC.toStringAsFixed(0))),
+                      //   'countRatings': FieldValue.increment(1),
+                      // });
+                      //
+                      // var checkRef = db.collection('Ordenes').doc(oid);
+                      // checkRef.update({
+                      //   'calificacion': true,
+                      // });
                     },
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5)),
@@ -267,11 +301,30 @@ class _StoreHomeState extends State<StoreHome> {
         ),
         context: context,
         barrierColor: Colors.white.withOpacity(0),
-      );
+      ).then((value) {
+        if(value){
+          var ratingSum = db.collection('Aliados').doc(aliadoId);
+          ratingSum.update({
+            'totalRatings':
+            FieldValue.increment(int.parse(ratingC.toStringAsFixed(0))),
+            'countRatings': FieldValue.increment(1),
+          });
+
+          var checkRef = db.collection('Ordenes').doc(oid);
+          checkRef.update({
+            'calificacion': true,
+          });
+          // updateFields(aliadoId, oid);
+        }
+      });
     }
   }
 
   updateFields(aliadoId, oid) async {
+    // Navigator.of(context, rootNavigator: true).pop();
+    // Navigator.pop(context);
+    // Navigator.pop(context);
+    // Navigator.pop(context);
     var ratingSum = await db.collection('Aliados').doc(aliadoId);
     ratingSum.update({
       'totalRatings':
@@ -283,6 +336,155 @@ class _StoreHomeState extends State<StoreHome> {
     checkRef.update({
       'calificacion': true,
     });
+  }
+
+
+  Future<List<dynamic>> _getPetStatus() async {
+    List list = await FirebaseFirestore.instance
+        .collection('Mascotas')
+        .where("newOwner",
+        isEqualTo:
+        PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
+        .where("newPet", isEqualTo: true)
+
+        .get()
+        .then((val) => val.docs);
+
+    for (int i = 0; i < list.length; i++) {
+      FirebaseFirestore.instance
+          .collection('Mascotas')
+          .where("newOwner",
+          isEqualTo:
+          PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
+          .where("newPet", isEqualTo: true)
+          .where('pais', isEqualTo: PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
+          .snapshots()
+          .listen(PetList);
+    }
+    return list;
+  }
+
+  PetList(QuerySnapshot snapshot) async {
+    pet = [];
+    var docs = snapshot.docs;
+    for (var Doc in docs) {
+      setState(() {
+        petResults.add(PetModel.fromJson(Doc.data()));
+        PetModel petModel = PetModel.fromJson(Doc.data());
+        pet.add(petModel);
+      });
+    }
+    adopDialog();
+  }
+
+  adopDialog() {
+    for (int i = 0; i <= pet.length; i++) {
+      var nombreMascota = pet[i].nombre;
+      var petthumbnailUrl = pet[i].petthumbnailUrl;
+      var usuario = PetshopApp.sharedPreferences.getString(PetshopApp.userNombre);
+      var aliadoId = pet[i].aliadoId;
+      var costoAdulto = pet[i].costoAdulto;
+      var costoCachorro = pet[i].costoCachorro;
+      var edadMascota = pet[i].edadMascota;
+
+
+
+
+
+      DocumentReference documentReference = FirebaseFirestore.instance
+          .collection("Aliados")
+          .doc(aliadoId);
+      documentReference.get().then((dataSnapshot) {
+        setState(() {
+          nombreComercial = (dataSnapshot.data()["nombreComercial"]);
+        });
+
+
+
+      });
+      // var oid = pet[i].oid;
+      //   for(OrderModel order in allResults){
+      showDialog(
+        builder: (context) => AlertDialog(
+          // title: Text('Su pago ha sido aprobado.'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '$usuario,',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    CircleAvatar(
+                      backgroundColor: Colors.white,
+                      backgroundImage: NetworkImage(
+                        petthumbnailUrl,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 18,
+                ),
+                Text(
+                  'Hola, soy $nombreMascota, gracias por adoptarme, si pudiera hablar te diría que es el día más feliz de mi vida, gracias a ti tendré un nuevo hogar. Para proceder con el pago del aporte presiona "Continuar".',
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(
+                  height: 14,
+                ),
+
+                SizedBox(
+                  child: RaisedButton(
+                    onPressed: () {
+                      // Navigator.of(context, rootNavigator: true).pop(context);
+                      Navigator.pop(context, true);
+                      // updateFields(aliadoId, oid);
+                      // var ratingSum = db.collection('Aliados').doc(aliadoId);
+                      // ratingSum.update({
+                      //   'totalRatings':
+                      //   FieldValue.increment(int.parse(ratingC.toStringAsFixed(0))),
+                      //   'countRatings': FieldValue.increment(1),
+                      // });
+                      //
+                      // var checkRef = db.collection('Ordenes').doc(oid);
+                      // checkRef.update({
+                      //   'calificacion': true,
+                      // });
+                    },
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    color: Color(0xFF57419D),
+                    padding: EdgeInsets.all(10.0),
+                    child: Text("Continuar",
+                        style: TextStyle(
+                            fontFamily: 'Product Sans',
+                            color: Colors.white,
+                            fontSize: 18.0)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        context: context,
+        barrierColor: Colors.white.withOpacity(0),
+      ).then((value) {
+        if(value){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PaymentPage(
+                  petModel: petResults[i],
+                  defaultChoiceIndex:
+                  widget.defaultChoiceIndex, totalPrice: edadMascota == 'Adulto' ? costoAdulto: costoCachorro, tituloCategoria: 'Adopción', nombreComercial: nombreComercial,)),
+          );
+          // updateFields(aliadoId, oid);
+        }
+      });
+    }
   }
 
   @override
@@ -368,11 +570,12 @@ class _StoreHomeState extends State<StoreHome> {
             home: home,
             cart: carrito,
             noti: noti,
-            petmodel: model,
+            petModel: model,
             defaultChoiceIndex: _defaultChoiceIndex),
         drawer: MyDrawer(
           petModel: model,
           defaultChoiceIndex: _defaultChoiceIndex,
+          quality: quality,
         ),
         body: Container(
           height: MediaQuery.of(context).size.height,

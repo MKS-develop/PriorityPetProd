@@ -3,9 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class PetpointsModel{
   String uid;
   Timestamp createdOn;
-  int ppAcumulados;
-  int ppCanjeados;
-  int ppGenerados;
+  dynamic ppAcumulados;
+  dynamic ppCanjeados;
+  dynamic ppGenerados;
 
 
   PetpointsModel({

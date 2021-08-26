@@ -1,3 +1,4 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/Models/alidados.dart';
 import 'package:pet_shop/Models/location.dart';
@@ -13,6 +14,7 @@ import 'package:pet_shop/Widgets/navbar.dart';
 import '../Widgets/myDrawer.dart';
 import 'detalleservicio.dart';
 import 'dart:math' show cos, sqrt, asin;
+
 double width;
 
 class ServiciosHome extends StatefulWidget {
@@ -76,6 +78,7 @@ class _ServiciosHomeState extends State<ServiciosHome> {
         .where("pais",
             isEqualTo:
                 PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
+
         .get()
         .then((val) => val.docs);
 
@@ -84,6 +87,8 @@ class _ServiciosHomeState extends State<ServiciosHome> {
           .collection("Localidades")
           .doc(list_of_locations[i].documentID.toString())
           .collection("Servicios")
+          .where("categoria", isNotEqualTo: "Salud")
+
           .snapshots()
           .listen(CreateListofServices);
     }
@@ -145,7 +150,10 @@ class _ServiciosHomeState extends State<ServiciosHome> {
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
         ),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: _fondo(),
       ),
     );
@@ -633,9 +641,9 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                 itemCount: 1,
                 shrinkWrap: true,
                 itemBuilder: (
-                    context,
-                    index,
-                    ) {
+                  context,
+                  index,
+                ) {
                   LocationModel location = LocationModel.fromJson(
                       dataSnapshot.data.docs[index].data());
                   return StreamBuilder<QuerySnapshot>(
@@ -654,28 +662,18 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                             itemCount: 1,
                             shrinkWrap: true,
                             itemBuilder: (
-                                context,
-                                index,
-                                ) {
+                              context,
+                              index,
+                            ) {
                               AliadoModel aliado = AliadoModel.fromJson(
                                   dataSnapshot.data.docs[index].data());
                               if (location.location != null) {
-                                var p = 0.017453292519943295;
-                                var c = cos;
-                                var a = 0.5 -
-                                    c((location.location.latitude != null
-                                        ? location.location.latitude
-                                        : 0 - userLatLong.latitude) *
-                                        p) /
-                                        2 +
-                                    c(userLatLong.latitude * p) *
-                                        c(location.location.latitude * p) *
-                                        (1 -
-                                            c((location.location.longitude -
-                                                userLatLong.longitude) *
-                                                p)) /
-                                        2;
-                                totalD = 12742 * asin(sqrt(a));
+                                totalD = Geolocator.distanceBetween(
+                                    userLatLong.latitude,
+                                    userLatLong.longitude,
+                                    location.location.latitude,
+                                    location.location.longitude) /
+                                    1000;
                               }
                               if (aliado.totalRatings != null) {
                                 rating =
@@ -691,19 +689,19 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                                             serviceModel: servicio,
                                             aliadoModel: aliado,
                                             defaultChoiceIndex:
-                                            widget.defaultChoiceIndex,
+                                                widget.defaultChoiceIndex,
                                             locationModel: location,
                                             userLatLong: userLatLong)),
                                   );
                                 },
                                 child: Padding(
                                   padding:
-                                  const EdgeInsets.fromLTRB(2, 8, 2, 8),
+                                      const EdgeInsets.fromLTRB(2, 8, 2, 8),
                                   child: SizedBox(
                                     width: MediaQuery.of(context).size.width,
                                     child: Row(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Container(
                                           height: 70,
@@ -729,70 +727,78 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                                           ),
                                         ),
                                         SizedBox(
-                                          width: 15.0,
+                                          width: 10.0,
                                         ),
                                         Container(
                                           width: MediaQuery.of(context)
-                                              .size
-                                              .width *
-                                              0.5,
+                                                  .size
+                                                  .width *
+                                              0.55,
                                           height: 73,
                                           child: Column(
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                             mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Column(
                                                 crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                                    CrossAxisAlignment.start,
                                                 mainAxisAlignment:
-                                                MainAxisAlignment.start,
+                                                    MainAxisAlignment.start,
                                                 children: [
                                                   Text(aliado.nombreComercial,
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
                                                       style: TextStyle(
                                                           fontSize: 17,
                                                           color:
-                                                          Color(0xFF57419D),
+                                                              Color(0xFF57419D),
                                                           fontWeight:
-                                                          FontWeight.bold),
+                                                              FontWeight.bold),
                                                       textAlign:
-                                                      TextAlign.left),
+                                                          TextAlign.left),
                                                   location.mapAddress != null
                                                       ? Text(
-                                                      location.mapAddress,
-                                                      maxLines: 2,
-                                                      style: TextStyle(
-                                                        fontSize: 13,
-                                                      ),
-                                                      textAlign:
-                                                      TextAlign.left)
+                                                          location.mapAddress,
+                                                          maxLines: 2,
+                                                      overflow: TextOverflow.ellipsis,
+                                                          style: TextStyle(
+                                                            fontSize: 13,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.left)
                                                       : Text(
-                                                      location.mapAddress !=
-                                                          null
-                                                          ? location
-                                                          .mapAddress
-                                                          : location
-                                                          .direccionLocalidad,
-                                                      maxLines: 2,
-                                                      style: TextStyle(
-                                                        fontSize: 13,
-                                                      ),
-                                                      textAlign:
-                                                      TextAlign.left),
+                                                          location.mapAddress !=
+                                                                  null
+                                                              ? location
+                                                                  .mapAddress
+                                                              : location
+                                                                  .direccionLocalidad,
+                                                          maxLines: 2,
+                                                      overflow: TextOverflow.ellipsis,
+                                                          style: TextStyle(
+                                                            fontSize: 13,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.left),
                                                 ],
                                               ),
                                               Row(
                                                 mainAxisAlignment:
-                                                MainAxisAlignment.end,
+                                                    MainAxisAlignment.end,
                                                 children: [
                                                   Text(
                                                       rating.toString() != 'NaN'
-                                                          ? rating.toStringAsPrecision(1)
+                                                          ? rating
+                                                              .toStringAsPrecision(
+                                                                  1)
                                                           : '0',
                                                       style: TextStyle(
-                                                          fontSize: 16, color: Colors.orange),
-                                                      textAlign: TextAlign.left),
+                                                          fontSize: 16,
+                                                          color: Colors.orange),
+                                                      textAlign:
+                                                          TextAlign.left),
                                                   SizedBox(
                                                     width: 8,
                                                   ),
@@ -808,32 +814,33 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                                         ),
                                         totalD != 0
                                             ? SizedBox(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                height: 9,
-                                              ),
-                                              Icon(
-                                                Icons.location_on_rounded,
-                                                color: secondaryColor,
-                                              ),
-                                              SizedBox(
-                                                height: 3,
-                                              ),
-                                              Text(
-                                                  totalD < 500
-                                                      ? '${totalD.toStringAsFixed(1)} Km'
-                                                      : '+500 Km',
-                                                  style: TextStyle(
-                                                    fontSize: 12,
-                                                  ),
-                                                  textAlign:
-                                                  TextAlign.center),
-                                            ],
-                                          ),
-                                        )
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 9,
+                                                    ),
+                                                    Icon(
+                                                      Icons.location_on_rounded,
+                                                      color: secondaryColor,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 3,
+                                                    ),
+                                                    Text(
+                                                        totalD < 500
+                                                            ? '${totalD.toStringAsFixed(1)} Km'
+                                                            : '+500 Km',
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                        ),
+                                                        textAlign:
+                                                            TextAlign.center),
+                                                  ],
+                                                ),
+                                              )
                                             : Container(),
                                       ],
                                     ),

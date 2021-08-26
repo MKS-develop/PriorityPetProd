@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pet_shop/Authentication/autenticacion.dart';
 import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/Models/pet.dart';
@@ -12,14 +13,20 @@ import 'package:pet_shop/Store/signuphelpscreen.dart';
 import 'package:pet_shop/mascotas/mascotashome.dart';
 import 'package:pet_shop/usuario/usuarioinfo.dart';
 
+import 'ktitle.dart';
+
 class MyDrawer extends StatelessWidget {
   final PetModel petModel;
   final int defaultChoiceIndex;
+  final String quality;
 
-  MyDrawer({this.petModel, this.defaultChoiceIndex});
+  MyDrawer({this.petModel, this.defaultChoiceIndex, this.quality });
+
+
 
   @override
   Widget build(BuildContext context) {
+
     return Drawer(
       child: Container(
         // color: Color(0xFF57419D),
@@ -298,7 +305,14 @@ class MyDrawer extends StatelessWidget {
                 });
               },
             ),
-
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Text(quality!= null ? 'V1.1.0 $quality' : 'V1.1.0 Production', style: TextStyle(color: textColor,
+                    fontWeight: FontWeight.w300,
+                    fontSize: 13),),
+              ),
+            ),
           ],
         ),
       ),

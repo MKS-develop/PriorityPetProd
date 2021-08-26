@@ -133,7 +133,7 @@ class _EditarMascotaState extends State<EditarMascota>
                         backgroundColor: Colors.white,
                         backgroundImage: Image.network(
                           PetshopApp.sharedPreferences
-                            .getString(PetshopApp.userAvatarUrl),
+                              .getString(PetshopApp.userAvatarUrl),
                           errorBuilder: (context, object, stacktrace) {
                             return Container();
                           },
@@ -151,7 +151,10 @@ class _EditarMascotaState extends State<EditarMascota>
         petModel: widget.petModel,
         defaultChoiceIndex: widget.defaultChoiceIndex,
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        petModel: widget.petModel,
+        defaultChoiceIndex: widget.defaultChoiceIndex,
+      ),
       body: Container(
         height: MediaQuery.of(context).size.height,
         decoration: new BoxDecoration(
@@ -217,12 +220,11 @@ class _EditarMascotaState extends State<EditarMascota>
                                           backgroundColor: Colors.white,
                                           backgroundImage: Image.network(
                                             widget.petModel.petthumbnailUrl,
-                                            errorBuilder: (context, object, stacktrace) {
+                                            errorBuilder:
+                                                (context, object, stacktrace) {
                                               return Container();
                                             },
-                                          ).image
-                                        )
-                                      ),
+                                          ).image)),
 
                               // CircleAvatar(
                               //   radius: _screenWidth * 0.085,
@@ -441,9 +443,7 @@ class _EditarMascotaState extends State<EditarMascota>
                                       } else {
                                         List<String> list = [];
                                         for (int i = 0;
-                                            i <
-                                                dataSnapshot
-                                                    .data.docs.length;
+                                            i < dataSnapshot.data.docs.length;
                                             i++) {
                                           DocumentSnapshot razas =
                                               dataSnapshot.data.docs[i];
@@ -922,7 +922,8 @@ class _EditarMascotaState extends State<EditarMascota>
                       ),
                     ],
                   )),
-            ]))), context: context);
+            ]))),
+        context: context);
   }
 
   Future<void> Message(BuildContext context, String error) async {

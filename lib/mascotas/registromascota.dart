@@ -104,7 +104,7 @@ class _RegistroMascotaState extends State<RegistroMascota>
                         backgroundColor: Colors.white,
                         backgroundImage: Image.network(
                           PetshopApp.sharedPreferences
-                            .getString(PetshopApp.userAvatarUrl),
+                              .getString(PetshopApp.userAvatarUrl),
                           errorBuilder: (context, object, stacktrace) {
                             return Container();
                           },
@@ -122,7 +122,10 @@ class _RegistroMascotaState extends State<RegistroMascota>
         petModel: widget.petModel,
         defaultChoiceIndex: widget.defaultChoiceIndex,
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        petModel: widget.petModel,
+        defaultChoiceIndex: widget.defaultChoiceIndex,
+      ),
       body: Container(
         height: MediaQuery.of(context).size.height,
         decoration: new BoxDecoration(
@@ -406,9 +409,7 @@ class _RegistroMascotaState extends State<RegistroMascota>
                                       } else {
                                         List<String> list = [];
                                         for (int i = 0;
-                                            i <
-                                                dataSnapshot
-                                                    .data.docs.length;
+                                            i < dataSnapshot.data.docs.length;
                                             i++) {
                                           DocumentSnapshot razas =
                                               dataSnapshot.data.docs[i];

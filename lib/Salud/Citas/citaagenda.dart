@@ -82,6 +82,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
   String tituloCategoria = "Servicio";
   double totalPet = 0;
   dynamic _totalPrice;
+  double rating = 0;
 
   @override
   void initState() {
@@ -108,14 +109,19 @@ class _CitaAgendaState extends State<CitaAgenda> {
     print(formatted);
     // DateTime dateTime = DateTime.parse((formatted));
     // print('la fecha es: $dateTime');
-    double rating =
-        widget.aliadoModel.totalRatings / widget.aliadoModel.countRatings;
+    if (widget.aliadoModel.totalRatings != null) {
+      rating =
+          widget.aliadoModel.totalRatings / widget.aliadoModel.countRatings;
+    }
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBarCustomAvatar(
             context, widget.petModel, widget.defaultChoiceIndex),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
@@ -189,12 +195,19 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                   color: Color(0xFF57419D),
                                   fontWeight: FontWeight.bold),
                               textAlign: TextAlign.left),
-                          Text(
-                              widget.locationModel.direccionLocalidad != null
-                                  ? widget.locationModel.direccionLocalidad
-                                  : "",
+                          widget.locationModel.mapAddress != null
+                              ? Text(widget.locationModel.mapAddress,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                fontSize: 15,
+                                fontSize: 13,
+                              ),
+                              textAlign: TextAlign.left)
+                              : Text(widget.locationModel.direccionLocalidad,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 13,
                               ),
                               textAlign: TextAlign.left),
                           StreamBuilder<QuerySnapshot>(

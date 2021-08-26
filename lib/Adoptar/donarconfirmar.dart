@@ -1,52 +1,41 @@
-import 'dart:io';
 
-import 'package:age/age.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:pet_shop/Config/config.dart';
+import 'package:pet_shop/DialogBox/choosepetDialog.dart';
 import 'package:pet_shop/Models/alidados.dart';
-import 'package:pet_shop/Models/expedientechart.dart';
-import 'package:pet_shop/Models/temperaturachart.dart';
 import 'package:pet_shop/Payment/payment.dart';
-import 'package:pet_shop/Store/storehome.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
-import 'package:pet_shop/Widgets/customTextField.dart';
-import 'package:pet_shop/Widgets/customTextIconField.dart';
 import 'package:pet_shop/Widgets/ktitle.dart';
 import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 
-import 'package:pet_shop/Models/expediente.dart';
-import 'package:intl/intl.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 
 double width;
 
-class ApadrinarConfirmar extends StatefulWidget {
+class DonarConfirmar extends StatefulWidget {
   final PetModel petModel;
   final int defaultChoiceIndex;
   final AliadoModel aliadoModel;
 
-  ApadrinarConfirmar({this.petModel, this.defaultChoiceIndex, this.aliadoModel});
+  DonarConfirmar({this.petModel, this.defaultChoiceIndex, this.aliadoModel});
 
   @override
-  _ApadrinarConfirmarState createState() => _ApadrinarConfirmarState();
+  _DonarConfirmarState createState() => _DonarConfirmarState();
 }
 
-class _ApadrinarConfirmarState extends State<ApadrinarConfirmar> {
+class _DonarConfirmarState extends State<DonarConfirmar> {
   DateTime selectedDate = DateTime.now();
+
+  final TextEditingController _donarTextEditingController = TextEditingController();
 
   PetModel model;
 
-  String tituloCategoria = "Apadrinar";
-
-
   String productId = DateTime.now().millisecondsSinceEpoch.toString();
+  String tituloCategoria = "Donar";
 
   @override
   void initState() {
@@ -56,7 +45,7 @@ class _ApadrinarConfirmarState extends State<ApadrinarConfirmar> {
   }
 
   ScrollController controller = ScrollController();
-  String userImageUrl = "";
+
 
   final db = FirebaseFirestore.instance;
 
@@ -111,7 +100,7 @@ class _ApadrinarConfirmarState extends State<ApadrinarConfirmar> {
                         Padding(
                           padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
                           child: Text(
-                            "Apadrinar",
+                            "Donar",
                             style: TextStyle(
                               color: Color(0xFF57419D),
                               fontSize: 20,
@@ -154,7 +143,7 @@ class _ApadrinarConfirmarState extends State<ApadrinarConfirmar> {
                             Padding(
                               padding: const EdgeInsets.all(3.0),
                               child: Text(
-                                  "Gracias por tu interés en apadrinar a  ${widget.petModel.nombre}. Adoptar a distancia es una excelente forma de ayudar a un peludito del albergue que espera hogar. Además, gracias a tu colaboración podremos rescatar a otro perrito de la calle, esterilizarlo y darle un lugar seguro donde dormir."),
+                                  "Gracias por ayudar a ${widget.petModel.nombre}, tu aporte será destinado para contribuir con su alimentación, salud y cuidado."),
                             ),
                             // Padding(
                             //   padding: const EdgeInsets.all(3.0),
@@ -171,59 +160,87 @@ class _ApadrinarConfirmarState extends State<ApadrinarConfirmar> {
                     SizedBox(
                       height: 15,
                     ),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Monto mensual para apadrinar:",
+                        Text("Monto que deseas donar:",
                             style: TextStyle(
                                 fontFamily: 'Product Sans',
                                 color: primaryColor,
                                 fontSize: 15.0)),
-                        SizedBox(
-                          width: 100.0,
-                          child: RaisedButton(
-                            onPressed: () {},
-                            shape: RoundedRectangleBorder(
-                                // side: BorderSide(color: primaryColor),
-                                borderRadius:
-                                BorderRadius.circular(5)),
-                            color: textColor,
-                            padding: EdgeInsets.all(0.0),
-                            child: Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.center,
-                              children: [
-                                PetshopApp.sharedPreferences
-                                    .getString(PetshopApp
-                                    .userPais) == 'Perú' ?
-                                Text(
-                                    '${PetshopApp.sharedPreferences
-                                        .getString(PetshopApp
-                                        .simboloMoneda)} 100',
-                                    style: TextStyle(
-                                        fontFamily:
-                                        'Product Sans',
-                                        color: Color(0xFF57419D),
-                                        fontSize: 18.0,
-                                        fontWeight:
-                                        FontWeight.bold)): Text(
-                                    '${PetshopApp.sharedPreferences
-                                        .getString(PetshopApp
-                                        .simboloMoneda)} ${widget.petModel.costroApadrinar}',
-                                    style: TextStyle(
-                                        fontFamily:
-                                        'Product Sans',
-                                        color: Color(0xFF57419D),
-                                        fontSize: 18.0,
-                                        fontWeight:
-                                        FontWeight.bold)),
 
-                              ],
-                            ),
-                          ),
+                        Container(
+                          width: 100,
+                          height: 35,
+                          child: TextField(
+                            controller: _donarTextEditingController,
+                            autocorrect: true,
+                            autofocus: false,
+                            textAlign: TextAlign.left,
+                            keyboardType: TextInputType.number,
+                            style: TextStyle(fontSize: 17, color: primaryColor, fontWeight:
+                            FontWeight.bold),
+                            decoration: InputDecoration(
+                              // hintText: '0',
+                              prefixIcon: Padding(
+                                padding: const EdgeInsets.fromLTRB(4, 9, 0, 0),
+                                child: Text(PetshopApp.sharedPreferences
+                                    .getString(PetshopApp
+                                    .simboloMoneda), style: TextStyle(
+                                                  fontFamily:
+                                                  'Product Sans',
+                                                  color: Color(0xFF57419D),
+                                                  fontSize: 18.0,
+                                                  fontWeight:
+                                                  FontWeight.bold)),
+                              ),
+
+                              hintStyle: TextStyle(color: Colors.grey),
+                              // filled: true,
+                              // fillColor: Colors.white70,
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                                borderSide: BorderSide(color:primaryColor, width: 2),
+                              ), ),),
                         ),
+
+
+
+
+                        // SizedBox(
+                        //   width: 90.0,
+                        //   child: RaisedButton(
+                        //     onPressed: () {},
+                        //     shape: RoundedRectangleBorder(
+                        //         side: BorderSide(color: primaryColor),
+                        //         borderRadius:
+                        //         BorderRadius.circular(5)),
+                        //     color: Colors.white,
+                        //     padding: EdgeInsets.all(0.0),
+                        //     child: Row(
+                        //       mainAxisAlignment:
+                        //       MainAxisAlignment.center,
+                        //       children: [
+                        //         Text(
+                        //             '${PetshopApp.sharedPreferences
+                        //                 .getString(PetshopApp
+                        //                 .simboloMoneda)} ${widget.petModel.costroApadrinar}',
+                        //             style: TextStyle(
+                        //                 fontFamily:
+                        //                 'Product Sans',
+                        //                 color: Color(0xFF57419D),
+                        //                 fontSize: 18.0,
+                        //                 fontWeight:
+                        //                 FontWeight.bold)),
+                        //
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
+
                     SizedBox(
                       height: 15,
                     ),
@@ -231,23 +248,33 @@ class _ApadrinarConfirmarState extends State<ApadrinarConfirmar> {
                       width: 200,
                       child: RaisedButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PaymentPage(
+                          if(_donarTextEditingController.text.isNotEmpty){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PaymentPage(
                                     petModel: widget.petModel,
                                     defaultChoiceIndex:
-                                        widget.defaultChoiceIndex, totalPrice: PetshopApp.sharedPreferences
-                                    .getString(PetshopApp
-                                    .userPais) == 'Perú' ? 100: widget.petModel.costroApadrinar, tituloCategoria: tituloCategoria, aliadoModel: widget.aliadoModel,)),
-                          );
+                                    widget.defaultChoiceIndex, totalPrice: double.parse(_donarTextEditingController.text), tituloCategoria: tituloCategoria, aliadoModel: widget.aliadoModel,)),
+                            );
+                          }
+                          else{
+                            showDialog(
+                                builder: (context) =>
+                                new ChoosePetAlertDialog(
+                                  message:
+                                  "Por favor ingrese el monto a donar.",
+                                ),
+                                context: context);
+                          }
+
                         },
                         // uploading ? null : ()=> uploadImageAndSavePetInfo(),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
                         color: Color(0xFF57419D),
                         padding: EdgeInsets.all(6.0),
-                        child: Text("Comenzar apadrinaje",
+                        child: Text("Aceptar y donar",
                             style: TextStyle(
                                 fontFamily: 'Product Sans',
                                 color: Colors.white,

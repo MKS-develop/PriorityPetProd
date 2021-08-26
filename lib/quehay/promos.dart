@@ -67,7 +67,10 @@ class _PromoHomeState extends State<PromoHome> {
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
         ),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: MediaQuery.of(context).size.height,
           decoration: new BoxDecoration(
@@ -261,10 +264,12 @@ class _PromoHomeState extends State<PromoHome> {
                     itemCount: 1,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context,
-                        index,) {
+                    itemBuilder: (
+                      context,
+                      index,
+                    ) {
                       AliadoModel ali =
-                      AliadoModel.fromJson(dataSnapshot.data.data());
+                          AliadoModel.fromJson(dataSnapshot.data.data());
 
                       return StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance
@@ -281,16 +286,18 @@ class _PromoHomeState extends State<PromoHome> {
                                 physics: NeverScrollableScrollPhysics(),
                                 itemCount: 1,
                                 shrinkWrap: true,
-                                itemBuilder: (context,
-                                    index,) {
-                                  LocationModel location = LocationModel
-                                      .fromJson(
-                                      dataSnapshot.data.docs[index].data());
+                                itemBuilder: (
+                                  context,
+                                  index,
+                                ) {
+                                  LocationModel location =
+                                      LocationModel.fromJson(
+                                          dataSnapshot.data.docs[index].data());
                                   return Container(
                                     height: 150,
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .spaceEvenly,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
                                       children: [
                                         Container(
                                           height: 140,
@@ -298,8 +305,8 @@ class _PromoHomeState extends State<PromoHome> {
                                           child: Image.network(
                                             pro.urlImagen,
                                             fit: BoxFit.cover,
-                                            errorBuilder: (context, object,
-                                                stacktrace) {
+                                            errorBuilder:
+                                                (context, object, stacktrace) {
                                               return Container();
                                             },
                                           ),
@@ -308,24 +315,24 @@ class _PromoHomeState extends State<PromoHome> {
                                           width: 14.0,
                                         ),
                                         Container(
-                                          width: MediaQuery
-                                              .of(context)
-                                              .size
-                                              .width * 0.4,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.4,
                                           child: Column(
                                             mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Row(
-                                                mainAxisAlignment: MainAxisAlignment
-                                                    .start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
                                                 children: [
                                                   Flexible(
                                                       child: Text(pro.titulo,
                                                           style: TextStyle(
                                                               fontSize: 16),
-                                                          textAlign: TextAlign
-                                                              .left)),
+                                                          textAlign:
+                                                              TextAlign.left)),
                                                 ],
                                               ),
                                               SizedBox(
@@ -335,45 +342,51 @@ class _PromoHomeState extends State<PromoHome> {
                                                     if (model == null) {
                                                       {
                                                         showDialog(
-                                                            builder: (
-                                                                context) =>
-                                                            new ChoosePetAlertDialog(
-                                                              message:
-                                                              "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
-                                                            ),
+                                                            builder: (context) =>
+                                                                new ChoosePetAlertDialog(
+                                                                  message:
+                                                                      "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
+                                                                ),
                                                             context: context);
                                                       }
                                                     } else {
                                                       Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
-                                                            builder: (
-                                                                context) =>
+                                                            builder: (context) =>
                                                                 DetallesPromo(
-                                                                  petModel: model,
-                                                                  promotionModel: pro,
-                                                                  aliadoModel: ali,
-                                                                  locationModel: location,
-                                                                  defaultChoiceIndex: widget
-                                                                      .defaultChoiceIndex,
+                                                                  petModel:
+                                                                      model,
+                                                                  promotionModel:
+                                                                      pro,
+                                                                  aliadoModel:
+                                                                      ali,
+                                                                  locationModel:
+                                                                      location,
+                                                                  defaultChoiceIndex:
+                                                                      widget
+                                                                          .defaultChoiceIndex,
                                                                 )),
                                                       );
                                                     }
                                                   },
                                                   shape: RoundedRectangleBorder(
                                                       borderRadius:
-                                                      BorderRadius.circular(5)),
+                                                          BorderRadius.circular(
+                                                              5)),
                                                   color: Color(0xFFEB9448),
                                                   padding: EdgeInsets.all(10.0),
                                                   child: Column(
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       Text("Más información",
                                                           style: TextStyle(
-                                                              fontFamily: 'Product Sans',
-                                                              color: Colors
-                                                                  .white,
+                                                              fontFamily:
+                                                                  'Product Sans',
+                                                              color:
+                                                                  Colors.white,
                                                               fontSize: 18.0)),
                                                     ],
                                                   ),
@@ -385,11 +398,11 @@ class _PromoHomeState extends State<PromoHome> {
                                       ],
                                     ),
                                   );
-                                }
-                            );
+                                });
                           });
                     });
-              }),],
+              }),
+        ],
       ),
     );
   }

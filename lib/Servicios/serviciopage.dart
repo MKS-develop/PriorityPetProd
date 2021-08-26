@@ -18,6 +18,7 @@ import 'package:pet_shop/Widgets/navbar.dart';
 import '../Widgets/myDrawer.dart';
 import 'serviciodetalle.dart';
 import 'dart:math' show cos, sqrt, asin;
+import 'package:geolocator/geolocator.dart';
 
 double width;
 
@@ -181,7 +182,10 @@ class _ServicioPageState extends State<ServicioPage> {
       home: Scaffold(
         appBar: AppBarCustomAvatar(
             context, widget.petModel, widget.defaultChoiceIndex),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
@@ -633,9 +637,8 @@ class _ServicioPageState extends State<ServicioPage> {
                         ],
                       )
                     : Container(
-                        height: 99 *
-                double.parse(
-                _resultsList.length.toString()),
+                        height:
+                            99 * double.parse(_resultsList.length.toString()),
                         width: _screenWidth,
                         child: Column(
                           children: [
@@ -689,6 +692,7 @@ class _ServicioPageState extends State<ServicioPage> {
                 ) {
                   LocationModel location = LocationModel.fromJson(
                       dataSnapshot.data.docs[index].data());
+
                   return StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection("Aliados")
@@ -710,24 +714,21 @@ class _ServicioPageState extends State<ServicioPage> {
                             ) {
                               AliadoModel aliado = AliadoModel.fromJson(
                                   dataSnapshot.data.docs[index].data());
-                              if (userLatLong !=null && location.location != null) {
-                                var p = 0.017453292519943295;
-                                var c = cos;
-                                var a = 0.5 -
-                                    c((location.location.latitude != null
-                                                ? location.location.latitude
-                                                : 0 - userLatLong.latitude) *
-                                            p) /
-                                        2 +
-                                    c(userLatLong.latitude * p) *
-                                        c(location.location.latitude * p) *
-                                        (1 -
-                                            c((location.location.longitude -
-                                                    userLatLong.longitude) *
-                                                p)) /
-                                        2;
-                                totalD = 12742 * asin(sqrt(a));
+                              if (userLatLong != null &&
+                                  location.location != null) {
+                                totalD = Geolocator.distanceBetween(
+                                        userLatLong.latitude,
+                                        userLatLong.longitude,
+                                        location.location.latitude,
+                                        location.location.longitude) /
+                                    1000;
                               }
+                              // var p = 0.017453292519943295;
+                              // var c = cos;
+                              // var a = 0.5 - c((location.location.latitude != null
+                              //     ? location.location.latitude
+                              //     : 0 - userLatLong.latitude) * p) / 2 + c(userLatLong.latitude * p) * c(location.location.latitude * p) * (1 - c((location.location.longitude - userLatLong.longitude) * p)) / 2;
+                              // totalD = 12742 * asin(sqrt(a));
 
                               if (aliado.totalRatings != null) {
                                 rating =
@@ -781,13 +782,13 @@ class _ServicioPageState extends State<ServicioPage> {
                                           ),
                                         ),
                                         SizedBox(
-                                          width: 15.0,
+                                          width: 10.0,
                                         ),
                                         Container(
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width *
-                                              0.5,
+                                              0.55,
                                           height: 73,
                                           child: Column(
                                             crossAxisAlignment:
@@ -802,6 +803,8 @@ class _ServicioPageState extends State<ServicioPage> {
                                                     MainAxisAlignment.start,
                                                 children: [
                                                   Text(aliado.nombreComercial,
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
                                                       style: TextStyle(
                                                           fontSize: 17,
                                                           color:
@@ -814,6 +817,7 @@ class _ServicioPageState extends State<ServicioPage> {
                                                       ? Text(
                                                           location.mapAddress,
                                                           maxLines: 2,
+                                                      overflow: TextOverflow.ellipsis,
                                                           style: TextStyle(
                                                             fontSize: 13,
                                                           ),
@@ -827,6 +831,7 @@ class _ServicioPageState extends State<ServicioPage> {
                                                               : location
                                                                   .direccionLocalidad,
                                                           maxLines: 2,
+                                                      overflow: TextOverflow.ellipsis,
                                                           style: TextStyle(
                                                             fontSize: 13,
                                                           ),
@@ -840,11 +845,15 @@ class _ServicioPageState extends State<ServicioPage> {
                                                 children: [
                                                   Text(
                                                       rating.toString() != 'NaN'
-                                                          ? rating.toStringAsPrecision(1)
+                                                          ? rating
+                                                              .toStringAsPrecision(
+                                                                  1)
                                                           : '0',
                                                       style: TextStyle(
-                                                          fontSize: 16, color: Colors.orange),
-                                                      textAlign: TextAlign.left),
+                                                          fontSize: 16,
+                                                          color: Colors.orange),
+                                                      textAlign:
+                                                          TextAlign.left),
                                                   SizedBox(
                                                     width: 8,
                                                   ),
@@ -874,11 +883,11 @@ class _ServicioPageState extends State<ServicioPage> {
                                                     SizedBox(
                                                       height: 3,
                                                     ),
-
                                                     Text(
-                                                        totalD < 500.00
+                                                        totalD < 500
                                                             ? '${totalD.toStringAsFixed(1)} Km'
                                                             : '+500 Km',
+                                                        overflow: TextOverflow.ellipsis,
                                                         style: TextStyle(
                                                           fontSize: 12,
                                                         ),

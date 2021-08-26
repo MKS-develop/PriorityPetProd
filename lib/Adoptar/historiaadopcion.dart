@@ -143,7 +143,10 @@ class _HistoriaAdopcionState extends State<HistoriaAdopcion> {
         home: Scaffold(
             appBar: AppBarCustomAvatar(
                 context, widget.petModel, widget.defaultChoiceIndex),
-            bottomNavigationBar: CustomBottomNavigationBar(),
+            bottomNavigationBar: CustomBottomNavigationBar(
+              petModel: widget.petModel,
+              defaultChoiceIndex: widget.defaultChoiceIndex,
+            ),
             drawer: MyDrawer(
               petModel: widget.petModel,
               defaultChoiceIndex: widget.defaultChoiceIndex,

@@ -118,7 +118,7 @@ class _ProductosHomeState extends State<ProductosHome> {
           defaultChoiceIndex: widget.defaultChoiceIndex,
         ),
         bottomNavigationBar:
-            CustomBottomNavigationBar(petmodel: widget.petModel),
+            CustomBottomNavigationBar(petModel: widget.petModel),
         body: _fondo(),
       ),
     );

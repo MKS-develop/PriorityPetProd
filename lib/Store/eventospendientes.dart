@@ -55,7 +55,10 @@ class _EventosPendientesHomeState extends State<EventosPendientesHome> {
       home: Scaffold(
         appBar: AppBarCustomAvatar(
             context, widget.petModel, widget.defaultChoiceIndex),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
@@ -464,7 +467,7 @@ class _EventosPendientesHomeState extends State<EventosPendientesHome> {
                                                                           () {
                                                                         Navigator.push(
                                                                             context,
-                                                                            MaterialPageRoute(builder: (context) => VideoLobby(petModel: model, itemModel: item, orderModel: order)));
+                                                                            MaterialPageRoute(builder: (context) => VideoLobby(petModel: widget.petModel, itemModel: item, orderModel: order, defaultChoiceIndex: widget.defaultChoiceIndex)));
                                                                       },
                                                                       child: Image
                                                                           .asset(

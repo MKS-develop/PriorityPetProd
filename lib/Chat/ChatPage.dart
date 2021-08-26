@@ -59,7 +59,10 @@ class _ChatPageState extends State<ChatPage> {
       home: Scaffold(
         appBar: AppBarCustomAvatar(
             context, widget.petModel, widget.defaultChoiceIndex),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
@@ -123,49 +126,99 @@ class _ChatPageState extends State<ChatPage> {
                                   onPressed: () {
                                     Navigator.pop(context);
                                   }),
-                              StreamBuilder(
-                                  stream: FirebaseFirestore.instance
-                                      .collection("Aliados")
-                                      .doc(aliado)
-                                      .snapshots(),
-                                  // ignore: missing_return
-                                  builder: (context, snapshot) {
-                                    if (!snapshot.hasData) {
-                                      return Text("Cargando...");
-                                    }
-                                    return Row(
-                                      children: [
-                                        Container(
-                                          height: 40,
-                                          width: 40,
-                                          child: CircleAvatar(
-                                            backgroundColor: Colors.white,
-                                            backgroundImage: Image.network(
-                                                  snapshot.data["avatar"],
-                                                  errorBuilder: (context,
-                                                      object, stacktrace) {
-                                                    return Container();
-                                                  },
-                                                ).image ??
-                                                'Cargando',
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 9,
-                                        ),
-                                        Container(
-                                          width: _screenWidth * 0.6,
-                                          child: Expanded(
-                                            child: Text(snapshot.data["nombre"],
-                                                style: TextStyle(
-                                                    color: primaryColor,
-                                                    fontWeight: FontWeight.w700,
-                                                    fontSize: 19.0)),
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  })
+                              Container(
+                                width: _screenWidth * 0.8,
+                                child: StreamBuilder(
+                                    stream: FirebaseFirestore.instance
+                                        .collection('Aliados')
+                                        .doc(aliado)
+                                        .snapshots(),
+                                    builder: (context, dataSnapshot) {
+                                      if (!dataSnapshot.hasData) {
+                                        return Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                      return ListView.builder(
+                                          physics: NeverScrollableScrollPhysics(),
+                                          itemCount: 1,
+                                          shrinkWrap: true,
+                                          itemBuilder: (
+                                              context,
+                                              index,
+                                              ) {
+                                            AliadoModel ali = AliadoModel.fromJson(
+                                                dataSnapshot.data.data());
+                                            return Row(
+                                              children: [
+                                                CircleAvatar(
+                                                  backgroundColor: Colors.white,
+                                                  backgroundImage: NetworkImage(
+                                                    ali.avatar,
+                                                  ),
+                                                ),
+
+                                                SizedBox(
+                                                  width: 9,
+                                                ),
+                                                Container(
+                                                  width: _screenWidth * 0.65,
+                                                  child: Text(ali.nombre,
+                                                      maxLines: 2,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                          color: primaryColor,
+                                                          fontWeight: FontWeight.w700,
+                                                          fontSize: 19.0)),
+                                                ),
+                                              ],
+                                            );
+                                          });
+                                    }),
+                              ),
+                              // StreamBuilder(
+                              //     stream: FirebaseFirestore.instance
+                              //         .collection("Aliados")
+                              //         .doc(aliado)
+                              //         .snapshots(),
+                              //     // ignore: missing_return
+                              //     builder: (context, snapshot) {
+                              //       if (!snapshot.hasData) {
+                              //         return Text("Cargando...");
+                              //       }
+                              //       return Row(
+                              //         children: [
+                              //           Container(
+                              //             height: 40,
+                              //             width: 40,
+                              //             child: CircleAvatar(
+                              //               backgroundColor: Colors.white,
+                              //               backgroundImage: Image.network(
+                              //                     snapshot.data["avatar"],
+                              //                     errorBuilder: (context,
+                              //                         object, stacktrace) {
+                              //                       return Container();
+                              //                     },
+                              //                   ).image ??
+                              //                   'Cargando',
+                              //             ),
+                              //           ),
+                              //           SizedBox(
+                              //             width: 9,
+                              //           ),
+                              //           Container(
+                              //             width: _screenWidth * 0.6,
+                              //             child: Expanded(
+                              //               child: Text(snapshot.data["nombre"],
+                              //                   style: TextStyle(
+                              //                       color: primaryColor,
+                              //                       fontWeight: FontWeight.w700,
+                              //                       fontSize: 19.0)),
+                              //             ),
+                              //           ),
+                              //         ],
+                              //       );
+                              //     }),
                             ]),
                       ),
                       Container(

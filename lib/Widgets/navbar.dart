@@ -10,10 +10,10 @@ import 'package:pet_shop/cart/cartfinal.dart';
 
 class CustomBottomNavigationBar extends StatefulWidget {
   final noti, home, cart;
-  final PetModel petmodel;
+  final PetModel petModel;
   final int defaultChoiceIndex;
 
-  CustomBottomNavigationBar({this.noti, this.home, this.cart, this.petmodel, this.defaultChoiceIndex});
+  CustomBottomNavigationBar({this.noti, this.home, this.cart, this.petModel, this.defaultChoiceIndex});
   @override
   _CustomBottomNavigationBarState createState() =>
       _CustomBottomNavigationBarState();
@@ -101,7 +101,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                   // Navigator.pushReplacement(context, route);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => StoreHome(petModel: widget.petmodel, defaultChoiceIndex: widget.defaultChoiceIndex)),
+                    MaterialPageRoute(builder: (context) => StoreHome(petModel: widget.petModel, defaultChoiceIndex: widget.defaultChoiceIndex)),
                   );
                 }
                 setState(() {
@@ -132,7 +132,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                   // Navigator.pushReplacement(context, route);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => NotificacionesPage(petModel: widget.petmodel, defaultChoiceIndex: widget.defaultChoiceIndex,)),
+                    MaterialPageRoute(builder: (context) => NotificacionesPage(petModel: widget.petModel, defaultChoiceIndex: widget.defaultChoiceIndex,)),
                   );
                 }
                 setState(() {
@@ -164,7 +164,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                   // Navigator.pushReplacement(context, route);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => CartFinal(petModel: widget.petmodel, defaultChoiceIndex: widget.defaultChoiceIndex,)),
+                    MaterialPageRoute(builder: (context) => CartFinal(petModel: widget.petModel, defaultChoiceIndex: widget.defaultChoiceIndex,)),
                   );
                 }
                 setState(() {
@@ -204,6 +204,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         .collection('Dueños')
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
         .collection('Cart')
+        .where('pais', isEqualTo: PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
         .get()
         .then((val) => val.docs);
 

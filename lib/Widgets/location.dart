@@ -70,7 +70,7 @@
 //           centerTitle: true,
 //
 //         ),
-//         bottomNavigationBar: CustomBottomNavigationBar(),
+//         bottomNavigationBar: CustomBottomNavigationBar(petModel: widget.petModel, defaultChoiceIndex: widget.defaultChoiceIndex,),
 //         drawer: MyDrawer(petModel: widget.petModel, defaultChoiceIndex: widget.defaultChoiceIndex,),
 //         body: Builder(builder: (context) {
 //           return Center(

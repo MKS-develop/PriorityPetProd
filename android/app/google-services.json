@@ -1,93 +1,34 @@
 {
   "project_info": {
-    "project_number": "263820990167",
-    "project_id": "priority-pet-prod",
-    "storage_bucket": "priority-pet-prod.appspot.com"
+    "project_number": "905988100721",
+    "project_id": "priority-pet-quality",
+    "storage_bucket": "priority-pet-quality.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:263820990167:android:3c1e92d9048ee636604292",
-        "android_client_info": {
-          "package_name": "com.ppa.ppet_aliado"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "263820990167-9nsltn9g6p6u7bvt2pebp3kj4ctd31tb.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ppa.ppet_aliado",
-            "certificate_hash": "aedf9c46431d6ae64ec5502e0456938c143ed850"
-          }
-        },
-        {
-          "client_id": "263820990167-q5kdgtp55ttnkt4ofp8jjscb64cpf0an.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyD4P2cjtHlNSm17NQpmlwnjl0xHvvW9UUw"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "263820990167-q5kdgtp55ttnkt4ofp8jjscb64cpf0an.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "263820990167-joomcs15ug4edue61c3lao7k6j4f3ag1.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.ppetAliado"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:263820990167:android:5c93a5093f1d9d72604292",
+        "mobilesdk_app_id": "1:905988100721:android:6dae50abcad49c3cb2c1d0",
         "android_client_info": {
           "package_name": "com.ppd.prioritypet"
         }
       },
       "oauth_client": [
         {
-          "client_id": "263820990167-f2c1nngc3pi16utp6vg2h5ffcqvnbrvk.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ppd.prioritypet",
-            "certificate_hash": "fa5e8f03ba08f699cf39f99e80555b1e80d91977"
-          }
-        },
-        {
-          "client_id": "263820990167-q5kdgtp55ttnkt4ofp8jjscb64cpf0an.apps.googleusercontent.com",
+          "client_id": "905988100721-kv910s4jf9o97tibe24g14bfrsl2rr3b.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD4P2cjtHlNSm17NQpmlwnjl0xHvvW9UUw"
+          "current_key": "AIzaSyA1pAcj9f-jnfOW1ODDsKhBwzibzk8v7yU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "263820990167-q5kdgtp55ttnkt4ofp8jjscb64cpf0an.apps.googleusercontent.com",
+              "client_id": "905988100721-kv910s4jf9o97tibe24g14bfrsl2rr3b.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "263820990167-joomcs15ug4edue61c3lao7k6j4f3ag1.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.ppetAliado"
-              }
             }
           ]
         }

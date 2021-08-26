@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dropdownfield/dropdownfield.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/Models/alidados.dart';
 import 'package:pet_shop/Models/clinicas.dart';
 import 'package:pet_shop/Models/especialidades.dart';
@@ -81,6 +82,9 @@ class _VideoPageState extends State<VideoPage> {
     List list_of_locations = await FirebaseFirestore.instance
         .collection("Localidades")
         .where("serviciosContiene", isEqualTo: true)
+        .where("pais", isEqualTo:
+    PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
+
         // .where("ciudad", isEqualTo: _categoria)
         .get()
         .then((val) => val.docs);
@@ -157,7 +161,10 @@ class _VideoPageState extends State<VideoPage> {
       home: Scaffold(
         appBar: AppBarCustomAvatar(
             context, widget.petModel, widget.defaultChoiceIndex),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
@@ -547,135 +554,137 @@ class _VideoPageState extends State<VideoPage> {
     return otro;
   }
 
-  Widget sourceInfo(BuildContext context, DocumentSnapshot document) {
-    final clinica = ClinicasModel.fromSnapshot(document);
-
-    return InkWell(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          height: 90.0,
-          width: MediaQuery.of(context).size.width,
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => VideoHome(petModel: model)),
-              );
-            },
-            child: Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [],
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: Image.network(
-                          clinica.avatar,
-                          width: 75.0,
-                          height: 75.0,
-                          fit: BoxFit.fill,
-                          errorBuilder: (context, object, stacktrace) {
-                            return Container();
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        width: 8.0,
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.6,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(clinica.nombreComercial,
-                                style: TextStyle(
-                                    fontSize: 17, fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.left),
-                            Text(clinica.locacion,
-                                style: TextStyle(fontSize: 12),
-                                textAlign: TextAlign.left),
-                            Text(clinica.pais,
-                                style: TextStyle(fontSize: 12),
-                                textAlign: TextAlign.left),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            StreamBuilder<QuerySnapshot>(
-                                stream: FirebaseFirestore.instance
-                                    .collection("Aliados")
-                                    .doc(clinica.aliadoId)
-                                    .collection("Especialidades")
-                                    .snapshots(),
-                                builder: (context, dataSnapshot) {
-                                  if (!dataSnapshot.hasData) {
-                                    return Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  }
-                                  return Container(
-                                    width: 100,
-                                    child: ListView.builder(
-                                        physics: NeverScrollableScrollPhysics(),
-                                        itemCount:
-                                            dataSnapshot.data.docs.length,
-                                        shrinkWrap: true,
-                                        itemBuilder: (
-                                          context,
-                                          index,
-                                        ) {
-                                          EspecialidadesModel especialidades =
-                                              EspecialidadesModel.fromJson(
-                                                  dataSnapshot.data.docs[index]
-                                                      .data());
-                                          return Column(
-                                            children: [
-                                              Text(
-                                                especialidades.especialidad,
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        }),
-                                  );
-                                }),
-
-                            // Row(
-                            //   children: [
-                            //     Flexible(child: Text(clinica.ciudad, style: TextStyle(fontSize: 13), textAlign: TextAlign.left)),
-                            //     Flexible(child: Text(clinica.pais, style: TextStyle(fontSize: 13), textAlign: TextAlign.left)),
-                            //   ],
-                            // ),
-                            // Flexible(child: Text(clinica.horario, style: TextStyle(fontSize: 13), textAlign: TextAlign.left)),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget sourceInfo(BuildContext context, DocumentSnapshot document) {
+  //   final clinica = ClinicasModel.fromSnapshot(document);
+  //
+  //   return InkWell(
+  //     child: Padding(
+  //       padding: const EdgeInsets.all(8.0),
+  //       child: Container(
+  //         height: 90.0,
+  //         width: MediaQuery.of(context).size.width,
+  //         child: GestureDetector(
+  //           onTap: () {
+  //             Navigator.push(
+  //               context,
+  //               MaterialPageRoute(
+  //                   builder: (context) => VideoHome(petModel: model, defaultChoiceIndex:
+  //                   widget.defaultChoiceIndex,)),
+  //             );
+  //           },
+  //           child: Container(
+  //             child: Column(
+  //               mainAxisAlignment: MainAxisAlignment.start,
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Row(
+  //                   mainAxisAlignment: MainAxisAlignment.start,
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [],
+  //                 ),
+  //                 SizedBox(
+  //                   height: 5,
+  //                 ),
+  //                 Row(
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     ClipRRect(
+  //                       borderRadius: BorderRadius.circular(8.0),
+  //                       child: Image.network(
+  //                         clinica.avatar,
+  //                         width: 75.0,
+  //                         height: 75.0,
+  //                         fit: BoxFit.fill,
+  //                         errorBuilder: (context, object, stacktrace) {
+  //                           return Container();
+  //                         },
+  //                       ),
+  //                     ),
+  //                     SizedBox(
+  //                       width: 8.0,
+  //                     ),
+  //                     Container(
+  //                       width: MediaQuery.of(context).size.width * 0.6,
+  //                       child: Column(
+  //                         mainAxisAlignment: MainAxisAlignment.start,
+  //                         crossAxisAlignment: CrossAxisAlignment.start,
+  //                         children: [
+  //                           Text(clinica.nombreComercial,
+  //                               maxLines: 2,
+  //                               style: TextStyle(
+  //                                   fontSize: 17, fontWeight: FontWeight.bold),
+  //                               textAlign: TextAlign.left),
+  //                           Text(clinica.locacion,
+  //                               style: TextStyle(fontSize: 12),
+  //                               textAlign: TextAlign.left),
+  //                           Text(clinica.pais,
+  //                               style: TextStyle(fontSize: 12),
+  //                               textAlign: TextAlign.left),
+  //                           SizedBox(
+  //                             height: 5,
+  //                           ),
+  //                           StreamBuilder<QuerySnapshot>(
+  //                               stream: FirebaseFirestore.instance
+  //                                   .collection("Aliados")
+  //                                   .doc(clinica.aliadoId)
+  //                                   .collection("Especialidades")
+  //                                   .snapshots(),
+  //                               builder: (context, dataSnapshot) {
+  //                                 if (!dataSnapshot.hasData) {
+  //                                   return Center(
+  //                                     child: CircularProgressIndicator(),
+  //                                   );
+  //                                 }
+  //                                 return Container(
+  //                                   width: 100,
+  //                                   child: ListView.builder(
+  //                                       physics: NeverScrollableScrollPhysics(),
+  //                                       itemCount:
+  //                                           dataSnapshot.data.docs.length,
+  //                                       shrinkWrap: true,
+  //                                       itemBuilder: (
+  //                                         context,
+  //                                         index,
+  //                                       ) {
+  //                                         EspecialidadesModel especialidades =
+  //                                             EspecialidadesModel.fromJson(
+  //                                                 dataSnapshot.data.docs[index]
+  //                                                     .data());
+  //                                         return Column(
+  //                                           children: [
+  //                                             Text(
+  //                                               especialidades.especialidad,
+  //                                               style: TextStyle(
+  //                                                 color: Colors.grey,
+  //                                                 fontWeight: FontWeight.bold,
+  //                                               ),
+  //                                             ),
+  //                                           ],
+  //                                         );
+  //                                       }),
+  //                                 );
+  //                               }),
+  //
+  //                           // Row(
+  //                           //   children: [
+  //                           //     Flexible(child: Text(clinica.ciudad, style: TextStyle(fontSize: 13), textAlign: TextAlign.left)),
+  //                           //     Flexible(child: Text(clinica.pais, style: TextStyle(fontSize: 13), textAlign: TextAlign.left)),
+  //                           //   ],
+  //                           // ),
+  //                           // Flexible(child: Text(clinica.horario, style: TextStyle(fontSize: 13), textAlign: TextAlign.left)),
+  //                         ],
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget sourceInfo2(
     ServiceModel servicio,
@@ -780,6 +789,8 @@ class _VideoPageState extends State<VideoPage> {
                                                       MainAxisAlignment.start,
                                                   children: [
                                                     Text(aliado.nombreComercial,
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow.ellipsis,
                                                         style: TextStyle(
                                                             fontSize: 17,
                                                             fontWeight:
@@ -787,14 +798,30 @@ class _VideoPageState extends State<VideoPage> {
                                                                     .bold),
                                                         textAlign:
                                                             TextAlign.left),
-                                                    Text(
-                                                        location
-                                                            .direccionLocalidad,
+                                                    location.mapAddress != null
+                                                        ? Text(
+                                                        location.mapAddress,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
                                                         style: TextStyle(
                                                           fontSize: 13,
                                                         ),
                                                         textAlign:
-                                                            TextAlign.left),
+                                                        TextAlign.left)
+                                                        : Text(
+                                                        location.mapAddress !=
+                                                            null
+                                                            ? location
+                                                            .mapAddress
+                                                            : location
+                                                            .direccionLocalidad,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: TextStyle(
+                                                          fontSize: 13,
+                                                        ),
+                                                        textAlign:
+                                                        TextAlign.left),
                                                   ],
                                                 ),
                                                 StreamBuilder<QuerySnapshot>(
