@@ -399,14 +399,15 @@ class _CartFinalState extends State<CartFinal> {
         ),
         body: Container(
           height: _screenHeight,
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              colorFilter: new ColorFilter.mode(
-                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
-              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
+          color: Color(0xFFf4f6f8),
+          // decoration: new BoxDecoration(
+          //   image: new DecorationImage(
+          //     colorFilter: new ColorFilter.mode(
+          //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16.0,
           ),

@@ -70,6 +70,7 @@ class _SaludHomeState extends State<SaludHome> {
         bottomNavigationBar: CustomBottomNavigationBar(petModel: widget.petModel, defaultChoiceIndex: widget.defaultChoiceIndex,),
         body: Container(
           height: MediaQuery.of(context).size.height,
+          // color: Color(0xFFf4f6f8),
           decoration: new BoxDecoration(
             image: new DecorationImage(
               colorFilter: new ColorFilter.mode(

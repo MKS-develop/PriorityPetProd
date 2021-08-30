@@ -46,7 +46,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
   final pushProvider = PushNotificationsProvider();
   double totalPet = 0;
   String hora;
-  String fecha;
+  String fecha = '0';
   Timestamp date;
   int recojo = 0;
   int delivery = 0;
@@ -143,14 +143,15 @@ class _ContratoPromosState extends State<ContratoPromos> {
         ),
         body: Container(
           height: _screenHeight,
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              colorFilter: new ColorFilter.mode(
-                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
-              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
+          color: Color(0xFFf4f6f8),
+          // decoration: new BoxDecoration(
+          //   image: new DecorationImage(
+          //     colorFilter: new ColorFilter.mode(
+          //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16.0,
           ),
@@ -373,7 +374,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
                         widget.promotionModel.tipoPromocion == 'Producto'
                             ? ""
                             : widget.promotionModel.tipoAgenda == 'Slots'
-                                ? 'Seleccione día y hora disponibles'
+                                ? 'Seleccione fecha disponible'
                                 : 'Seleccione el día disponible',
                         style: TextStyle(
                             fontSize: 17,
@@ -440,9 +441,9 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                           });
                                         },
                                         backgroundColor: Colors.transparent,
-                                        shape: StadiumBorder(
-                                            side: BorderSide(
-                                                color: Color(0xFFBDD7D6))),
+                                        // shape: StadiumBorder(
+                                        //     side: BorderSide(
+                                        //         color: Colors.transparent)),
                                         labelStyle: TextStyle(
                                             color: Colors.transparent),
                                       ),
@@ -458,11 +459,24 @@ class _ContratoPromosState extends State<ContratoPromos> {
                 SizedBox(
                   height: 10,
                 ),
-                widget.promotionModel.tipoAgenda == 'Slots'
+                widget.promotionModel.tipoAgenda == 'Slots' || date == '0'
                     ? Container(
                         width: _screenWidth,
                         child: Column(
                           children: [
+                            fecha != '0'
+                                ? Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text('Seleccione horario disponible',
+                                    style: TextStyle(
+                                        fontSize: 17,
+                                        color: Color(0xFF57419D),
+                                        fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.left),
+                              ],
+                            )
+                                : Container(),
                             StreamBuilder<QuerySnapshot>(
                                 stream: db
                                     .collection("Promociones")
@@ -487,9 +501,9 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                         itemCount: 1,
                                         shrinkWrap: true,
                                         itemBuilder: (
-                                          context,
-                                          index,
-                                        ) {
+                                            context,
+                                            index,
+                                            ) {
                                           DayModel day = DayModel.fromJson(
                                               dataSnapshot.data.docs[index]
                                                   .data());
@@ -499,24 +513,24 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                               scrollDirection: Axis.vertical,
                                               itemCount: day.horasDia.length,
                                               gridDelegate:
-                                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                                      crossAxisCount: 5,
-                                                      crossAxisSpacing: 10,
-                                                      mainAxisSpacing: 10),
+                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisCount: 4,
+                                                  crossAxisSpacing: 5),
+                                              // mainAxisSpacing: 10),
                                               physics: BouncingScrollPhysics(),
                                               itemBuilder:
                                                   (BuildContext context,
-                                                      int i) {
+                                                  int i) {
                                                 return ChoiceChip(
                                                   label: sourceInfo2(
                                                       context, day, i),
                                                   labelPadding:
-                                                      EdgeInsets.fromLTRB(
-                                                          0, 0, 0, 0),
+                                                  EdgeInsets.fromLTRB(
+                                                      0, 0, 0, 0),
                                                   selected:
-                                                      _2defaultChoiceIndex == i,
+                                                  _2defaultChoiceIndex == i,
                                                   selectedColor:
-                                                      Color(0xFFEB9448),
+                                                  Color(0xFFEB9448),
                                                   onSelected: (bool selected) {
                                                     setState(() {
                                                       if (selected) {
@@ -527,12 +541,9 @@ class _ContratoPromosState extends State<ContratoPromos> {
                                                       }
                                                     });
                                                   },
-                                                  shape: StadiumBorder(
-                                                      side: BorderSide(
-                                                          color: Color(
-                                                              0xFFBDD7D6))),
+
                                                   backgroundColor:
-                                                      Colors.transparent,
+                                                  Color(0xFFEB9448).withOpacity(0.3),
                                                   labelStyle: TextStyle(
                                                       color: Colors.white),
                                                 );
@@ -855,7 +866,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
                   style: TextStyle(
                       color: day.horasDia[i] == hora
                           ? Colors.white
-                          : Color(0xFF7F9D9D),
+                          : Color(0xFFEB9448),
                       fontSize: 16),
                 ),
               ),

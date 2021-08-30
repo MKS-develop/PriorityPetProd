@@ -241,14 +241,15 @@ class _CitasPageState extends State<CitasPage> {
         ),
         body: Container(
           height: MediaQuery.of(context).size.height,
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              colorFilter: new ColorFilter.mode(
-                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
-              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
+          color: Color(0xFFf4f6f8),
+          // decoration: new BoxDecoration(
+          //   image: new DecorationImage(
+          //     colorFilter: new ColorFilter.mode(
+          //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16.0,
           ),
@@ -373,7 +374,7 @@ class _CitasPageState extends State<CitasPage> {
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         border: Border.all(
-                                          color: Color(0xFF7f9d9D),
+                                          color: Colors.transparent,
                                           width: 1.0,
                                         ),
                                         borderRadius: BorderRadius.all(
@@ -523,7 +524,7 @@ class _CitasPageState extends State<CitasPage> {
                                           decoration: BoxDecoration(
                                             color: Colors.white,
                                             border: Border.all(
-                                              color: Color(0xFF7f9d9D),
+                                              color: Colors.transparent,
                                               width: 1.0,
                                             ),
                                             borderRadius: BorderRadius.all(
@@ -625,7 +626,7 @@ class _CitasPageState extends State<CitasPage> {
                                     ],
                                   )
                                 : Container(
-                                    height: 99 *
+                                    height: 110 *
                                         double.parse(
                                             _resultsList.length.toString()),
                                     // child: Expanded(
@@ -894,226 +895,237 @@ class _CitasPageState extends State<CitasPage> {
                                   );
                                 },
                                 child: Padding(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child: SizedBox(
+                                  padding: const EdgeInsets.fromLTRB(2, 2, 2, 5),
+                                  child: Container(
                                       width: MediaQuery.of(context).size.width,
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                            child: Image.network(
-                                              aliado.avatar,
-                                              width: 75.0,
-                                              height: 80.0,
-                                              fit: BoxFit.fill,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 8.0,
-                                          ),
-                                          Row(
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(10)
+
+                                      ),
+                                      child: Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: Row(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                                CrossAxisAlignment.center,
                                             children: [
-                                              Container(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.5,
-                                                height: 92,
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Column(
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                                child: Image.network(
+                                                  aliado.avatar,
+                                                  width: 75.0,
+                                                  height: 80.0,
+                                                  fit: BoxFit.fill,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 8.0,
+                                              ),
+                                              Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        0.5,
+                                                    height: 92,
+                                                    child: Column(
                                                       crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
+                                                          CrossAxisAlignment.start,
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
-                                                              .start,
+                                                              .spaceBetween,
                                                       children: [
-                                                        Text(
-                                                            aliado
-                                                                .nombreComercial,
-                                                            maxLines: 2,
-                                                            overflow: TextOverflow.ellipsis,
-                                                            style: TextStyle(
-                                                                fontSize: 17,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                            textAlign:
-                                                                TextAlign.left),
-                                                        location.mapAddress !=
-                                                                null
-                                                            ? Text(
-                                                                location
-                                                                    .mapAddress,
+                                                        Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                                aliado
+                                                                    .nombreComercial,
                                                                 maxLines: 2,
                                                                 overflow: TextOverflow.ellipsis,
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 13,
-                                                                ),
+                                                                style: TextStyle(
+                                                                    fontSize: 17,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
                                                                 textAlign:
-                                                                    TextAlign
-                                                                        .left)
-                                                            : Text(
-                                                                location
-                                                                    .direccionLocalidad,
-                                                            maxLines: 2,
-                                                            overflow: TextOverflow.ellipsis,
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 13,
-                                                                ),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .left),
+                                                                    TextAlign.left),
+                                                            location.mapAddress !=
+                                                                    null
+                                                                ? Text(
+                                                                    location
+                                                                        .mapAddress,
+                                                                    maxLines: 2,
+                                                                    overflow: TextOverflow.ellipsis,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize: 13,
+                                                                    ),
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .left)
+                                                                : Text(
+                                                                    location
+                                                                        .direccionLocalidad,
+                                                                maxLines: 2,
+                                                                overflow: TextOverflow.ellipsis,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize: 13,
+                                                                    ),
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .left),
+                                                          ],
+                                                        ),
+                                                        StreamBuilder<
+                                                                QuerySnapshot>(
+                                                            stream: FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    "Aliados")
+                                                                .doc(servicio
+                                                                    .aliadoId)
+                                                                .collection(
+                                                                    "Especialidades")
+                                                                .snapshots(),
+                                                            builder: (context,
+                                                                dataSnapshot) {
+                                                              if (dataSnapshot
+                                                                  .hasData) {
+                                                                if (dataSnapshot
+                                                                        .data
+                                                                        .docs
+                                                                        .length ==
+                                                                    0) {
+                                                                  return Center(
+                                                                      child:
+                                                                          Container());
+                                                                }
+                                                              }
+                                                              if (!dataSnapshot
+                                                                  .hasData) {
+                                                                return Center(
+                                                                  child:
+                                                                      CircularProgressIndicator(),
+                                                                );
+                                                              }
+                                                              return ListView
+                                                                  .builder(
+                                                                      physics:
+                                                                          NeverScrollableScrollPhysics(),
+                                                                      itemCount:
+                                                                          dataSnapshot
+                                                                              .data
+                                                                              .docs
+                                                                              .length,
+                                                                      shrinkWrap:
+                                                                          true,
+                                                                      itemBuilder: (
+                                                                        context,
+                                                                        index,
+                                                                      ) {
+                                                                        EspecialidadesModel
+                                                                            especialidades =
+                                                                            EspecialidadesModel.fromJson(dataSnapshot
+                                                                                .data
+                                                                                .docs[index]
+                                                                                .data());
+
+                                                                        return Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment
+                                                                                  .start,
+                                                                          children: [
+                                                                            Text(
+                                                                              especialidades
+                                                                                  .especialidad,
+                                                                              style:
+                                                                                  TextStyle(
+                                                                                color:
+                                                                                    Colors.grey,
+                                                                                fontWeight:
+                                                                                    FontWeight.bold,
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        );
+                                                                      });
+                                                            }),
+                                                        aliado.tipoAliado !=
+                                                                'Médico'
+                                                            ? Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Text(
+                                                                    servicio.titulo,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .grey,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            : Container(),
                                                       ],
                                                     ),
-                                                    StreamBuilder<
-                                                            QuerySnapshot>(
-                                                        stream: FirebaseFirestore
-                                                            .instance
-                                                            .collection(
-                                                                "Aliados")
-                                                            .doc(servicio
-                                                                .aliadoId)
-                                                            .collection(
-                                                                "Especialidades")
-                                                            .snapshots(),
-                                                        builder: (context,
-                                                            dataSnapshot) {
-                                                          if (dataSnapshot
-                                                              .hasData) {
-                                                            if (dataSnapshot
-                                                                    .data
-                                                                    .docs
-                                                                    .length ==
-                                                                0) {
-                                                              return Center(
-                                                                  child:
-                                                                      Container());
-                                                            }
-                                                          }
-                                                          if (!dataSnapshot
-                                                              .hasData) {
-                                                            return Center(
-                                                              child:
-                                                                  CircularProgressIndicator(),
-                                                            );
-                                                          }
-                                                          return ListView
-                                                              .builder(
-                                                                  physics:
-                                                                      NeverScrollableScrollPhysics(),
-                                                                  itemCount:
-                                                                      dataSnapshot
-                                                                          .data
-                                                                          .docs
-                                                                          .length,
-                                                                  shrinkWrap:
-                                                                      true,
-                                                                  itemBuilder: (
-                                                                    context,
-                                                                    index,
-                                                                  ) {
-                                                                    EspecialidadesModel
-                                                                        especialidades =
-                                                                        EspecialidadesModel.fromJson(dataSnapshot
-                                                                            .data
-                                                                            .docs[index]
-                                                                            .data());
-
-                                                                    return Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        Text(
-                                                                          especialidades
-                                                                              .especialidad,
-                                                                          style:
-                                                                              TextStyle(
-                                                                            color:
-                                                                                Colors.grey,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    );
-                                                                  });
-                                                        }),
-                                                    aliado.tipoAliado !=
-                                                            'Médico'
-                                                        ? Row(
+                                                  ),
+                                                  totalD != 0
+                                                      ? SizedBox(
+                                                          child: Column(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
                                                                     .start,
                                                             children: [
+                                                              SizedBox(
+                                                                height: 9,
+                                                              ),
+                                                              Icon(
+                                                                Icons
+                                                                    .location_on_rounded,
+                                                                color:
+                                                                    secondaryColor,
+                                                              ),
+                                                              SizedBox(
+                                                                height: 3,
+                                                              ),
                                                               Text(
-                                                                servicio.titulo,
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .grey,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                              ),
+                                                                  totalD < 500
+                                                                      ? '${totalD.toStringAsFixed(1)} Km'
+                                                                      : '+500 Km',
+                                                                  style: TextStyle(
+                                                                    fontSize: 12,
+                                                                  ),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center),
                                                             ],
-                                                          )
-                                                        : Container(),
-                                                  ],
-                                                ),
+                                                          ),
+                                                        )
+                                                      : Container(),
+                                                ],
                                               ),
-                                              totalD != 0
-                                                  ? SizedBox(
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          SizedBox(
-                                                            height: 9,
-                                                          ),
-                                                          Icon(
-                                                            Icons
-                                                                .location_on_rounded,
-                                                            color:
-                                                                secondaryColor,
-                                                          ),
-                                                          SizedBox(
-                                                            height: 3,
-                                                          ),
-                                                          Text(
-                                                              totalD < 500
-                                                                  ? '${totalD.toStringAsFixed(1)} Km'
-                                                                  : '+500 Km',
-                                                              style: TextStyle(
-                                                                fontSize: 12,
-                                                              ),
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  : Container(),
                                             ],
                                           ),
-                                        ],
+                                        ),
                                       )),
+
                                 ),
                               );
                             });

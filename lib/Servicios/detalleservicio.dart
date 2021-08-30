@@ -90,14 +90,15 @@ class _DetallesServicioState extends State<DetallesServicio> {
         ),
         body: Container(
           height: MediaQuery.of(context).size.height,
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              colorFilter: new ColorFilter.mode(
-                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
-              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
+          color: Color(0xFFf4f6f8),
+          // decoration: new BoxDecoration(
+          //   image: new DecorationImage(
+          //     colorFilter: new ColorFilter.mode(
+          //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16.0,
           ),
@@ -233,10 +234,10 @@ class _DetallesServicioState extends State<DetallesServicio> {
                 Container(
                   width: MediaQuery.of(context).size.width * 0.91,
                   decoration: BoxDecoration(
-                      color: Color(0xFFF4F6F8),
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: Colors.grey,
+                        color: Colors.white,
                       )),
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
@@ -244,7 +245,7 @@ class _DetallesServicioState extends State<DetallesServicio> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Flexible(
                                 child: Text(widget.serviceModel.titulo,
@@ -256,7 +257,23 @@ class _DetallesServicioState extends State<DetallesServicio> {
                           ],
                         ),
                         SizedBox(
-                          height: 20.0,
+                          height: 10.0,
+                        ),
+
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.network(
+                            widget.serviceModel.urlImagen,
+                            height: 155,
+                            width: 120,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, object, stacktrace) {
+                              return Container();
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10.0,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -270,7 +287,7 @@ class _DetallesServicioState extends State<DetallesServicio> {
                           ],
                         ),
                         SizedBox(
-                          height: 20.0,
+                          height: 10.0,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -285,7 +302,7 @@ class _DetallesServicioState extends State<DetallesServicio> {
                           ],
                         ),
                         SizedBox(
-                          height: 20.0,
+                          height: 10.0,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,

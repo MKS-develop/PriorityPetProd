@@ -168,6 +168,7 @@ class MyDrawer extends StatelessWidget {
                 );
               },
             ),
+            PetshopApp.sharedPreferences.getString(PetshopApp.userPais) =='Perú' ?
             ListTile(
               leading: Icon(
                   Icons.monetization_on,
@@ -184,7 +185,7 @@ class MyDrawer extends StatelessWidget {
                       builder: (context) => PaymentPage(petModel: petModel, defaultChoiceIndex: defaultChoiceIndex,)),
                 );
               },
-            ),
+            ): Container(),
             // Divider(
             //   indent: 20,
             //   endIndent: 40,
@@ -308,7 +309,7 @@ class MyDrawer extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(
-                child: Text(quality!= null ? 'V1.1.0 $quality' : 'V1.1.0 Production', style: TextStyle(color: textColor,
+                child: Text(quality!= null ? 'V1.1.0 $quality' : 'V1.1.0', style: TextStyle(color: textColor,
                     fontWeight: FontWeight.w300,
                     fontSize: 13),),
               ),

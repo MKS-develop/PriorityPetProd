@@ -148,14 +148,15 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
         ),
         body: Container(
           height: _screenHeight,
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              colorFilter: new ColorFilter.mode(
-                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
-              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
+          color: Color(0xFFf4f6f8),
+          // decoration: new BoxDecoration(
+          //   image: new DecorationImage(
+          //     colorFilter: new ColorFilter.mode(
+          //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16.0,
           ),
@@ -187,11 +188,14 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
-                        height: 140.0,
-                        width: 140,
+                    ClipRRect(
+                        borderRadius:
+                        BorderRadius.circular(8.0),
                         child: Image.network(
                           widget.productoModel.urlImagen,
+                          height: 180.0,
+                          width: 180,
+                          fit: BoxFit.fill,
                           errorBuilder: (context, object, stacktrace) {
                             return Container();
                           },

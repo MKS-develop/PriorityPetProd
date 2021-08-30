@@ -128,14 +128,15 @@ class _CitaAgendaState extends State<CitaAgenda> {
         ),
         body: Container(
           height: _screenHeight,
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              colorFilter: new ColorFilter.mode(
-                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
-              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
+          color: Color(0xFFf4f6f8),
+          // decoration: new BoxDecoration(
+          //   image: new DecorationImage(
+          //     colorFilter: new ColorFilter.mode(
+          //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16.0,
           ),
@@ -470,7 +471,9 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                         backgroundColor: Colors.transparent,
                                         shape: StadiumBorder(
                                             side: BorderSide(
-                                                color: Color(0xFFBDD7D6))),
+                                             color: Colors.transparent
+                                                // color: Color(0xFFBDD7D6)
+                                            )),
                                         labelStyle: TextStyle(
                                             color: Colors.transparent),
                                       ),
@@ -572,10 +575,11 @@ class _CitaAgendaState extends State<CitaAgenda> {
                                                   },
                                                   shape: StadiumBorder(
                                                       side: BorderSide(
-                                                          color: Color(
-                                                              0xFFBDD7D6))),
+                                                        color: Colors.transparent
+                                                          // color: Color(0xFFBDD7D6)
+                                                      )),
                                                   backgroundColor:
-                                                      Colors.transparent,
+                                                  Color(0xFFEB9448).withOpacity(0.3),
                                                   labelStyle: TextStyle(
                                                       color: Colors.white),
                                                 );
@@ -849,7 +853,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
                   style: TextStyle(
                       color: day.horasDia[i] == hora
                           ? Colors.white
-                          : Color(0xFF7F9D9D),
+                          : Color(0xFFEB9448),
                       fontSize: 16),
                 ),
               ),

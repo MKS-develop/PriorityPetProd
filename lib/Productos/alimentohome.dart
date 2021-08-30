@@ -195,14 +195,15 @@ class _AlimentoHomeState extends State<AlimentoHome> {
         ),
         body: Container(
           height: _screenHeight,
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              colorFilter: new ColorFilter.mode(
-                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
-              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
+          color: Color(0xFFf4f6f8),
+          // decoration: new BoxDecoration(
+          //   image: new DecorationImage(
+          //     colorFilter: new ColorFilter.mode(
+          //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16.0,
           ),
@@ -248,7 +249,8 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     border: Border.all(
-                                      color: Color(0xFF7f9d9D),
+                                      color: Colors.transparent,
+                                      // color: Color(0xFF7f9d9D),
                                       width: 1.0,
                                     ),
                                     borderRadius:
@@ -336,7 +338,8 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         border: Border.all(
-                                          color: Color(0xFF7f9d9D),
+                                          color: Colors.transparent,
+                                          // color: Color(0xFF7f9d9D),
                                           width: 1.0,
                                         ),
                                         borderRadius: BorderRadius.all(
@@ -455,7 +458,7 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                 SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
                                     crossAxisSpacing: 1,
-                                    childAspectRatio: 0.63),
+                                    childAspectRatio: 0.6),
                             itemBuilder: (
                               BuildContext context,
                               int index,
@@ -553,8 +556,13 @@ class _AlimentoHomeState extends State<AlimentoHome> {
       child: Column(
         children: [
           Container(
-              height: 260.0,
-              width: MediaQuery.of(context).size.width * 0.5,
+               height: 285.0,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10)
+
+              ),
+              width: MediaQuery.of(context).size.width * 0.43,
               child: StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection('Aliados')
@@ -629,20 +637,27 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                               ));
                                         },
                                         child: Container(
+
                                           child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Container(
-                                                height: 150,
-                                                width: 120,
-                                                child: Image.network(
-                                                  product.urlImagen,
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder: (context,
-                                                      object, stacktrace) {
-                                                    return Container();
-                                                  },
+                                              Padding(
+                                                padding: const EdgeInsets.fromLTRB(8, 12, 8, 5),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                  BorderRadius.circular(8.0),
+
+                                                  child: Image.network(
+                                                    product.urlImagen,
+                                                    height: 150,
+                                                    width: 120,
+                                                    fit: BoxFit.cover,
+                                                    errorBuilder: (context,
+                                                        object, stacktrace) {
+                                                      return Container();
+                                                    },
+                                                  ),
                                                 ),
                                               ),
                                               SizedBox(

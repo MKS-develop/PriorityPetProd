@@ -14,6 +14,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
+import 'package:pet_shop/Widgets/ktitle.dart';
 import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 
@@ -79,14 +80,15 @@ class _CitaHomeState extends State<CitaHome> {
   Widget _fondo() {
     return Container(
       height: MediaQuery.of(context).size.height,
-      decoration: new BoxDecoration(
-        image: new DecorationImage(
-          colorFilter: new ColorFilter.mode(
-              Colors.white.withOpacity(0.3), BlendMode.dstATop),
-          image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-          fit: BoxFit.cover,
-        ),
-      ),
+      color: Color(0xFFf4f6f8),
+      // decoration: new BoxDecoration(
+      //   image: new DecorationImage(
+      //     colorFilter: new ColorFilter.mode(
+      //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+      //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+      //     fit: BoxFit.cover,
+      //   ),
+      // ),
       padding: const EdgeInsets.symmetric(
         horizontal: 16.0,
       ),
@@ -163,41 +165,152 @@ class _CitaHomeState extends State<CitaHome> {
   }
 
   Widget _valor() {
-    return Container(
-      width: 350,
-      height: 30,
-      decoration: BoxDecoration(
-        color: Color(0xFF277EB6),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Text(
-            'Valor de la consulta',
-            style: TextStyle(color: Colors.white),
+    return Column(
+      children: [
+        Container(
+          width: 350,
+          height: 40,
+
+          decoration: BoxDecoration(
+            color: primaryColor,
+              borderRadius: BorderRadius.circular(10)
+
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Text(
-                PetshopApp.sharedPreferences
-                    .getString(PetshopApp.simboloMoneda),
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold),
+                'Valor de la consulta',
+                style: TextStyle(color: Colors.white),
               ),
-              Text(
-                (widget.serviceModel.precio).toStringAsFixed(2),
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    PetshopApp.sharedPreferences
+                        .getString(PetshopApp.simboloMoneda),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    (widget.serviceModel.precio).toStringAsFixed(2),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
+        ),
+        SizedBox(height: 15),
+
+        Text(widget.serviceModel.descripcion, style: TextStyle(color: textColor),),
+
+        SizedBox(height: 15),
+
+        Container(
+          width: 340,
+          height: 61,
+
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10)
+
+          ),
+
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Container(
+              width: 85,
+                child: Center(
+                  child: IconButton(icon: Icon(Icons.calendar_today, color: secondaryColor, size: 29,), onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CitaAgenda(
+                              petModel: model,
+                              serviceModel: widget.serviceModel,
+                              aliadoModel: widget.aliadoModel,
+                              locationModel: widget.locationModel,
+                              defaultChoiceIndex: widget.defaultChoiceIndex,
+                              userLatLong: widget.userLatLong)),
+                    );
+                  }),
+                ),
+              ),
+              widget.locationModel.location != null ?
+              Container(
+                width: 85,
+                child: Center(
+                  child: IconButton(icon: Icon(Icons.location_on_rounded, color: secondaryColor, size: 29,), onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MapHome(
+                              petModel: widget.petModel,
+                              defaultChoiceIndex:
+                              widget.defaultChoiceIndex,
+                              locationModel: widget.locationModel,
+                              aliadoModel: widget.aliadoModel,
+                              userLatLong: widget.userLatLong)),
+                    );
+                  }),
+                ),
+              ): Container(),
+
+              Container(
+                width: 85,
+                child: Center(
+                  child: Transform.rotate(
+                    angle: 24.5,
+                    child: IconButton(icon: Icon(Icons.send, color: secondaryColor, size: 29,), onPressed: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChatPage(
+                              petModel: widget.petModel,
+                              aliado: widget.aliadoModel.aliadoId,
+                              defaultChoiceIndex: widget.defaultChoiceIndex,
+                            )),
+                      );
+                    }),
+                  ),
+                ),
+              ),
+
+            ],
+          ),
+        ),
+        SizedBox(height: 5),
+        SizedBox(
+          width: 340,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+
+              Container(
+                  width: 85,
+                  child: Center(child: Text('Cita', style: TextStyle(color: textColor),))),
+
+              widget.locationModel.location != null ?
+              Container(
+                  width: 85,
+                  child: Center(child: Text('Ubicación', style: TextStyle(color: textColor)))): Container(),
+
+              Container(
+                  width: 85,
+                  child: Center(child: Text('Mensaje', style: TextStyle(color: textColor)))),
+            ],
+          ),
+        )
+
+      ],
     );
   }
 
@@ -369,7 +482,7 @@ class _CitaHomeState extends State<CitaHome> {
                 },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
-                color: Color(0xFFF4F6F8),
+                color: Colors.white,
                 padding: EdgeInsets.all(8),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -479,7 +592,7 @@ class _CitaHomeState extends State<CitaHome> {
         _menu(),
         _iconos(),
         _valor(),
-        _filaAgenda(),
+        // _filaAgenda(),
       ],
     );
   }
