@@ -195,7 +195,7 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
                           widget.productoModel.urlImagen,
                           height: 180.0,
                           width: 180,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.fitHeight,
                           errorBuilder: (context, object, stacktrace) {
                             return Container();
                           },

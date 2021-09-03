@@ -183,6 +183,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
                   ],
                 ),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       height: 100,
@@ -200,12 +201,14 @@ class _ContratoPromosState extends State<ContratoPromos> {
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.59,
-                      height: 100.0,
+                      height: 125.0,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(widget.aliadoModel.nombreComercial,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
                               style: TextStyle(
                                   fontSize: 17,
                                   color: Color(0xFF57419D),
@@ -214,12 +217,16 @@ class _ContratoPromosState extends State<ContratoPromos> {
                           widget.locationModel.mapAddress != null
                               ? Text(
                                   widget.locationModel.mapAddress,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
                                   style: TextStyle(
                                     fontSize: 13,
                                   ),
                                 )
                               : Text(
                                   widget.locationModel.direccionLocalidad,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
                                   style: TextStyle(
                                     fontSize: 13,
                                   ),

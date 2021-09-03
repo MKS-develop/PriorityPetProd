@@ -217,6 +217,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
                   ],
                 ),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       height: 100,

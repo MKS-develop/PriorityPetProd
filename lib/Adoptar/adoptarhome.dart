@@ -217,6 +217,7 @@ class _AdoptarHomeState extends State<AdoptarHome> {
                         style: TextStyle(
                             color: Color(0xFF57419D), fontSize: 11)),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Row(

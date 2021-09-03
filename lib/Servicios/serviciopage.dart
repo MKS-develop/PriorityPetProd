@@ -797,7 +797,7 @@ class _ServicioPageState extends State<ServicioPage> {
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width *
-                                                0.55,
+                                                0.51,
                                             height: 73,
                                             child: Column(
                                               crossAxisAlignment:
@@ -880,7 +880,7 @@ class _ServicioPageState extends State<ServicioPage> {
                                               ? SizedBox(
                                                   child: Column(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment.start,
+                                                        MainAxisAlignment.center,
                                                     children: [
                                                       SizedBox(
                                                         height: 9,
@@ -898,7 +898,7 @@ class _ServicioPageState extends State<ServicioPage> {
                                                               : '+500 Km',
                                                           overflow: TextOverflow.ellipsis,
                                                           style: TextStyle(
-                                                            fontSize: 12,
+                                                            fontSize: 11,
                                                           ),
                                                           textAlign:
                                                               TextAlign.center),
@@ -958,79 +958,79 @@ class _ServicioPageState extends State<ServicioPage> {
     return ciudades;
   }
 
-  Widget sourceInfo(BuildContext context, DocumentSnapshot document) {
-    final servicio = ServicioModel.fromSnapshot(document);
-
-    return InkWell(
-      child: Column(
-        children: [
-          Container(
-            height: 70.0,
-            width: MediaQuery.of(context).size.width,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ServicioDetalle(
-                          petModel: model, servicioModel: servicio),
-                    ));
-              },
-              child: Container(
-                child: Row(
-                  children: [
-                    Container(
-                      height: 70,
-                      width: 70,
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey,
-                            blurRadius: 1.0,
-                            spreadRadius: 0.0,
-                            offset: Offset(
-                                2.0, 2.0), // shadow direction: bottom right
-                          )
-                        ],
-                      ),
-                      child: Image.network(
-                        servicio.urlImagen,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, object, stacktrace) {
-                          return Container();
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      width: 8.0,
-                    ),
-                    Container(
-                      height: 90.0,
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(servicio.titulo,
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: Color(0xFF57419D),
-                                  fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left),
-                          SizedBox(height: 8.0),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 20.0),
-        ],
-      ),
-    );
-  }
+  // Widget sourceInfo(BuildContext context, DocumentSnapshot document) {
+  //   final servicio = ServicioModel.fromSnapshot(document);
+  //
+  //   return InkWell(
+  //     child: Column(
+  //       children: [
+  //         Container(
+  //           height: 70.0,
+  //           width: MediaQuery.of(context).size.width,
+  //           child: GestureDetector(
+  //             onTap: () {
+  //               Navigator.push(
+  //                   context,
+  //                   MaterialPageRoute(
+  //                     builder: (context) => ServicioDetalle(
+  //                         petModel: model, servicioModel: servicio),
+  //                   ));
+  //             },
+  //             child: Container(
+  //               child: Row(
+  //                 children: [
+  //                   Container(
+  //                     height: 70,
+  //                     width: 70,
+  //                     decoration: BoxDecoration(
+  //                       boxShadow: [
+  //                         BoxShadow(
+  //                           color: Colors.grey,
+  //                           blurRadius: 1.0,
+  //                           spreadRadius: 0.0,
+  //                           offset: Offset(
+  //                               2.0, 2.0), // shadow direction: bottom right
+  //                         )
+  //                       ],
+  //                     ),
+  //                     child: Image.network(
+  //                       servicio.urlImagen,
+  //                       fit: BoxFit.cover,
+  //                       errorBuilder: (context, object, stacktrace) {
+  //                         return Container();
+  //                       },
+  //                     ),
+  //                   ),
+  //                   SizedBox(
+  //                     width: 8.0,
+  //                   ),
+  //                   Container(
+  //                     height: 90.0,
+  //                     width: MediaQuery.of(context).size.width * 0.7,
+  //                     child: Column(
+  //                       mainAxisAlignment: MainAxisAlignment.start,
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: [
+  //                         Text(servicio.titulo,
+  //                             style: TextStyle(
+  //                                 fontSize: 15,
+  //                                 color: Color(0xFF57419D),
+  //                                 fontWeight: FontWeight.bold),
+  //                             textAlign: TextAlign.left),
+  //                         SizedBox(height: 8.0),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //         SizedBox(height: 20.0),
+  //       ],
+  //     ),
+  //   );
+  // }
   // Widget sourceInfo(ProductModel product, BuildContext context,
   //     ) {
   //   return InkWell(

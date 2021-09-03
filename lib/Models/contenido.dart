@@ -19,6 +19,21 @@ class ContenidoModel{
     this.aliadoId
   });
 
+  factory ContenidoModel.fromFireStore(DocumentSnapshot doc) {
+    Map data = doc.data();
+    return ContenidoModel(
+      titulo: data['titulo'],
+      aliadoId: data['aliadoId'],
+      descripcion: data['descripcion'],
+      urlImagen: data['urlImagen'],
+      likes: data['likes'],
+      postId: data['postId'],
+
+      createdOn: data['createdOn'],
+
+    );
+  }
+
   ContenidoModel.fromJson(Map<String, dynamic> json){
     descripcion = json['descripcion'];
     createdOn = json['createdOn'];

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pet_shop/Authentication/autenticacion.dart';
+import 'package:pet_shop/Beneficios/planeshome.dart';
 import 'package:pet_shop/Config/config.dart';
+import 'package:pet_shop/DialogBox/choosepetDialog.dart';
 import 'package:pet_shop/Models/pet.dart';
 import 'package:pet_shop/Ordenes/newordeneshome.dart';
 import 'package:pet_shop/Payment/payment.dart';
@@ -168,6 +170,66 @@ class MyDrawer extends StatelessWidget {
                 );
               },
             ),
+
+            ListTile(
+              leading:
+              // Container(
+              //   height: 25,
+              //   child: Image.asset(
+              //     'diseñador/drawable/petpoint.png',
+              //     color: Color(0xFF57419D),
+              //     fit: BoxFit.cover,
+              //
+              //   ),
+              // ),
+              Icon(
+                  Icons.monetization_on,
+                  color: Color(0xFF57419D).withOpacity(0.5),
+                  size: 26
+              ),
+              title: Text("Beneficios", style: TextStyle(color: Color(0xFF57419D),
+                  // .withOpacity(0.5),
+                  fontWeight: FontWeight.w300,
+                  fontSize: 17),),
+              onTap: () {
+    if (petModel == null) {
+                {
+                  showDialog(
+                      builder: (context) =>
+                          new ChoosePetAlertDialog(
+                            message:
+                                "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
+                          ),
+                      context: context);
+                }
+              }
+              if (PetshopApp.sharedPreferences
+                          .getString(PetshopApp.userPais) ==
+                      "Perú" &&
+                  petModel != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PlanesHome(
+                            petModel: petModel,
+                            defaultChoiceIndex:
+                                defaultChoiceIndex,
+                          )),
+                );
+              }
+              if (PetshopApp.sharedPreferences
+                      .getString(PetshopApp.userPais) !=
+                  "Perú") {
+                showDialog(
+                    builder: (context) =>
+                        new ChoosePetAlertDialog(
+                          message:
+                              "No estan disponibles planes para tu pais",
+                        ),
+                    context: context);
+              }
+              },
+            ),
             PetshopApp.sharedPreferences.getString(PetshopApp.userPais) =='Perú' ?
             ListTile(
               leading: Icon(
@@ -309,7 +371,7 @@ class MyDrawer extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(
-                child: Text(quality!= null ? 'V1.1.0 $quality' : 'V1.1.0', style: TextStyle(color: textColor,
+                child: Text(quality!= null ? 'V1.1.1 $quality' : 'V1.1.1', style: TextStyle(color: textColor,
                     fontWeight: FontWeight.w300,
                     fontSize: 13),),
               ),

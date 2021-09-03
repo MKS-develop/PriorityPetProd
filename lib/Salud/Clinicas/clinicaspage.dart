@@ -172,14 +172,15 @@ class _ClinicasPageState extends State<ClinicasPage> {
         ),
         body: Container(
           height: MediaQuery.of(context).size.height,
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              colorFilter: new ColorFilter.mode(
-                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
-              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
+          color: Color(0xFFf4f6f8),
+          // decoration: new BoxDecoration(
+          //   image: new DecorationImage(
+          //     colorFilter: new ColorFilter.mode(
+          //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16.0,
           ),
@@ -225,7 +226,8 @@ class _ClinicasPageState extends State<ClinicasPage> {
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     border: Border.all(
-                                      color: Color(0xFF7f9d9D),
+                                      // color: Color(0xFF7f9d9D),
+                                      color: Colors.transparent,
                                       width: 1.0,
                                     ),
                                     borderRadius:
@@ -290,7 +292,8 @@ class _ClinicasPageState extends State<ClinicasPage> {
                                           decoration: BoxDecoration(
                                             color: Colors.white,
                                             border: Border.all(
-                                              color: Color(0xFF7f9d9D),
+                                              // color: Color(0xFF7f9d9D),
+                                              color: Colors.transparent,
                                               width: 1.0,
                                             ),
                                             borderRadius: BorderRadius.all(
@@ -506,65 +509,73 @@ class _ClinicasPageState extends State<ClinicasPage> {
             },
             child: Container(
               height: 100,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(clinica.nombreComercial,
-                          style: TextStyle(
-                              fontSize: 17,
-                              color: Color(0xFF57419D),
-                              fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.left),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: Image.network(
-                          clinica.avatar,
-                          width: 70.0,
-                          height: 70.0,
-                          fit: BoxFit.fill,
-                          errorBuilder: (context, object, stacktrace) {
-                            return Container();
-                          },
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10)
+
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(clinica.nombreComercial,
+                            style: TextStyle(
+                                fontSize: 17,
+                                color: Color(0xFF57419D),
+                                fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.left),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.network(
+                            clinica.avatar,
+                            width: 70.0,
+                            height: 70.0,
+                            fit: BoxFit.fill,
+                            errorBuilder: (context, object, stacktrace) {
+                              return Container();
+                            },
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 8.0,
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(clinica.direccion,
-                              style: TextStyle(fontSize: 13),
-                              textAlign: TextAlign.left),
-                          Text(clinica.pais,
-                              style: TextStyle(fontSize: 13),
-                              textAlign: TextAlign.left),
-                          // Row(
-                          //   children: [
-                          //     Flexible(child: Text(clinica.ciudad, style: TextStyle(fontSize: 13), textAlign: TextAlign.left)),
-                          //     Flexible(child: Text(clinica.pais, style: TextStyle(fontSize: 13), textAlign: TextAlign.left)),
-                          //   ],
-                          // ),
-                          // Flexible(child: Text(clinica.horario, style: TextStyle(fontSize: 13), textAlign: TextAlign.left)),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
+                        SizedBox(
+                          width: 8.0,
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(clinica.direccion,
+                                style: TextStyle(fontSize: 13),
+                                textAlign: TextAlign.left),
+                            Text(clinica.pais,
+                                style: TextStyle(fontSize: 13),
+                                textAlign: TextAlign.left),
+                            // Row(
+                            //   children: [
+                            //     Flexible(child: Text(clinica.ciudad, style: TextStyle(fontSize: 13), textAlign: TextAlign.left)),
+                            //     Flexible(child: Text(clinica.pais, style: TextStyle(fontSize: 13), textAlign: TextAlign.left)),
+                            //   ],
+                            // ),
+                            // Flexible(child: Text(clinica.horario, style: TextStyle(fontSize: 13), textAlign: TextAlign.left)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

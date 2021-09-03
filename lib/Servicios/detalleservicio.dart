@@ -128,6 +128,7 @@ class _DetallesServicioState extends State<DetallesServicio> {
                   ],
                 ),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       height: 100,
@@ -151,6 +152,8 @@ class _DetallesServicioState extends State<DetallesServicio> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(widget.aliadoModel.nombreComercial,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
                               style: TextStyle(
                                   fontSize: 17,
                                   color: Color(0xFF57419D),

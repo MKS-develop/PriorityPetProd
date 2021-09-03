@@ -73,14 +73,15 @@ class _PromoHomeState extends State<PromoHome> {
         ),
         body: Container(
           height: MediaQuery.of(context).size.height,
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              colorFilter: new ColorFilter.mode(
-                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
-              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
+          color: Color(0xFFf4f6f8),
+          // decoration: new BoxDecoration(
+          //   image: new DecorationImage(
+          //     colorFilter: new ColorFilter.mode(
+          //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16.0,
           ),
@@ -295,107 +296,117 @@ class _PromoHomeState extends State<PromoHome> {
                                           dataSnapshot.data.docs[index].data());
                                   return Container(
                                     height: 150,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Container(
-                                          height: 140,
-                                          width: 140,
-                                          child: Image.network(
-                                            pro.urlImagen,
-                                            fit: BoxFit.cover,
-                                            errorBuilder:
-                                                (context, object, stacktrace) {
-                                              return Container();
-                                            },
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10)
+
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                            BorderRadius.circular(8.0),
+                                            child: Image.network(
+                                              pro.urlImagen,
+                                              height: 140,
+                                              width: 140,
+                                              fit: BoxFit.cover,
+                                              errorBuilder:
+                                                  (context, object, stacktrace) {
+                                                return Container();
+                                              },
+                                            ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: 14.0,
-                                        ),
-                                        Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.4,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Flexible(
-                                                      child: Text(pro.titulo,
-                                                          style: TextStyle(
-                                                              fontSize: 16),
-                                                          textAlign:
-                                                              TextAlign.left)),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                width: double.infinity,
-                                                child: RaisedButton(
-                                                  onPressed: () {
-                                                    if (model == null) {
-                                                      {
-                                                        showDialog(
-                                                            builder: (context) =>
-                                                                new ChoosePetAlertDialog(
-                                                                  message:
-                                                                      "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
-                                                                ),
-                                                            context: context);
+                                          SizedBox(
+                                            width: 14.0,
+                                          ),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.4,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Flexible(
+                                                        child: Text(pro.titulo,
+                                                            style: TextStyle(
+                                                                fontSize: 16),
+                                                            textAlign:
+                                                                TextAlign.left)),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  width: double.infinity,
+                                                  child: RaisedButton(
+                                                    onPressed: () {
+                                                      if (model == null) {
+                                                        {
+                                                          showDialog(
+                                                              builder: (context) =>
+                                                                  new ChoosePetAlertDialog(
+                                                                    message:
+                                                                        "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
+                                                                  ),
+                                                              context: context);
+                                                        }
+                                                      } else {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  DetallesPromo(
+                                                                    petModel:
+                                                                        model,
+                                                                    promotionModel:
+                                                                        pro,
+                                                                    aliadoModel:
+                                                                        ali,
+                                                                    locationModel:
+                                                                        location,
+                                                                    defaultChoiceIndex:
+                                                                        widget
+                                                                            .defaultChoiceIndex,
+                                                                  )),
+                                                        );
                                                       }
-                                                    } else {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                DetallesPromo(
-                                                                  petModel:
-                                                                      model,
-                                                                  promotionModel:
-                                                                      pro,
-                                                                  aliadoModel:
-                                                                      ali,
-                                                                  locationModel:
-                                                                      location,
-                                                                  defaultChoiceIndex:
-                                                                      widget
-                                                                          .defaultChoiceIndex,
-                                                                )),
-                                                      );
-                                                    }
-                                                  },
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5)),
-                                                  color: Color(0xFFEB9448),
-                                                  padding: EdgeInsets.all(10.0),
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Text("Más información",
-                                                          style: TextStyle(
-                                                              fontFamily:
-                                                                  'Product Sans',
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 18.0)),
-                                                    ],
+                                                    },
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                5)),
+                                                    color: Color(0xFFEB9448),
+                                                    padding: EdgeInsets.all(10.0),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text("Más información",
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    'Product Sans',
+                                                                color:
+                                                                    Colors.white,
+                                                                fontSize: 18.0)),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   );
                                 });
@@ -418,64 +429,72 @@ class _PromoHomeState extends State<PromoHome> {
             height: 20.0,
           ),
           Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10)
+
+            ),
             height: 100.0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
-                  child: Image.network(
-                    ali.avatar ?? 'Cargando',
-                    width: 100.0,
-                    height: 100.0,
-                    fit: BoxFit.fill,
-                    errorBuilder: (context, object, stacktrace) {
-                      return Container();
-                    },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.network(
+                      ali.avatar ?? 'Cargando',
+                      width: 100.0,
+                      height: 100.0,
+                      fit: BoxFit.fill,
+                      errorBuilder: (context, object, stacktrace) {
+                        return Container();
+                      },
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: 15.0,
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          ali.nombre ?? 'Cargando',
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: Color(0xFF57419D),
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Flexible(
-                        child: Text(
-                          ali.direccion ?? 'Cargando',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            'Teléfono: ',
-                            style: TextStyle(fontSize: 16),
+                  SizedBox(
+                    width: 15.0,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            ali.nombre ?? 'Cargando',
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: Color(0xFF57419D),
+                                fontWeight: FontWeight.bold),
                           ),
-                          Flexible(
-                            child: Text(
-                              ali.telefono ?? 'Cargando',
-                              style: TextStyle(fontSize: 16),
+                        ),
+                        Flexible(
+                          child: Text(
+                            ali.direccion ?? 'Cargando',
+                            style: TextStyle(fontSize: 13),
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              'Teléfono: ',
+                              style: TextStyle(fontSize: 13),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                            Flexible(
+                              child: Text(
+                                ali.telefono ?? 'Cargando',
+                                style: TextStyle(fontSize: 13),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],

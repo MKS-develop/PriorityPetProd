@@ -458,7 +458,7 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                 SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
                                     crossAxisSpacing: 1,
-                                    childAspectRatio: 0.6),
+                                    childAspectRatio: 0.58),
                             itemBuilder: (
                               BuildContext context,
                               int index,

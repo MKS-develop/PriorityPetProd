@@ -383,10 +383,6 @@ PODS:
   - GTMSessionFetcher/Core (1.5.0)
   - image_picker (0.0.1):
     - Flutter
-  - jitsi_meet (0.0.1):
-    - Flutter
-    - JitsiMeetSDK (= 2.11.0)
-  - JitsiMeetSDK (2.11.0)
   - leveldb-library (1.22.1)
   - nanopb (1.30906.0):
     - nanopb/decode (= 1.30906.0)
@@ -420,7 +416,6 @@ DEPENDENCIES:
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
-  - jitsi_meet (from `.symlinks/plugins/jitsi_meet/ios`)
   - native_pdf_renderer (from `.symlinks/plugins/native_pdf_renderer/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -448,7 +443,6 @@ SPEC REPOS:
     - gRPC-Core
     - GTMAppAuth
     - GTMSessionFetcher
-    - JitsiMeetSDK
     - leveldb-library
     - nanopb
     - PromisesObjC
@@ -484,8 +478,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_sign_in/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
-  jitsi_meet:
-    :path: ".symlinks/plugins/jitsi_meet/ios"
   native_pdf_renderer:
     :path: ".symlinks/plugins/native_pdf_renderer/ios"
   package_info:
@@ -530,8 +522,6 @@ SPEC CHECKSUMS:
   GTMAppAuth: ad5c2b70b9a8689e1a04033c9369c4915bfcbe89
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
   image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
-  jitsi_meet: 3a8a1c2196811833dd670f7b9f23a8ed344d4de2
-  JitsiMeetSDK: ddc915b751b0166aa4fdfee938bd60cc87aff9f3
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   native_pdf_renderer: 3e81ffe3d40668cce75694596201bb9fb0fdb6e9

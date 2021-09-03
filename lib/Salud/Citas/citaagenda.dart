@@ -167,6 +167,7 @@ class _CitaAgendaState extends State<CitaAgenda> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       height: 90,

@@ -187,7 +187,7 @@ class _ApadrinarConfirmarState extends State<ApadrinarConfirmar> {
                                 // side: BorderSide(color: primaryColor),
                                 borderRadius:
                                 BorderRadius.circular(5)),
-                            color: textColor,
+                            color: textColor.withOpacity(0.09),
                             padding: EdgeInsets.all(0.0),
                             child: Row(
                               mainAxisAlignment:
