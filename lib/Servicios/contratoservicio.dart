@@ -169,21 +169,25 @@ class _ContratoServicioState extends State<ContratoServicio> {
       home: Scaffold(
         appBar: AppBarCustomAvatar(
             context, widget.petModel, widget.defaultChoiceIndex),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
         ),
         body: Container(
           height: _screenHeight,
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              colorFilter: new ColorFilter.mode(
-                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
-              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
+          color: Color(0xFFf4f6f8),
+          // decoration: new BoxDecoration(
+          //   image: new DecorationImage(
+          //     colorFilter: new ColorFilter.mode(
+          //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16.0,
           ),
@@ -213,6 +217,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
                   ],
                 ),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       height: 100,
@@ -230,12 +235,14 @@ class _ContratoServicioState extends State<ContratoServicio> {
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.60,
-                      height: 100.0,
+                      height: 125.0,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(widget.aliadoModel.nombreComercial,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                   fontSize: 17,
                                   color: Color(0xFF57419D),
@@ -243,11 +250,15 @@ class _ContratoServicioState extends State<ContratoServicio> {
                               textAlign: TextAlign.left),
                           widget.locationModel.mapAddress != null
                               ? Text(widget.locationModel.mapAddress,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontSize: 13,
                                   ),
                                   textAlign: TextAlign.left)
                               : Text(widget.locationModel.direccionLocalidad,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontSize: 13,
                                   ),
@@ -484,7 +495,9 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                         backgroundColor: Colors.transparent,
                                         shape: StadiumBorder(
                                             side: BorderSide(
-                                                color: Color(0xFFBDD7D6))),
+                                              color: Colors.transparent
+                                                // color: Color(0xFFBDD7D6)
+                                            )),
                                         labelStyle: TextStyle(
                                             color: Colors.transparent),
                                       ),
@@ -584,12 +597,9 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                                       }
                                                     });
                                                   },
-                                                  shape: StadiumBorder(
-                                                      side: BorderSide(
-                                                          color: Color(
-                                                              0xFFBDD7D6))),
+
                                                   backgroundColor:
-                                                      Colors.transparent,
+                                                  Color(0xFFEB9448).withOpacity(0.3),
                                                   labelStyle: TextStyle(
                                                       color: Colors.white),
                                                 );
@@ -879,7 +889,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
                   style: TextStyle(
                       color: day.horasDia[i] == hora
                           ? Colors.white
-                          : Color(0xFF7F9D9D),
+                          : Color(0xFFEB9448),
                       fontSize: 16),
                 ),
               ),

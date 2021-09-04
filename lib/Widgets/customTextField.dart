@@ -46,7 +46,7 @@ class CustomTextField extends StatelessWidget
       child: TextFormField(
         textCapitalization: TextCapitalization.sentences,
         autocorrect: true,
-        style: TextStyle(fontSize: 17, color: Color(0xFF1A3E4D)),
+
         controller: controller,
         keyboardType: keyboard,
         textAlign: TextAlign.left,

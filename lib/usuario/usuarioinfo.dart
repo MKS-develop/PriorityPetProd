@@ -222,11 +222,14 @@ class _UsuarioInfoState extends State<UsuarioInfo>
 
       appBar: AppBarCustom(context, widget.petModel, widget.defaultChoiceIndex),
       drawer: MyDrawer(),
-      bottomNavigationBar: CustomBottomNavigationBar(petmodel: widget.petModel),
+      bottomNavigationBar: CustomBottomNavigationBar(petModel: widget.petModel),
       body: Container(
         height: MediaQuery.of(context).size.height,
+        // color: Color(0xFFf4f6f8),
         decoration: new BoxDecoration(
           image: new DecorationImage(
+            colorFilter: new ColorFilter.mode(
+                Colors.white.withOpacity(0.3), BlendMode.dstATop),
             image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
             fit: BoxFit.cover,
           ),
@@ -814,7 +817,7 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                         children: [
                           Container(
                             child: Text(
-                              'Dirección',
+                              'Dirección (Referencia)',
                               style: TextStyle(
                                   fontSize: 16, color: Color(0xFF7F9D9D)),
                             ),

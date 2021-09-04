@@ -34,7 +34,8 @@ class DetallesServicio extends StatefulWidget {
       this.aliadoModel,
       this.locationModel,
       this.servicioModel,
-      this.defaultChoiceIndex, this.userLatLong});
+      this.defaultChoiceIndex,
+      this.userLatLong});
 
   @override
   _DetallesServicioState createState() => _DetallesServicioState();
@@ -69,11 +70,10 @@ class _DetallesServicioState extends State<DetallesServicio> {
   Widget build(BuildContext context) {
     double _screenWidth = MediaQuery.of(context).size.width,
         _screenHeight = MediaQuery.of(context).size.height;
-if(widget.aliadoModel.totalRatings !=null){
-  rating =
-      widget.aliadoModel.totalRatings / widget.aliadoModel.countRatings;
-}
-
+    if (widget.aliadoModel.totalRatings != null) {
+      rating =
+          widget.aliadoModel.totalRatings / widget.aliadoModel.countRatings;
+    }
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -84,19 +84,21 @@ if(widget.aliadoModel.totalRatings !=null){
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
         ),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: MediaQuery.of(context).size.height,
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              colorFilter: new ColorFilter.mode(
-                  Colors.white.withOpacity(0.3),
-                  BlendMode.dstATop),
-              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-
-              fit: BoxFit.cover,
-            ),
-          ),
+          color: Color(0xFFf4f6f8),
+          // decoration: new BoxDecoration(
+          //   image: new DecorationImage(
+          //     colorFilter: new ColorFilter.mode(
+          //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16.0,
           ),
@@ -126,6 +128,7 @@ if(widget.aliadoModel.totalRatings !=null){
                   ],
                 ),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       height: 100,
@@ -143,30 +146,34 @@ if(widget.aliadoModel.totalRatings !=null){
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.60,
-                      height: 110.0,
+                      height: 125.0,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(widget.aliadoModel.nombreComercial,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
                               style: TextStyle(
                                   fontSize: 17,
                                   color: Color(0xFF57419D),
                                   fontWeight: FontWeight.bold),
                               textAlign: TextAlign.left),
-
-                          widget.locationModel.mapAddress != null ?
-                          Text(widget.locationModel.mapAddress,
-                              style: TextStyle(
-                                fontSize: 13,
-                              ),
-                              textAlign: TextAlign.left):
-
-                          Text(widget.locationModel.direccionLocalidad,
-                              style: TextStyle(
-                                fontSize: 13,
-                              ),
-                              textAlign: TextAlign.left),
+                          widget.locationModel.mapAddress != null
+                              ? Text(widget.locationModel.mapAddress,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                  ),
+                                  textAlign: TextAlign.left)
+                              : Text(widget.locationModel.direccionLocalidad,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                  ),
+                                  textAlign: TextAlign.left),
                           SizedBox(
                             height: 10,
                           ),
@@ -189,27 +196,35 @@ if(widget.aliadoModel.totalRatings !=null){
                                   ),
                                 ],
                               ),
-                              widget.locationModel.location != null ?
-                              Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: GestureDetector(
-                                  onTap: () {
-
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => MapHome(petModel: widget.petModel, defaultChoiceIndex:
-                                      widget.defaultChoiceIndex, locationModel: widget.locationModel, aliadoModel: widget.aliadoModel, userLatLong: widget.userLatLong)),
-                                    );
-                                  },
-                                  child: Image.asset(
-                                    'diseñador/drawable/Grupo197.png',
-                                    fit: BoxFit.contain,
-                                    height: 33,
-                                  ),
-                                ),
-                              ): Container(),
+                              widget.locationModel.location != null
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => MapHome(
+                                                    petModel: widget.petModel,
+                                                    defaultChoiceIndex: widget
+                                                        .defaultChoiceIndex,
+                                                    locationModel:
+                                                        widget.locationModel,
+                                                    aliadoModel:
+                                                        widget.aliadoModel,
+                                                    userLatLong:
+                                                        widget.userLatLong)),
+                                          );
+                                        },
+                                        child: Image.asset(
+                                          'diseñador/drawable/Grupo197.png',
+                                          fit: BoxFit.contain,
+                                          height: 33,
+                                        ),
+                                      ),
+                                    )
+                                  : Container(),
                             ],
-
                           ),
                         ],
                       ),
@@ -222,10 +237,10 @@ if(widget.aliadoModel.totalRatings !=null){
                 Container(
                   width: MediaQuery.of(context).size.width * 0.91,
                   decoration: BoxDecoration(
-                      color: Color(0xFFF4F6F8),
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: Colors.grey,
+                        color: Colors.white,
                       )),
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
@@ -233,7 +248,7 @@ if(widget.aliadoModel.totalRatings !=null){
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Flexible(
                                 child: Text(widget.serviceModel.titulo,
@@ -245,7 +260,23 @@ if(widget.aliadoModel.totalRatings !=null){
                           ],
                         ),
                         SizedBox(
-                          height: 20.0,
+                          height: 10.0,
+                        ),
+
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.network(
+                            widget.serviceModel.urlImagen,
+                            height: 155,
+                            width: 120,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, object, stacktrace) {
+                              return Container();
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10.0,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -259,7 +290,7 @@ if(widget.aliadoModel.totalRatings !=null){
                           ],
                         ),
                         SizedBox(
-                          height: 20.0,
+                          height: 10.0,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -274,7 +305,7 @@ if(widget.aliadoModel.totalRatings !=null){
                           ],
                         ),
                         SizedBox(
-                          height: 20.0,
+                          height: 10.0,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -300,9 +331,11 @@ if(widget.aliadoModel.totalRatings !=null){
                                     fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.left),
                             Text(
-                                (widget.serviceModel.precio).toStringAsFixed(2) !=
+                                (widget.serviceModel.precio)
+                                            .toStringAsFixed(2) !=
                                         'null'
-                                    ? (widget.serviceModel.precio).toStringAsFixed(2)
+                                    ? (widget.serviceModel.precio)
+                                        .toStringAsFixed(2)
                                     : '0',
                                 style: TextStyle(
                                     fontSize: 20,

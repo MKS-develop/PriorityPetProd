@@ -16,6 +16,9 @@ class PetModel {
   String uid, edadMascota, tamanoMascota, historia;
   int views;
   String aliadoId;
+  dynamic costroApadrinar, costoCachorro, costoAdulto;
+  bool newPet;
+  String newOwner;
 
   PetModel({
     this.nombre,
@@ -36,6 +39,11 @@ class PetModel {
     this.historia,
     this.views,
     this.aliadoId,
+    this.costroApadrinar,
+    this.newOwner,
+    this.newPet,
+    this.costoCachorro,
+    this.costoAdulto,
   });
 
   PetModel.fromJson(Map<String, dynamic> json) {
@@ -57,6 +65,11 @@ class PetModel {
     historia = json['historia'];
     views = json['views'];
     aliadoId = json['aliadoId'];
+    costroApadrinar = json['costroApadrinar'];
+    newOwner = json['newOwner'];
+    newPet = json['newPet'];
+    costoCachorro = json['costoCachorro'];
+    costoAdulto = json['costoAdulto'];
   }
 
   Map<String, dynamic> toJson() {
@@ -81,6 +94,11 @@ class PetModel {
     data['historia'] = this.historia;
     data['views'] = this.views;
     data['aliadoId'] = this.aliadoId;
+    data['costroApadrinar'] = this.costroApadrinar;
+    data['newOwner'] = this.newOwner;
+    data['newPet'] = this.newPet;
+    data['costoCachorro'] = this.costoCachorro;
+    data['costoAdulto'] = this.costoAdulto;
     return data;
   }
 }

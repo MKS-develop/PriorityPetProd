@@ -27,8 +27,8 @@ class DetallesPromo extends StatefulWidget {
       {this.petModel,
       this.promotionModel,
       this.aliadoModel,
-      this.defaultChoiceIndex, this.locationModel
-      });
+      this.defaultChoiceIndex,
+      this.locationModel});
 
   @override
   _DetallesPromoState createState() => _DetallesPromoState();
@@ -92,17 +92,21 @@ class _DetallesPromoState extends State<DetallesPromo> {
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
         ),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         body: Container(
           height: MediaQuery.of(context).size.height,
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              colorFilter: new ColorFilter.mode(
-                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
-              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
+          color: Color(0xFFf4f6f8),
+          // decoration: new BoxDecoration(
+          //   image: new DecorationImage(
+          //     colorFilter: new ColorFilter.mode(
+          //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16.0,
           ),
@@ -132,6 +136,7 @@ class _DetallesPromoState extends State<DetallesPromo> {
                   ],
                 ),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       height: 100,
@@ -149,29 +154,36 @@ class _DetallesPromoState extends State<DetallesPromo> {
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.59,
-                      height: 110.0,
+                      height: 125.0,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(widget.aliadoModel.nombreComercial,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
                               style: TextStyle(
                                   fontSize: 17,
                                   color: Color(0xFF57419D),
                                   fontWeight: FontWeight.bold),
                               textAlign: TextAlign.left),
-                          widget.locationModel.mapAddress != null ?
-                          Text(widget.locationModel.mapAddress,
-                            style: TextStyle(
-                              fontSize: 13,
-                            ),
-                          ):
-
-                          Text(widget.locationModel.direccionLocalidad,
-                            style: TextStyle(
-                              fontSize: 13,
-                            ),
-                          ),
+                          widget.locationModel.mapAddress != null
+                              ? Text(
+                                  widget.locationModel.mapAddress,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                  ),
+                                )
+                              : Text(
+                                  widget.locationModel.direccionLocalidad,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                  ),
+                                ),
                           SizedBox(
                             height: 10,
                           ),
@@ -194,25 +206,33 @@ class _DetallesPromoState extends State<DetallesPromo> {
                                   )
                                 ],
                               ),
-                              widget.locationModel.location != null ?
-                              Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: GestureDetector(
-                                  onTap: () {
-
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => MapHome(petModel: widget.petModel, defaultChoiceIndex:
-                                      widget.defaultChoiceIndex, locationModel: widget.locationModel, aliadoModel: widget.aliadoModel, userLatLong: userLatLong)),
-                                    );
-                                  },
-                                  child: Image.asset(
-                                    'diseñador/drawable/Grupo197.png',
-                                    fit: BoxFit.contain,
-                                    height: 33,
-                                  ),
-                                ),
-                              ): Container(),
+                              widget.locationModel.location != null
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => MapHome(
+                                                    petModel: widget.petModel,
+                                                    defaultChoiceIndex: widget
+                                                        .defaultChoiceIndex,
+                                                    locationModel:
+                                                        widget.locationModel,
+                                                    aliadoModel:
+                                                        widget.aliadoModel,
+                                                    userLatLong: userLatLong)),
+                                          );
+                                        },
+                                        child: Image.asset(
+                                          'diseñador/drawable/Grupo197.png',
+                                          fit: BoxFit.contain,
+                                          height: 33,
+                                        ),
+                                      ),
+                                    )
+                                  : Container(),
                             ],
                           ),
                         ],
@@ -226,10 +246,10 @@ class _DetallesPromoState extends State<DetallesPromo> {
                 Container(
                   width: MediaQuery.of(context).size.width * 0.91,
                   decoration: BoxDecoration(
-                      color: Color(0xFFF4F6F8),
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: Colors.grey,
+                        color: Colors.transparent,
                       )),
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
@@ -340,7 +360,8 @@ class _DetallesPromoState extends State<DetallesPromo> {
                                                       widget.aliadoModel,
                                                   defaultChoiceIndex:
                                                       widget.defaultChoiceIndex,
-                                                  locationModel: widget.locationModel,
+                                                  locationModel:
+                                                      widget.locationModel,
                                                 )),
                                       );
                                     } else {

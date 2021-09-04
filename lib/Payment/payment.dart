@@ -19,6 +19,7 @@ import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_shop/Models/plan.dart';
 import 'package:pet_shop/Models/service.dart';
+import 'package:pet_shop/Ordenes/newordeneshome.dart';
 import 'package:pet_shop/Payment/addcreditcard.dart';
 import 'package:pet_shop/Store/PushNotificationsProvider.dart';
 import 'package:pet_shop/Store/storehome.dart';
@@ -38,6 +39,7 @@ class PaymentPage extends StatefulWidget {
   final LocationModel locationModel;
   final AliadoModel aliadoModel;
   final String tituloCategoria;
+  final String nombreComercial;
   final dynamic totalPrice;
   final String hora;
   final String fecha;
@@ -71,6 +73,7 @@ class PaymentPage extends StatefulWidget {
     this.planModel,
     this.defaultChoiceIndex,
     this.onSuccess,
+    this.nombreComercial,
   });
 
   @override
@@ -110,6 +113,7 @@ class _PaymentPageState extends State<PaymentPage> {
   String formapag;
   String idCulqi;
   bool registroCompleto;
+
 
   final db = FirebaseFirestore.instance;
 
@@ -199,7 +203,10 @@ class _PaymentPageState extends State<PaymentPage> {
       home: Scaffold(
         appBar: AppBarCustomAvatar(
             context, widget.petModel, widget.defaultChoiceIndex),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
@@ -405,7 +412,15 @@ class _PaymentPageState extends State<PaymentPage> {
                                                         child: RaisedButton(
                                                           onPressed: () {
                                                             // AddOrder(productId, context, widget.planModel.montoMensual, widget.planModel.planid);
-                                                            addCulqi();
+
+                                                            if(widget.tituloCategoria!='Apadrinar'){
+                                                              addCulqi();
+                                                            }
+                                                            else{
+                                                              addCulqiApadrinar();
+                                                            }
+
+
                                                             Navigator.of(
                                                                     context,
                                                                     rootNavigator:
@@ -619,7 +634,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
       if (nuevo['outcome']['type'] == 'venta_exitosa') {
         if (widget.tituloCategoria == 'Servicio') {
-          addServiceToOrders();
+
           Navigator.of(context, rootNavigator: true).pop();
           Navigator.push(
             context,
@@ -629,9 +644,36 @@ class _PaymentPageState extends State<PaymentPage> {
                       defaultChoiceIndex: widget.defaultChoiceIndex,
                     )),
           );
+          addServiceToOrders();
+        }
+        if (widget.tituloCategoria == 'Donar') {
+
+          Navigator.of(context, rootNavigator: true).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => StoreHome(
+                  petModel: widget.petModel,
+                  defaultChoiceIndex: widget.defaultChoiceIndex,
+                )),
+          );
+          addDonationToOrders();
+        }
+        if (widget.tituloCategoria == 'Adopción') {
+
+          Navigator.of(context, rootNavigator: true).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => StoreHome(
+                  petModel: widget.petModel,
+                  defaultChoiceIndex: widget.defaultChoiceIndex,
+                )),
+          );
+          addAdoptionToOrders();
         }
         if (widget.tituloCategoria == 'Promocion') {
-          addPromoToOrders();
+
           Navigator.of(context, rootNavigator: true).pop();
           Navigator.push(
             context,
@@ -641,10 +683,11 @@ class _PaymentPageState extends State<PaymentPage> {
                       defaultChoiceIndex: widget.defaultChoiceIndex,
                     )),
           );
+          addPromoToOrders();
         }
         if (widget.tituloCategoria == 'Plan Mensual' ||
             widget.tituloCategoria == 'Plan Anual') {
-          AddPlanToOrder();
+
           Navigator.of(context, rootNavigator: true).pop();
           Navigator.push(
             context,
@@ -654,6 +697,7 @@ class _PaymentPageState extends State<PaymentPage> {
                       defaultChoiceIndex: widget.defaultChoiceIndex,
                     )),
           );
+          AddPlanToOrder();
         }
         if (widget.tituloCategoria == 'Videoconsulta') {
           Navigator.of(context, rootNavigator: true).pop();
@@ -665,11 +709,12 @@ class _PaymentPageState extends State<PaymentPage> {
                       defaultChoiceIndex: widget.defaultChoiceIndex,
                     )),
           );
+          addVideoToOrders();
         }
 
         if (widget.tituloCategoria == 'Producto') {
           getAliadoSnapshots(widget.cartModel.aliadoId);
-          AddCartOrder(context, widget.cartModel);
+
           Navigator.of(context, rootNavigator: true).pop();
           Navigator.push(
             context,
@@ -679,7 +724,8 @@ class _PaymentPageState extends State<PaymentPage> {
                       defaultChoiceIndex: widget.defaultChoiceIndex,
                     )),
           );
-          addVideoToOrders();
+          AddCartOrder(context, widget.cartModel);
+
         }
       } else {
         Navigator.of(context, rootNavigator: true).pop();
@@ -691,6 +737,152 @@ class _PaymentPageState extends State<PaymentPage> {
       print('Error');
       return null;
     }
+  }
+  addCulqiApadrinar() async {
+    var precio2 = widget.totalPrice * 100;
+    dynamic precio = precio2.toInt();
+    print('el precio es $precio');
+    try {
+      var json =
+          '{"card_id":"$selectedCardToken", "plan_id": "pln_live_7zWRuX8lNcFO6zX9",}';
+      var url = ("https://api.culqi.com/v2/subscriptions");
+      Map<String, String> headers = {
+        "Content-type": "application/json",
+        "Authorization": "$_prk"
+      };
+
+      Response res =
+      await http.post(Uri.parse(url), headers: headers, body: json);
+      int statusCode = res.statusCode;
+      var nuevo = await jsonDecode(res.body);
+      //
+      CulqiUserModel culqi = await CulqiUserModel.fromJson(nuevo);
+      print(res.body);
+      print(nuevo['outcome']['type']);
+
+      // print(culqi.state);
+      // print(culqi.object);
+      // print('la marca de tarjeta es ${culqi.card_brand}');
+      setState(() {
+        // response = statusCode.toString();
+        pagoId = culqi.id;
+        type = nuevo['source']['source']['type'];
+        cardType = nuevo['source']['source']['iin']['card_type'];
+        cardBrand = nuevo['source']['source']['iin']['card_brand'];
+
+        outcomeMsg = nuevo['outcome']['user_message'];
+        outcomeMsgError = nuevo['user_message'];
+
+        print(statusCode);
+      });
+      if (cardType == 'credito') {
+        setState(() {
+          formapag = '003';
+        });
+        if (cardType == 'debito') {
+          setState(() {
+            formapag = '004';
+          });
+        }
+      }
+
+      if (nuevo['outcome']['type'] == 'venta_exitosa') {
+        if (widget.tituloCategoria == 'Apadrinar') {
+
+          Navigator.of(context, rootNavigator: true).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => StoreHome(
+                  petModel: widget.petModel,
+                  defaultChoiceIndex: widget.defaultChoiceIndex,
+                )),
+          );
+          addApadrinarToOrders();
+        }
+
+      } else {
+        Navigator.of(context, rootNavigator: true).pop();
+        ErrorMessage(context, outcomeMsgError);
+      }
+    } catch (error) {
+      Navigator.of(context, rootNavigator: true).pop();
+      ErrorMessage(context, outcomeMsgError);
+      print('Error');
+      return null;
+    }
+  }
+  addApadrinarToOrders() async {
+    Navigator.of(context, rootNavigator: true).pop();
+    OrderMessage(context, outcomeMsg);
+    var databaseReference =
+    FirebaseFirestore.instance.collection('Ordenes').doc(productId);
+
+    databaseReference.set({
+
+      "aliadoId": widget.petModel.aliadoId,
+      "oid": productId,
+      "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+      "precio": widget.totalPrice,
+      "tipoOrden": 'Apadrinar',
+      'createdOn': DateTime.now(),
+      "status": "Por confirmar",
+      "statusCita": "Por confirmar",
+      "mid": widget.petModel.mid,
+
+      "ppGeneradosD": double.parse((widget.totalPrice).toString()),
+
+      "calificacion": false,
+      "user": PetshopApp.sharedPreferences.getString(PetshopApp.userName),
+      "nombreComercial": widget.aliadoModel.nombreComercial,
+
+      "pais": PetshopApp.sharedPreferences.getString(PetshopApp.userPais),
+      "pagoId": pagoId,
+    });
+    databaseReference
+        .collection('Items')
+        .doc(widget.petModel.mid)
+        .set({
+      "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+      "nombreComercial": widget.aliadoModel.nombreComercial,
+      "petthumbnailUrl": widget.petModel.petthumbnailUrl,
+      "titulo": 'Donación',
+      "oid": productId,
+      "aliadoId": widget.petModel.aliadoId,
+
+
+      "precio": widget.totalPrice,
+      "mid": widget.petModel.mid,
+
+      "nombre": widget.petModel.nombre,
+    });
+
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => StoreHome()),
+          (Route<dynamic> route) => false,
+    );
+    // sendEmail(
+    //     PetshopApp.sharedPreferences.getString(PetshopApp.userEmail),
+    //     PetshopApp.sharedPreferences.getString(PetshopApp.userName),
+    //     productId,
+    //     ali.avatar);
+
+    // pushProvider.sendNotificaction(widget.serviceModel.aliadoId, productId);
+
+
+    var likeRef = db
+        .collection("Dueños")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
+        .collection("Petpoints")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
+    likeRef.update({
+      'ppAcumulados': FieldValue.increment(widget.totalPrice),
+      'ppCanjeados': widget.value == true
+          ? FieldValue.increment(ppAcumulados)
+          : FieldValue.increment(0),
+    });
   }
 
   AddPlanToOrder() async {
@@ -1625,6 +1817,161 @@ class _PaymentPageState extends State<PaymentPage> {
       "horasDia": FieldValue.arrayRemove(val),
       "horasReservadas": FieldValue.arrayUnion(val),
     });
+
+    var likeRef = db
+        .collection("Dueños")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
+        .collection("Petpoints")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
+    likeRef.update({
+      'ppAcumulados': FieldValue.increment(widget.totalPrice),
+      'ppCanjeados': widget.value == true
+          ? FieldValue.increment(ppAcumulados)
+          : FieldValue.increment(0),
+    });
+  }
+  addAdoptionToOrders() async {
+    Navigator.of(context, rootNavigator: true).pop();
+    OrderMessage(context, 'Tu adopción ha sido un exito, tu nueva mascota se agregará a "Mis mascotas" a partir de este momento.');
+    var databaseReference =
+    FirebaseFirestore.instance.collection('Ordenes').doc(productId);
+
+    databaseReference.set({
+
+      "aliadoId": widget.petModel.aliadoId,
+      "oid": productId,
+      "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+      "precio": widget.totalPrice,
+      "tipoOrden": 'Adopción',
+      'createdOn': DateTime.now(),
+      "status": "Por confirmar",
+      "statusCita": "Por confirmar",
+      "mid": widget.petModel.mid,
+
+      "ppGeneradosD": double.parse((widget.totalPrice).toString()),
+
+      "calificacion": false,
+      "user": PetshopApp.sharedPreferences.getString(PetshopApp.userName),
+      "nombreComercial": widget.nombreComercial != null ? widget.nombreComercial : '',
+
+      "pais": PetshopApp.sharedPreferences.getString(PetshopApp.userPais),
+      "pagoId": pagoId,
+    });
+    databaseReference
+        .collection('Items')
+        .doc(widget.petModel.mid)
+        .set({
+      "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+      "nombreComercial": widget.nombreComercial != null ? widget.nombreComercial : '',
+      "petthumbnailUrl": widget.petModel.petthumbnailUrl,
+      "titulo": 'Adopción',
+      "oid": productId,
+      "aliadoId": widget.petModel.aliadoId,
+
+
+      "precio": widget.totalPrice,
+      "mid": widget.petModel.mid,
+
+      "nombre": widget.petModel.nombre,
+    });
+
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => NewOrdenesHome()),
+          (Route<dynamic> route) => false,
+    );
+    // sendEmail(
+    //     PetshopApp.sharedPreferences.getString(PetshopApp.userEmail),
+    //     PetshopApp.sharedPreferences.getString(PetshopApp.userName),
+    //     productId,
+    //     ali.avatar);
+
+    // pushProvider.sendNotificaction(widget.serviceModel.aliadoId, productId);
+    var adopt = db
+        .collection("Mascotas")
+        .doc(widget.petModel.mid);
+
+    adopt.update({
+      'adoptadoStatus': true,
+      'newPet': false,
+      'uid': PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+
+
+    });
+
+    var likeRef = db
+        .collection("Dueños")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
+        .collection("Petpoints")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
+    likeRef.update({
+      'ppAcumulados': FieldValue.increment(widget.totalPrice),
+      'ppCanjeados': widget.value == true
+          ? FieldValue.increment(ppAcumulados)
+          : FieldValue.increment(0),
+    });
+  }
+
+  addDonationToOrders() async {
+    Navigator.of(context, rootNavigator: true).pop();
+    OrderMessage(context, outcomeMsg);
+    var databaseReference =
+    FirebaseFirestore.instance.collection('Ordenes').doc(productId);
+
+    databaseReference.set({
+
+      "aliadoId": widget.petModel.aliadoId,
+      "oid": productId,
+      "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+      "precio": widget.totalPrice,
+      "tipoOrden": 'Donación',
+      'createdOn': DateTime.now(),
+      "status": "Por confirmar",
+      "statusCita": "Por confirmar",
+      "mid": widget.petModel.mid,
+
+      "ppGeneradosD": double.parse((widget.totalPrice).toString()),
+
+      "calificacion": false,
+      "user": PetshopApp.sharedPreferences.getString(PetshopApp.userName),
+      "nombreComercial": widget.aliadoModel.nombreComercial,
+
+      "pais": PetshopApp.sharedPreferences.getString(PetshopApp.userPais),
+      "pagoId": pagoId,
+    });
+    databaseReference
+        .collection('Items')
+        .doc(widget.petModel.mid)
+        .set({
+      "uid": PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+      "nombreComercial": widget.aliadoModel.nombreComercial,
+      "petthumbnailUrl": widget.petModel.petthumbnailUrl,
+      "titulo": 'Donación',
+      "oid": productId,
+      "aliadoId": widget.petModel.aliadoId,
+
+
+      "precio": widget.totalPrice,
+      "mid": widget.petModel.mid,
+
+      "nombre": widget.petModel.nombre,
+    });
+
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => StoreHome()),
+          (Route<dynamic> route) => false,
+    );
+    // sendEmail(
+    //     PetshopApp.sharedPreferences.getString(PetshopApp.userEmail),
+    //     PetshopApp.sharedPreferences.getString(PetshopApp.userName),
+    //     productId,
+    //     ali.avatar);
+
+    // pushProvider.sendNotificaction(widget.serviceModel.aliadoId, productId);
+
 
     var likeRef = db
         .collection("Dueños")

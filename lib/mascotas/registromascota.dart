@@ -104,7 +104,7 @@ class _RegistroMascotaState extends State<RegistroMascota>
                         backgroundColor: Colors.white,
                         backgroundImage: Image.network(
                           PetshopApp.sharedPreferences
-                            .getString(PetshopApp.userAvatarUrl),
+                              .getString(PetshopApp.userAvatarUrl),
                           errorBuilder: (context, object, stacktrace) {
                             return Container();
                           },
@@ -122,11 +122,17 @@ class _RegistroMascotaState extends State<RegistroMascota>
         petModel: widget.petModel,
         defaultChoiceIndex: widget.defaultChoiceIndex,
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        petModel: widget.petModel,
+        defaultChoiceIndex: widget.defaultChoiceIndex,
+      ),
       body: Container(
         height: MediaQuery.of(context).size.height,
+        // color: Color(0xFFf4f6f8),
         decoration: new BoxDecoration(
           image: new DecorationImage(
+            colorFilter: new ColorFilter.mode(
+                Colors.white.withOpacity(0.3), BlendMode.dstATop),
             image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
             fit: BoxFit.cover,
           ),
@@ -406,9 +412,7 @@ class _RegistroMascotaState extends State<RegistroMascota>
                                       } else {
                                         List<String> list = [];
                                         for (int i = 0;
-                                            i <
-                                                dataSnapshot
-                                                    .data.docs.length;
+                                            i < dataSnapshot.data.docs.length;
                                             i++) {
                                           DocumentSnapshot razas =
                                               dataSnapshot.data.docs[i];

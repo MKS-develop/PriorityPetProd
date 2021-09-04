@@ -18,6 +18,7 @@ import 'package:pet_shop/Widgets/navbar.dart';
 import '../Widgets/myDrawer.dart';
 import 'serviciodetalle.dart';
 import 'dart:math' show cos, sqrt, asin;
+import 'package:geolocator/geolocator.dart';
 
 double width;
 
@@ -181,21 +182,25 @@ class _ServicioPageState extends State<ServicioPage> {
       home: Scaffold(
         appBar: AppBarCustomAvatar(
             context, widget.petModel, widget.defaultChoiceIndex),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
         ),
         body: Container(
           height: _screenHeight,
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              colorFilter: new ColorFilter.mode(
-                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
-              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
+          color: Color(0xFFf4f6f8),
+          // decoration: new BoxDecoration(
+          //   image: new DecorationImage(
+          //     colorFilter: new ColorFilter.mode(
+          //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16.0,
           ),
@@ -265,7 +270,7 @@ class _ServicioPageState extends State<ServicioPage> {
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         border: Border.all(
-                                          color: Color(0xFF7f9d9D),
+                                          color: Colors.transparent,
                                           width: 1.0,
                                         ),
                                         borderRadius: BorderRadius.all(
@@ -456,7 +461,8 @@ class _ServicioPageState extends State<ServicioPage> {
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 border: Border.all(
-                                  color: Color(0xFF7f9d9D),
+                                  color: Colors.transparent,
+                                  // color: Color(0xFF7f9d9D),
                                   width: 1.0,
                                 ),
                                 borderRadius:
@@ -633,9 +639,8 @@ class _ServicioPageState extends State<ServicioPage> {
                         ],
                       )
                     : Container(
-                        height: 99 *
-                double.parse(
-                _resultsList.length.toString()),
+                        height:
+                            99 * double.parse(_resultsList.length.toString()),
                         width: _screenWidth,
                         child: Column(
                           children: [
@@ -689,6 +694,7 @@ class _ServicioPageState extends State<ServicioPage> {
                 ) {
                   LocationModel location = LocationModel.fromJson(
                       dataSnapshot.data.docs[index].data());
+
                   return StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection("Aliados")
@@ -710,24 +716,21 @@ class _ServicioPageState extends State<ServicioPage> {
                             ) {
                               AliadoModel aliado = AliadoModel.fromJson(
                                   dataSnapshot.data.docs[index].data());
-                              if (userLatLong !=null && location.location != null) {
-                                var p = 0.017453292519943295;
-                                var c = cos;
-                                var a = 0.5 -
-                                    c((location.location.latitude != null
-                                                ? location.location.latitude
-                                                : 0 - userLatLong.latitude) *
-                                            p) /
-                                        2 +
-                                    c(userLatLong.latitude * p) *
-                                        c(location.location.latitude * p) *
-                                        (1 -
-                                            c((location.location.longitude -
-                                                    userLatLong.longitude) *
-                                                p)) /
-                                        2;
-                                totalD = 12742 * asin(sqrt(a));
+                              if (userLatLong != null &&
+                                  location.location != null) {
+                                totalD = Geolocator.distanceBetween(
+                                        userLatLong.latitude,
+                                        userLatLong.longitude,
+                                        location.location.latitude,
+                                        location.location.longitude) /
+                                    1000;
                               }
+                              // var p = 0.017453292519943295;
+                              // var c = cos;
+                              // var a = 0.5 - c((location.location.latitude != null
+                              //     ? location.location.latitude
+                              //     : 0 - userLatLong.latitude) * p) / 2 + c(userLatLong.latitude * p) * c(location.location.latitude * p) * (1 - c((location.location.longitude - userLatLong.longitude) * p)) / 2;
+                              // totalD = 12742 * asin(sqrt(a));
 
                               if (aliado.totalRatings != null) {
                                 rating =
@@ -751,144 +754,160 @@ class _ServicioPageState extends State<ServicioPage> {
                                 child: Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(2, 8, 2, 8),
-                                  child: SizedBox(
+                                  child: Container(
                                     width: MediaQuery.of(context).size.width,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          height: 70,
-                                          width: 70,
-                                          decoration: BoxDecoration(
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.grey,
-                                                blurRadius: 1.0,
-                                                spreadRadius: 0.0,
-                                                offset: Offset(2.0,
-                                                    2.0), // shadow direction: bottom right
-                                              )
-                                            ],
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10)
+
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            height: 70,
+                                            width: 70,
+                                            decoration: BoxDecoration(
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey,
+                                                  blurRadius: 1.0,
+                                                  spreadRadius: 0.0,
+                                                  offset: Offset(2.0,
+                                                      2.0), // shadow direction: bottom right
+                                                )
+                                              ],
+                                            ),
+                                            child: Image.network(
+                                              aliado.avatar,
+                                              fit: BoxFit.cover,
+                                              errorBuilder:
+                                                  (context, object, stacktrace) {
+                                                return Container();
+                                              },
+                                            ),
                                           ),
-                                          child: Image.network(
-                                            aliado.avatar,
-                                            fit: BoxFit.cover,
-                                            errorBuilder:
-                                                (context, object, stacktrace) {
-                                              return Container();
-                                            },
+                                          SizedBox(
+                                            width: 10.0,
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: 15.0,
-                                        ),
-                                        Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.5,
-                                          height: 73,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Text(aliado.nombreComercial,
-                                                      style: TextStyle(
-                                                          fontSize: 17,
-                                                          color:
-                                                              Color(0xFF57419D),
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                      textAlign:
-                                                          TextAlign.left),
-                                                  location.mapAddress != null
-                                                      ? Text(
-                                                          location.mapAddress,
-                                                          maxLines: 2,
-                                                          style: TextStyle(
-                                                            fontSize: 13,
-                                                          ),
-                                                          textAlign:
-                                                              TextAlign.left)
-                                                      : Text(
-                                                          location.mapAddress !=
-                                                                  null
-                                                              ? location
-                                                                  .mapAddress
-                                                              : location
-                                                                  .direccionLocalidad,
-                                                          maxLines: 2,
-                                                          style: TextStyle(
-                                                            fontSize: 13,
-                                                          ),
-                                                          textAlign:
-                                                              TextAlign.left),
-                                                ],
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  Text(
-                                                      rating.toString() != 'NaN'
-                                                          ? rating.toStringAsPrecision(1)
-                                                          : '0',
-                                                      style: TextStyle(
-                                                          fontSize: 16, color: Colors.orange),
-                                                      textAlign: TextAlign.left),
-                                                  SizedBox(
-                                                    width: 8,
-                                                  ),
-                                                  Icon(
-                                                    Icons.star,
-                                                    color: Colors.orange,
-                                                    size: 16,
-                                                  )
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        totalD != 0
-                                            ? SizedBox(
-                                                child: Column(
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.51,
+                                            height: 73,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
                                                   children: [
-                                                    SizedBox(
-                                                      height: 9,
-                                                    ),
-                                                    Icon(
-                                                      Icons.location_on_rounded,
-                                                      color: secondaryColor,
-                                                    ),
-                                                    SizedBox(
-                                                      height: 3,
-                                                    ),
-
-                                                    Text(
-                                                        totalD < 500.00
-                                                            ? '${totalD.toStringAsFixed(1)} Km'
-                                                            : '+500 Km',
+                                                    Text(aliado.nombreComercial,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
                                                         style: TextStyle(
-                                                          fontSize: 12,
-                                                        ),
+                                                            fontSize: 17,
+                                                            color:
+                                                                Color(0xFF57419D),
+                                                            fontWeight:
+                                                                FontWeight.bold),
                                                         textAlign:
-                                                            TextAlign.center),
+                                                            TextAlign.left),
+                                                    location.mapAddress != null
+                                                        ? Text(
+                                                            location.mapAddress,
+                                                            maxLines: 2,
+                                                        overflow: TextOverflow.ellipsis,
+                                                            style: TextStyle(
+                                                              fontSize: 13,
+                                                            ),
+                                                            textAlign:
+                                                                TextAlign.left)
+                                                        : Text(
+                                                            location.mapAddress !=
+                                                                    null
+                                                                ? location
+                                                                    .mapAddress
+                                                                : location
+                                                                    .direccionLocalidad,
+                                                            maxLines: 2,
+                                                        overflow: TextOverflow.ellipsis,
+                                                            style: TextStyle(
+                                                              fontSize: 13,
+                                                            ),
+                                                            textAlign:
+                                                                TextAlign.left),
                                                   ],
                                                 ),
-                                              )
-                                            : Container(),
-                                      ],
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Text(
+                                                        rating.toString() != 'NaN'
+                                                            ? rating
+                                                                .toStringAsPrecision(
+                                                                    1)
+                                                            : '0',
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            color: Colors.orange),
+                                                        textAlign:
+                                                            TextAlign.left),
+                                                    SizedBox(
+                                                      width: 8,
+                                                    ),
+                                                    Icon(
+                                                      Icons.star,
+                                                      color: Colors.orange,
+                                                      size: 16,
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          totalD != 0
+                                              ? SizedBox(
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.center,
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 9,
+                                                      ),
+                                                      Icon(
+                                                        Icons.location_on_rounded,
+                                                        color: secondaryColor,
+                                                      ),
+                                                      SizedBox(
+                                                        height: 3,
+                                                      ),
+                                                      Text(
+                                                          totalD < 500
+                                                              ? '${totalD.toStringAsFixed(1)} Km'
+                                                              : '+500 Km',
+                                                          overflow: TextOverflow.ellipsis,
+                                                          style: TextStyle(
+                                                            fontSize: 11,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.center),
+                                                    ],
+                                                  ),
+                                                )
+                                              : Container(),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -939,79 +958,79 @@ class _ServicioPageState extends State<ServicioPage> {
     return ciudades;
   }
 
-  Widget sourceInfo(BuildContext context, DocumentSnapshot document) {
-    final servicio = ServicioModel.fromSnapshot(document);
-
-    return InkWell(
-      child: Column(
-        children: [
-          Container(
-            height: 70.0,
-            width: MediaQuery.of(context).size.width,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ServicioDetalle(
-                          petModel: model, servicioModel: servicio),
-                    ));
-              },
-              child: Container(
-                child: Row(
-                  children: [
-                    Container(
-                      height: 70,
-                      width: 70,
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey,
-                            blurRadius: 1.0,
-                            spreadRadius: 0.0,
-                            offset: Offset(
-                                2.0, 2.0), // shadow direction: bottom right
-                          )
-                        ],
-                      ),
-                      child: Image.network(
-                        servicio.urlImagen,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, object, stacktrace) {
-                          return Container();
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      width: 8.0,
-                    ),
-                    Container(
-                      height: 90.0,
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(servicio.titulo,
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: Color(0xFF57419D),
-                                  fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left),
-                          SizedBox(height: 8.0),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 20.0),
-        ],
-      ),
-    );
-  }
+  // Widget sourceInfo(BuildContext context, DocumentSnapshot document) {
+  //   final servicio = ServicioModel.fromSnapshot(document);
+  //
+  //   return InkWell(
+  //     child: Column(
+  //       children: [
+  //         Container(
+  //           height: 70.0,
+  //           width: MediaQuery.of(context).size.width,
+  //           child: GestureDetector(
+  //             onTap: () {
+  //               Navigator.push(
+  //                   context,
+  //                   MaterialPageRoute(
+  //                     builder: (context) => ServicioDetalle(
+  //                         petModel: model, servicioModel: servicio),
+  //                   ));
+  //             },
+  //             child: Container(
+  //               child: Row(
+  //                 children: [
+  //                   Container(
+  //                     height: 70,
+  //                     width: 70,
+  //                     decoration: BoxDecoration(
+  //                       boxShadow: [
+  //                         BoxShadow(
+  //                           color: Colors.grey,
+  //                           blurRadius: 1.0,
+  //                           spreadRadius: 0.0,
+  //                           offset: Offset(
+  //                               2.0, 2.0), // shadow direction: bottom right
+  //                         )
+  //                       ],
+  //                     ),
+  //                     child: Image.network(
+  //                       servicio.urlImagen,
+  //                       fit: BoxFit.cover,
+  //                       errorBuilder: (context, object, stacktrace) {
+  //                         return Container();
+  //                       },
+  //                     ),
+  //                   ),
+  //                   SizedBox(
+  //                     width: 8.0,
+  //                   ),
+  //                   Container(
+  //                     height: 90.0,
+  //                     width: MediaQuery.of(context).size.width * 0.7,
+  //                     child: Column(
+  //                       mainAxisAlignment: MainAxisAlignment.start,
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: [
+  //                         Text(servicio.titulo,
+  //                             style: TextStyle(
+  //                                 fontSize: 15,
+  //                                 color: Color(0xFF57419D),
+  //                                 fontWeight: FontWeight.bold),
+  //                             textAlign: TextAlign.left),
+  //                         SizedBox(height: 8.0),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //         SizedBox(height: 20.0),
+  //       ],
+  //     ),
+  //   );
+  // }
   // Widget sourceInfo(ProductModel product, BuildContext context,
   //     ) {
   //   return InkWell(

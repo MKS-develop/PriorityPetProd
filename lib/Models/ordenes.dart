@@ -18,7 +18,8 @@ class OrderModel {
       localidadId,
       nombreComercial,
       videoId,
-      petthumbnailUrl;
+      petthumbnailUrl,
+      pagoId;
   dynamic cantidad, total, precio, ppGeneradosD, sumaTotal, delivery, montoAprobado;
   bool tieneDelivery, calificacion;
 
@@ -53,7 +54,8 @@ class OrderModel {
     this.date,
     this.nombreComercial,
     this.videoId,
-    this.montoAprobado
+    this.montoAprobado,
+    this.pagoId
   });
 
   OrderModel.fromJson(Map<String, dynamic> json) {
@@ -86,6 +88,7 @@ class OrderModel {
     petthumbnailUrl = json['petthumbnailUrl'];
     videoId = json['videoId'];
     montoAprobado = json['montoAprobado'] ?? 0.0;
+    pagoId = json['pagoId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -118,6 +121,7 @@ class OrderModel {
     data['nombreComercial'] = this.nombreComercial;
     data['videoId'] = this.videoId;
     data['montoAprobado'] = this.montoAprobado;
+    data['pagoId'] = this.pagoId;
     return data;
   }
 }

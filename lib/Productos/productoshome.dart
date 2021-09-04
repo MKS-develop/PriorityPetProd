@@ -118,7 +118,7 @@ class _ProductosHomeState extends State<ProductosHome> {
           defaultChoiceIndex: widget.defaultChoiceIndex,
         ),
         bottomNavigationBar:
-            CustomBottomNavigationBar(petmodel: widget.petModel),
+            CustomBottomNavigationBar(petModel: widget.petModel),
         body: _fondo(),
       ),
     );
@@ -127,14 +127,15 @@ class _ProductosHomeState extends State<ProductosHome> {
   Widget _fondo() {
     return Container(
       height: MediaQuery.of(context).size.height,
-      decoration: new BoxDecoration(
-        image: new DecorationImage(
-          colorFilter: new ColorFilter.mode(
-              Colors.white.withOpacity(0.3), BlendMode.dstATop),
-          image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-          fit: BoxFit.cover,
-        ),
-      ),
+      color: Color(0xFFf4f6f8),
+      // decoration: new BoxDecoration(
+      //   image: new DecorationImage(
+      //     colorFilter: new ColorFilter.mode(
+      //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+      //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+      //     fit: BoxFit.cover,
+      //   ),
+      // ),
       padding: const EdgeInsets.symmetric(
         horizontal: 16.0,
       ),
@@ -223,7 +224,7 @@ class _ProductosHomeState extends State<ProductosHome> {
                             decoration: BoxDecoration(
                               color: Colors.white,
                               border: Border.all(
-                                color: Color(0xFF7f9d9D),
+                                color: Colors.transparent,
                                 width: 1.0,
                               ),
                               borderRadius:
@@ -294,7 +295,8 @@ class _ProductosHomeState extends State<ProductosHome> {
                 },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
-                color: Color(0xFFF4F6F8),
+                // color: Color(0xFFF4F6F8),
+                color: Colors.white,
                 padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -342,7 +344,8 @@ class _ProductosHomeState extends State<ProductosHome> {
                 },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
-                color: Color(0xFFF4F6F8),
+                // color: Color(0xFFF4F6F8),
+                color: Colors.white,
                 padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -395,7 +398,8 @@ class _ProductosHomeState extends State<ProductosHome> {
                 },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
-                color: Color(0xFFF4F6F8),
+                // color: Color(0xFFF4F6F8),
+                color: Colors.white,
                 padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -443,7 +447,8 @@ class _ProductosHomeState extends State<ProductosHome> {
                 },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
-                color: Color(0xFFF4F6F8),
+                // color: Color(0xFFF4F6F8),
+                color: Colors.white,
                 padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -496,7 +501,8 @@ class _ProductosHomeState extends State<ProductosHome> {
                 },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
-                color: Color(0xFFF4F6F8),
+                // color: Color(0xFFF4F6F8),
+                color: Colors.white,
                 padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -579,7 +585,7 @@ class _ProductosHomeState extends State<ProductosHome> {
       child: Row(
         children: [
           Container(
-            height: 87.0,
+            height: 100.0,
             width: MediaQuery.of(context).size.width * 0.89,
             child: StreamBuilder(
                 stream: FirebaseFirestore.instance
@@ -617,6 +623,12 @@ class _ProductosHomeState extends State<ProductosHome> {
                                 ));
                           },
                           child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10)
+
+                            ),
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Row(

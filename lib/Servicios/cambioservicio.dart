@@ -132,7 +132,10 @@ class _CambioServicioState extends State<CambioServicio> {
       home: Scaffold(
         appBar: AppBarCustomAvatar(
             context, widget.petModel, widget.defaultChoiceIndex),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
@@ -193,7 +196,7 @@ class _CambioServicioState extends State<CambioServicio> {
                             index,
                           ) {
                             AliadoModel ali =
-                                AliadoModel.fromJson(dataSnapshot.data.data);
+                                AliadoModel.fromJson(dataSnapshot.data.data());
                             return Column(children: [
                               Row(
                                 children: [
@@ -203,13 +206,14 @@ class _CambioServicioState extends State<CambioServicio> {
                                     child: Image.network(
                                       ali.avatar,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (context, object, stacktrace) {
+                                      errorBuilder:
+                                          (context, object, stacktrace) {
                                         return Container();
                                       },
                                     ),
                                   ),
                                   SizedBox(
-                                    width: 20.0,
+                                    width: 10.0,
                                   ),
                                   Container(
                                     width: MediaQuery.of(context).size.width *
@@ -273,8 +277,7 @@ class _CambioServicioState extends State<CambioServicio> {
                                           .snapshots(),
                                       builder: (context, dataSnapshot) {
                                         if (dataSnapshot.hasData) {
-                                          if (dataSnapshot
-                                                  .data.docs.length ==
+                                          if (dataSnapshot.data.docs.length ==
                                               0) {
                                             return Center(child: Text(''));
                                           }
@@ -650,7 +653,9 @@ class _CambioServicioState extends State<CambioServicio> {
                                                         if (fecha == null &&
                                                             item.hora == null) {
                                                           showDialog(
-                                                            builder: (context) => AlertDialog(
+                                                            builder:
+                                                                (context) =>
+                                                                    AlertDialog(
                                                               title: Row(
                                                                 children: [
                                                                   Icon(
@@ -670,7 +675,8 @@ class _CambioServicioState extends State<CambioServicio> {
                                                                   ),
                                                                 ],
                                                               ),
-                                                            ), context: context,
+                                                            ),
+                                                            context: context,
                                                           );
                                                         } else if (fecha !=
                                                                 null &&
@@ -691,7 +697,9 @@ class _CambioServicioState extends State<CambioServicio> {
                                                             null) {
                                                           if (hora == null) {
                                                             showDialog(
-                                                              builder: (context) => AlertDialog(
+                                                              builder:
+                                                                  (context) =>
+                                                                      AlertDialog(
                                                                 title: Row(
                                                                   children: [
                                                                     Icon(
@@ -711,12 +719,15 @@ class _CambioServicioState extends State<CambioServicio> {
                                                                     ),
                                                                   ],
                                                                 ),
-                                                              ), context: context,
+                                                              ),
+                                                              context: context,
                                                             );
                                                           }
                                                           if (fecha == null) {
                                                             showDialog(
-                                                              builder: (context) => AlertDialog(
+                                                              builder:
+                                                                  (context) =>
+                                                                      AlertDialog(
                                                                 title: Row(
                                                                   children: [
                                                                     Icon(
@@ -736,7 +747,8 @@ class _CambioServicioState extends State<CambioServicio> {
                                                                     ),
                                                                   ],
                                                                 ),
-                                                              ), context: context,
+                                                              ),
+                                                              context: context,
                                                             );
                                                           }
                                                           if (hora != null &&

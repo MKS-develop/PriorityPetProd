@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/Models/Product.dart';
 import 'package:pet_shop/Models/Producto.dart';
@@ -66,7 +67,6 @@ class _AlimentoHomeState extends State<AlimentoHome> {
   File file;
   String productId = DateTime.now().millisecondsSinceEpoch.toString();
   GeoPoint userLatLong;
-
 
   @override
   void initState() {
@@ -185,21 +185,25 @@ class _AlimentoHomeState extends State<AlimentoHome> {
       home: Scaffold(
         appBar: AppBarCustomAvatar(
             context, widget.petModel, widget.defaultChoiceIndex),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
         ),
         body: Container(
           height: _screenHeight,
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              colorFilter: new ColorFilter.mode(
-                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
-              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
+          color: Color(0xFFf4f6f8),
+          // decoration: new BoxDecoration(
+          //   image: new DecorationImage(
+          //     colorFilter: new ColorFilter.mode(
+          //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16.0,
           ),
@@ -245,7 +249,8 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     border: Border.all(
-                                      color: Color(0xFF7f9d9D),
+                                      color: Colors.transparent,
+                                      // color: Color(0xFF7f9d9D),
                                       width: 1.0,
                                     ),
                                     borderRadius:
@@ -333,7 +338,8 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         border: Border.all(
-                                          color: Color(0xFF7f9d9D),
+                                          color: Colors.transparent,
+                                          // color: Color(0xFF7f9d9D),
                                           width: 1.0,
                                         ),
                                         borderRadius: BorderRadius.all(
@@ -452,7 +458,7 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                 SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
                                     crossAxisSpacing: 1,
-                                    childAspectRatio: 0.63),
+                                    childAspectRatio: 0.58),
                             itemBuilder: (
                               BuildContext context,
                               int index,
@@ -550,8 +556,13 @@ class _AlimentoHomeState extends State<AlimentoHome> {
       child: Column(
         children: [
           Container(
-              height: 260.0,
-              width: MediaQuery.of(context).size.width * 0.5,
+               height: 285.0,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10)
+
+              ),
+              width: MediaQuery.of(context).size.width * 0.43,
               child: StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection('Aliados')
@@ -597,30 +608,14 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                           LocationModel.fromJson(dataSnapshot
                                               .data.docs[index]
                                               .data());
-                                      if (userLatLong !=null && location.location != null) {
-                                        var p = 0.017453292519943295;
-                                        var c = cos;
-                                        var a = 0.5 -
-                                            c((location.location.latitude !=
-                                                            null
-                                                        ? location
-                                                            .location.latitude
-                                                        : 0 -
-                                                            userLatLong
-                                                                .latitude) *
-                                                    p) /
-                                                2 +
-                                            c(userLatLong.latitude * p) *
-                                                c(location.location.latitude *
-                                                    p) *
-                                                (1 -
-                                                    c((location.location
-                                                                .longitude -
-                                                            userLatLong
-                                                                .longitude) *
-                                                        p)) /
-                                                2;
-                                        totalD = 12742 * asin(sqrt(a));
+                                      if (userLatLong != null &&
+                                          location.location != null) {
+                                        totalD = Geolocator.distanceBetween(
+                                                userLatLong.latitude,
+                                                userLatLong.longitude,
+                                                location.location.latitude,
+                                                location.location.longitude) /
+                                            1000;
                                       }
 
                                       // var totalD = 0;
@@ -637,24 +632,32 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                                         aliadoModel: ali,
                                                         defaultChoiceIndex: widget
                                                             .defaultChoiceIndex,
-                                                    locationModel: location),
+                                                        locationModel:
+                                                            location),
                                               ));
                                         },
                                         child: Container(
+
                                           child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Container(
-                                                height: 150,
-                                                width: 120,
-                                                child: Image.network(
-                                                  product.urlImagen,
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder: (context,
-                                                      object, stacktrace) {
-                                                    return Container();
-                                                  },
+                                              Padding(
+                                                padding: const EdgeInsets.fromLTRB(8, 12, 8, 5),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                  BorderRadius.circular(8.0),
+
+                                                  child: Image.network(
+                                                    product.urlImagen,
+                                                    height: 150,
+                                                    width: 120,
+                                                    fit: BoxFit.cover,
+                                                    errorBuilder: (context,
+                                                        object, stacktrace) {
+                                                      return Container();
+                                                    },
+                                                  ),
                                                 ),
                                               ),
                                               SizedBox(
@@ -760,105 +763,108 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                                               textAlign:
                                                                   TextAlign
                                                                       .left),
-                                                          Container(
-                                                            height: 32.0,
-                                                            width: 30.0,
-                                                            child: StreamBuilder<
-                                                                    QuerySnapshot>(
-                                                                stream: FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                        'Productos')
-                                                                    .doc(product
-                                                                        .productoId)
-                                                                    .collection(
-                                                                        'Favoritos')
-                                                                    .where(
-                                                                        'uid',
-                                                                        isEqualTo: PetshopApp
-                                                                            .sharedPreferences
-                                                                            .getString(PetshopApp
-                                                                                .userUID))
-                                                                    .snapshots(),
-                                                                builder: (context,
-                                                                    dataSnapshot) {
-                                                                  if (!dataSnapshot
-                                                                      .hasData) {
-                                                                    return Center(
-                                                                      child:
-                                                                          CircularProgressIndicator(),
-                                                                    );
-                                                                  }
-                                                                  if (dataSnapshot
-                                                                          .data
-                                                                          .docs
-                                                                          .length ==
-                                                                      0) {
-                                                                    return Center(
+                                                          Padding(
+                                                            padding: const EdgeInsets.fromLTRB(0,0,13,3),
+                                                            child: Container(
+                                                              height: 32.0,
+                                                              width: 30.0,
+                                                              child: StreamBuilder<
+                                                                      QuerySnapshot>(
+                                                                  stream: FirebaseFirestore
+                                                                      .instance
+                                                                      .collection(
+                                                                          'Productos')
+                                                                      .doc(product
+                                                                          .productoId)
+                                                                      .collection(
+                                                                          'Favoritos')
+                                                                      .where(
+                                                                          'uid',
+                                                                          isEqualTo: PetshopApp
+                                                                              .sharedPreferences
+                                                                              .getString(PetshopApp
+                                                                                  .userUID))
+                                                                      .snapshots(),
+                                                                  builder: (context,
+                                                                      dataSnapshot) {
+                                                                    if (!dataSnapshot
+                                                                        .hasData) {
+                                                                      return Center(
                                                                         child:
-                                                                            Text(
-                                                                      '',
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              5),
-                                                                    ));
-                                                                  }
+                                                                            CircularProgressIndicator(),
+                                                                      );
+                                                                    }
+                                                                    if (dataSnapshot
+                                                                            .data
+                                                                            .docs
+                                                                            .length ==
+                                                                        0) {
+                                                                      return Center(
+                                                                          child:
+                                                                              Text(
+                                                                        '',
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                5),
+                                                                      ));
+                                                                    }
 
-                                                                  return ListView
-                                                                      .builder(
-                                                                          physics:
-                                                                              NeverScrollableScrollPhysics(),
-                                                                          itemCount:
-                                                                              1,
-                                                                          shrinkWrap:
-                                                                              true,
-                                                                          itemBuilder:
-                                                                              (
-                                                                            context,
-                                                                            index,
-                                                                          ) {
-                                                                            FavoritosModel
-                                                                                favorito =
-                                                                                FavoritosModel.fromJson(dataSnapshot.data.docs[index].data());
-                                                                            return Column(
-                                                                              mainAxisAlignment: MainAxisAlignment.start,
-                                                                              children: [
-                                                                                IconButton(
-                                                                                  icon: favorito.like ? Icon(Icons.favorite) : Icon(Icons.favorite_border_outlined),
-                                                                                  color: Color(0xFF57419D),
-                                                                                  iconSize: 20,
-                                                                                  onPressed: () {
-                                                                                    setState(() {
-                                                                                      if (favorito.like) {
-                                                                                        favorito.like = false;
+                                                                    return ListView
+                                                                        .builder(
+                                                                            physics:
+                                                                                NeverScrollableScrollPhysics(),
+                                                                            itemCount:
+                                                                                1,
+                                                                            shrinkWrap:
+                                                                                true,
+                                                                            itemBuilder:
+                                                                                (
+                                                                              context,
+                                                                              index,
+                                                                            ) {
+                                                                              FavoritosModel
+                                                                                  favorito =
+                                                                                  FavoritosModel.fromJson(dataSnapshot.data.docs[index].data());
+                                                                              return Column(
+                                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                                children: [
+                                                                                  IconButton(
+                                                                                    icon: favorito.like ? Icon(Icons.favorite) : Icon(Icons.favorite_border_outlined),
+                                                                                    color: Color(0xFF57419D),
+                                                                                    iconSize: 20,
+                                                                                    onPressed: () {
+                                                                                      setState(() {
+                                                                                        if (favorito.like) {
+                                                                                          favorito.like = false;
 
-                                                                                        FirebaseFirestore.instance.collection("Productos").doc(product.productoId).collection('Favoritos').doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID)).set({
-                                                                                          'like': false,
-                                                                                          'uid': PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
-                                                                                        }).then((result) {
-                                                                                          print("new USer true");
-                                                                                        }).catchError((onError) {
-                                                                                          print("onError");
-                                                                                        });
-                                                                                      } else {
-                                                                                        favorito.like = true;
+                                                                                          FirebaseFirestore.instance.collection("Productos").doc(product.productoId).collection('Favoritos').doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID)).set({
+                                                                                            'like': false,
+                                                                                            'uid': PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+                                                                                          }).then((result) {
+                                                                                            print("new USer true");
+                                                                                          }).catchError((onError) {
+                                                                                            print("onError");
+                                                                                          });
+                                                                                        } else {
+                                                                                          favorito.like = true;
 
-                                                                                        FirebaseFirestore.instance.collection("Productos").doc(product.productoId).collection('Favoritos').doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID)).set({
-                                                                                          'like': true,
-                                                                                          'uid': PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
-                                                                                        }).then((result) {
-                                                                                          print("new USer true");
-                                                                                        }).catchError((onError) {
-                                                                                          print("onError");
-                                                                                        });
-                                                                                      }
-                                                                                    });
-                                                                                  },
-                                                                                ),
-                                                                              ],
-                                                                            );
-                                                                          });
-                                                                }),
+                                                                                          FirebaseFirestore.instance.collection("Productos").doc(product.productoId).collection('Favoritos').doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID)).set({
+                                                                                            'like': true,
+                                                                                            'uid': PetshopApp.sharedPreferences.getString(PetshopApp.userUID),
+                                                                                          }).then((result) {
+                                                                                            print("new USer true");
+                                                                                          }).catchError((onError) {
+                                                                                            print("onError");
+                                                                                          });
+                                                                                        }
+                                                                                      });
+                                                                                    },
+                                                                                  ),
+                                                                                ],
+                                                                              );
+                                                                            });
+                                                                  }),
+                                                            ),
                                                           ),
                                                         ],
                                                       ),

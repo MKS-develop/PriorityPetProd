@@ -33,7 +33,7 @@ class AddCreditCardPage extends StatefulWidget {
   final LocationModel locationModel;
   final AliadoModel aliadoModel;
   final String tituloCategoria;
-  final int totalPrice;
+  final dynamic totalPrice;
   final PromotionModel promotionModel;
   final PlanModel planModel;
   final int defaultChoiceIndex;
@@ -105,7 +105,10 @@ class _AddCreditCardPageState extends State<AddCreditCardPage> {
       home: Scaffold(
         appBar: AppBarCustomAvatar(
             context, widget.petModel, widget.defaultChoiceIndex),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          petModel: widget.petModel,
+          defaultChoiceIndex: widget.defaultChoiceIndex,
+        ),
         drawer: MyDrawer(
           petModel: widget.petModel,
           defaultChoiceIndex: widget.defaultChoiceIndex,
