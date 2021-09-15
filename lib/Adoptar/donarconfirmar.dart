@@ -113,7 +113,7 @@ class _DonarConfirmarState extends State<DonarConfirmar> {
                     SizedBox(
                       height: 15,
                     ),
-                    Text("¡Ya casi estamos listos!",
+                    Text("¡Gracias por querer ayudar a ${widget.petModel.nombre}!",
                         style: TextStyle(
                             fontSize: 17, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center),
@@ -143,7 +143,7 @@ class _DonarConfirmarState extends State<DonarConfirmar> {
                             Padding(
                               padding: const EdgeInsets.all(3.0),
                               child: Text(
-                                  "Gracias por ayudar a ${widget.petModel.nombre}, tu aporte será destinado para contribuir con su alimentación, salud y cuidado."),
+                                  "Tu aporte voluntario ayudará a los albergues a seguir cumpliendo su misión. Tu donación para ${widget.petModel.nombre}, será destinada para contribuir con su alimentación, salud y darle una mejor calidad de vida. Gracias por ayudarnos a seguir rescatando animales en abandono, ellos nos necesitan."),
                             ),
                             // Padding(
                             //   padding: const EdgeInsets.all(3.0),

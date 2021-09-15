@@ -576,7 +576,7 @@ class _ServiciosHomeState extends State<ServiciosHome> {
         _searchTextEditingController.text.isEmpty
             ? _iconos()
             : Container(
-                height: 102 * double.parse(_resultsList.length.toString()),
+                height: 102 * double.parse(_resultsList.length > 10 ? '10' : _resultsList.length.toString()),
                 width: MediaQuery.of(context).size.width,
                 child: Column(
                   children: [
@@ -586,10 +586,10 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                     Expanded(
                       child: Container(
                         height:
-                            102 * double.parse(_resultsList.length.toString()),
+                            102 * double.parse(_resultsList.length > 10 ? '10' : _resultsList.length.toString()),
                         child: ListView.builder(
                             physics: NeverScrollableScrollPhysics(),
-                            itemCount: _resultsList.length,
+                            itemCount: _resultsList.length > 10 ? 10 : _resultsList.length,
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
                               return sourceInfo2(_resultsList[index], context);

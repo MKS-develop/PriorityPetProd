@@ -191,7 +191,9 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
                     ClipRRect(
                         borderRadius:
                         BorderRadius.circular(8.0),
-                        child: Image.network(
+                        child:
+                        widget.productoModel.urlImagen != '' ?
+                        Image.network(
                           widget.productoModel.urlImagen,
                           height: 180.0,
                           width: 180,
@@ -199,7 +201,21 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
                           errorBuilder: (context, object, stacktrace) {
                             return Container();
                           },
-                        )),
+                        ):
+                        Container(
+                          height: 180,
+                          decoration: new BoxDecoration(
+                            image: new DecorationImage(
+                              image:
+                              new AssetImage("images/sinproducto.jpg"),
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                          ),
+                        ),
+                    ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,

@@ -14,8 +14,12 @@ import 'package:pet_shop/Models/favoritos.dart';
 import 'package:pet_shop/Models/location.dart';
 import 'package:pet_shop/Models/ordenes.dart';
 import 'package:pet_shop/Models/pet.dart';
+import 'package:pet_shop/Models/prod.dart';
 import 'package:pet_shop/Models/service.dart';
 import 'package:pet_shop/Payment/payment.dart';
+import 'package:pet_shop/PetFriendly/petfriendlyhome.dart';
+import 'package:pet_shop/Productos/alimentodetalle.dart';
+import 'package:pet_shop/Productos/alimentohome.dart';
 import 'package:pet_shop/Productos/productoshome.dart';
 import 'package:pet_shop/Salud/saludhome.dart';
 import 'package:flutter/material.dart';
@@ -71,6 +75,8 @@ class _StoreHomeState extends State<StoreHome> {
   GeoPoint userLatLong;
   List _allResults = [];
   List _resultsList = [];
+  List _allProductResults = [];
+  List _resultsProductList = [];
   static List<ServiceModel> finalServicesList = [];
 
   @override
@@ -81,8 +87,9 @@ class _StoreHomeState extends State<StoreHome> {
     _getPetStatus();
     _searchTextEditingController.addListener(_onSearchChanged);
     _allResults = [];
+    _allProductResults = [];
     MastersList();
-
+    MastersList2();
 
     super.initState();
     setState(() {
@@ -114,6 +121,45 @@ class _StoreHomeState extends State<StoreHome> {
     });
   }
 
+  MastersList2() {
+    FirebaseFirestore.instance
+        .collection("Productos")
+        .where("pais",
+        isEqualTo:
+        PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
+        .snapshots()
+        .listen(createListofServices2);
+  }
+
+  createListofServices2(QuerySnapshot snapshot2) async {
+    var docs2 = snapshot2.docs;
+    for (var Doc2 in docs2) {
+      setState(() {
+        _allProductResults.add(ProductoModel.fromFireStore(Doc2));
+        print(_allProductResults);
+      });
+    }
+    searchResultsList2();
+  }
+  // for (ServiceModel tituloSnapshot in _allResults) {
+
+  searchResultsList2() {
+    var showResults2 = [];
+    if (_searchTextEditingController.text != "") {
+      for (var tituloSnapshot2 in _allProductResults) {
+        var titulo = tituloSnapshot2.titulo.toLowerCase();
+        if (titulo.contains(_searchTextEditingController.text.toLowerCase())) {
+          showResults2.add(tituloSnapshot2);
+        }
+      }
+    } else {
+      showResults2 = List.from(_allProductResults);
+    }
+
+    setState(() {
+      _resultsProductList = showResults2;
+    });
+  }
   _getQuality(){
     DocumentReference documentReference = FirebaseFirestore.instance
         .collection("Configuraciones")
@@ -576,6 +622,7 @@ class _StoreHomeState extends State<StoreHome> {
 
   _onSearchChanged() {
     searchResultsList();
+    searchResultsList2();
     print(_searchTextEditingController.text);
   }
 
@@ -993,64 +1040,7 @@ class _StoreHomeState extends State<StoreHome> {
                             //   ),
                             // ),
                             // SizedBox(width: 20,),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(0, 0, 0, 18),
-                              child: Column(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      if (model == null) {
-                                        {
-                                          showDialog(
-                                              builder: (context) =>
-                                                  new ChoosePetAlertDialog(
-                                                    message:
-                                                        "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
-                                                  ),
-                                              context: context);
-                                        }
-                                      } else {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => PromoHome(
-                                                    petModel: model,
-                                                    defaultChoiceIndex:
-                                                        _defaultChoiceIndex,
-                                                  )),
-                                        );
-                                      }
-                                    },
-                                    child: Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'diseñador/drawable/Home2/Trazado.png',
-                                          fit: BoxFit.contain,
-                                          height: 68,
-                                        ),
-                                        Image.asset(
-                                          'diseñador/drawable/Home2/quehay2x.png',
-                                          fit: BoxFit.contain,
-                                          height: 42,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    "Que hay hoy",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(width: 20,),
+
                             Padding(
                               padding: EdgeInsets.fromLTRB(0, 0, 0, 18),
                               child: Column(
@@ -1161,6 +1151,65 @@ class _StoreHomeState extends State<StoreHome> {
                                   ],
                                 ),
                               ],
+                            ),
+                            SizedBox(width: 20,),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(0, 0, 0, 18),
+                              child: Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      // if (model == null) {
+                                      //   {
+                                      //     showDialog(
+                                      //         builder: (context) =>
+                                      //             new ChoosePetAlertDialog(
+                                      //               message:
+                                      //                   "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
+                                      //             ),
+                                      //         context: context);
+                                      //   }
+                                      // }
+                                      // else {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => PetfriendlyHome(
+                                              petModel: model,
+                                              defaultChoiceIndex:
+                                              _defaultChoiceIndex,
+                                            )),
+                                      );
+                                      // }
+                                    },
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Image.asset(
+                                          'diseñador/drawable/Home2/Trazado.png',
+                                          fit: BoxFit.contain,
+                                          height: 68,
+                                        ),
+                                        Image.asset(
+                                          'diseñador/drawable/Home2/quehay2x.png',
+                                          fit: BoxFit.contain,
+                                          height: 42,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    "Pet Friendly",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             SizedBox(width: 20,),
                             Column(
@@ -1666,7 +1715,7 @@ class _StoreHomeState extends State<StoreHome> {
                     ),
 
                   ],
-                ): _resultsList.length == 0
+                ): _resultsList.length == 0 && _resultsProductList.length == 0
                     ? Column(
                   children: [
                     SizedBox(
@@ -1698,6 +1747,7 @@ class _StoreHomeState extends State<StoreHome> {
                     : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    _resultsList.length != 0 ?
                     Text(
                       "Servicios",
                       style: TextStyle(
@@ -1706,9 +1756,9 @@ class _StoreHomeState extends State<StoreHome> {
 
                         fontWeight: FontWeight.bold,
                       ),textAlign: TextAlign.start,
-                    ),
+                    ): Container(),
                     Container(
-                      height: 110 * double.parse(_resultsList.length.toString()),
+                      height: 115 * double.parse(_resultsList.length > 7 ? '7' : _resultsList.length.toString()),
                       width: MediaQuery.of(context).size.width,
                       child: Column(
                         children: [
@@ -1716,10 +1766,10 @@ class _StoreHomeState extends State<StoreHome> {
                           Expanded(
                             child: Container(
                               height:
-                              110 * double.parse(_resultsList.length.toString()),
+                              115 * double.parse(_resultsList.length.toString()),
                               child: ListView.builder(
                                   physics: NeverScrollableScrollPhysics(),
-                                  itemCount: _resultsList.length,
+                                  itemCount: _resultsList.length > 7 ? 7 : _resultsList.length,
                                   shrinkWrap: true,
                                   itemBuilder: (context, index) {
                                     return sourceInfo5(_resultsList[index], context);
@@ -1729,6 +1779,63 @@ class _StoreHomeState extends State<StoreHome> {
                         ],
                       ),
                     ),
+                    _resultsProductList.length != 0 ?
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Productos",
+                          style: TextStyle(
+                            color: primaryColor,
+                            fontSize: 17,
+
+                            fontWeight: FontWeight.bold,
+                          ),textAlign: TextAlign.start,
+                        ),
+                        // GestureDetector(
+                        //   onTap: (){
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //           builder: (context) => AlimentoHome(
+                        //             petModel: model,
+                        //             defaultChoiceIndex: _defaultChoiceIndex,
+                        //           )),
+                        //     );
+                        //   },
+                        //   child: Text(
+                        //     "Ver todos",
+                        //     style: TextStyle(
+                        //       color: Color(0xFF57419D),
+                        //       fontSize: 14,
+                        //     ),
+                        //   ),
+                        // ),
+                      ],
+                    ): Container(),
+                    Container(
+                      height: 115 * double.parse(_resultsProductList.length > 7 ? '7' : _resultsProductList.length.toString()),
+                      width: MediaQuery.of(context).size.width,
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height:
+                              100 * double.parse(_resultsProductList.length.toString()),
+                              child: ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: _resultsProductList.length > 7 ? 7 :_resultsProductList.length,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    return sourceInfo6(context, _resultsProductList[index]);
+                                  }),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+
                   ],
                 ),
                 // Row(
@@ -2140,16 +2247,34 @@ class _StoreHomeState extends State<StoreHome> {
                                       dataSnapshot.data.docs[index].data());
                           return GestureDetector(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => DetallesPromo(
+                              if (model == null) {
+                                {
+                                  showDialog(
+                                      builder: (context) =>
+                                      new ChoosePetAlertDialog(
+                                        message:
+                                        "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
+                                      ),
+                                      context: context);
+                                }
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DetallesPromo(
                                         petModel: model,
                                         promotionModel: promo,
                                         aliadoModel: aliado,
-                                    locationModel: location,
-                                      defaultChoiceIndex: _defaultChoiceIndex,)),
-                              );
+                                        locationModel: location,
+                                        defaultChoiceIndex: _defaultChoiceIndex,)),
+                                );
+                              }
+
+
+
+
+
+
                             },
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(8, 2, 8, 2),
@@ -2581,22 +2706,44 @@ class _StoreHomeState extends State<StoreHome> {
                               }
                               return GestureDetector(
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => DetallesServicio(
-                                            petModel: model,
-                                            serviceModel: servicio,
-                                            aliadoModel: aliado,
-                                            defaultChoiceIndex:
-                                            widget.defaultChoiceIndex,
-                                            locationModel: location,
-                                            userLatLong: userLatLong)),
-                                  );
+                                  if (model == null) {
+                                    {
+                                      showDialog(
+                                          builder: (context) =>
+                                          new ChoosePetAlertDialog(
+                                            message:
+                                            "Por favor seleccione una mascota para poder disfrutar de este y otros servicios.",
+                                          ),
+                                          context: context);
+                                    }
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => DetallesServicio(
+                                              petModel: model,
+                                              serviceModel: servicio,
+                                              aliadoModel: aliado,
+                                              defaultChoiceIndex:
+                                              widget.defaultChoiceIndex,
+                                              locationModel: location,
+                                              userLatLong: userLatLong)),
+                                    );
+                                  }
+
+
+
+
+
+
+
+
+
+
                                 },
                                 child: Padding(
                                   padding:
-                                  const EdgeInsets.fromLTRB(2, 8, 2, 8),
+                                  const EdgeInsets.fromLTRB(2, 5, 2, 5),
                                   child: Container(
                                     width: MediaQuery.of(context).size.width,
                                     decoration: BoxDecoration(
@@ -2614,7 +2761,7 @@ class _StoreHomeState extends State<StoreHome> {
                                             ClipRRect(
                                               borderRadius: BorderRadius.circular(8.0),
                                               child: Image.network(
-                                                aliado.avatar,
+                                                servicio.urlImagen,
                                                 height: 70,
                                                 width: 70,
                                                 fit: BoxFit.cover,
@@ -2632,7 +2779,7 @@ class _StoreHomeState extends State<StoreHome> {
                                                   .size
                                                   .width *
                                                   0.65,
-                                              height: 73,
+                                              height: 85,
                                               child: Column(
                                                 crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -2645,11 +2792,22 @@ class _StoreHomeState extends State<StoreHome> {
                                                     mainAxisAlignment:
                                                     MainAxisAlignment.start,
                                                     children: [
+                                                      Text(servicio.titulo,
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow.ellipsis,
+                                                          style: TextStyle(
+                                                              fontSize: 15,
+                                                              color:
+                                                              Color(0xFF57419D),
+                                                              fontWeight:
+                                                              FontWeight.bold),
+                                                          textAlign:
+                                                          TextAlign.left),
                                                       Text(aliado.nombreComercial,
                                                           maxLines: 1,
                                                           overflow: TextOverflow.ellipsis,
                                                           style: TextStyle(
-                                                              fontSize: 17,
+                                                              fontSize: 13,
                                                               color:
                                                               Color(0xFF57419D),
                                                               fontWeight:
@@ -2754,6 +2912,277 @@ class _StoreHomeState extends State<StoreHome> {
                       });
                 });
           }),
+    );
+  }
+
+  Widget sourceInfo6(BuildContext context, ProductoModel product) {
+    // final product = Producto.fromSnapshot(snapshot);
+    double totalD = 0;
+    return InkWell(
+      child: Row(
+        children: [
+          Container(
+            height: 115.0,
+            width: MediaQuery.of(context).size.width * 0.89,
+            child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('Aliados')
+                    .doc(product.aliadoId)
+                    .snapshots(),
+                builder: (context, dataSnapshot) {
+                  if (!dataSnapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  return ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: 1,
+                      shrinkWrap: true,
+                      itemBuilder: (context,
+                          index,) {
+                        AliadoModel ali =
+                        AliadoModel.fromJson(dataSnapshot.data.data());
+                        return StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection("Localidades")
+                                .where("localidadId",
+                                isEqualTo: product.localidadId)
+                                .snapshots(),
+                            builder: (context, dataSnapshot) {
+                              if (!dataSnapshot.hasData) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                              return ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: 1,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context,
+                                      index,) {
+                                    LocationModel location =
+                                    LocationModel.fromJson(dataSnapshot
+                                        .data.docs[index]
+                                        .data());
+                                    if (userLatLong != null &&
+                                        location.location != null) {
+                                      totalD = Geolocator.distanceBetween(
+                                          userLatLong.latitude,
+                                          userLatLong.longitude,
+                                          location.location.latitude,
+                                          location.location.longitude) /
+                                          1000;
+                                    }
+
+                                    // var totalD = 0;
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AlimentoDetalle(
+                                                    petModel: model,
+                                                    productoModel: product,
+                                                    aliadoModel: ali,
+                                                    defaultChoiceIndex:
+                                                    widget.defaultChoiceIndex,
+                                                    locationModel: location,
+                                                  ),
+                                            ));
+                                      },
+                                      child: Container(
+                                        width: MediaQuery
+                                            .of(context)
+                                            .size
+                                            .width,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(
+                                                10)
+
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius: BorderRadius
+                                                    .circular(8.0),
+                                                child: Image.network(
+                                                  product.urlImagen,
+                                                  height: 77,
+                                                  width: 66,
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (context,
+                                                      object, stacktrace) {
+                                                    return Container();
+                                                  },
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 7.0,
+                                              ),
+                                              Column(
+                                                children: [
+                                                  Container(
+                                                    height: 91.0,
+                                                    width:
+                                                    MediaQuery
+                                                        .of(context)
+                                                        .size
+                                                        .width *
+                                                        0.6,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceAround,
+                                                      crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(product.titulo,
+                                                            maxLines: 2,
+                                                            overflow: TextOverflow.ellipsis,
+                                                            style: TextStyle(
+                                                                fontSize: 15,
+                                                                color: Color(
+                                                                    0xFF57419D),
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                            textAlign: TextAlign
+                                                                .left),
+                                                        // Flexible(
+                                                        //     child: Text(product
+                                                        //         .dirigido,
+                                                        //         style:
+                                                        //         TextStyle(
+                                                        //             fontSize: 12),
+                                                        //         textAlign: TextAlign
+                                                        //             .left)),
+                                                        Text(ali.nombreComercial,
+                                                            maxLines: 1,
+                                                            overflow: TextOverflow.ellipsis,
+                                                            style: TextStyle(
+                                                                fontSize: 13,
+                                                                color:
+                                                                Color(0xFF57419D),
+                                                                fontWeight:
+                                                                FontWeight.bold),
+                                                            textAlign:
+                                                            TextAlign.left),
+                                                        location.mapAddress != null
+                                                            ? Text(
+                                                            location.mapAddress,
+                                                            maxLines: 1,
+                                                            overflow: TextOverflow.ellipsis,
+                                                            style: TextStyle(
+                                                              fontSize: 13,
+                                                            ),
+                                                            textAlign:
+                                                            TextAlign.left)
+                                                            : Text(
+                                                            location.mapAddress !=
+                                                                null
+                                                                ? location
+                                                                .mapAddress
+                                                                : location
+                                                                .direccionLocalidad,
+                                                            maxLines: 1,
+                                                            overflow: TextOverflow.ellipsis,
+                                                            style: TextStyle(
+                                                              fontSize: 13,
+                                                            ),
+                                                            textAlign:
+                                                            TextAlign.left),
+                                                        Row(
+                                                          children: [
+                                                            Text(
+                                                                PetshopApp
+                                                                    .sharedPreferences
+                                                                    .getString(
+                                                                    PetshopApp
+                                                                        .simboloMoneda),
+                                                                style: TextStyle(
+                                                                    fontSize: 13,
+                                                                    color:
+                                                                    Color(
+                                                                        0xFF57419D),
+                                                                    fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                                textAlign: TextAlign
+                                                                    .left),
+                                                            Text(product.precio
+                                                                .toStringAsFixed(
+                                                                2),
+                                                                style: TextStyle(
+                                                                    fontSize: 14,
+                                                                    color:
+                                                                    Color(
+                                                                        0xFF57419D),
+                                                                    fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                                textAlign: TextAlign
+                                                                    .left),
+                                                          ],
+                                                        ),
+                                                        totalD != 0
+                                                            ? SizedBox(
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                            children: [
+                                                              SizedBox(
+                                                                height: 7,
+                                                              ),
+                                                              Icon(
+                                                                Icons
+                                                                    .location_on_rounded,
+                                                                color:
+                                                                secondaryColor,
+                                                              ),
+                                                              SizedBox(
+                                                                height: 3,
+                                                              ),
+                                                              Text(
+                                                                  totalD <
+                                                                      500
+                                                                      ? '${totalD.toStringAsFixed(1)} Km'
+                                                                      : '+500 Km',
+                                                                  style:
+                                                                  TextStyle(
+                                                                    fontSize:
+                                                                    10,
+                                                                  ),
+                                                                  textAlign:
+                                                                  TextAlign
+                                                                      .center),
+                                                            ],
+                                                          ),
+                                                        )
+                                                            : Container(),
+
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                              );
+                            });
+                      });
+                }),
+          )],
+      ),
     );
   }
   changeAl(cont) {

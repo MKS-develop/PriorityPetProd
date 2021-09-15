@@ -55,14 +55,15 @@ class _NewOrdenesHomeState extends State<NewOrdenesHome> {
         ),
         body: Container(
           height: _screenHeight,
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              colorFilter: new ColorFilter.mode(
-                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
-              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
+          color: Color(0xFFf4f6f8),
+          // decoration: new BoxDecoration(
+          //   image: new DecorationImage(
+          //     colorFilter: new ColorFilter.mode(
+          //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16.0,
           ),
@@ -163,10 +164,10 @@ class _NewOrdenesHomeState extends State<NewOrdenesHome> {
           child: Container(
             width: MediaQuery.of(context).size.width * 0.91,
             decoration: BoxDecoration(
-                color: Color(0xFFF4F6F8),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
-                  color: Color(0xFFBDD7D6),
+                  color: Colors.white,
                 )),
             child: Padding(
               padding: const EdgeInsets.all(8.0),

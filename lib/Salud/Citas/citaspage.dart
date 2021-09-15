@@ -45,11 +45,15 @@ class CitasPage extends StatefulWidget {
 }
 
 class _CitasPageState extends State<CitasPage> {
+  ScrollController _scrollController = ScrollController();
   List<dynamic> ciudades = [];
   String ciudad;
   DateTime selectedDate = DateTime.now();
   TextEditingController _searchTextEditingController =
       new TextEditingController();
+  List _pagResults = [];
+  bool loading = false, allLoaded = false;
+  int cargado = 0;
 
   String _categoria;
   List _allResults = [];
@@ -68,6 +72,7 @@ class _CitasPageState extends State<CitasPage> {
   GeoPoint userLatLong;
   double totalDist;
 
+
   bool get wantKeepAlive => true;
   File file;
   String productId = DateTime.now().millisecondsSinceEpoch.toString();
@@ -84,6 +89,15 @@ class _CitasPageState extends State<CitasPage> {
     if (widget.tituloCat != null) {
       _searchTextEditingController.value =
           TextEditingValue(text: widget.tituloCat);
+    }
+    _scrollController.addListener(_onScrollEvent);
+  }
+  void _onScrollEvent() {
+    final extentAfter = _scrollController.position.extentAfter;
+    // print("Extent after: $extentAfter");
+    if(extentAfter<=0 && !loading){
+      print('Nueva infoooo: ${_pagResults.length}');
+      func(cargado,cargado+10);
     }
   }
 
@@ -114,6 +128,7 @@ class _CitasPageState extends State<CitasPage> {
   void dispose() {
     _searchTextEditingController.removeListener(_onSearchChanged);
     _searchTextEditingController.dispose();
+    _scrollController.removeListener(_onScrollEvent);
     super.dispose();
   }
 
@@ -198,7 +213,33 @@ class _CitasPageState extends State<CitasPage> {
     }
     setState(() {
       _resultsList = showResults;
+      _pagResults = [];
+      cargado = 0;
     });
+    if(_resultsList.length<10)
+    {
+      func(0, _resultsList.length);
+    }
+    else{
+      func(0, 10);
+    }
+  }
+
+  func(int start, int end) {
+
+    setState(() {
+      loading = true;
+      // _pagResults = [];
+
+    });
+    _pagResults = _pagResults + List.from(_resultsList.getRange(start, end).toList());
+    loading = false;
+    setState(() {
+      loading = false;
+      print('el loading esta en $loading');
+      cargado = cargado + 10;
+    });
+
   }
 
   _onSearchChanged() {
@@ -570,6 +611,7 @@ class _CitasPageState extends State<CitasPage> {
                                                         ciudad = value;
                                                         _allResults = [];
                                                         _resultsList = [];
+                                                        _pagResults = [];
                                                         MastersList();
                                                       });
                                                     },
@@ -596,7 +638,7 @@ class _CitasPageState extends State<CitasPage> {
                             SizedBox(
                               height: 5.0,
                             ),
-                            _resultsList.length == 0
+                            _pagResults.length == 0
                                 ? Column(
                                     children: [
                                       SizedBox(
@@ -626,23 +668,17 @@ class _CitasPageState extends State<CitasPage> {
                                     ],
                                   )
                                 : Container(
-                                    height: 110 *
-                                        double.parse(
-                                            _resultsList.length.toString()),
+                                  height: _screenHeight * 0.51,
                                     // child: Expanded(
-                                    child: Container(
-                                      height: _screenHeight,
-                                      width: _screenWidth,
-                                      child: ListView.builder(
-                                          physics:
-                                              NeverScrollableScrollPhysics(),
-                                          itemCount: _resultsList.length,
-                                          shrinkWrap: true,
-                                          itemBuilder: (context, index) {
-                                            return sourceInfo2(
-                                                _resultsList[index], context);
-                                          }),
-                                    ),
+                                    child: ListView.builder(
+                                        controller: _scrollController,
+                                        // physics: NeverScrollableScrollPhysics(),
+                                        itemCount: _pagResults.length,
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index) {
+                                          return sourceInfo2(
+                                              _pagResults[index], context);
+                                        }),
                                     // ),
                                   ),
                           ],
@@ -905,7 +941,7 @@ class _CitasPageState extends State<CitasPage> {
                                       ),
                                       child: Center(
                                         child: Padding(
-                                          padding: const EdgeInsets.all(5.0),
+                                          padding: const EdgeInsets.all(4.0),
                                           child: Row(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
@@ -1109,6 +1145,7 @@ class _CitasPageState extends State<CitasPage> {
                                                                   totalD < 500
                                                                       ? '${totalD.toStringAsFixed(1)} Km'
                                                                       : '+500 Km',
+                                                                  overflow: TextOverflow.ellipsis,
                                                                   style: TextStyle(
                                                                     fontSize: 12,
                                                                   ),

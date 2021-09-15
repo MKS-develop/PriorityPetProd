@@ -24,12 +24,93 @@ class AdoptarHome extends StatefulWidget {
 class _AdoptarHomeState extends State<AdoptarHome> {
   PetModel model;
   final db = FirebaseFirestore.instance;
+  List _allResults = [];
+  List _resultsList = [];
+  List _pagResults = [];
+  int cargado = 0;
+  bool loading = false;
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
+
+    MastersList();
+    _scrollController.addListener(_onScrollEvent);
     super.initState();
   }
+  void _onScrollEvent() {
+    final extentAfter = _scrollController.position.extentAfter;
+    // print("Extent after: $extentAfter");
+    if(extentAfter<=0 && !loading){
+      print('Nueva infoooo: ${_pagResults.length}');
+      func(cargado,cargado+10);
+    }
+  }
 
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _scrollController.removeListener(_onScrollEvent);
+    // _searchTextEditingController.removeListener(func(0, 10));
+    super.dispose();
+
+  }
+
+  MastersList() {
+    FirebaseFirestore.instance
+        .collection("Mascotas")
+        .where("pais",
+        isEqualTo: PetshopApp.sharedPreferences
+            .getString(PetshopApp.userPais))
+        .where("apadrinadoStatus", isEqualTo: false)
+        .where("adoptadoStatus", isEqualTo: false)
+        .snapshots()
+        .listen(createListofServices);
+  }
+
+  createListofServices(QuerySnapshot snapshot) async {
+    var docs = snapshot.docs;
+    for (var Doc in docs) {
+      setState(() {
+        _allResults.add(PetModel.fromFireStore(Doc));
+        print(_allResults);
+      });
+    }
+    searchResultsList();
+  }
+
+  searchResultsList() {
+    var showResults = [];
+    for (var tituloSnapshot in _allResults) {
+      // var tipoAliado = tituloSnapshot.tipoAliado;
+      // if (tipoAliado == 'Pet Friendly' || tipoAliado == 'Otros lugares Pet Friendly'|| tipoAliado == 'Restaurante o Café Pet Friendly') {
+        showResults.add(tituloSnapshot);
+      // }
+    }
+
+
+    setState(() {
+      _resultsList = showResults;
+    });
+    func(0, 10);
+  }
+  func(int start, int end) {
+
+    setState(() {
+      loading = true;
+      // _pagResults = [];
+
+    });
+    _pagResults = _pagResults + List.from(_resultsList.getRange(start, end).toList());
+    loading = false;
+    setState(() {
+      loading = false;
+      print('el loading esta en $loading');
+      cargado = cargado + 10;
+    });
+
+  }
   @override
   Widget build(BuildContext context) {
     double _screenWidth = MediaQuery.of(context).size.width,
@@ -83,57 +164,35 @@ class _AdoptarHomeState extends State<AdoptarHome> {
                     ),
                   ],
                 ),
-                Container(
-                  width: _screenWidth,
-                  child: Column(
-                    children: [
-                      StreamBuilder<QuerySnapshot>(
-                          stream: db
-                              .collection("Mascotas")
-                              .where("pais",
-                                  isEqualTo: PetshopApp.sharedPreferences
-                                      .getString(PetshopApp.userPais))
-                              .where("apadrinadoStatus", isEqualTo: false)
-                              .where("adoptadoStatus", isEqualTo: false)
-                              .snapshots(),
-                          builder: (context, dataSnapshot) {
-                            if (dataSnapshot.hasData) {
-                              if (dataSnapshot.data.docs.length == 0) {
-                                return Center(child: Text(''));
-                              }
-                            }
-                            if (!dataSnapshot.hasData) {
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-                            return Container(
-                              child: GridView.builder(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.vertical,
-                                itemCount: dataSnapshot.data.docs.length,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3,
-                                        crossAxisSpacing: 10,
-                                        mainAxisSpacing: 10,
-                                        childAspectRatio: 0.7),
-                                physics: BouncingScrollPhysics(),
-                                itemBuilder: (
-                                  context,
-                                  index,
-                                ) {
-                                  PetModel model = PetModel.fromJson(
-                                      dataSnapshot.data.docs[index].data());
-                                  return sourceInfo(model, context);
-                                },
-                              ),
-                            );
-                          }),
-                    ],
-                  ),
-                ),
-              ],
+                Column(
+                  children: [
+                    Container(
+                        height: _screenHeight * 0.73,
+                      // color: Colors.blue,
+                      // width: _screenWidth,
+                      child: GridView.builder(
+                        controller: _scrollController,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemCount: _pagResults.length,
+                        gridDelegate:
+                            SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                                childAspectRatio: 0.7),
+                        // physics: BouncingScrollPhysics(),
+                        itemBuilder: (
+                          context,
+                          index,
+                        ) {
+                          return sourceInfo(_pagResults[index], context);
+                        },
+                      )
+
+                    ),
+                  ],
+                )],
             ),
           ),
         ),

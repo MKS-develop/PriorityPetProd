@@ -142,7 +142,7 @@ class _DetallesPromoState extends State<DetallesPromo> {
                       height: 100,
                       width: 100,
                       child: Image.network(
-                        widget.promotionModel.urlImagen,
+                        widget.aliadoModel.avatar,
                         fit: BoxFit.cover,
                         errorBuilder: (context, object, stacktrace) {
                           return Container();
@@ -268,8 +268,25 @@ class _DetallesPromoState extends State<DetallesPromo> {
                                     textAlign: TextAlign.left)),
                           ],
                         ),
+
                         SizedBox(
-                          height: 20.0,
+                          height: 10.0,
+                        ),
+
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.network(
+                            widget.promotionModel.urlImagen,
+                            height: 155,
+                            width: 120,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, object, stacktrace) {
+                              return Container();
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10.0,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,

@@ -371,7 +371,7 @@ class MyDrawer extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(
-                child: Text(quality!= null ? 'V1.1.1 $quality' : 'V1.1.1', style: TextStyle(color: textColor,
+                child: Text(quality!= null ? 'V1.1.4 $quality' : 'V1.1.4', style: TextStyle(color: textColor,
                     fontWeight: FontWeight.w300,
                     fontSize: 13),),
               ),
