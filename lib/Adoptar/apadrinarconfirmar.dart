@@ -154,7 +154,12 @@ class _ApadrinarConfirmarState extends State<ApadrinarConfirmar> {
                             Padding(
                               padding: const EdgeInsets.all(3.0),
                               child: Text(
-                                  "Gracias por tu interés en apadrinar a  ${widget.petModel.nombre}. Adoptar a distancia es una excelente forma de ayudar a un peludito del albergue que espera hogar. Además, gracias a tu colaboración podremos rescatar a otro perrito de la calle, esterilizarlo y darle un lugar seguro donde dormir."),
+                                  "Gracias por querer apadrinar a  ${widget.petModel.nombre}. Apadrinar a distancia es una excelente forma de ayudar a un peludito que espera hogar. Además, gracias a tu colaboración podremos rescatar a otro perrito de la calle, esterilizarlo y darle un lugar seguro donde dormir."),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(3.0),
+                              child: Text(
+                                  "¡Importante! Si continúas con este proceso, te comprometes a cumplir con el aporte mensual establecido que será utilizado para mis alimentos, salud y cuidados."),
                             ),
                             // Padding(
                             //   padding: const EdgeInsets.all(3.0),

@@ -1930,13 +1930,10 @@ class _PaymentPageState extends State<PaymentPage> {
       "status": "Por confirmar",
       "statusCita": "Por confirmar",
       "mid": widget.petModel.mid,
-
       "ppGeneradosD": double.parse((widget.totalPrice).toString()),
-
       "calificacion": false,
       "user": PetshopApp.sharedPreferences.getString(PetshopApp.userName),
       "nombreComercial": widget.aliadoModel.nombreComercial,
-
       "pais": PetshopApp.sharedPreferences.getString(PetshopApp.userPais),
       "pagoId": pagoId,
     });
@@ -1950,11 +1947,8 @@ class _PaymentPageState extends State<PaymentPage> {
       "titulo": 'Donación',
       "oid": productId,
       "aliadoId": widget.petModel.aliadoId,
-
-
       "precio": widget.totalPrice,
       "mid": widget.petModel.mid,
-
       "nombre": widget.petModel.nombre,
     });
 

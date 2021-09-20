@@ -21,18 +21,22 @@ import 'package:pet_shop/Models/Promo.dart';
 
 double width;
 
-class PromoHome extends StatefulWidget {
+class PetfriendlyHome extends StatefulWidget {
   final PromotionModel promotionModel;
   final PetModel petModel;
   final int defaultChoiceIndex;
 
-  PromoHome({this.petModel, this.promotionModel, this.defaultChoiceIndex});
+  PetfriendlyHome({this.petModel, this.promotionModel, this.defaultChoiceIndex});
 
   @override
-  _PromoHomeState createState() => _PromoHomeState();
+  _PetfriendlyHomeState createState() => _PetfriendlyHomeState();
 }
 
-class _PromoHomeState extends State<PromoHome> {
+class _PetfriendlyHomeState extends State<PetfriendlyHome> {
+  ScrollController _scrollController = ScrollController();
+  TextEditingController _searchTextEditingController = new TextEditingController();
+  List<dynamic> ciudades = [];
+  String ciudad;
   List _allResults = [];
   List _resultsList = [];
   GeoPoint userLatLong;
@@ -44,11 +48,19 @@ class _PromoHomeState extends State<PromoHome> {
   int _defaultChoiceIndex;
   File _imageFile;
   bool select = true;
+  List _pagResults = [];
+  bool loading = false, allLoaded = false;
+  int cargado = 0;
+  String _categoria;
+
   @override
   void initState() {
     super.initState();
-    MastersList();
+    MastersList(ciudad);
     changePet(widget.petModel);
+    getCiudades(PetshopApp.sharedPreferences.getString(PetshopApp.userPais));
+    _searchTextEditingController.addListener(_onSearchChanged);
+    _allResults = [];
 
     _isSelected = false;
     _defaultChoiceIndex = 0;
@@ -59,7 +71,7 @@ class _PromoHomeState extends State<PromoHome> {
   String userImageUrl = "";
 
   final db = FirebaseFirestore.instance;
-  MastersList() {
+  MastersList(String categoria) {
     FirebaseFirestore.instance
         .collection("Aliados")
         .where("pais",
@@ -82,17 +94,44 @@ class _PromoHomeState extends State<PromoHome> {
 
   searchResultsList() {
     var showResults = [];
+
       for (var tituloSnapshot in _allResults) {
         var tipoAliado = tituloSnapshot.tipoAliado;
+
+        var nombreComercial = tituloSnapshot.nombre.toLowerCase();
+
         if (tipoAliado == 'Pet Friendly' || tipoAliado == 'Otros lugares Pet Friendly'|| tipoAliado == 'Restaurante o Café Pet Friendly') {
-          showResults.add(tituloSnapshot);
+          if (_searchTextEditingController.text != "") {
+
+            if (nombreComercial.contains(
+                _searchTextEditingController.text.toLowerCase())) {
+              showResults.add(tituloSnapshot);
+            }
+          }
+          else{
+            showResults = List.from(_allResults);
+          }
         }
+
       }
 
 
     setState(() {
       _resultsList = showResults;
+      _pagResults = [];
+      cargado = 0;
     });
+    if(_resultsList.length<10)
+    {
+      func(0, _resultsList.length);
+    }
+    else{
+      func(0, 10);
+    }
+  }
+  _onSearchChanged() {
+    searchResultsList();
+    print(_searchTextEditingController.text);
   }
 
   getLatLong() {
@@ -104,6 +143,67 @@ class _PromoHomeState extends State<PromoHome> {
         userLatLong = (dataSnapshot.data()["location"]);
       });
     });
+  }
+  Future<List<dynamic>> getCiudades(pais) async {
+    ciudades = [];
+    try {
+      await FirebaseFirestore.instance
+          .collection('Ciudades')
+          .where("paisId",
+          isEqualTo:
+          PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
+          .get()
+          .then((QuerySnapshot querySnapshot) => {
+        querySnapshot.docs.forEach((paisA) {
+          setState(() {
+            ciudades = paisA["ciudades"].toList();
+          });
+        })
+      });
+      ciudades.sort();
+      print(ciudades.length);
+    } catch (e) {
+      print(e);
+    }
+    return ciudades;
+  }
+
+  @override
+  void dispose() {
+    _searchTextEditingController.removeListener(_onSearchChanged);
+    _searchTextEditingController.dispose();
+    _scrollController.removeListener(_onScrollEvent);
+    super.dispose();
+  }
+  void _onScrollEvent() {
+    final extentAfter = _scrollController.position.extentAfter;
+    // print("Extent after: $extentAfter");
+    if(extentAfter<=0 && !loading){
+      print('Nueva infoooo: ${_pagResults.length}');
+      func(cargado,cargado+10);
+    }
+  }
+
+  func(int start, int end) {
+
+    setState(() {
+      loading = true;
+      // _pagResults = [];
+
+    });
+    _pagResults = _pagResults + List.from(_resultsList.getRange(start, end).toList());
+    loading = false;
+    setState(() {
+      loading = false;
+      print('el loading esta en $loading');
+      cargado = cargado + 10;
+    });
+
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   @override
@@ -150,122 +250,173 @@ class _PromoHomeState extends State<PromoHome> {
                         onPressed: () {
                           Navigator.pop(context);
                         }),
-                    Text(
-                      "Promociones",
-                      style: TextStyle(
-                        color: Color(0xFF57419D),
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                      child: Text(
+                        "Pet Friendly",
+                        style: TextStyle(
+                          color: Color(0xFF57419D),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
                 ),
-                // Container(
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 8, 0, 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: _screenWidth * 0.9,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                      color: Colors.transparent,
+                                      // color: Color(0xFF7f9d9D),
+                                      width: 1.0,
+                                    ),
+                                    borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                  ),
+                                  padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                  margin: EdgeInsets.all(5.0),
+                                  child: TextField(
+                                    controller: _searchTextEditingController,
+                                    keyboardType: TextInputType.text,
+                                    decoration: InputDecoration(
+                                      hintText: 'Buscar aliado Pet Friendly',
+                                      border: InputBorder.none,
+                                      hintStyle: TextStyle(
+                                          fontSize: 15.0,
+                                          color: Color(0xFF7f9d9D)),
+                                    ),
+                                    onChanged: (text) {
+                                      text = text.toLowerCase();
+                                      setState(() {});
+                                    },
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.fromLTRB(295, 15, 0, 0),
+                                  margin: EdgeInsets.all(5.0),
+                                  child: Icon(
+                                    Icons.search,
+                                    color: Color(0xFF7f9d9D),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Padding(
+                //   padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                 //   child: Row(
                 //     mainAxisAlignment: MainAxisAlignment.center,
+                //     crossAxisAlignment: CrossAxisAlignment.start,
                 //     children: [
-                //       FlatButton(
-                //           onPressed: () {
-                //             setState(() {
-                //               select = true;
-                //             });
-                //           },
-                //           minWidth: _screenWidth * 0.4,
-                //           padding: EdgeInsets.all(15.0),
-                //           shape: RoundedRectangleBorder(
-                //             borderRadius: BorderRadius.only(
-                //               topLeft: Radius.circular(10.0),
-                //               topRight: Radius.zero,
-                //               bottomLeft: Radius.circular(10.0),
-                //               bottomRight: Radius.zero,
+                //       Container(
+                //         width: _screenWidth * 0.9,
+                //         child: Column(
+                //           crossAxisAlignment: CrossAxisAlignment.start,
+                //           children: [
+                //             Container(
+                //               decoration: BoxDecoration(
+                //                 color: Colors.white,
+                //                 border: Border.all(
+                //                   color: Colors.transparent,
+                //                   // color: Color(0xFF7f9d9D),
+                //                   width: 1.0,
+                //                 ),
+                //                 borderRadius:
+                //                 BorderRadius.all(Radius.circular(10.0)),
+                //               ),
+                //               padding: EdgeInsets.all(0.0),
+                //               margin: EdgeInsets.all(5.0),
+                //               child: DropdownButtonHideUnderline(
+                //                 child: Stack(
+                //                   children: <Widget>[
+                //                     DropdownButton(
+                //                         hint: Padding(
+                //                           padding: const EdgeInsets.fromLTRB(
+                //                               50, 0, 0, 0),
+                //                           child: Text(
+                //                             'Ciudad',
+                //                             style: TextStyle(
+                //                                 color: Colors.black,
+                //                                 fontWeight: FontWeight.bold),
+                //                           ),
+                //                         ),
+                //                         items: ciudades.map((dynamic value) {
+                //                           return DropdownMenuItem<dynamic>(
+                //                             value: value,
+                //                             child: Padding(
+                //                               padding:
+                //                               const EdgeInsets.fromLTRB(
+                //                                   40, 0, 0, 0),
+                //                               child: Text(value),
+                //                             ),
+                //                           );
+                //                         }).toList(),
+                //                         isExpanded: true,
+                //                         onChanged: (value) {
+                //                           setState(() {
+                //                             _categoria = value;
+                //                             ciudad = value;
+                //                             _resultsList = [];
+                //                             _allResults = [];
+                //                             _pagResults = [];
+                //                             MastersList(value);
+                //                           });
+                //                         },
+                //                         value: ciudad),
+                //                     Container(
+                //                       width: 20,
+                //                       margin: EdgeInsets.symmetric(
+                //                           vertical: 15, horizontal: 10),
+                //                       child: Image.asset(
+                //                         'diseñador/drawable/Grupo197.png',
+                //                       ),
+                //                     ),
+                //                   ],
+                //                 ),
+                //               ),
                 //             ),
-                //           ),
-                //           child: Text(
-                //             'Promociones',
-                //             style: TextStyle(
-                //                 color:
-                //                     select ? Colors.white : Color(0xFF57419D),
-                //                 fontSize: 16),
-                //           ),
-                //           color:
-                //               select ? Color(0xFF57419D) : Color(0xFFBDD7D6)),
-                //       SizedBox(
-                //         width: 10.0,
+                //           ],
+                //         ),
                 //       ),
-                //       FlatButton(
-                //           onPressed: () {
-                //             setState(() {
-                //               select = false;
-                //             });
-                //           },
-                //           minWidth: _screenWidth * 0.4,
-                //           padding: EdgeInsets.all(15.0),
-                //           shape: RoundedRectangleBorder(
-                //             borderRadius: BorderRadius.only(
-                //               topLeft: Radius.zero,
-                //               topRight: Radius.circular(10.0),
-                //               bottomLeft: Radius.zero,
-                //               bottomRight: Radius.circular(10.0),
-                //             ),
-                //           ),
-                //           child: Text(
-                //             'Pet Friendly',
-                //             style: TextStyle(
-                //                 color:
-                //                     select ? Color(0xFF57419D) : Colors.white,
-                //                 fontSize: 16),
-                //           ),
-                //           color:
-                //               select ? Color(0xFFBDD7D6) : Color(0xFF57419D)),
                 //     ],
                 //   ),
                 // ),
-                select == true
-                    ? Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: StreamBuilder<QuerySnapshot>(
-                            stream: FirebaseFirestore.instance
-                                .collection("Promociones")
-                                .where("pais",
-                                    isEqualTo: PetshopApp.sharedPreferences
-                                        .getString(PetshopApp.userPais))
-                                .snapshots(),
-                            builder: (context, dataSnapshot) {
-                              if (!dataSnapshot.hasData) {
-                                return Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-                              return ListView.builder(
-                                  itemCount: dataSnapshot.data.docs.length,
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemBuilder: (
-                                    context,
-                                    index,
-                                  ) {
-                                    PromotionModel pro =
-                                        PromotionModel.fromJson(dataSnapshot
-                                            .data.docs[index]
-                                            .data());
-                                    return sourceInfo(pro, context);
-                                  });
-                            }),
-                      )
-                    : Padding(
+
+
+               Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
-                                height: 120 * double.parse(_resultsList.length.toString()),
-                                width: MediaQuery.of(context).size.width,
+                          // color: Colors.blue,
+                          height: _screenHeight * 0.59,
                                 child: ListView.builder(
-                                    physics: NeverScrollableScrollPhysics(),
-                                    itemCount: _resultsList.length,
+                                    controller: _scrollController,
+                                    // physics: NeverScrollableScrollPhysics(),
+                                    itemCount: _pagResults.length,
                                     shrinkWrap: true,
                                     itemBuilder: (
                                       context,
                                       index,
                                     ) {
-                                      return sourceInfo2(_resultsList[index], context);
+                                      return sourceInfo2(_pagResults[index], context);
                                     }),
 
 
@@ -287,7 +438,9 @@ class _PromoHomeState extends State<PromoHome> {
     return InkWell(
       child: Column(
         children: [
-
+          SizedBox(
+            height: 20.0,
+          ),
           StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection('Aliados')
@@ -314,6 +467,7 @@ class _PromoHomeState extends State<PromoHome> {
                           stream: FirebaseFirestore.instance
                               .collection("Localidades")
                               .where("aliadoId", isEqualTo: ali.aliadoId)
+                              // .where("ciudad", isEqualTo: ciudad)
                               .snapshots(),
                           builder: (context, dataSnapshot) {
                             if (!dataSnapshot.hasData) {
@@ -451,9 +605,6 @@ class _PromoHomeState extends State<PromoHome> {
                           });
                     });
               }),
-          SizedBox(
-            height: 10.0,
-          ),
         ],
       ),
     );

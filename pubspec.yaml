@@ -1,7 +1,7 @@
 name: pet_shop
 description: petshop
 
-version: 1.1.1+312
+version: 1.1.4+315
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -56,6 +56,9 @@ dependencies:
   shortid: ^0.1.1
   native_pdf_view: ^3.9.1
   geolocator: ^6.0.0
+  infinite_scroll_pagination: ^2.3.0
+  lazy_loading_list: ^1.0.0
+  lazy_load_scrollview: ^1.2.0
 
 dev_dependencies:
   intl_translation: ^0.17.1
@@ -100,3 +103,4 @@ flutter:
     - assets/images/
     - assets/images/patas.png
     - images/terminos.pdf
+    - images/sinproducto.jpg

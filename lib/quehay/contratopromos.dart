@@ -189,7 +189,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
                       height: 100,
                       width: 100,
                       child: Image.network(
-                        widget.promotionModel.urlImagen,
+                        widget.aliadoModel.avatar,
                         fit: BoxFit.cover,
                         errorBuilder: (context, object, stacktrace) {
                           return Container();

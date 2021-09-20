@@ -43,12 +43,16 @@ class ServicioPage extends StatefulWidget {
 }
 
 class _ServicioPageState extends State<ServicioPage> {
+  ScrollController _scrollController = ScrollController();
   List<dynamic> ciudades = [];
   String ciudad;
   List _allResults = [];
   List _resultsList = [];
   static List<ServiceModel> finalServicesList = [];
   Future resultsLoaded;
+  List _pagResults = [];
+  bool loading = false, allLoaded = false;
+  int cargado = 0;
 
   DateTime selectedDate = DateTime.now();
   String _categoria;
@@ -71,6 +75,16 @@ class _ServicioPageState extends State<ServicioPage> {
     MastersList(ciudad);
     getCiudades(PetshopApp.sharedPreferences.getString(PetshopApp.userPais));
     getLatLong();
+    _scrollController.addListener(_onScrollEvent);
+  }
+
+  void _onScrollEvent() {
+    final extentAfter = _scrollController.position.extentAfter;
+    // print("Extent after: $extentAfter");
+    if(extentAfter<=0 && !loading){
+      print('Nueva infoooo: ${_pagResults.length}');
+      func(cargado,cargado+10);
+    }
   }
 
   getLatLong() {
@@ -88,6 +102,7 @@ class _ServicioPageState extends State<ServicioPage> {
   void dispose() {
     _searchTextEditingController.removeListener(_onSearchChanged);
     _searchTextEditingController.dispose();
+    _scrollController.removeListener(_onScrollEvent);
     super.dispose();
   }
 
@@ -147,7 +162,34 @@ class _ServicioPageState extends State<ServicioPage> {
     }
     setState(() {
       _resultsList = showResults;
+      _pagResults = [];
+      cargado = 0;
     });
+    if(_resultsList.length<10)
+      {
+        func(0, _resultsList.length);
+      }
+    else{
+      func(0, 10);
+    }
+
+  }
+
+  func(int start, int end) {
+
+    setState(() {
+      loading = true;
+      // _pagResults = [];
+
+    });
+    _pagResults = _pagResults + List.from(_resultsList.getRange(start, end).toList());
+    loading = false;
+    setState(() {
+      loading = false;
+      print('el loading esta en $loading');
+      cargado = cargado + 10;
+    });
+
   }
 
   _onSearchChanged() {
@@ -502,6 +544,7 @@ class _ServicioPageState extends State<ServicioPage> {
                                             ciudad = value;
                                             _resultsList = [];
                                             _allResults = [];
+                                            _pagResults = [];
                                             MastersList(value);
                                           });
                                         },
@@ -590,26 +633,26 @@ class _ServicioPageState extends State<ServicioPage> {
                 //     )
                 // ),
 
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        _categoria != null ? _categoria : 'Nuestra selección',
-                        style: TextStyle(
-                          color: Color(0xFF57419D),
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.start,
+                //     children: [
+                //       Text(
+                //         _categoria != null ? _categoria : 'Nuestra selección',
+                //         style: TextStyle(
+                //           color: Color(0xFF57419D),
+                //           fontSize: 18,
+                //           fontWeight: FontWeight.bold,
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 SizedBox(
                   height: 5.0,
                 ),
-                _resultsList.length == 0
+                _pagResults.length == 0
                     ? Column(
                         children: [
                           SizedBox(
@@ -639,26 +682,19 @@ class _ServicioPageState extends State<ServicioPage> {
                         ],
                       )
                     : Container(
-                        height:
-                            99 * double.parse(_resultsList.length.toString()),
-                        width: _screenWidth,
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                height: double.infinity,
-                                child: ListView.builder(
-                                    physics: NeverScrollableScrollPhysics(),
-                                    itemCount: _resultsList.length,
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, index) {
-                                      return sourceInfo2(
-                                          _resultsList[index], context);
-                                    }),
-                              ),
-                            ),
-                          ],
-                        ),
+
+                        height: _screenHeight * 0.51,
+                        // width: _screenWidth,
+                        child: ListView.builder(
+                            controller: _scrollController,
+                            // physics: NeverScrollableScrollPhysics(),
+                            itemCount: _pagResults.length,
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              return sourceInfo2(
+                                  _pagResults[index], context);
+                            }),
                       ),
               ],
             ),
@@ -753,7 +789,7 @@ class _ServicioPageState extends State<ServicioPage> {
                                 },
                                 child: Padding(
                                   padding:
-                                      const EdgeInsets.fromLTRB(2, 8, 2, 8),
+                                      const EdgeInsets.fromLTRB(2, 4, 2, 4),
                                   child: Container(
                                     width: MediaQuery.of(context).size.width,
                                     decoration: BoxDecoration(
@@ -767,27 +803,29 @@ class _ServicioPageState extends State<ServicioPage> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Container(
-                                            height: 70,
-                                            width: 70,
-                                            decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.grey,
-                                                  blurRadius: 1.0,
-                                                  spreadRadius: 0.0,
-                                                  offset: Offset(2.0,
-                                                      2.0), // shadow direction: bottom right
-                                                )
-                                              ],
-                                            ),
-                                            child: Image.network(
-                                              aliado.avatar,
-                                              fit: BoxFit.cover,
-                                              errorBuilder:
-                                                  (context, object, stacktrace) {
-                                                return Container();
-                                              },
+                                          Center(
+                                            child: Container(
+                                              height: 70,
+                                              width: 70,
+                                              decoration: BoxDecoration(
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey,
+                                                    blurRadius: 1.0,
+                                                    spreadRadius: 0.0,
+                                                    offset: Offset(2.0,
+                                                        2.0), // shadow direction: bottom right
+                                                  )
+                                                ],
+                                              ),
+                                              child: Image.network(
+                                                servicio.urlImagen,
+                                                fit: BoxFit.cover,
+                                                errorBuilder:
+                                                    (context, object, stacktrace) {
+                                                  return Container();
+                                                },
+                                              ),
                                             ),
                                           ),
                                           SizedBox(
@@ -798,7 +836,7 @@ class _ServicioPageState extends State<ServicioPage> {
                                                     .size
                                                     .width *
                                                 0.51,
-                                            height: 73,
+                                            height: 85,
                                             child: Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
@@ -811,17 +849,28 @@ class _ServicioPageState extends State<ServicioPage> {
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
                                                   children: [
+                                                    Text(servicio.titulo,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: TextStyle(
+                                                            fontSize: 15,
+                                                            color:
+                                                            Color(0xFF57419D),
+                                                            fontWeight:
+                                                            FontWeight.bold),
+                                                        textAlign:
+                                                        TextAlign.left),
                                                     Text(aliado.nombreComercial,
                                                         maxLines: 1,
                                                         overflow: TextOverflow.ellipsis,
                                                         style: TextStyle(
-                                                            fontSize: 17,
+                                                            fontSize: 13,
                                                             color:
-                                                                Color(0xFF57419D),
+                                                            Color(0xFF57419D),
                                                             fontWeight:
-                                                                FontWeight.bold),
+                                                            FontWeight.bold),
                                                         textAlign:
-                                                            TextAlign.left),
+                                                        TextAlign.left),
                                                     location.mapAddress != null
                                                         ? Text(
                                                             location.mapAddress,

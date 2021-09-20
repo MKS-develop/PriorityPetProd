@@ -534,7 +534,7 @@ class _ComunidadHomeState extends State<ComunidadHome> {
                                                         0.65,
                                                     child: Padding(
                                                       padding:
-                                                          const EdgeInsets.fromLTRB(4, 10, 0, 0),
+                                                          const EdgeInsets.fromLTRB(4, 8, 0, 0),
                                                       child: Column(
                                                         // mainAxisAlignment:
                                                         //     MainAxisAlignment.spaceAround,
@@ -555,7 +555,7 @@ class _ComunidadHomeState extends State<ComunidadHome> {
                                                                   textAlign:
                                                                       TextAlign
                                                                           .left)),
-                                                          SizedBox(height: 5,),
+                                                          // SizedBox(height: 1,),
                                                           Flexible(
                                                               child: Text(
                                                                   contenido.descripcion,

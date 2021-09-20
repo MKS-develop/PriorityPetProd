@@ -207,7 +207,12 @@ class _AdoptarConfirmarState extends State<AdoptarConfirmar> {
                             Padding(
                               padding: const EdgeInsets.all(3.0),
                               child: Text(
-                                  "El albergue se comunicará contigo para las evaluaciones y luego podrás tenerme en casa, para darme mucho cariño."),
+                                  "Luego de presionar el botón “Confirmar Adopción”, enviaremos tus datos a ${widget.aliadoModel.nombreComercial}. Ellos se comunicarán contigo por correo electrónico e iniciará tu proceso de evaluación junto con otros candidatos que también deseen adoptar esta mascota."),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(3.0),
+                              child: Text(
+                                  "Cuando el proceso termine, y de ser elegido como adoptante, te enviaremos una notificación con el pago correspondiente. Luego de este proceso, ${widget.petModel.nombre} aparecerá de manera automática en tu perfil de Priority Pet y podrás darle mucho amor en casa."),
                             ),
                             // Padding(
                             //   padding: const EdgeInsets.all(3.0),

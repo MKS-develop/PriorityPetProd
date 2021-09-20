@@ -62,6 +62,31 @@ class AliadoModel {
 
 
   }
+  factory AliadoModel.fromFireStore(DocumentSnapshot doc) {
+    Map data = doc.data();
+    return AliadoModel(
+
+      aliadoId: data['aliadoId'],
+      avatar: data['avatar'],
+      password: data['password'],
+      email: data['email'],
+      pais: data['pais'],
+      telefono: data['telefono'],
+      locacion: data['locacion'],
+      delivery: data['delivery'],
+      nombre: data['nombre'],
+      tipoEmpresa: data['tipoEmpresa'],
+      nombreComercial: data['nombreComercial'],
+      identificacion: data['identificacion'],
+      tipoAliado: data['tipoAliado'],
+      geolocation: data['geolocation'],
+      totalRatings: data['totalRatings'],
+      countRatings: data['countRatings'],
+      direccion: data['direccion'],
+      sumaTotal: data['sumaTotal'],
+
+    );
+  }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

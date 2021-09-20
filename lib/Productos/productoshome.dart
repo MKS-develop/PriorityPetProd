@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/Models/alidados.dart';
+import 'package:pet_shop/Models/location.dart';
 
 import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_shop/Models/prod.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
+import 'package:pet_shop/Widgets/ktitle.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import '../Widgets/myDrawer.dart';
 
@@ -17,6 +20,7 @@ double width;
 class ProductosHome extends StatefulWidget {
   final PetModel petModel;
   final int defaultChoiceIndex;
+
   ProductosHome({this.petModel, this.defaultChoiceIndex});
 
   @override
@@ -29,16 +33,28 @@ class _ProductosHomeState extends State<ProductosHome> {
       new TextEditingController();
   List _allResults = [];
   List _resultsList = [];
-
+  GeoPoint userLatLong;
   @override
   void initState() {
     super.initState();
+    getLatLong();
 
     changePet(widget.petModel);
     _searchTextEditingController.addListener(_onSearchChanged);
     // getAllSnapshots();
     MastersList();
     print('la busqueda es: $_searchTextEditingController');
+  }
+
+  getLatLong() {
+    DocumentReference documentReference = FirebaseFirestore.instance
+        .collection("Dueños")
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
+    documentReference.get().then((dataSnapshot) {
+      setState(() {
+        userLatLong = (dataSnapshot.data()["location"]);
+      });
+    });
   }
 
   ScrollController controller = ScrollController();
@@ -434,7 +450,7 @@ class _ProductosHomeState extends State<ProductosHome> {
               height: 115.0,
               child: RaisedButton(
                 onPressed: () {
-                  String tituloDetalle = "Farmacias";
+                  String tituloDetalle = "Farmacia";
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -464,7 +480,7 @@ class _ProductosHomeState extends State<ProductosHome> {
                     SizedBox(
                       height: 8.0,
                     ),
-                    Text("Farmacias",
+                    Text("Farmacia",
                         style: TextStyle(
                             fontFamily: 'Product Sans',
                             color: Color(0xFF57419D),
@@ -543,20 +559,17 @@ class _ProductosHomeState extends State<ProductosHome> {
         _searchTextEditingController.text.isEmpty
             ? _iconos()
             : Container(
-                height: 120 * double.parse(_resultsList.length.toString()),
+                height: 110 * double.parse(_resultsList.length > 10 ? '10' : _resultsList.length.toString()),
                 width: MediaQuery.of(context).size.width,
                 child: Column(
                   children: [
-                    SizedBox(
-                      height: 50,
-                    ),
                     Expanded(
                       child: Container(
                         height:
-                            120 * double.parse(_resultsList.length.toString()),
+                            110 * double.parse(_resultsList.length > 10 ? '10' : _resultsList.length.toString()),
                         child: ListView.builder(
                             physics: NeverScrollableScrollPhysics(),
-                            itemCount: _resultsList.length,
+                            itemCount: _resultsList.length > 10 ? 10 : _resultsList.length,
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
                               return sourceInfo(context, _resultsList[index]);
@@ -580,7 +593,7 @@ class _ProductosHomeState extends State<ProductosHome> {
 
   Widget sourceInfo(BuildContext context, ProductoModel product) {
     // final product = Producto.fromSnapshot(snapshot);
-
+    double totalD = 0;
     return InkWell(
       child: Row(
         children: [
@@ -602,115 +615,213 @@ class _ProductosHomeState extends State<ProductosHome> {
                       physics: NeverScrollableScrollPhysics(),
                       itemCount: 1,
                       shrinkWrap: true,
-                      itemBuilder: (
-                        context,
-                        index,
-                      ) {
+                      itemBuilder: (context,
+                          index,) {
                         AliadoModel ali =
-                            AliadoModel.fromJson(dataSnapshot.data.data());
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => AlimentoDetalle(
-                                    petModel: model,
-                                    productoModel: product,
-                                    aliadoModel: ali,
-                                      defaultChoiceIndex:
-                                      widget.defaultChoiceIndex
-                                  ),
-                                ));
-                          },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10)
+                        AliadoModel.fromJson(dataSnapshot.data.data());
+                        return StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection("Localidades")
+                                .where("localidadId",
+                                isEqualTo: product.localidadId)
+                                .snapshots(),
+                            builder: (context, dataSnapshot) {
+                              if (!dataSnapshot.hasData) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                              return ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: 1,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context,
+                                      index,) {
+                                    LocationModel location =
+                                    LocationModel.fromJson(dataSnapshot
+                                        .data.docs[index]
+                                        .data());
+                                    if (userLatLong != null &&
+                                        location.location != null) {
+                                      totalD = Geolocator.distanceBetween(
+                                          userLatLong.latitude,
+                                          userLatLong.longitude,
+                                          location.location.latitude,
+                                          location.location.longitude) /
+                                          1000;
+                                    }
 
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    child: Image.network(
-                                      product.urlImagen,
-                                      height: 77,
-                                      width: 66,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (context, object, stacktrace) {
-                                        return Container();
+                                    // var totalD = 0;
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AlimentoDetalle(
+                                                      petModel: model,
+                                                      productoModel: product,
+                                                      aliadoModel: ali,
+                                                      defaultChoiceIndex:
+                                                      widget.defaultChoiceIndex,
+                                                    locationModel: location,
+                                                  ),
+                                            ));
                                       },
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 7.0,
-                                  ),
-                                  Column(
-                                    children: [
-                                      Container(
-                                        height: 80.0,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.6,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(product.titulo,
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    color: Color(0xFF57419D),
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                                textAlign: TextAlign.left),
-                                            Flexible(
-                                                child: Text(product.dirigido,
-                                                    style:
-                                                        TextStyle(fontSize: 12),
-                                                    textAlign: TextAlign.left)),
-                                            SizedBox(height: 8.0),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                    PetshopApp.sharedPreferences
-                                                        .getString(PetshopApp
-                                                            .simboloMoneda),
-                                                    style: TextStyle(
-                                                        fontSize: 13,
-                                                        color:
-                                                            Color(0xFF57419D),
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                    textAlign: TextAlign.left),
-                                                Text(product.precio.toStringAsFixed(2),
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        color:
-                                                            Color(0xFF57419D),
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                    textAlign: TextAlign.left),
-                                              ],
-                                            ),
-                                          ],
+                                      child: Container(
+                                        width: MediaQuery
+                                            .of(context)
+                                            .size
+                                            .width,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(
+                                                10)
+
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius: BorderRadius
+                                                    .circular(8.0),
+                                                child: Image.network(
+                                                  product.urlImagen,
+                                                  height: 77,
+                                                  width: 66,
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (context,
+                                                      object, stacktrace) {
+                                                    return Container();
+                                                  },
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 7.0,
+                                              ),
+                                              Column(
+                                                children: [
+                                                  Container(
+                                                    height: 80.0,
+                                                    width:
+                                                    MediaQuery
+                                                        .of(context)
+                                                        .size
+                                                        .width *
+                                                        0.6,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceAround,
+                                                      crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(product.titulo,
+                                                            style: TextStyle(
+                                                                fontSize: 15,
+                                                                color: Color(
+                                                                    0xFF57419D),
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                            textAlign: TextAlign
+                                                                .left),
+                                                        Flexible(
+                                                            child: Text(product
+                                                                .dirigido,
+                                                                style:
+                                                                TextStyle(
+                                                                    fontSize: 12),
+                                                                textAlign: TextAlign
+                                                                    .left)),
+
+                                                        Row(
+                                                          children: [
+                                                            Text(
+                                                                PetshopApp
+                                                                    .sharedPreferences
+                                                                    .getString(
+                                                                    PetshopApp
+                                                                        .simboloMoneda),
+                                                                style: TextStyle(
+                                                                    fontSize: 13,
+                                                                    color:
+                                                                    Color(
+                                                                        0xFF57419D),
+                                                                    fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                                textAlign: TextAlign
+                                                                    .left),
+                                                            Text(product.precio
+                                                                .toStringAsFixed(
+                                                                2),
+                                                                style: TextStyle(
+                                                                    fontSize: 14,
+                                                                    color:
+                                                                    Color(
+                                                                        0xFF57419D),
+                                                                    fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                                textAlign: TextAlign
+                                                                    .left),
+                                                          ],
+                                                        ),
+                                                        totalD != 0
+                                                            ? SizedBox(
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                            children: [
+                                                              SizedBox(
+                                                                height: 7,
+                                                              ),
+                                                              Icon(
+                                                                Icons
+                                                                    .location_on_rounded,
+                                                                color:
+                                                                secondaryColor,
+                                                              ),
+                                                              SizedBox(
+                                                                height: 3,
+                                                              ),
+                                                              Text(
+                                                                  totalD <
+                                                                      500
+                                                                      ? '${totalD.toStringAsFixed(1)} Km'
+                                                                      : '+500 Km',
+                                                                  style:
+                                                                  TextStyle(
+                                                                    fontSize:
+                                                                    10,
+                                                                  ),
+                                                                  textAlign:
+                                                                  TextAlign
+                                                                      .center),
+                                                            ],
+                                                          ),
+                                                        )
+                                                            : Container(),
+
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
+                                    );
+                                  }
+                              );
+                            });
                       });
                 }),
-          ),
-        ],
+          )],
       ),
     );
   }

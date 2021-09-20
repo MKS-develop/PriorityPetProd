@@ -2,6 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
+import 'package:lazy_loading_list/lazy_loading_list.dart';
 import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/Models/Product.dart';
 import 'package:pet_shop/Models/Producto.dart';
@@ -45,13 +49,16 @@ class AlimentoHome extends StatefulWidget {
 }
 
 class _AlimentoHomeState extends State<AlimentoHome> {
+  ScrollController _scrollController = ScrollController();
   List _allResults = [];
   List _resultsList = [];
   List _otroResults = [];
-
+  List _pagResults = [];
+  bool loading = false, allLoaded = false;
   bool check = false;
   String uid;
   Future resultsLoaded;
+  int cargado = 0;
 
   DateTime selectedDate = DateTime.now();
   String _categoria;
@@ -68,16 +75,48 @@ class _AlimentoHomeState extends State<AlimentoHome> {
   String productId = DateTime.now().millisecondsSinceEpoch.toString();
   GeoPoint userLatLong;
 
+
+
+  void _onScrollEvent() {
+    final extentAfter = _scrollController.position.extentAfter;
+    // print("Extent after: $extentAfter");
+    if(extentAfter<=0 && !loading){
+      print('Nueva infoooo: ${_pagResults.length}');
+      func(cargado,cargado+10);
+    }
+  }
+  _scrollListener(){
+
+    if(_scrollController.offset >= _scrollController.position.maxScrollExtent &&_scrollController.position.outOfRange)
+      //  if(_scrollController.position.pixels >= _scrollController.position.maxScrollExtent)
+        {
+      print('Nueva infoooo');
+      func(11,20);
+    }
+
+
+  }
   @override
   void initState() {
-    super.initState();
+
     changePet(widget.petModel);
     _searchTextEditingController.addListener(_onSearchChanged);
     // getAllSnapshots();
     MastersList(_categoria);
-    MastersList2();
+    // MastersList2();
     getLatLong();
+    // _pagingController.addPageRequestListener((pageKey) {
+    //   _fetchPage(pageKey);
+    // });
+    // _scrollController.addListener(_scrollListener);
+    _scrollController.addListener(_onScrollEvent);
+    super.initState();
+
+
+
   }
+
+
 
   getLatLong() {
     DocumentReference documentReference = FirebaseFirestore.instance
@@ -94,7 +133,11 @@ class _AlimentoHomeState extends State<AlimentoHome> {
   void dispose() {
     _searchTextEditingController.removeListener(_onSearchChanged);
     _searchTextEditingController.dispose();
+    _scrollController.dispose();
+    _scrollController.removeListener(_onScrollEvent);
+    // _searchTextEditingController.removeListener(func(0, 10));
     super.dispose();
+
   }
 
   @override
@@ -111,6 +154,7 @@ class _AlimentoHomeState extends State<AlimentoHome> {
             isEqualTo:
                 PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
         .where('tipoMascota', isEqualTo: categoria)
+
         .snapshots()
         .listen(createListofServices);
   }
@@ -149,6 +193,7 @@ class _AlimentoHomeState extends State<AlimentoHome> {
 
   searchResultsList() {
     var showResults = [];
+    _pagResults = [];
     if (_searchTextEditingController.text != "") {
       for (var tituloSnapshot in _allResults) {
         var titulo = tituloSnapshot.titulo.toLowerCase();
@@ -162,15 +207,56 @@ class _AlimentoHomeState extends State<AlimentoHome> {
 
     setState(() {
       _resultsList = showResults;
+      _pagResults = [];
+      cargado = 0;
     });
+    if(_resultsList.length<10)
+    {
+      func(0, _resultsList.length);
+    }
+    else{
+      func(0, 10);
+    }
   }
+
+func(int start, int end) {
+
+    setState(() {
+    loading = true;
+      // _pagResults = [];
+
+    });
+    _pagResults = _pagResults + List.from(_resultsList.getRange(start, end).toList());
+    loading = false;
+    setState(() {
+      loading = false;
+      print('el loading esta en $loading');
+      cargado = cargado + 10;
+    });
+
+}
+
+
+  // mockFetch() async {
+  //   if(allLoaded){
+  //     return;
+  //   }
+  //   setState(() {
+  //     loading = true;
+  //   });
+  //   await Future.delayed(Duration(milliseconds: 500));
+  //   List newData =_resultsList.length == _pagResults.length ? [] : List.generate(20, (index) => );
+  //   if(newData.isNotEmpty){
+  //
+  //   }
+  // }
 
   _onSearchChanged() {
     searchResultsList();
     print(_searchTextEditingController.text);
   }
 
-  ScrollController controller = ScrollController();
+
   String userImageUrl = "";
 
   final db = FirebaseFirestore.instance;
@@ -208,6 +294,7 @@ class _AlimentoHomeState extends State<AlimentoHome> {
             horizontal: 16.0,
           ),
           child: SingleChildScrollView(
+
             child: Column(
               children: <Widget>[
                 Row(
@@ -370,6 +457,7 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                                     _categoria = value;
                                                     _resultsList = [];
                                                     _allResults = [];
+                                                    _pagResults = [];
                                                     print(value);
                                                     MastersList(value);
                                                   });
@@ -394,31 +482,32 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        _categoria != null ? _categoria : 'Nuestra selección',
-                        style: TextStyle(
-                          color: Color(0xFF57419D),
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.start,
+                //     children: [
+                //       Text(
+                //         _categoria != null ? _categoria : 'Nuestra selección',
+                //         style: TextStyle(
+                //           color: Color(0xFF57419D),
+                //           fontSize: 18,
+                //           fontWeight: FontWeight.bold,
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 SizedBox(
-                  height: 5.0,
+                  height: 3.0,
                 ),
+
                 // Container(
                 //   height: 180.0,
                 //   width: double.infinity,
                 // child: Row(
                 //   children: [
-                _resultsList.length == 0
+                _pagResults.length == 0
                     ? Column(
                         children: [
                           SizedBox(
@@ -447,24 +536,39 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                           ),
                         ],
                       )
-                    : Container(
-                        // height: 1100,
-                        child: GridView.builder(
-                            itemCount: _resultsList.length,
-                            scrollDirection: Axis.vertical,
-                            physics: NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    crossAxisSpacing: 1,
-                                    childAspectRatio: 0.58),
-                            itemBuilder: (
-                              BuildContext context,
-                              int index,
-                            ) =>
-                                sourceInfo(context, _resultsList[index])),
-                      ),
+                    : Column(
+                      children: [
+                        Container(
+                          height: _screenHeight * 0.51,
+                             // height: 130 * double.parse(_pagResults.length.toString()),
+                            child: GridView.builder(
+                                controller: _scrollController,
+                                itemCount: _pagResults.length,
+                                scrollDirection: Axis.vertical,
+                                // physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        crossAxisSpacing: 1,
+                                        childAspectRatio: 0.58),
+                                itemBuilder: (
+                                  BuildContext context,
+                                  int index,
+                                ) =>
+                                    sourceInfo(context, _pagResults[index])
+                            ),
+                          ),
+                        // loading ?
+                        // Center(
+                        //   child: Container(
+                        //     height: 80,
+                        //     child: CupertinoActivityIndicator(),
+                        //   ),
+                        // ): Container(),
+
+                      ],
+                    ),
                 //   ],
                 // ),
                 // ),
@@ -522,6 +626,20 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                 //     ],
                 //   ),
                 // ),
+                // PagedGridView(pagingController: _pagingController, builderDelegate: PagedChildBuilderDelegate<ProductoModel>(
+                //     itemBuilder: (
+                //   BuildContext context,
+                //   int index,
+                // ) =>
+                //     sourceInfo(context,_resultsList[index])),
+
+
+
+
+                  // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  //   crossAxisCount: 2,
+                  //   crossAxisSpacing: 1,
+                  //   childAspectRatio: 0.58),)
               ],
             ),
           ),
@@ -648,7 +766,9 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                                   borderRadius:
                                                   BorderRadius.circular(8.0),
 
-                                                  child: Image.network(
+                                                  child:
+                                                  product.urlImagen != '' ?
+                                                  Image.network(
                                                     product.urlImagen,
                                                     height: 150,
                                                     width: 120,
@@ -657,6 +777,18 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                                         object, stacktrace) {
                                                       return Container();
                                                     },
+                                                  ) : Container(
+                                                    height: 150,
+                                                    decoration: new BoxDecoration(
+                                                      image: new DecorationImage(
+                                                        image:
+                                                        new AssetImage("images/sinproducto.jpg"),
+                                                        fit: BoxFit.contain,
+                                                      ),
+                                                    ),
+                                                    padding: const EdgeInsets.symmetric(
+                                                      horizontal: 16.0,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
@@ -682,7 +814,8 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                                       Flexible(
                                                           child: Text(
                                                               product.titulo,
-                                                              maxLines: 3,
+                                                              maxLines: 2,
+                                                              overflow: TextOverflow.ellipsis,
                                                               style: TextStyle(
                                                                   fontSize: 13,
                                                                   fontWeight:
@@ -701,7 +834,7 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                                                       .left)),
                                                       // SizedBox(height: 8.0),
                                                       totalD != 0
-                                                          ? SizedBox(
+                                                          ? Container(
                                                               child: Row(
                                                                 mainAxisAlignment:
                                                                     MainAxisAlignment
@@ -717,7 +850,7 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                                                         secondaryColor,
                                                                   ),
                                                                   SizedBox(
-                                                                    height: 3,
+                                                                    width: 3,
                                                                   ),
                                                                   Text(
                                                                       totalD <
@@ -764,7 +897,7 @@ class _AlimentoHomeState extends State<AlimentoHome> {
                                                                   TextAlign
                                                                       .left),
                                                           Padding(
-                                                            padding: const EdgeInsets.fromLTRB(0,0,13,3),
+                                                            padding: const EdgeInsets.fromLTRB(0,0,13,0),
                                                             child: Container(
                                                               height: 32.0,
                                                               width: 30.0,

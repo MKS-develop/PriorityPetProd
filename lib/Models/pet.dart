@@ -72,6 +72,36 @@ class PetModel {
     costoAdulto = json['costoAdulto'];
   }
 
+  factory PetModel.fromFireStore(DocumentSnapshot doc) {
+    Map data = doc.data();
+    return PetModel(
+      nombre: data['nombre'],
+      shortInfo: data['shortInfo'],
+      publishedDate: data['publishedDate'],
+      petthumbnailUrl: data['petthumbnailUrl'],
+      longDescription: data['longDescription'],
+      status: data['status'],
+      fechanac: data['fechanac'],
+      especie: data['especie'],
+      raza: data['raza'],
+      sexo: data['sexo'],
+      acerca: data['acerca'],
+      aliadoId: data['aliadoId'],
+      mid: data['mid'],
+      uid: data['uid'],
+      edadMascota: data['edadMascota'],
+      tamanoMascota: data['tamanoMascota'],
+      historia: data['historia'],
+      views: data['views'],
+      costroApadrinar: data['costroApadrinar'],
+      newOwner: data['newOwner'],
+      newPet: data['newPet'],
+      costoCachorro: data['costoCachorro'],
+      costoAdulto: data['costoAdulto'],
+
+    );
+  }
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['nombre'] = this.nombre;
