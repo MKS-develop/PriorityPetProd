@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:pet_shop/Models/plan.dart';
 import 'package:pet_shop/Models/service.dart';
 import 'package:pet_shop/Ordenes/newordeneshome.dart';
+import 'package:pet_shop/Payment/Epayco/epcrearpago.dart';
 import 'package:pet_shop/Payment/addcreditcard.dart';
 import 'package:pet_shop/Store/PushNotificationsProvider.dart';
 import 'package:pet_shop/Store/storehome.dart';
@@ -30,29 +31,11 @@ import 'package:pet_shop/usuario/usuarioinfo.dart';
 import 'package:shortid/shortid.dart';
 
 import 'AikonsPay/apcrearpago.dart';
+import 'Stripe/stcrearpago.dart';
+import 'Epayco/epcrearpago.dart';
+
 
 class PaymentPage extends StatefulWidget {
-  final PetModel petModel;
-  final Producto productoModel;
-  final CartModel cartModel;
-  final ServiceModel serviceModel;
-  final LocationModel locationModel;
-  final AliadoModel aliadoModel;
-  final String tituloCategoria;
-  final String nombreComercial;
-  final dynamic totalPrice;
-  final String hora;
-  final String fecha;
-  final dynamic recojo;
-  final dynamic delivery;
-  final bool value;
-  final bool value2;
-  final Timestamp date;
-  final PromotionModel promotionModel;
-  final PlanModel planModel;
-  final int defaultChoiceIndex;
-  final Function(String, String, dynamic) onSuccess;
-
   PaymentPage({
     this.promotionModel,
     this.petModel,
@@ -76,46 +59,65 @@ class PaymentPage extends StatefulWidget {
     this.nombreComercial,
   });
 
+  final Function(String, String, dynamic) onSuccess;
+  final AliadoModel aliadoModel;
+  final CartModel cartModel;
+  final Timestamp date;
+  final int defaultChoiceIndex;
+  final dynamic delivery;
+  final String fecha;
+  final String hora;
+  final LocationModel locationModel;
+  final String nombreComercial;
+  final PetModel petModel;
+  final PlanModel planModel;
+  final Producto productoModel;
+  final PromotionModel promotionModel;
+  final dynamic recojo;
+  final ServiceModel serviceModel;
+  final String tituloCategoria;
+  final dynamic totalPrice;
+  final bool value;
+  final bool value2;
+
   @override
   _PaymentPageState createState() => _PaymentPageState();
 }
 
 class _PaymentPageState extends State<PaymentPage> {
-  final pushProvider = PushNotificationsProvider();
-  PlanModel plan;
-  LocationModel location;
-  ServiceModel service;
-  PromotionModel pro;
-  PetModel model;
-  CartModel cart;
-  Producto producto;
-  AliadoModel ali;
-  int selectedIndex;
-  String _prk;
-  String selectedCardToken;
-  String productId = DateTime.now().millisecondsSinceEpoch.toString();
   String Date = DateTime.now().toString();
-
-  String obscurecard;
-  String selectedobscurecard;
-  int ppAcumulados = 0;
-  int ppCanjeados = 0;
-  double ppvalor = 0;
+  AliadoModel ali;
   bool card = false;
-  String outcomeMsg = 'Procesada';
-  String type;
-  String cardType;
   String cardBrand;
-  String pagoId;
-  String outcomeMsgError = 'Hubo un problema con su pago';
-  List _cartResults = [];
+  String cardType;
+  CartModel cart;
+  final db = FirebaseFirestore.instance;
   String epDate;
   String formapag;
   String idCulqi;
+  LocationModel location;
+  PetModel model;
+  String obscurecard;
+  String outcomeMsg = 'Procesada';
+  String outcomeMsgError = 'Hubo un problema con su pago';
+  String pagoId;
+  PlanModel plan;
+  int ppAcumulados = 0;
+  int ppCanjeados = 0;
+  double ppvalor = 0;
+  PromotionModel pro;
+  String productId = DateTime.now().millisecondsSinceEpoch.toString();
+  Producto producto;
+  final pushProvider = PushNotificationsProvider();
   bool registroCompleto;
+  String selectedCardToken;
+  int selectedIndex;
+  String selectedobscurecard;
+  ServiceModel service;
+  String type;
 
-
-  final db = FirebaseFirestore.instance;
+  List _cartResults = [];
+  String _prk;
 
   @override
   void initState() {
@@ -168,23 +170,6 @@ class _PaymentPageState extends State<PaymentPage> {
     });
 
     return listaItems;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (PetshopApp.esPeru()) {
-      return _culqiWidget(context);
-    } else if (PetshopApp.esVenezuela()) {
-      return APCrearPago(
-        aliadoModel: widget.aliadoModel,
-        petModel: widget.petModel,
-        defaultChoiceIndex: widget.defaultChoiceIndex,
-        totalPrice: widget.totalPrice,
-        onSuccess: widget.onSuccess,
-      );
-    } else {
-      return Container();
-    }
   }
 
   Widget _culqiWidget(BuildContext context) {
@@ -738,6 +723,7 @@ class _PaymentPageState extends State<PaymentPage> {
       return null;
     }
   }
+
   addCulqiApadrinar() async {
     var precio2 = widget.totalPrice * 100;
     dynamic precio = precio2.toInt();
@@ -812,6 +798,7 @@ class _PaymentPageState extends State<PaymentPage> {
       return null;
     }
   }
+
   addApadrinarToOrders() async {
     Navigator.of(context, rootNavigator: true).pop();
     OrderMessage(context, outcomeMsg);
@@ -1830,6 +1817,7 @@ class _PaymentPageState extends State<PaymentPage> {
           : FieldValue.increment(0),
     });
   }
+
   addAdoptionToOrders() async {
     Navigator.of(context, rootNavigator: true).pop();
     OrderMessage(context, 'Tu adopción ha sido un exito, tu nueva mascota se agregará a "Mis mascotas" a partir de este momento.');
@@ -2395,5 +2383,45 @@ class _PaymentPageState extends State<PaymentPage> {
             CarritoModel.fromSnapshot(allPasteService).nombreComercial,
       });
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (PetshopApp.esPeru()) {
+      return _culqiWidget(context);
+    } else if (PetshopApp.esVenezuela()) {
+      /*return APCrearPago(
+        aliadoModel: widget.aliadoModel,
+        petModel: widget.petModel,
+        defaultChoiceIndex: widget.defaultChoiceIndex,
+        totalPrice: widget.totalPrice,
+        onSuccess: widget.onSuccess,
+      );*/
+      return EPCrearPago(
+        //aliadoModel: widget.aliadoModel,
+        petModel: widget.petModel,
+        defaultChoiceIndex: widget.defaultChoiceIndex,
+        totalPrice: widget.totalPrice,
+        onSuccess: widget.onSuccess,
+      );
+    } else if (PetshopApp.esColombia()) {
+      return EPCrearPago(
+        //aliadoModel: widget.aliadoModel,
+        petModel: widget.petModel,
+        defaultChoiceIndex: widget.defaultChoiceIndex,
+        totalPrice: widget.totalPrice,
+        onSuccess: widget.onSuccess,
+      );
+    } else if (PetshopApp.esMexico()) {
+      return STCrearPago(
+        //aliadoModel: widget.aliadoModel,
+        petModel: widget.petModel,
+        defaultChoiceIndex: widget.defaultChoiceIndex,
+        totalPrice: widget.totalPrice,
+        onSuccess: widget.onSuccess,
+      );
+    }  else {
+      return Container();
+    }
   }
 }

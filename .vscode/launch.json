@@ -5,6 +5,33 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "pet_shop_qa",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define", "ENV=QA"
+            ],
+        },
+        {
+            "name": "pet_shop_prod",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define", "ENV=PROD"
+            ],
+        },
+        {
+            "name": "pet_shop_dev",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define", "ENV=DEV"
+            ],
+        },
+        {
             "name": "pet_shop",
             "request": "launch",
             "type": "dart"

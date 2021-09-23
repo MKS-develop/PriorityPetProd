@@ -1,7 +1,6 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pet_shop/Config/environment.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,6 +33,8 @@ class PetshopApp {
   static final String userToken = 'token';
   static final String userBienvenida = 'bienvenida';
   static final String userCulqi = 'id_culqi';
+  static final String userStripe = 'id_stripe';
+  static final String userEpayco = 'id_epayco';
   static final String simboloMoneda = 'simbolo';
   static final String Moneda = 'moneda';
   static final String codigoTexto = 'codigoTexto';
@@ -48,21 +49,31 @@ class PetshopApp {
   static final String orderTime = 'orderTime';
   static final String isSuccess = 'isSuccess';
 
-  static final List<String> pasarelasHabilitadas = ["Venezuela", "Perú"];
+  static final String cloudFunctionUrl = 
+    Environment.FLAVOR == Environment.PROD ? 'https://us-central1-priority-pet.cloudfunctions.net/' : 
+    Environment.FLAVOR == Environment.QA   ? 'https://us-central1-priority-pet.cloudfunctions.net/' : 
+    'https://us-central1-priority-pet.cloudfunctions.net/';
+
+
+  static final List<String> pasarelasHabilitadas = ['Venezuela', 'Perú', 'Colombia', 'Mexico'];
 
   static bool pasarelaDisponible() {
     return pasarelasHabilitadas.indexOf(PetshopApp.sharedPreferences.getString(PetshopApp.userPais)) != -1;
   }
 
   static bool esPeru() {
-    return PetshopApp.sharedPreferences.getString(PetshopApp.userPais) == "Perú";
+    return PetshopApp.sharedPreferences.getString(PetshopApp.userPais) == 'Perú';
   }
 
   static bool esVenezuela() {
-    return PetshopApp.sharedPreferences.getString(PetshopApp.userPais) == "Venezuela";
+    return PetshopApp.sharedPreferences.getString(PetshopApp.userPais) == 'Venezuela';
   }
 
   static bool esColombia() {
-    return PetshopApp.sharedPreferences.getString(PetshopApp.userPais) == "Colombia";
+    return PetshopApp.sharedPreferences.getString(PetshopApp.userPais) == 'Colombia';
+  }
+
+  static bool esMexico() {
+    return PetshopApp.sharedPreferences.getString(PetshopApp.userPais) == 'Mexico';
   }
 }

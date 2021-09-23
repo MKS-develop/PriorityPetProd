@@ -14,14 +14,14 @@ import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import 'package:http/http.dart' as http;
 
-class EPCrearPago extends StatefulWidget {
+class STCrearPago extends StatefulWidget {
   final PetModel petModel;
   final int defaultChoiceIndex;
   final dynamic totalPrice;
   final String tituloCategoria;
   final Future<void> Function(String, String, dynamic) onSuccess;
   
-  const EPCrearPago({
+  const STCrearPago({
     this.petModel,
     this.defaultChoiceIndex,
     this.totalPrice,
@@ -30,10 +30,10 @@ class EPCrearPago extends StatefulWidget {
   }) : super();
 
   @override
-  _EPCrearPagoState createState() => _EPCrearPagoState();
+  _STCrearPagoState createState() => _STCrearPagoState();
 }
 
-class _EPCrearPagoState extends State<EPCrearPago> {
+class _STCrearPagoState extends State<STCrearPago> {
 
   String _publishableKey;
   String _secretKey;
@@ -140,7 +140,7 @@ class _EPCrearPagoState extends State<EPCrearPago> {
                           .doc(PetshopApp.sharedPreferences
                             .getString(PetshopApp.userUID))
                           .collection('Metodos de pago')
-                          .where("pasarela", isEqualTo: "Epayco")
+                          .where("pasarela", isEqualTo: "Stripe")
                           .snapshots(),
                         builder: (context, dataSnapshot) {
                           if (dataSnapshot.hasData) {
