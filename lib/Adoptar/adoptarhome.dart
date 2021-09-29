@@ -93,7 +93,13 @@ class _AdoptarHomeState extends State<AdoptarHome> {
     setState(() {
       _resultsList = showResults;
     });
-    func(0, 10);
+    if(_resultsList.length<10)
+    {
+      func(0, _resultsList.length);
+    }
+    else{
+      func(0, 10);
+    }
   }
   func(int start, int end) {
 

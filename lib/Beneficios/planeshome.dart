@@ -27,8 +27,8 @@ class _PlanesHomeState extends State<PlanesHome> {
   PlanModel plan;
   PetModel model;
   Color color;
-  int ppAcumulados = 0;
-  int ppCanjeados = 0;
+  dynamic ppAcumulados = 0;
+  dynamic ppCanjeados = 0;
   String status = 'Inactivo';
   String tipoPlan;
   Timestamp vigenciaDesde;
@@ -39,7 +39,7 @@ class _PlanesHomeState extends State<PlanesHome> {
   void initState() {
     super.initState();
     changePet(widget.petModel);
-    _statusPlan();
+    // _statusPlan();
     _getPetpoints();
     //initializeDateFormatting("es_VE", null).then((_) {});
   }
@@ -259,7 +259,7 @@ class _PlanesHomeState extends State<PlanesHome> {
                                             ),
                                           ),
                                           SizedBox(
-                                            height: 110,
+                                            height: 160,
                                           ),
                                           StreamBuilder<QuerySnapshot>(
                                               stream: FirebaseFirestore.instance
@@ -596,16 +596,12 @@ class _PlanesHomeState extends State<PlanesHome> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(
-                    width: 100,
-                    // height: 50,
-                    child: Text(plan.planid,
-                        style: TextStyle(
-                            fontFamily: 'Product Sans',
-                            color: Color(0xFF1A3E4D),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17.0)),
-                  ),
+                  Text(plan.planid,
+                      style: TextStyle(
+                          fontFamily: 'Product Sans',
+                          color: Color(0xFF1A3E4D),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17.0)),
                   // Row(
                   //   children: [
                   //     Text(plan.descuento.toString(),
@@ -655,7 +651,7 @@ class _PlanesHomeState extends State<PlanesHome> {
                   width: 60.0,
                   decoration: new BoxDecoration(
                       image: new DecorationImage(
-                        image: new AssetImage("diseñador/Grupo592.png"),
+                        image: new AssetImage("images/bottom.png"),
                         fit: BoxFit.fill,
                       ),
                       color: Color(0xFF737373),
@@ -668,9 +664,9 @@ class _PlanesHomeState extends State<PlanesHome> {
                       Column(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.all(15.0),
+                            padding: const EdgeInsets.all(10.0),
                             child: SizedBox(
-                              width: 70.0,
+                               width: 70.0,
                               height: 5.0,
                               child: Image.asset(
                                 'diseñador/drawable/Rectangulo308.png',
@@ -701,24 +697,25 @@ class _PlanesHomeState extends State<PlanesHome> {
                               );
                             }),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("S/",
-                                style: TextStyle(
-                                    fontFamily: 'Product Sans',
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 42.0)),
-                            Text(plan.montoMensual.toString(),
-                                style: TextStyle(
-                                    fontFamily: 'Product Sans',
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 42.0)),
-                          ],
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.all(8.0),
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     children: [
+                      //       Text("S/",
+                      //           style: TextStyle(
+                      //               fontFamily: 'Product Sans',
+                      //               fontWeight: FontWeight.bold,
+                      //               fontSize: 42.0)),
+                      //       Text(plan.montoMensual.toString(),
+                      //           style: TextStyle(
+                      //               fontFamily: 'Product Sans',
+                      //               fontWeight: FontWeight.bold,
+                      //               fontSize: 42.0)),
+                      //     ],
+                      //   ),
+                      // ),
+                      plan.planid != 'Plan Freemium - Free' ?
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -731,16 +728,23 @@ class _PlanesHomeState extends State<PlanesHome> {
                                         widget.defaultChoiceIndex)),
                           );
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 15),
-                          child: Text("Ver detalle",
-                              style: TextStyle(
-                                  fontFamily: 'Product Sans',
-                                  color: Color(0xFF57419D),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20.0)),
+                        child: Container(
+                          height: 60,
+                          width: double.infinity,
+                          color: Colors.yellow,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
+                            child: Center(
+                              child: Text("Seleccionar plan",
+                                  style: TextStyle(
+                                      fontFamily: 'Product Sans',
+                                      color: Color(0xFF57419D),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0)),
+                            ),
+                          ),
                         ),
-                      ),
+                      ): Container(),
                     ],
                   )));
         });

@@ -127,6 +127,7 @@ class _StoreHomeState extends State<StoreHome> {
         .where("pais",
         isEqualTo:
         PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
+        .limit(7)
         .snapshots()
         .listen(createListofServices2);
   }
@@ -136,7 +137,7 @@ class _StoreHomeState extends State<StoreHome> {
     for (var Doc2 in docs2) {
       setState(() {
         _allProductResults.add(ProductoModel.fromFireStore(Doc2));
-        print(_allProductResults);
+        // print(_allProductResults);
       });
     }
     searchResultsList2();
@@ -569,9 +570,7 @@ class _StoreHomeState extends State<StoreHome> {
     List list_of_locations = await FirebaseFirestore.instance
         .collection("Localidades")
         .where("serviciosContiene", isEqualTo: true)
-        .where("pais",
-        isEqualTo:
-        PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
+        .where("pais", isEqualTo: PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
 
         .get()
         .then((val) => val.docs);
@@ -581,6 +580,7 @@ class _StoreHomeState extends State<StoreHome> {
           .collection("Localidades")
           .doc(list_of_locations[i].documentID.toString())
           .collection("Servicios")
+      .limit(7)
           // .where("categoria", isEqualTo: "Salud")
 
           .snapshots()
@@ -595,7 +595,7 @@ class _StoreHomeState extends State<StoreHome> {
       setState(() {
         finalServicesList.add(ServiceModel.fromFireStore(Doc));
         _allResults.add(ServiceModel.fromFireStore(Doc));
-        print(_allResults);
+        // print(_allResults);
       });
     }
     searchResultsList();
