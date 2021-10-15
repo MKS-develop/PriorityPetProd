@@ -568,9 +568,6 @@ class _ComunidadHomeState extends State<ComunidadHome> {
                                                                       TextAlign
                                                                           .left)),
                                                           // SizedBox(height: 8.0),
-
-
-
                                                         ],
                                                       ),
                                                     ),

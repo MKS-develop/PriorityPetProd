@@ -35,10 +35,10 @@ class CitasPage extends StatefulWidget {
 
   CitasPage(
       {this.petModel,
-      this.locationModel,
-      this.tituloCat,
-      this.clinicasModel,
-      this.defaultChoiceIndex});
+        this.locationModel,
+        this.tituloCat,
+        this.clinicasModel,
+        this.defaultChoiceIndex});
 
   @override
   _CitasPageState createState() => _CitasPageState();
@@ -50,7 +50,7 @@ class _CitasPageState extends State<CitasPage> {
   String ciudad;
   DateTime selectedDate = DateTime.now();
   TextEditingController _searchTextEditingController =
-      new TextEditingController();
+  new TextEditingController();
   List _pagResults = [];
   bool loading = false, allLoaded = false;
   int cargado = 0;
@@ -145,9 +145,9 @@ class _CitasPageState extends State<CitasPage> {
           .collection("Localidades")
           .where("serviciosContiene", isEqualTo: true)
           .where("pais", isEqualTo:
-                  PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
+      PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
           .where("ciudad", isEqualTo: _categoria)
-          // .where("aliadoId", isEqualTo: widget.clinicasModel.aliadoId)
+      // .where("aliadoId", isEqualTo: widget.clinicasModel.aliadoId)
           .get()
           .then((val) => val.docs);
 
@@ -392,7 +392,7 @@ class _CitasPageState extends State<CitasPage> {
                                     .doc('Salud')
                                     .collection('Servicios')
                                     .where('categoriaId', isEqualTo: 'Salud')
-                                    // .orderBy('createdOn', descending: false)
+                                // .orderBy('createdOn', descending: false)
                                     .snapshots(),
                                 builder: (context, dataSnapshot) {
                                   if (!dataSnapshot.hasData) {
@@ -402,10 +402,10 @@ class _CitasPageState extends State<CitasPage> {
                                   } else {
                                     List<String> list = [];
                                     for (int i = 0;
-                                        i < dataSnapshot.data.docs.length;
-                                        i++) {
+                                    i < dataSnapshot.data.docs.length;
+                                    i++) {
                                       DocumentSnapshot razas =
-                                          dataSnapshot.data.docs[i];
+                                      dataSnapshot.data.docs[i];
                                       list.add(
                                         razas.id,
                                       );
@@ -425,7 +425,7 @@ class _CitasPageState extends State<CitasPage> {
                                       margin: EdgeInsets.all(5.0),
                                       child: DropdownSearch<String>(
                                         dropdownSearchDecoration:
-                                            InputDecoration(
+                                        InputDecoration(
                                           hintStyle: TextStyle(
                                             fontSize: 16.0,
                                             // color: Color(0xFF7f9d9D)
@@ -460,7 +460,7 @@ class _CitasPageState extends State<CitasPage> {
                                           });
                                         },
                                         selectedItem:
-                                            _searchTextEditingController.text,
+                                        _searchTextEditingController.text,
                                       ),
                                     );
                                   }
@@ -559,7 +559,7 @@ class _CitasPageState extends State<CitasPage> {
                                     width: _screenWidth * 0.9,
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
@@ -579,15 +579,15 @@ class _CitasPageState extends State<CitasPage> {
                                                 DropdownButton(
                                                     hint: Padding(
                                                       padding: const EdgeInsets
-                                                              .fromLTRB(
+                                                          .fromLTRB(
                                                           50, 0, 0, 0),
                                                       child: Text(
                                                         'Ciudad',
                                                         style: TextStyle(
                                                             color: Colors.black,
                                                             fontWeight:
-                                                                FontWeight
-                                                                    .bold),
+                                                            FontWeight
+                                                                .bold),
                                                       ),
                                                     ),
                                                     items: ciudades
@@ -597,9 +597,9 @@ class _CitasPageState extends State<CitasPage> {
                                                         value: value,
                                                         child: Padding(
                                                           padding:
-                                                              const EdgeInsets
-                                                                      .fromLTRB(
-                                                                  40, 0, 0, 0),
+                                                          const EdgeInsets
+                                                              .fromLTRB(
+                                                              40, 0, 0, 0),
                                                           child: Text(value),
                                                         ),
                                                       );
@@ -640,47 +640,47 @@ class _CitasPageState extends State<CitasPage> {
                             ),
                             _pagResults.length == 0
                                 ? Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Container(
-                                        height: _screenHeight * 0.3,
-                                        decoration: new BoxDecoration(
-                                          image: new DecorationImage(
-                                            image: new AssetImage(
-                                                "images/perritotriste.png"),
-                                            fit: BoxFit.fitHeight,
-                                          ),
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 16.0,
-                                        ),
-                                      ),
-                                      Text(
-                                        'No disponible',
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : Container(
-                                  height: _screenHeight * 0.51,
-                                    // child: Expanded(
-                                    child: ListView.builder(
-                                        controller: _scrollController,
-                                        // physics: NeverScrollableScrollPhysics(),
-                                        itemCount: _pagResults.length,
-                                        shrinkWrap: true,
-                                        itemBuilder: (context, index) {
-                                          return sourceInfo2(
-                                              _pagResults[index], context);
-                                        }),
-                                    // ),
+                              children: [
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  height: _screenHeight * 0.3,
+                                  decoration: new BoxDecoration(
+                                    image: new DecorationImage(
+                                      image: new AssetImage(
+                                          "images/perritotriste.png"),
+                                      fit: BoxFit.fitHeight,
+                                    ),
                                   ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0,
+                                  ),
+                                ),
+                                Text(
+                                  'No disponible',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            )
+                                : Container(
+                              height: _screenHeight * 0.51,
+                              // child: Expanded(
+                              child: ListView.builder(
+                                  controller: _scrollController,
+                                  // physics: NeverScrollableScrollPhysics(),
+                                  itemCount: _pagResults.length,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    return sourceInfo2(
+                                        _pagResults[index], context);
+                                  }),
+                              // ),
+                            ),
                           ],
                         ),
                       ),
@@ -839,16 +839,16 @@ class _CitasPageState extends State<CitasPage> {
       await FirebaseFirestore.instance
           .collection('Ciudades')
           .where("paisId",
-              isEqualTo:
-                  PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
+          isEqualTo:
+          PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
           .get()
           .then((QuerySnapshot querySnapshot) => {
-                querySnapshot.docs.forEach((paisA) {
-                  setState(() {
-                    ciudades = paisA["ciudades"].toList();
-                  });
-                })
-              });
+        querySnapshot.docs.forEach((paisA) {
+          setState(() {
+            ciudades = paisA["ciudades"].toList();
+          });
+        })
+      });
       ciudades.sort();
       print(ciudades.length);
     } catch (e) {
@@ -858,9 +858,9 @@ class _CitasPageState extends State<CitasPage> {
   }
 
   Widget sourceInfo2(
-    ServiceModel servicio,
-    BuildContext context,
-  ) {
+      ServiceModel servicio,
+      BuildContext context,
+      ) {
     double totalD = 0;
     return InkWell(
       child: StreamBuilder<QuerySnapshot>(
@@ -879,19 +879,19 @@ class _CitasPageState extends State<CitasPage> {
                 itemCount: 1,
                 shrinkWrap: true,
                 itemBuilder: (
-                  context,
-                  index,
-                ) {
+                    context,
+                    index,
+                    ) {
                   LocationModel location = LocationModel.fromJson(
                       dataSnapshot.data.docs[index].data());
 
                   // calculateDistance(userLatLong.latitude, userLatLong.longitude, location.location.latitude, location.location.longitude);
                   if (userLatLong != null && location.location != null) {
                     totalD = Geolocator.distanceBetween(
-                            userLatLong.latitude,
-                            userLatLong.longitude,
-                            location.location.latitude,
-                            location.location.longitude) /
+                        userLatLong.latitude,
+                        userLatLong.longitude,
+                        location.location.latitude,
+                        location.location.longitude) /
                         1000;
                   }
                   return StreamBuilder<QuerySnapshot>(
@@ -910,9 +910,9 @@ class _CitasPageState extends State<CitasPage> {
                             itemCount: 1,
                             shrinkWrap: true,
                             itemBuilder: (
-                              context,
-                              index,
-                            ) {
+                                context,
+                                index,
+                                ) {
                               AliadoModel aliado = AliadoModel.fromJson(
                                   dataSnapshot.data.docs[index].data());
                               return GestureDetector(
@@ -926,7 +926,7 @@ class _CitasPageState extends State<CitasPage> {
                                             aliadoModel: aliado,
                                             locationModel: location,
                                             defaultChoiceIndex:
-                                                widget.defaultChoiceIndex,
+                                            widget.defaultChoiceIndex,
                                             userLatLong: userLatLong)),
                                   );
                                 },
@@ -944,11 +944,11 @@ class _CitasPageState extends State<CitasPage> {
                                           padding: const EdgeInsets.all(4.0),
                                           child: Row(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.center,
+                                            CrossAxisAlignment.center,
                                             children: [
                                               ClipRRect(
                                                 borderRadius:
-                                                    BorderRadius.circular(8.0),
+                                                BorderRadius.circular(8.0),
                                                 child: Image.network(
                                                   aliado.avatar,
                                                   width: 75.0,
@@ -961,28 +961,28 @@ class _CitasPageState extends State<CitasPage> {
                                               ),
                                               Row(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                                 children: [
                                                   Container(
                                                     width: MediaQuery.of(context)
-                                                            .size
-                                                            .width *
+                                                        .size
+                                                        .width *
                                                         0.5,
                                                     height: 92,
                                                     child: Column(
                                                       crossAxisAlignment:
-                                                          CrossAxisAlignment.start,
+                                                      CrossAxisAlignment.start,
                                                       mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
                                                       children: [
                                                         Column(
                                                           crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
+                                                          CrossAxisAlignment
+                                                              .start,
                                                           mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .start,
+                                                          MainAxisAlignment
+                                                              .start,
                                                           children: [
                                                             Text(
                                                                 aliado
@@ -992,169 +992,168 @@ class _CitasPageState extends State<CitasPage> {
                                                                 style: TextStyle(
                                                                     fontSize: 17,
                                                                     fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
+                                                                    FontWeight
+                                                                        .bold),
                                                                 textAlign:
-                                                                    TextAlign.left),
+                                                                TextAlign.left),
                                                             location.mapAddress !=
-                                                                    null
+                                                                null
                                                                 ? Text(
-                                                                    location
-                                                                        .mapAddress,
-                                                                    maxLines: 2,
-                                                                    overflow: TextOverflow.ellipsis,
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize: 13,
-                                                                    ),
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .left)
-                                                                : Text(
-                                                                    location
-                                                                        .direccionLocalidad,
+                                                                location
+                                                                    .mapAddress,
                                                                 maxLines: 2,
                                                                 overflow: TextOverflow.ellipsis,
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize: 13,
-                                                                    ),
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .left),
+                                                                style:
+                                                                TextStyle(
+                                                                  fontSize: 13,
+                                                                ),
+                                                                textAlign:
+                                                                TextAlign
+                                                                    .left)
+                                                                : Text(
+                                                                location
+                                                                    .direccionLocalidad,
+                                                                maxLines: 2,
+                                                                overflow: TextOverflow.ellipsis,
+                                                                style:
+                                                                TextStyle(
+                                                                  fontSize: 13,
+                                                                ),
+                                                                textAlign:
+                                                                TextAlign
+                                                                    .left),
                                                           ],
                                                         ),
                                                         StreamBuilder<
-                                                                QuerySnapshot>(
+                                                            QuerySnapshot>(
                                                             stream: FirebaseFirestore
                                                                 .instance
                                                                 .collection(
-                                                                    "Aliados")
+                                                                "Aliados")
                                                                 .doc(servicio
-                                                                    .aliadoId)
+                                                                .aliadoId)
                                                                 .collection(
-                                                                    "Especialidades")
+                                                                "Especialidades")
                                                                 .snapshots(),
                                                             builder: (context,
                                                                 dataSnapshot) {
                                                               if (dataSnapshot
                                                                   .hasData) {
                                                                 if (dataSnapshot
-                                                                        .data
-                                                                        .docs
-                                                                        .length ==
+                                                                    .data
+                                                                    .docs
+                                                                    .length ==
                                                                     0) {
                                                                   return Center(
                                                                       child:
-                                                                          Container());
+                                                                      Container());
                                                                 }
                                                               }
                                                               if (!dataSnapshot
                                                                   .hasData) {
                                                                 return Center(
                                                                   child:
-                                                                      CircularProgressIndicator(),
+                                                                  CircularProgressIndicator(),
                                                                 );
                                                               }
                                                               return ListView
                                                                   .builder(
-                                                                      physics:
-                                                                          NeverScrollableScrollPhysics(),
-                                                                      itemCount:
-                                                                          dataSnapshot
-                                                                              .data
-                                                                              .docs
-                                                                              .length,
-                                                                      shrinkWrap:
-                                                                          true,
-                                                                      itemBuilder: (
-                                                                        context,
-                                                                        index,
+                                                                  physics:
+                                                                  NeverScrollableScrollPhysics(),
+                                                                  itemCount:
+                                                                  1,
+                                                                  shrinkWrap:
+                                                                  true,
+                                                                  itemBuilder: (
+                                                                      context,
+                                                                      index,
                                                                       ) {
-                                                                        EspecialidadesModel
-                                                                            especialidades =
-                                                                            EspecialidadesModel.fromJson(dataSnapshot
-                                                                                .data
-                                                                                .docs[index]
-                                                                                .data());
+                                                                    EspecialidadesModel
+                                                                    especialidades =
+                                                                    EspecialidadesModel.fromJson(dataSnapshot
+                                                                        .data
+                                                                        .docs[index]
+                                                                        .data());
 
-                                                                        return Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment
-                                                                                  .start,
-                                                                          children: [
-                                                                            Text(
-                                                                              especialidades
-                                                                                  .especialidad,
-                                                                              style:
-                                                                                  TextStyle(
-                                                                                color:
-                                                                                    Colors.grey,
-                                                                                fontWeight:
-                                                                                    FontWeight.bold,
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        );
-                                                                      });
+                                                                    return Row(
+                                                                      mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                      children: [
+                                                                        Text(
+                                                                          especialidades
+                                                                              .especialidad,
+                                                                          overflow: TextOverflow.ellipsis,
+                                                                          maxLines: 1,
+                                                                          style:
+                                                                          TextStyle(
+                                                                            color:
+                                                                            Colors.grey,
+                                                                            fontWeight:
+                                                                            FontWeight.bold,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    );
+                                                                  });
                                                             }),
                                                         aliado.tipoAliado !=
-                                                                'Médico'
+                                                            'Médico'
                                                             ? Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text(
-                                                                    servicio.titulo,
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color: Colors
-                                                                          .grey,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              )
+                                                          mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                          children: [
+                                                            Text(
+                                                              servicio.titulo,
+                                                              style:
+                                                              TextStyle(
+                                                                color: Colors
+                                                                    .grey,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .bold,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )
                                                             : Container(),
                                                       ],
                                                     ),
                                                   ),
                                                   totalD != 0
                                                       ? SizedBox(
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              SizedBox(
-                                                                height: 9,
-                                                              ),
-                                                              Icon(
-                                                                Icons
-                                                                    .location_on_rounded,
-                                                                color:
-                                                                    secondaryColor,
-                                                              ),
-                                                              SizedBox(
-                                                                height: 3,
-                                                              ),
-                                                              Text(
-                                                                  totalD < 500
-                                                                      ? '${totalD.toStringAsFixed(1)} Km'
-                                                                      : '+500 Km',
-                                                                  overflow: TextOverflow.ellipsis,
-                                                                  style: TextStyle(
-                                                                    fontSize: 12,
-                                                                  ),
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center),
-                                                            ],
-                                                          ),
-                                                        )
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .start,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 9,
+                                                        ),
+                                                        Icon(
+                                                          Icons
+                                                              .location_on_rounded,
+                                                          color:
+                                                          secondaryColor,
+                                                        ),
+                                                        SizedBox(
+                                                          height: 3,
+                                                        ),
+                                                        Text(
+                                                            totalD < 500
+                                                                ? '${totalD.toStringAsFixed(1)} Km'
+                                                                : '+500 Km',
+                                                            overflow: TextOverflow.ellipsis,
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                            ),
+                                                            textAlign:
+                                                            TextAlign
+                                                                .center),
+                                                      ],
+                                                    ),
+                                                  )
                                                       : Container(),
                                                 ],
                                               ),

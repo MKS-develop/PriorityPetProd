@@ -1044,7 +1044,7 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
         );
       });
     } catch (e) {
-      Navigator.pop(context);
+      // Navigator.pop(context);
       switch (e.message) {
         case "The email address is badly formatted.":
           {
@@ -1221,7 +1221,7 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
         .then((authUser) {
       user = authUser.user;
     }).catchError((error) {
-      Navigator.pop(context);
+      // Navigator.pop(context);
       switch (error.message) {
         case "The email address is badly formatted.":
           {
@@ -1386,6 +1386,7 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
   }
 
   Future<void> ErrorMessage(BuildContext context, String error) async {
+    Navigator.of(context, rootNavigator: true).pop();
     return showDialog(
         context: context,
         barrierColor: Colors.black.withOpacity(0.3),

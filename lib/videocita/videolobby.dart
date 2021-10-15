@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:jitsi_meet/feature_flag/feature_flag.dart';
-import 'package:jitsi_meet/jitsi_meet.dart';
-import 'package:jitsi_meet/jitsi_meeting_listener.dart';
-import 'package:jitsi_meet/room_name_constraint.dart';
-import 'package:jitsi_meet/room_name_constraint_type.dart';
+// import 'package:jitsi_meet/feature_flag/feature_flag.dart';
+// import 'package:jitsi_meet/jitsi_meet.dart';
+// import 'package:jitsi_meet/jitsi_meeting_listener.dart';
+// import 'package:jitsi_meet/room_name_constraint.dart';
+// import 'package:jitsi_meet/room_name_constraint_type.dart';
 import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/Models/especialidades.dart';
 import 'package:pet_shop/Models/item.dart';
@@ -54,13 +54,13 @@ class _VideoLobbyState extends State<VideoLobby> {
   @override
   void initState() {
     super.initState();
-    JitsiMeet.addListener(JitsiMeetingListener(
-        onConferenceWillJoin: _onConferenceWillJoin,
-        onConferenceJoined: _onConferenceJoined,
-        onConferenceTerminated: _onConferenceTerminated,
-        onPictureInPictureWillEnter: _onPictureInPictureWillEnter,
-        onPictureInPictureTerminated: _onPictureInPictureTerminated,
-        onError: _onError));
+    // JitsiMeet.addListener(JitsiMeetingListener(
+    //     onConferenceWillJoin: _onConferenceWillJoin,
+    //     onConferenceJoined: _onConferenceJoined,
+    //     onConferenceTerminated: _onConferenceTerminated,
+    //     onPictureInPictureWillEnter: _onPictureInPictureWillEnter,
+    //     onPictureInPictureTerminated: _onPictureInPictureTerminated,
+    //     onError: _onError));
     roomText.value = TextEditingValue(text: widget.orderModel.videoId);
     // doctor.value = TextEditingValue(text: widget.orderModel.nombreComercial);
     _getAliado();
@@ -224,7 +224,7 @@ class _VideoLobbyState extends State<VideoLobby> {
                   width: double.maxFinite,
                   child: RaisedButton(
                     onPressed: () {
-                      _joinMeeting();
+                      // _joinMeeting();
                     },
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
@@ -684,75 +684,75 @@ class _VideoLobbyState extends State<VideoLobby> {
     });
   }
 
-  _joinMeeting() async {
-    String serverUrl =
-    serverText.text?.trim()?.isEmpty ?? "" ? null : serverText.text;
-
-    try {
-      // Enable or disable any feature flag here
-      // If feature flag are not provided, default values will be used
-      // Full list of feature flags (and defaults) available in the README
-      FeatureFlag featureFlag = FeatureFlag();
-      featureFlag.welcomePageEnabled = false;
-      // Here is an example, disabling features for each platform
-      if (Platform.isAndroid) {
-        // Disable ConnectionService usage on Android to avoid issues (see README)
-        featureFlag.callIntegrationEnabled = false;
-      } else if (Platform.isIOS) {
-        // Disable PIP on iOS as it looks weird
-        featureFlag.pipEnabled = true;
-
-      }
-
-      //uncomment to modify video resolution
-      //featureFlag.resolution = FeatureFlagVideoResolution.MD_RESOLUTION;
-
-      // Define meetings options here
-      var options = JitsiMeetingOptions()
-        ..room = roomText.text
-        ..serverURL = serverUrl
-        ..subject = subjectText.text
-        ..userDisplayName = nameText.text
-        ..userEmail = emailText.text
-        ..audioOnly = isAudioOnly
-        ..audioMuted = isAudioMuted
-        ..videoMuted = isVideoMuted
-        ..featureFlag = featureFlag;
-
-      debugPrint("JitsiMeetingOptions: $options");
-      await JitsiMeet.joinMeeting(
-        options,
-        listener: JitsiMeetingListener(onConferenceWillJoin: ({message}) {
-          debugPrint("${options.room} will join with message: $message");
-        }, onConferenceJoined: ({message}) {
-          debugPrint("${options.room} joined with message: $message");
-        }, onConferenceTerminated: ({message}) {
-          debugPrint("${options.room} terminated with message: $message");
-        }, onPictureInPictureWillEnter: ({message}) {
-          debugPrint("${options.room} entered PIP mode with message: $message");
-        }, onPictureInPictureTerminated: ({message}) {
-          debugPrint("${options.room} exited PIP mode with message: $message");
-        }),
-        // by default, plugin default constraints are used
-        //roomNameConstraints: new Map(), // to disable all constraints
-        //roomNameConstraints: customContraints, // to use your own constraint(s)
-      );
-    } catch (error) {
-      debugPrint("error: $error");
-    }
-  }
-
-  static final Map<RoomNameConstraintType, RoomNameConstraint>
-  customContraints = {
-    RoomNameConstraintType.MAX_LENGTH: new RoomNameConstraint((value) {
-      return value.trim().length <= 50;
-    }, "Maximum room name length should be 30."),
-    RoomNameConstraintType.FORBIDDEN_CHARS: new RoomNameConstraint((value) {
-      return RegExp(r"[$€£]+", caseSensitive: false, multiLine: false)
-          .hasMatch(value) ==
-          false;
-    }, "Currencies characters aren't allowed in room names."),
-  };
+  // _joinMeeting() async {
+  //   String serverUrl =
+  //   serverText.text?.trim()?.isEmpty ?? "" ? null : serverText.text;
+  //
+  //   try {
+  //     // Enable or disable any feature flag here
+  //     // If feature flag are not provided, default values will be used
+  //     // Full list of feature flags (and defaults) available in the README
+  //     FeatureFlag featureFlag = FeatureFlag();
+  //     featureFlag.welcomePageEnabled = false;
+  //     // Here is an example, disabling features for each platform
+  //     if (Platform.isAndroid) {
+  //       // Disable ConnectionService usage on Android to avoid issues (see README)
+  //       featureFlag.callIntegrationEnabled = false;
+  //     } else if (Platform.isIOS) {
+  //       // Disable PIP on iOS as it looks weird
+  //       featureFlag.pipEnabled = true;
+  //
+  //     }
+  //
+  //     //uncomment to modify video resolution
+  //     //featureFlag.resolution = FeatureFlagVideoResolution.MD_RESOLUTION;
+  //
+  //     // Define meetings options here
+  //     var options = JitsiMeetingOptions()
+  //       ..room = roomText.text
+  //       ..serverURL = serverUrl
+  //       ..subject = subjectText.text
+  //       ..userDisplayName = nameText.text
+  //       ..userEmail = emailText.text
+  //       ..audioOnly = isAudioOnly
+  //       ..audioMuted = isAudioMuted
+  //       ..videoMuted = isVideoMuted
+  //       ..featureFlag = featureFlag;
+  //
+  //     debugPrint("JitsiMeetingOptions: $options");
+  //     await JitsiMeet.joinMeeting(
+  //       options,
+  //       listener: JitsiMeetingListener(onConferenceWillJoin: ({message}) {
+  //         debugPrint("${options.room} will join with message: $message");
+  //       }, onConferenceJoined: ({message}) {
+  //         debugPrint("${options.room} joined with message: $message");
+  //       }, onConferenceTerminated: ({message}) {
+  //         debugPrint("${options.room} terminated with message: $message");
+  //       }, onPictureInPictureWillEnter: ({message}) {
+  //         debugPrint("${options.room} entered PIP mode with message: $message");
+  //       }, onPictureInPictureTerminated: ({message}) {
+  //         debugPrint("${options.room} exited PIP mode with message: $message");
+  //       }),
+  //       // by default, plugin default constraints are used
+  //       //roomNameConstraints: new Map(), // to disable all constraints
+  //       //roomNameConstraints: customContraints, // to use your own constraint(s)
+  //     );
+  //   } catch (error) {
+  //     debugPrint("error: $error");
+  //   }
+  // }
+  //
+  // static final Map<RoomNameConstraintType, RoomNameConstraint>
+  // customContraints = {
+  //   RoomNameConstraintType.MAX_LENGTH: new RoomNameConstraint((value) {
+  //     return value.trim().length <= 50;
+  //   }, "Maximum room name length should be 30."),
+  //   RoomNameConstraintType.FORBIDDEN_CHARS: new RoomNameConstraint((value) {
+  //     return RegExp(r"[$€£]+", caseSensitive: false, multiLine: false)
+  //         .hasMatch(value) ==
+  //         false;
+  //   }, "Currencies characters aren't allowed in room names."),
+  // };
 
   void _onConferenceWillJoin({message}) {
     debugPrint("_onConferenceWillJoin broadcasted with message: $message");

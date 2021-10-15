@@ -569,13 +569,6 @@
             </list>
           </value>
         </entry>
-        <entry key="jitsi_meet">
-          <value>
-            <list>
-              <option value="$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/jitsi_meet-2.1.0/lib" />
-            </list>
-          </value>
-        </entry>
         <entry key="js">
           <value>
             <list>
@@ -1027,7 +1020,6 @@
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/intl-0.16.1/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/intl_phone_field-1.4.4/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/intl_translation-0.17.10+1/lib" />
-      <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/jitsi_meet-2.1.0/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/js-0.6.2/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/lazy_load_scrollview-1.2.0/lib" />
       <root url="file://$PROJECT_DIR$/../../FlutterVersions/flutter/.pub-cache/hosted/pub.dartlang.org/lazy_loading_list-1.0.0+1/lib" />

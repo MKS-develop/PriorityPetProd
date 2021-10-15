@@ -213,14 +213,15 @@ class _PaymentPageState extends State<PaymentPage> {
         ),
         body: Container(
           height: _screenHeight,
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              colorFilter: new ColorFilter.mode(
-                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
-              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
+          color: Color(0xFFf4f6f8),
+          // decoration: new BoxDecoration(
+          //   image: new DecorationImage(
+          //     colorFilter: new ColorFilter.mode(
+          //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16.0,
           ),
@@ -259,10 +260,10 @@ class _PaymentPageState extends State<PaymentPage> {
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.91,
                     decoration: BoxDecoration(
-                        color: Color(0xFFF4F6F8),
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
-                          color: Color(0xFFBDD7D6),
+                          color: Colors.white,
                         )),
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
@@ -325,7 +326,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                     ),
                                     shape: RoundedRectangleBorder(
                                         side: BorderSide(
-                                            color: Colors.grey.shade200,
+                                            color: Colors.white,
                                             width: 0.5),
                                         borderRadius: BorderRadius.circular(5)),
                                     tileColor: selectedIndex == index
@@ -635,7 +636,7 @@ class _PaymentPageState extends State<PaymentPage> {
       if (nuevo['outcome']['type'] == 'venta_exitosa') {
         if (widget.tituloCategoria == 'Servicio') {
 
-          Navigator.of(context, rootNavigator: true).pop();
+          // Navigator.of(context, rootNavigator: true).pop();
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -648,7 +649,7 @@ class _PaymentPageState extends State<PaymentPage> {
         }
         if (widget.tituloCategoria == 'Donar') {
 
-          Navigator.of(context, rootNavigator: true).pop();
+          // Navigator.of(context, rootNavigator: true).pop();
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -661,7 +662,7 @@ class _PaymentPageState extends State<PaymentPage> {
         }
         if (widget.tituloCategoria == 'Adopción') {
 
-          Navigator.of(context, rootNavigator: true).pop();
+          // Navigator.of(context, rootNavigator: true).pop();
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -674,7 +675,7 @@ class _PaymentPageState extends State<PaymentPage> {
         }
         if (widget.tituloCategoria == 'Promocion') {
 
-          Navigator.of(context, rootNavigator: true).pop();
+          // Navigator.of(context, rootNavigator: true).pop();
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -688,7 +689,7 @@ class _PaymentPageState extends State<PaymentPage> {
         if (widget.tituloCategoria == 'Plan Mensual' ||
             widget.tituloCategoria == 'Plan Anual') {
 
-          Navigator.of(context, rootNavigator: true).pop();
+          // Navigator.of(context, rootNavigator: true).pop();
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -700,7 +701,7 @@ class _PaymentPageState extends State<PaymentPage> {
           AddPlanToOrder();
         }
         if (widget.tituloCategoria == 'Videoconsulta') {
-          Navigator.of(context, rootNavigator: true).pop();
+          // Navigator.of(context, rootNavigator: true).pop();
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -715,7 +716,7 @@ class _PaymentPageState extends State<PaymentPage> {
         if (widget.tituloCategoria == 'Producto') {
           getAliadoSnapshots(widget.cartModel.aliadoId);
 
-          Navigator.of(context, rootNavigator: true).pop();
+          // Navigator.of(context, rootNavigator: true).pop();
           Navigator.push(
             context,
             MaterialPageRoute(

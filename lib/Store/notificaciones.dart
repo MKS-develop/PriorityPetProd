@@ -46,6 +46,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
   bool home = false;
   bool carrito = false;
   String _prk;
+  String clientes;
 
   final db = FirebaseFirestore.instance;
 
@@ -53,8 +54,8 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
   void initState() {
     super.initState();
     // _getOrderStatus();
-    // _getprK();
-
+    _getprK();
+    // deleteUser();
     // initState calificarAliado();
 
     // try{
@@ -77,17 +78,17 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
   deleteUser() async {
     try {
       var url =
-          ("https://api.culqi.com/v2/customers/cus_live_UpWsKodzqCv0nDZa");
+          ("https://api.culqi.com/v2/customers");
       Map<String, String> headers = {
         "Content-type": "application/json",
         "Authorization": _prk
       };
-      Response res = await http.delete(Uri.parse(url), headers: headers);
+      Response res = await http.get(Uri.parse(url), headers: headers);
       int statusCode = await res.statusCode;
 
       setState(() {
-        // response = statusCode.toString();
-
+         // response = statusCode.toString();
+        clientes = res.body;
         print(statusCode);
         print('el cuerpo es ${res.body}');
       });
@@ -133,7 +134,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
       setState(() {
         _prk = (dataSnapshot.data()["prk"]);
       });
-      // deleteUser();
+       deleteUser();
     });
   }
 
@@ -382,68 +383,68 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
 
 
 
-                // FlatButton(onPressed: () async {
-                //   var json =
-                //       '{"description" : "Pago Mesa 2 Orden ABC","amount" : 10.0,"discount" : 0.0,"idPaymentStation" : 4}';
-                //   var url = ("https://sandbox.paguelofacil.com/PFManagementServices/api/v1/Activities/");
-                //   Map<String, String> headers = {
-                //     "Content-type": "application/json",
-                //     "Authorization": "brEyQRSzMm2UwQa5v0NsobRa3U8nH5xT|DIRndyS9jCeZDDoKsVP4wRTRm"
-                //   };
-                //
-                //   Response res =
-                //       await http.post(Uri.parse(url), headers: headers, body: json);
-                //   int statusCode = res.statusCode;
-                //   var nuevo = await jsonDecode(res.body);
-                //   //
-                //   // CulqiUserModel culqi = await CulqiUserModel.fromJson(nuevo);
-                //   print(res.body);
-                //   print(nuevo['outcome']['type']);
-                //
-                //   // print(culqi.state);
-                //   // print(culqi.object);
-                //   // print('la marca de tarjeta es ${culqi.card_brand}');
-                //   setState(() {
-                //     // response = statusCode.toString();
-                //     // pagoId = culqi.id;
-                //     // type = nuevo['source']['source']['type'];
-                //     // cardType = nuevo['source']['source']['iin']['card_type'];
-                //     // cardBrand = nuevo['source']['source']['iin']['card_brand'];
-                //     //
-                //     // outcomeMsg = nuevo['outcome']['user_message'];
-                //     // outcomeMsgError = nuevo['user_message'];
-                //
-                //     print(statusCode);
-                //   });
-                // }, shape: RoundedRectangleBorder(
-                //     borderRadius:
-                //     BorderRadius
-                //         .circular(
-                //         5)),
-                //   color:
-                //   Color(0xFFEB9448),
-                //   padding:
-                //   EdgeInsets.all(
-                //       10.0),
-                //   child: Column(
-                //     crossAxisAlignment:
-                //     CrossAxisAlignment
-                //         .center,
-                //     children: [
-                //       Text("PAAAAGA",
-                //           style: TextStyle(
-                //               fontFamily:
-                //               'Product Sans',
-                //               color: Colors
-                //                   .white,
-                //               fontSize:
-                //               16.0)),
-                //     ],
-                //   ),
-                // ),
+                FlatButton(onPressed: () async {
+                  var json =
+                      '{"description" : "Pago Mesa 2 Orden ABC","amount" : 10.0,"discount" : 0.0,"idPaymentStation" : 4}';
+                  var url = ("https://sandbox.paguelofacil.com/PFManagementServices/api/v1/Activities/");
+                  Map<String, String> headers = {
+                    "Content-type": "application/json",
+                    "Authorization": "brEyQRSzMm2UwQa5v0NsobRa3U8nH5xT|DIRndyS9jCeZDDoKsVP4wRTRm"
+                  };
+
+                  Response res =
+                      await http.post(Uri.parse(url), headers: headers, body: json);
+                  int statusCode = res.statusCode;
+                  var nuevo = await jsonDecode(res.body);
+                  //
+                  // CulqiUserModel culqi = await CulqiUserModel.fromJson(nuevo);
+                  print(res.body);
+                  print(nuevo['outcome']['type']);
+
+                  // print(culqi.state);
+                  // print(culqi.object);
+                  // print('la marca de tarjeta es ${culqi.card_brand}');
+                  setState(() {
+                    // response = statusCode.toString();
+                    // pagoId = culqi.id;
+                    // type = nuevo['source']['source']['type'];
+                    // cardType = nuevo['source']['source']['iin']['card_type'];
+                    // cardBrand = nuevo['source']['source']['iin']['card_brand'];
+                    //
+                    // outcomeMsg = nuevo['outcome']['user_message'];
+                    // outcomeMsgError = nuevo['user_message'];
+
+                    print(statusCode);
+                  });
+                }, shape: RoundedRectangleBorder(
+                    borderRadius:
+                    BorderRadius
+                        .circular(
+                        5)),
+                  color:
+                  Color(0xFFEB9448),
+                  padding:
+                  EdgeInsets.all(
+                      10.0),
+                  child: Column(
+                    crossAxisAlignment:
+                    CrossAxisAlignment
+                        .center,
+                    children: [
+                      Text("PAAAAGA",
+                          style: TextStyle(
+                              fontFamily:
+                              'Product Sans',
+                              color: Colors
+                                  .white,
+                              fontSize:
+                              16.0)),
+                    ],
+                  ),
+                ),
 
 
-
+Text(clientes),
 
 
 

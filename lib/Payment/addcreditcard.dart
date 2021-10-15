@@ -275,7 +275,7 @@ class _AddCreditCardPageState extends State<AddCreditCardPage> {
         print(statusCode);
       });
 
-      Navigator.of(context, rootNavigator: true).pop();
+      // Navigator.of(context, rootNavigator: true).pop();
       print('la marca de tarjeta es $cardBrand');
     } catch (e) {
       print(e.message);
@@ -300,9 +300,14 @@ class _AddCreditCardPageState extends State<AddCreditCardPage> {
               message: "Tarjeta añadida exitosamente",
             ),
         context: context);
-    setState(() {
-      Navigator.of(context, rootNavigator: true).pop();
-    });
+    // setState(() {
+    //   Navigator.of(context, rootNavigator: true).pop();
+    // });
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => PaymentPage(petModel: widget.petModel, defaultChoiceIndex: widget.defaultChoiceIndex,)),
+    );
   }
 
   void onCreditCardModelChange(CreditCardModel creditCardModel) {

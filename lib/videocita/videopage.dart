@@ -36,7 +36,7 @@ class VideoPage extends StatefulWidget {
 class _VideoPageState extends State<VideoPage> {
   DateTime selectedDate = DateTime.now();
   TextEditingController _searchTextEditingController =
-      new TextEditingController();
+  new TextEditingController();
   String _categoria;
   List _allResults = [];
   List _resultsList = [];
@@ -85,7 +85,7 @@ class _VideoPageState extends State<VideoPage> {
         .where("pais", isEqualTo:
     PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
 
-        // .where("ciudad", isEqualTo: _categoria)
+    // .where("ciudad", isEqualTo: _categoria)
         .get()
         .then((val) => val.docs);
 
@@ -285,7 +285,7 @@ class _VideoPageState extends State<VideoPage> {
                                       width: 1.0,
                                     ),
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(10.0)),
+                                    BorderRadius.all(Radius.circular(10.0)),
                                   ),
                                   padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
                                   margin: EdgeInsets.all(5.0),
@@ -488,53 +488,52 @@ class _VideoPageState extends State<VideoPage> {
 
                             _resultsList.length == 0
                                 ? Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Container(
-                                        height: _screenHeight * 0.3,
-                                        decoration: new BoxDecoration(
-                                          image: new DecorationImage(
-                                            image: new AssetImage(
-                                                "images/perritotriste.png"),
-                                            fit: BoxFit.fitHeight,
-                                          ),
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 16.0,
-                                        ),
-                                      ),
-                                      Text(
-                                        'No disponible',
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : Container(
-                                    height: 91 *
-                                        double.parse(
-                                            _resultsList.length.toString()),
-                                    // child: Expanded(
-                                    child: Container(
-                                      height: _screenHeight,
-                                      width: _screenWidth,
-                                      child: ListView.builder(
-                                          physics:
-                                              NeverScrollableScrollPhysics(),
-                                          itemCount: _resultsList.length,
-                                          shrinkWrap: true,
-                                          itemBuilder: (context, index) {
-                                            return sourceInfo2(
-                                                _resultsList[index], context);
-                                          }),
+                              children: [
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  height: _screenHeight * 0.3,
+                                  decoration: new BoxDecoration(
+                                    image: new DecorationImage(
+                                      image: new AssetImage(
+                                          "images/perritotriste.png"),
+                                      fit: BoxFit.fitHeight,
                                     ),
-                                    // ),
                                   ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0,
+                                  ),
+                                ),
+                                Text(
+                                  'No disponible',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            )
+                                : Container(
+                              // color: Colors.blue,
+                              height: _screenHeight * 0.6,
+                              // child: Expanded(
+                              child: Container(
+                                height: _screenHeight,
+                                width: _screenWidth,
+                                child: ListView.builder(
+                                  // physics:
+                                  // NeverScrollableScrollPhysics(),
+                                    itemCount: _resultsList.length,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) {
+                                      return sourceInfo2(
+                                          _resultsList[index], context);
+                                    }),
+                              ),
+                              // ),
+                            ),
                           ],
                         ),
                       ),
@@ -689,9 +688,9 @@ class _VideoPageState extends State<VideoPage> {
   // }
 
   Widget sourceInfo2(
-    ServiceModel servicio,
-    BuildContext context,
-  ) {
+      ServiceModel servicio,
+      BuildContext context,
+      ) {
     return InkWell(
       child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
@@ -709,9 +708,9 @@ class _VideoPageState extends State<VideoPage> {
                 itemCount: 1,
                 shrinkWrap: true,
                 itemBuilder: (
-                  context,
-                  index,
-                ) {
+                    context,
+                    index,
+                    ) {
                   LocationModel location = LocationModel.fromJson(
                       dataSnapshot.data.docs[index].data());
                   return StreamBuilder<QuerySnapshot>(
@@ -730,9 +729,9 @@ class _VideoPageState extends State<VideoPage> {
                             itemCount: 1,
                             shrinkWrap: true,
                             itemBuilder: (
-                              context,
-                              index,
-                            ) {
+                                context,
+                                index,
+                                ) {
                               AliadoModel aliado = AliadoModel.fromJson(
                                   dataSnapshot.data.docs[index].data());
                               return GestureDetector(
@@ -741,13 +740,13 @@ class _VideoPageState extends State<VideoPage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => VideoHome(
-                                              petModel: model,
-                                              serviceModel: servicio,
-                                              aliadoModel: aliado,
-                                              locationModel: location,
-                                              defaultChoiceIndex:
-                                                  widget.defaultChoiceIndex,
-                                            )),
+                                          petModel: model,
+                                          serviceModel: servicio,
+                                          aliadoModel: aliado,
+                                          locationModel: location,
+                                          defaultChoiceIndex:
+                                          widget.defaultChoiceIndex,
+                                        )),
                                   );
                                 },
                                 child: Padding(
@@ -763,11 +762,11 @@ class _VideoPageState extends State<VideoPage> {
                                         padding: const EdgeInsets.all(8.0),
                                         child: Row(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                           children: [
                                             ClipRRect(
                                               borderRadius:
-                                                  BorderRadius.circular(8.0),
+                                              BorderRadius.circular(8.0),
                                               child: Image.network(
                                                 aliado.avatar,
                                                 width: 75.0,
@@ -780,22 +779,22 @@ class _VideoPageState extends State<VideoPage> {
                                             ),
                                             Container(
                                               width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
+                                                  .size
+                                                  .width *
                                                   0.60,
                                               height: 76,
                                               child: Column(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
+                                                MainAxisAlignment
+                                                    .spaceBetween,
                                                 children: [
                                                   Column(
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                    CrossAxisAlignment.start,
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment.start,
+                                                    MainAxisAlignment.start,
                                                     children: [
                                                       Text(aliado.nombreComercial,
                                                           maxLines: 2,
@@ -803,10 +802,10 @@ class _VideoPageState extends State<VideoPage> {
                                                           style: TextStyle(
                                                               fontSize: 17,
                                                               fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
+                                                              FontWeight
+                                                                  .bold),
                                                           textAlign:
-                                                              TextAlign.left),
+                                                          TextAlign.left),
                                                       location.mapAddress != null
                                                           ? Text(
                                                           location.mapAddress,
@@ -839,62 +838,61 @@ class _VideoPageState extends State<VideoPage> {
                                                           .collection("Aliados")
                                                           .doc(servicio.aliadoId)
                                                           .collection(
-                                                              "Especialidades")
+                                                          "Especialidades")
                                                           .snapshots(),
                                                       builder: (context,
                                                           dataSnapshot) {
                                                         if (dataSnapshot
                                                             .hasData) {
                                                           if (dataSnapshot.data
-                                                                  .docs.length ==
+                                                              .docs.length ==
                                                               0) {
                                                             return Center(
                                                                 child:
-                                                                    Container());
+                                                                Container());
                                                           }
                                                         }
                                                         if (!dataSnapshot
                                                             .hasData) {
                                                           return Center(
                                                             child:
-                                                                CircularProgressIndicator(),
+                                                            CircularProgressIndicator(),
                                                           );
                                                         }
                                                         return ListView.builder(
                                                             physics:
-                                                                NeverScrollableScrollPhysics(),
+                                                            NeverScrollableScrollPhysics(),
                                                             itemCount:
-                                                                dataSnapshot.data
-                                                                    .docs.length,
+                                                            1,
                                                             shrinkWrap: true,
                                                             itemBuilder: (
-                                                              context,
-                                                              index,
-                                                            ) {
+                                                                context,
+                                                                index,
+                                                                ) {
                                                               EspecialidadesModel
-                                                                  especialidades =
-                                                                  EspecialidadesModel.fromJson(
-                                                                      dataSnapshot
-                                                                          .data
-                                                                          .docs[
-                                                                              index]
-                                                                          .data());
+                                                              especialidades =
+                                                              EspecialidadesModel.fromJson(
+                                                                  dataSnapshot
+                                                                      .data
+                                                                      .docs[
+                                                                  index]
+                                                                      .data());
 
                                                               return Row(
                                                                 mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .start,
+                                                                MainAxisAlignment
+                                                                    .start,
                                                                 children: [
                                                                   Text(
                                                                     especialidades
                                                                         .especialidad,
                                                                     style:
-                                                                        TextStyle(
+                                                                    TextStyle(
                                                                       color: Colors
                                                                           .grey,
                                                                       fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
+                                                                      FontWeight
+                                                                          .bold,
                                                                     ),
                                                                   ),
                                                                 ],
@@ -903,22 +901,22 @@ class _VideoPageState extends State<VideoPage> {
                                                       }),
                                                   aliado.tipoAliado != 'Médico'
                                                       ? Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              servicio.titulo,
-                                                              style: TextStyle(
-                                                                color:
-                                                                    Colors.grey,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      Text(
+                                                        servicio.titulo,
+                                                        style: TextStyle(
+                                                          color:
+                                                          Colors.grey,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .bold,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
                                                       : Container(),
                                                 ],
                                               ),

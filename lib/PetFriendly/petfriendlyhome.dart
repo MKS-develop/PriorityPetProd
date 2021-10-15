@@ -100,19 +100,21 @@ class _PetfriendlyHomeState extends State<PetfriendlyHome> {
 
         var nombreComercial = tituloSnapshot.nombre.toLowerCase();
 
-        if (tipoAliado == 'Pet Friendly' || tipoAliado == 'Otros lugares Pet Friendly'|| tipoAliado == 'Restaurante o Café Pet Friendly') {
+        if (tipoAliado.contains('Pet Friendly' ) || tipoAliado.contains('Otros lugares Pet Friendly' ) || tipoAliado.contains('Restaurante o Café Pet Friendly' )) {
           if (_searchTextEditingController.text != "") {
 
-            if (nombreComercial.contains(
-                _searchTextEditingController.text.toLowerCase())) {
+            if (nombreComercial.contains(_searchTextEditingController.text.toLowerCase())) {
               showResults.add(tituloSnapshot);
             }
           }
           else{
-            showResults = List.from(_allResults);
+            showResults.add(tituloSnapshot);
           }
-        }
 
+        }
+        // else{
+        //   showResults = List.from(_allResults);
+        // }
       }
 
 
