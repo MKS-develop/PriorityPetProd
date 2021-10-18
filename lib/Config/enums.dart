@@ -10,3 +10,8 @@ class PagoEnum {
   static const pagoAprobado = "Pago aprobado";
   static const pagoIncompleto = "Pago incompleto";
 }
+
+class MonedaEnum {
+  static const bolivar = "VES";
+  static const dolar = "USD";
+}

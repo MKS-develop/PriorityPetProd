@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_culqi/flutter_culqi.dart';
 import 'package:http/http.dart';
 import 'package:pet_shop/Config/config.dart';
+import 'package:pet_shop/Config/enums.dart';
 import 'package:pet_shop/DialogBox/choosepetDialog.dart';
 import 'package:pet_shop/Models/Card.dart';
 import 'package:http/http.dart' as http;
@@ -180,7 +181,7 @@ class _PaymentPageState extends State<PaymentPage> {
         petModel: widget.petModel,
         defaultChoiceIndex: widget.defaultChoiceIndex,
         totalPrice: widget.totalPrice,
-        onSuccess: widget.onSuccess,
+        onSuccess: widget.onSuccess
       );
     } else {
       return Container();

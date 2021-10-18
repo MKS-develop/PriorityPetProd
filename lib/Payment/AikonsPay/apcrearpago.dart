@@ -21,13 +21,16 @@ class APCrearPago extends StatefulWidget {
   final AliadoModel aliadoModel;
   final Future<void> Function(String, String, dynamic) onSuccess;
   final int defaultChoiceIndex;
+  final String moneda;
 
   const APCrearPago(
       {@required this.petModel,
       @required this.totalPrice,
       @required this.aliadoModel,
       @required this.defaultChoiceIndex,
-      @required this.onSuccess});
+      @required this.onSuccess,
+      this.moneda = MonedaEnum.dolar
+    });
 
   @override
   _APCrearPagoState createState() => _APCrearPagoState();
@@ -36,6 +39,7 @@ class APCrearPago extends StatefulWidget {
 class _APCrearPagoState extends State<APCrearPago> {
   TextEditingController _nombrePagadorController = TextEditingController();
   TextEditingController _apellidoPagadorController = TextEditingController();
+  TextEditingController _referenciaController = TextEditingController();
   String _apiKey =
       "2210d88da6603d941145cfdd60a47e246ce1142b3db9eba07ba63a46e99f00f9";
   String _serviceUrl = "https://aikonspay.com/api/pasarela/ppcv";
@@ -44,9 +48,12 @@ class _APCrearPagoState extends State<APCrearPago> {
   String _montoTexto = "Monto que debes transferir";
   String _correoTexto =
       "Debes realizar el pago zelle a la dirección de correo electrónico.";
+  String _pagoMovilTexto =
+      "Debes realizar el pago movil a la siguiente cuenta";
   String _titularTexto = "a nombre del titular de la cuenta";
   String _referencia;
   HttpClient client;
+
 
   @override
   void initState() {
@@ -58,7 +65,7 @@ class _APCrearPagoState extends State<APCrearPago> {
   Widget build(BuildContext context) {
     var simbolo =
         PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda);
-    double _screenWidth = MediaQuery.of(context).size.width,
+    double screenWidth = MediaQuery.of(context).size.width,
         _screenHeight = MediaQuery.of(context).size.height;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -84,193 +91,8 @@ class _APCrearPagoState extends State<APCrearPago> {
             horizontal: 16.0,
           ),
           child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    IconButton(
-                        icon: Icon(Icons.arrow_back_ios,
-                            color: Color(0xFF57419D)),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        }),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
-                      child: Text(
-                        "Zelle",
-                        style: TextStyle(
-                          color: Color(0xFF57419D),
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                        child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Text(
-                        _montoTexto,
-                        style: TextStyle(
-                          fontSize: 14,
-                        ),
-                      ),
-                    ))
-                  ],
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  widget.totalPrice.toStringAsFixed(2) + " " + simbolo,
-                  style: TextStyle(
-                    color: Color(0xFF57419D),
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                        child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Text(
-                        _correoTexto,
-                        style: TextStyle(
-                          fontSize: 14,
-                        ),
-                      ),
-                    ))
-                  ],
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Text(_correoCuenta,
-                    style: TextStyle(
-                      color: Color(0xFF57419D),
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.left),
-                SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                        child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Text(
-                        _titularTexto,
-                        style: TextStyle(
-                          fontSize: 14,
-                        ),
-                      ),
-                    ))
-                  ],
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  _titularCuenta,
-                  style: TextStyle(
-                    color: Color(0xFF57419D),
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                        child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Text(
-                        "Por último, debes ingresar el nombre apellido del titular de la cuenta desde la cual estás realizando el pago.",
-                        style: TextStyle(
-                          fontSize: 14,
-                        ),
-                      ),
-                    ))
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Center(
-                  child: Container(
-                    width: _screenWidth * 0.82,
-                    child: CustomTextField(
-                      controller: _nombrePagadorController,
-                      hintText: "Nombre del titular",
-                      isObsecure: false,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Center(
-                  child: Container(
-                    width: _screenWidth * 0.82,
-                    child: CustomTextField(
-                      controller: _apellidoPagadorController,
-                      hintText: "Apellido del titular",
-                      isObsecure: false,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                SizedBox(
-                  width: _screenWidth * 0.8,
-                  child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Container(
-                      margin: const EdgeInsets.all(8),
-                      child: const Text(
-                        'Registrar pago',
-                        style: TextStyle(
-                          fontFamily: 'Product Sans',
-                          color: Colors.white,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                    ),
-                    color: const Color(0xFF57419D),
-                    onPressed: () {
-                      _registrarPago();
-                      /*Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => StoreHome(
-                                  petModel: widget.petModel,
-                              defaultChoiceIndex: widget
-                                  .defaultChoiceIndex,
-                                )),
-                      );*/
-                    },
-                  ),
-                )
-              ],
-            ),
+            child: widget.moneda == MonedaEnum.dolar ? 
+            dolarWidget(context, screenWidth, simbolo) : bolivarWidget(context, screenWidth, simbolo),  
           ),
         ),
       ),
@@ -322,10 +144,29 @@ class _APCrearPagoState extends State<APCrearPago> {
         totalPrice = double.parse(widget.totalPrice);
       else
         totalPrice = widget.totalPrice;
+      String moneda = "";
+      String metodoDePago = "";
+      String nombreZelle = "";
+      String apellidoZelle = "";
+      String referencia = "";
+
+      if(widget.moneda == MonedaEnum.dolar) {
+        moneda = "USD";
+        metodoDePago = "ZELLE";
+        nombreZelle = _nombrePagadorController.text;
+        apellidoZelle = _apellidoPagadorController.text;
+        referencia = "";
+      } else {
+        moneda = "VES";
+        metodoDePago = "PAGO MOVIL";
+        nombreZelle = nombre;
+        apellidoZelle = apellido;
+        referencia = _referenciaController.text;
+      }
 
       Map<String, dynamic> jsonPago = {
-        "moneda": "USD",
-        "metodo": "ZELLE",
+        "moneda": moneda,
+        "metodo": metodoDePago,
         "caja": widget.aliadoModel.email,
         "nombre": nombre,
         "apellido": apellido,
@@ -381,6 +222,368 @@ class _APCrearPagoState extends State<APCrearPago> {
           "Continuar",
           false);
     }
+  }
+
+  Widget bolivarWidget(BuildContext context, double screenWidth, String simbolo) {
+    return Column(
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            IconButton(
+                icon: Icon(Icons.arrow_back_ios,
+                    color: Color(0xFF57419D)),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+              child: Text(
+                "Pago móvil",
+                style: TextStyle(
+                  color: Color(0xFF57419D),
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        Row(
+          children: [
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Text(
+                _montoTexto,
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+            ))
+          ],
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        Text(
+          widget.totalPrice.toStringAsFixed(2) + " " + simbolo,
+          style: TextStyle(
+            color: Color(0xFF57419D),
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        Row(
+          children: [
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Text(
+                _pagoMovilTexto,
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+            ))
+          ],
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        Text("04165554433",
+          style: TextStyle(
+            color: Color(0xFF57419D),
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.left
+        ),
+        SizedBox(
+          height: 5,
+        ),
+        Text("Banplus",
+          style: TextStyle(
+            color: Color(0xFF57419D),
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.left
+        ),
+        SizedBox(
+          height: 5,
+        ),
+        Text("J-887744223",
+          style: TextStyle(
+            color: Color(0xFF57419D),
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.left
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        Row(
+          children: [
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Text(
+                "Por último, debes ingresar los últimos 4 dígitos de la referencia de pago que te arroje el banco.",
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+            ))
+          ],
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Center(
+          child: Container(
+            width: screenWidth * 0.82,
+            child: CustomTextField(
+              controller: _referenciaController,
+              hintText: "Nombre del titular",
+              isObsecure: false,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 30,
+        ),
+        SizedBox(
+          width: screenWidth * 0.8,
+          child: RaisedButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Container(
+              margin: const EdgeInsets.all(8),
+              child: const Text(
+                'Registrar pago',
+                style: TextStyle(
+                  fontFamily: 'Product Sans',
+                  color: Colors.white,
+                  fontSize: 16.0,
+                ),
+              ),
+            ),
+            color: const Color(0xFF57419D),
+            onPressed: () {
+              _registrarPago();
+              /*Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => StoreHome(
+                          petModel: widget.petModel,
+                      defaultChoiceIndex: widget
+                          .defaultChoiceIndex,
+                        )),
+              );*/
+            },
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget dolarWidget(BuildContext context, double screenWidth, String simbolo) {
+    return Column(
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            IconButton(
+                icon: Icon(Icons.arrow_back_ios,
+                    color: Color(0xFF57419D)),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+              child: Text(
+                "Zelle",
+                style: TextStyle(
+                  color: Color(0xFF57419D),
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        Row(
+          children: [
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Text(
+                _montoTexto,
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+            ))
+          ],
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        Text(
+          widget.totalPrice.toStringAsFixed(2) + " " + simbolo,
+          style: TextStyle(
+            color: Color(0xFF57419D),
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        Row(
+          children: [
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Text(
+                _correoTexto,
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+            ))
+          ],
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        Text(_correoCuenta,
+            style: TextStyle(
+              color: Color(0xFF57419D),
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.left),
+        SizedBox(
+          height: 15,
+        ),
+        Row(
+          children: [
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Text(
+                _titularTexto,
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+            ))
+          ],
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        Text(
+          _titularCuenta,
+          style: TextStyle(
+            color: Color(0xFF57419D),
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        Row(
+          children: [
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Text(
+                "Por último, debes ingresar el nombre apellido del titular de la cuenta desde la cual estás realizando el pago.",
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+            ))
+          ],
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Center(
+          child: Container(
+            width: screenWidth * 0.82,
+            child: CustomTextField(
+              controller: _nombrePagadorController,
+              hintText: "Nombre del titular",
+              isObsecure: false,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 5,
+        ),
+        Center(
+          child: Container(
+            width: screenWidth * 0.82,
+            child: CustomTextField(
+              controller: _apellidoPagadorController,
+              hintText: "Apellido del titular",
+              isObsecure: false,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 30,
+        ),
+        SizedBox(
+          width: screenWidth * 0.8,
+          child: RaisedButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Container(
+              margin: const EdgeInsets.all(8),
+              child: const Text(
+                'Registrar pago',
+                style: TextStyle(
+                  fontFamily: 'Product Sans',
+                  color: Colors.white,
+                  fontSize: 16.0,
+                ),
+              ),
+            ),
+            color: const Color(0xFF57419D),
+            onPressed: () {
+              _registrarPago();
+              /*Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => StoreHome(
+                          petModel: widget.petModel,
+                      defaultChoiceIndex: widget
+                          .defaultChoiceIndex,
+                        )),
+              );*/
+            },
+          ),
+        )
+      ],
+    );
   }
 
   void _mostrarMensaje(String mensaje, String textoBoton, bool success) async {
