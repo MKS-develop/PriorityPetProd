@@ -142,7 +142,7 @@ class _PetfriendlyHomeState extends State<PetfriendlyHome> {
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        userLatLong = (dataSnapshot.data()["location"]);
+        userLatLong = (dataSnapshot["location"]);
       });
     });
   }

@@ -124,7 +124,7 @@ class _AlimentoHomeState extends State<AlimentoHome> {
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        userLatLong = (dataSnapshot.data()["location"]);
+        userLatLong = (dataSnapshot["location"]);
       });
     });
   }
@@ -738,7 +738,7 @@ func(int start, int end) {
 
                                       // var totalD = 0;
 
-                                      return GestureDetector(
+                                      return ali.isApproved? GestureDetector(
                                         onTap: () {
                                           Navigator.push(
                                               context,
@@ -1008,7 +1008,7 @@ func(int start, int end) {
                                             ],
                                           ),
                                         ),
-                                      );
+                                      ): Container();
                                     });
                               });
                         });
@@ -1048,7 +1048,7 @@ func(int start, int end) {
                       ) {
                         AliadoModel ali =
                             AliadoModel.fromJson(dataSnapshot.data.data());
-                        return GestureDetector(
+                        return ali.isApproved? GestureDetector(
                           onTap: () {
                             Navigator.push(
                                 context,
@@ -1145,7 +1145,7 @@ func(int start, int end) {
                               ),
                             ),
                           ),
-                        );
+                        ): Container();
                       });
                 }),
           ),

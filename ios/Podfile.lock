@@ -526,7 +526,7 @@ SPEC CHECKSUMS:
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   native_pdf_renderer: 3e81ffe3d40668cce75694596201bb9fb0fdb6e9
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
-  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   Protobuf: 7327d4444215b5f18e560a97f879ff5503c4581c
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
@@ -534,4 +534,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 51c53fd88490b3ac01787fb0e61963afe5773ec4
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2

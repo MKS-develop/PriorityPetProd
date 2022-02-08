@@ -90,7 +90,7 @@ class _ComunidadHomeState extends State<ComunidadHome> {
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        userLatLong = (dataSnapshot.data()["location"]);
+        userLatLong = (dataSnapshot["location"]);
       });
     });
   }
@@ -454,177 +454,178 @@ class _ComunidadHomeState extends State<ComunidadHome> {
     return InkWell(
       child: Column(
         children: [
-          Container(
-               height: 120.0,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10)
+          StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('Aliados')
+                  .doc(contenido.aliadoId)
+                  .snapshots(),
+              builder: (context, dataSnapshot) {
+                if (!dataSnapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                return ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: 1,
+                    shrinkWrap: true,
+                    itemBuilder: (
+                      context,
+                      index,
+                    ) {
+                      AliadoModel ali =
+                          AliadoModel.fromJson(dataSnapshot.data.data());
 
-              ),
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection('Aliados')
-                      .doc(contenido.aliadoId)
-                      .snapshots(),
-                  builder: (context, dataSnapshot) {
-                    if (!dataSnapshot.hasData) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    return ListView.builder(
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: 1,
-                        shrinkWrap: true,
-                        itemBuilder: (
-                          context,
-                          index,
-                        ) {
-                          AliadoModel ali =
-                              AliadoModel.fromJson(dataSnapshot.data.data());
+                                  // var totalD = 0;
+                      return ali.isApproved? GestureDetector(
+                                    onTap: () {
+                                        Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                        builder: (context) => ContenidoHome(
+                                        petModel: model,
+                                        contenidoModel: contenido,
+                                        aliadoModel: ali,
+                                        defaultChoiceIndex: widget.defaultChoiceIndex,
+                                        )),
+                                        );
+                                    },
+                                    child: Container(
+                                      height: 125.0,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(10)
 
-                                      // var totalD = 0;
-                          return GestureDetector(
-                                        onTap: () {
-                                            Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                            builder: (context) => ContenidoHome(
-                                            petModel: model,
-                                            contenidoModel: contenido,
-                                            aliadoModel: ali,
-                                            defaultChoiceIndex: widget.defaultChoiceIndex,
-                                            )),
-                                            );
-                                        },
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              height: 75,
-                                              child: Row(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                      ),
+                                      width: MediaQuery.of(context).size.width * 0.9,
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            height: 75,
+                                            child: Row(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.fromLTRB(12, 10, 6, 0),
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                    BorderRadius.circular(8.0),
+
+                                                    child: Image.network(
+                                                      contenido.urlImagen,
+                                                      height: 70,
+                                                      width: 70,
+                                                      fit: BoxFit.cover,
+                                                      errorBuilder: (context,
+                                                          object, stacktrace) {
+                                                        return Container();
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 3.0,
+                                                ),
+                                                Container(
+                                                  height: 75.0,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.65,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.fromLTRB(4, 8, 0, 0),
+                                                    child: Column(
+                                                      // mainAxisAlignment:
+                                                      //     MainAxisAlignment.spaceAround,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Flexible(
+                                                            child: Text(
+                                                                contenido.titulo,
+                                                                maxLines: 2,
+                                                                overflow: TextOverflow.ellipsis,
+                                                                style: TextStyle(
+                                                                    fontSize: 14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left)),
+                                                        // SizedBox(height: 1,),
+                                                        Flexible(
+                                                            child: Text(
+                                                                contenido.descripcion,
+                                                                maxLines: 2,
+                                                                overflow: TextOverflow.ellipsis,
+                                                                style: TextStyle(
+                                                                  color: textColor,
+                                                                    fontSize: 12),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left)),
+                                                        // SizedBox(height: 8.0),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(12, 2, 12, 0),
+                                            child: Divider(color: textColor,),
+                                          ),
+
+                                          Row(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
                                                 children: [
+                                                  SizedBox(width: 15,),
                                                   Padding(
-                                                    padding: const EdgeInsets.fromLTRB(12, 10, 6, 0),
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                      BorderRadius.circular(8.0),
-
-                                                      child: Image.network(
-                                                        contenido.urlImagen,
-                                                        height: 70,
-                                                        width: 70,
-                                                        fit: BoxFit.cover,
-                                                        errorBuilder: (context,
-                                                            object, stacktrace) {
-                                                          return Container();
-                                                        },
-                                                      ),
-                                                    ),
+                                                    padding: const EdgeInsets.fromLTRB(5, 0, 1, 8),
+                                                    child: Icon(Icons.favorite, color: primaryColor,),
                                                   ),
-                                                  SizedBox(
-                                                    height: 3.0,
-                                                  ),
-                                                  Container(
-                                                    height: 75.0,
-                                                    width: MediaQuery.of(context)
-                                                            .size
-                                                            .width *
-                                                        0.65,
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.fromLTRB(4, 8, 0, 0),
-                                                      child: Column(
-                                                        // mainAxisAlignment:
-                                                        //     MainAxisAlignment.spaceAround,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Flexible(
-                                                              child: Text(
-                                                                  contenido.titulo,
-                                                                  maxLines: 2,
-                                                                  overflow: TextOverflow.ellipsis,
-                                                                  style: TextStyle(
-                                                                      fontSize: 14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .left)),
-                                                          // SizedBox(height: 1,),
-                                                          Flexible(
-                                                              child: Text(
-                                                                  contenido.descripcion,
-                                                                  maxLines: 2,
-                                                                  overflow: TextOverflow.ellipsis,
-                                                                  style: TextStyle(
-                                                                    color: textColor,
-                                                                      fontSize: 12),
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .left)),
-                                                          // SizedBox(height: 8.0),
-                                                        ],
-                                                      ),
-                                                    ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.fromLTRB(8, 0, 0, 10),
+                                                    child: Text(contenido.likes.toString(),
+                                                        style: TextStyle(
+                                                            color: primaryColor)),
                                                   ),
                                                 ],
                                               ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.fromLTRB(12, 2, 12, 0),
-                                              child: Divider(color: textColor,),
-                                            ),
 
-                                            Row(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    SizedBox(width: 15,),
-                                                    Padding(
-                                                      padding: const EdgeInsets.fromLTRB(5, 0, 1, 8),
-                                                      child: Icon(Icons.favorite, color: primaryColor,),
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.fromLTRB(8, 0, 0, 10),
-                                                      child: Text(contenido.likes.toString(),
-                                                          style: TextStyle(
-                                                              color: primaryColor)),
-                                                    ),
-                                                  ],
-                                                ),
-
-                                                Row(
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.fromLTRB(5, 0, 1, 8),
-                                                      child: Icon(Icons.comment_outlined, color: primaryColor,),
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.fromLTRB(8, 0, 0, 10),
-                                                      child: Text(comments.toString(), style: TextStyle(color: primaryColor)),
-                                                    ),
-                                                    SizedBox(width: 15,),
-                                                  ],
-                                                ),
+                                              Row(
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.fromLTRB(5, 0, 1, 8),
+                                                    child: Icon(Icons.comment_outlined, color: primaryColor,),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.fromLTRB(8, 0, 0, 10),
+                                                    child: Text(comments.toString(), style: TextStyle(color: primaryColor)),
+                                                  ),
+                                                  SizedBox(width: 15,),
+                                                ],
+                                              ),
 
 
-                                              ],
-                                            ),
+                                            ],
+                                          ),
 
-                                          ],
-                                        ),
-                                      );
-                                    });
+                                        ],
+                                      ),
+                                    ),
+                                  ) : Container();
+                                });
 
 
-                  })),
+              }),
            SizedBox(height: 10.0),
         ],
       ),

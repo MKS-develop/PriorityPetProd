@@ -68,7 +68,7 @@ class _UsuarioInfoState extends State<UsuarioInfo>
   String telefono;
   String petImageUrl = "";
   bool bienvenida = false;
-  String get apiKey => "AIzaSyDmb3pc-t9K9aC_mKnZBfIPQ7Il4OClCN0";
+  String get apiKey => "AIzaSyB0KhffiMteHVLTmx5bdgG4_m2gI5YAFgw";
   String codigoTexto;
   GeoPoint location;
 
@@ -103,7 +103,7 @@ class _UsuarioInfoState extends State<UsuarioInfo>
           .get()
           .then((dataSnapshot) {
         PetshopApp.sharedPreferences.setString(PetshopApp.geoAddress, dataSnapshot.data()[PetshopApp.geoAddress]);
-          });
+      });
     }
 
     if (PetshopApp.sharedPreferences.getString(PetshopApp.userNombre) != null) {
@@ -171,8 +171,8 @@ class _UsuarioInfoState extends State<UsuarioInfo>
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        bienvenida = (dataSnapshot.data()["bienvenida"]);
-        culqiId = (dataSnapshot.data()["id_culqi"]);
+        bienvenida = (dataSnapshot["bienvenida"]);
+        culqiId = (dataSnapshot["id_culqi"]);
         // codigoTexto = dataSnapshot.data()["codigoTexto"];
       });
     });
@@ -186,7 +186,7 @@ class _UsuarioInfoState extends State<UsuarioInfo>
           .get()
           .then((DocumentSnapshot documentSnapshot) => {
         setState(() {
-          codigoTexto = documentSnapshot.data()["codigoTexto"];
+          codigoTexto = documentSnapshot["codigoTexto"];
           print(codigoTexto);
         })
       });
@@ -294,13 +294,13 @@ class _UsuarioInfoState extends State<UsuarioInfo>
                                   backgroundColor: Colors.white,
                                   backgroundImage: Image.network(
                                     PetshopApp
-                                      .sharedPreferences
-                                      .getString(PetshopApp.userAvatarUrl),
+                                        .sharedPreferences
+                                        .getString(PetshopApp.userAvatarUrl),
                                     errorBuilder: (context, object, stacktrace) {
                                       return Container();
                                     },
                                   ).image
-                                ),
+                              ),
                             )),
 
                         // CircleAvatar(
@@ -1038,38 +1038,38 @@ class _UsuarioInfoState extends State<UsuarioInfo>
       //   print(e.message);
       //   return null;
       // }
-        if(_paises=='Perú' && culqiId == null) {
-          try {
-            var json =
-                '{"first_name": "${_nameTextEditingController
-                .text}","last_name": "${_lastnameTextEditingController
-                .text}","address": "${_addressTextEditingController
-                .text}","phone_number": "${_tlfTextEditingController
-                .text}","email": "${PetshopApp.sharedPreferences.getString(
-                PetshopApp.userEmail)}", "address_city": "Lima", "country_code": "PE", "metadata": {"$ciudad": "${_idTextEditingController.text}"}}';
-            var url = ("https://api.culqi.com/v2/customers");
-            Map<String, String> headers = {
-              "Content-type": "application/json",
-              "Authorization": _prk,
-            };
-            Response res = await http.post(url, headers: headers, body: json);
-            int statusCode = await res.statusCode;
-            final nuevo = jsonDecode(res.body);
+      if(_paises=='Perú' && culqiId == null) {
+        try {
+          var json =
+              '{"first_name": "${_nameTextEditingController
+              .text}","last_name": "${_lastnameTextEditingController
+              .text}","address": "${_addressTextEditingController
+              .text}","phone_number": "${_tlfTextEditingController
+              .text}","email": "${PetshopApp.sharedPreferences.getString(
+              PetshopApp.userEmail)}", "address_city": "Lima", "country_code": "PE", "metadata": {"$ciudad": "${_idTextEditingController.text}"}}';
+          var url = ("https://api.culqi.com/v2/customers");
+          Map<String, String> headers = {
+            "Content-type": "application/json",
+            "Authorization": _prk,
+          };
+          Response res = await http.post(url, headers: headers, body: json);
+          int statusCode = await res.statusCode;
+          final nuevo = jsonDecode(res.body);
 
-            CulqiUserModel culqi = CulqiUserModel.fromJson(nuevo);
+          CulqiUserModel culqi = CulqiUserModel.fromJson(nuevo);
 
-            setState(() {
-              // response = statusCode.toString();
-              culqiId = culqi.id;
-              print(culqi.id);
-               print(statusCode);
-               print('el cuerpo es ${res.body}');
-            });
-          } catch (e) {
-            print(e.message);
-            return null;
-          }
+          setState(() {
+            // response = statusCode.toString();
+            culqiId = culqi.id;
+            print(culqi.id);
+            print(statusCode);
+            print('el cuerpo es ${res.body}');
+          });
+        } catch (e) {
+          print(e.message);
+          return null;
         }
+      }
       // try {
       //   var url =
       //       ("https://api.culqi.com/v2/customers/cus_test_Dlk8IUQw4PXGYbVQ");
@@ -1143,10 +1143,10 @@ class _UsuarioInfoState extends State<UsuarioInfo>
         PetshopApp.sharedPreferences
             .setString(PetshopApp.codigoTexto, codigoTexto);
       }
-        if (_pickedLocation != null) {
-          PetshopApp.sharedPreferences.setString(PetshopApp.geolocation, _pickedLocation.latLng.toString());
-          PetshopApp.sharedPreferences.setString(PetshopApp.geoAddress, _pickedLocation.address.toString());
-        }
+      if (_pickedLocation != null) {
+        PetshopApp.sharedPreferences.setString(PetshopApp.geolocation, _pickedLocation.latLng.toString());
+        PetshopApp.sharedPreferences.setString(PetshopApp.geoAddress, _pickedLocation.address.toString());
+      }
 
       PetshopApp.sharedPreferences
           .setString(PetshopApp.userNombre, _nameTextEditingController.text);
@@ -1186,8 +1186,8 @@ class _UsuarioInfoState extends State<UsuarioInfo>
       //   Route route = MaterialPageRoute(builder: (c) => StoreHome());
       //   Navigator.pushReplacement(context, route);
       // });
-        Message(context,
-            'Se han agregado los datos a su perfil.');
+      Message(context,
+          'Se han agregado los datos a su perfil.');
     }
   }
   Future<void> Message(BuildContext context, String error) async {

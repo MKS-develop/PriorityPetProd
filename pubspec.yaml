@@ -1,7 +1,8 @@
+
 name: pet_shop
 description: petshop
 
-version: 1.1.5+316
+version: 1.1.9+320
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -18,7 +19,7 @@ dependencies:
   # firebase_analytics: ^5.0.11
   firebase_core: ^0.5.0+1
   # firebase_database: ^3.0.0
-  firebase_messaging: ^7.0.3
+  firebase_messaging: ^7.0.0
 
   shared_preferences: ^0.5.6+1
   fluttertoast: ^7.1.8
@@ -50,8 +51,8 @@ dependencies:
   flutter_credit_card: 0.1.4
   flutter_culqi : ^0.5.2
   dropdown_search: ^0.4.8
-  #  contact_picker: any
-  #  flutter_sms: any
+#  contact_picker: ^0.0.2
+#  flutter_sms: ^2.1.1
   flutter_share_me: ^0.9.2
   shortid: ^0.1.1
   native_pdf_view: ^3.9.1
@@ -59,6 +60,9 @@ dependencies:
   infinite_scroll_pagination: ^2.3.0
   lazy_loading_list: ^1.0.0
   lazy_load_scrollview: ^1.2.0
+#  webview_flutter: any
+  flutter_paymentez: ^0.0.11
+  crypto: ^2.1.0
 
 dev_dependencies:
   intl_translation: ^0.17.1
@@ -104,3 +108,4 @@ flutter:
     - assets/images/patas.png
     - images/terminos.pdf
     - images/sinproducto.jpg
+    - images/CondicionesPlanesAnuales.pdf

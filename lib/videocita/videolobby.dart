@@ -72,7 +72,7 @@ class _VideoLobbyState extends State<VideoLobby> {
         .doc(widget.orderModel.aliadoId);
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        aliadoAvatar = (dataSnapshot.data()["avatar"]);
+        aliadoAvatar = (dataSnapshot["avatar"]);
         // ppCanjeados = (dataSnapshot.data()["ppCanjeados"]);
       });
     });
@@ -741,7 +741,7 @@ class _VideoLobbyState extends State<VideoLobby> {
   //     debugPrint("error: $error");
   //   }
   // }
-  //
+
   // static final Map<RoomNameConstraintType, RoomNameConstraint>
   // customContraints = {
   //   RoomNameConstraintType.MAX_LENGTH: new RoomNameConstraint((value) {

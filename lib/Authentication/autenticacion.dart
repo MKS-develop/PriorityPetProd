@@ -1019,9 +1019,7 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
     print('loque seaaaa');
     try {
       userCredential = await _auth.createUserWithEmailAndPassword(
-          email: _emailTextEditingController.text
-              .trim()
-              .replaceAll(new RegExp(r"/^\s+|\s+$|\s+(?=\s)/g"), ""),
+          email: _emailTextEditingController.text.trim().replaceAll(new RegExp(r"/^\s+|\s+$|\s+(?=\s)/g"), ""),
           password: _passwordTextEditingController.text.trim());
 
       String imageFileName = DateTime.now().millisecondsSinceEpoch.toString();
@@ -1139,7 +1137,18 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
       "registroCompleto": false,
       "pais": _paises,
       "createdOn": productId,
-      PetshopApp.userCartList: ["garbageValue"],
+
+    });
+
+    FirebaseFirestore.instance.collection("welcomeUser").doc(fUser.uid).set({
+      "createdOn": productId,
+      "uid": fUser.uid,
+      "to": [fUser.email],
+      "message": {
+        "subject": '¡Bienvenido a PRIORITY PET!',
+        "text": 'Hola, ${fUser.email}.',
+        "html": '<html lang="es"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href=""><style>html,body {font-family:"Verdana",sans-serif}h1,h2,h3,h4,h5,h6 {font-family:"Segoe UI",sans-serif}</style><body><p>Hola, ${fUser.email}, bienvenido a Priority Pet, la comunidad más grande de beneficios para mascotas, nos complace que estes aquí.<br>A partir de este momento obtendrás los mejores productos y servicios para el control y el cuidado de tu mascota desde un solo lugar.</p><br><p>¿Necesitas ayuda? Contacta con nosotros a soporte@prioritypet.club</p><br><p>Atentamente, <br>Equipo de Priority Pet</p><img src="https://firebasestorage.googleapis.com/v0/b/priority-pet.appspot.com/o/Emaling-bienvenida-2.png?alt=media&token=a6f7c766-2387-4e2c-9f32-e7944cda9dca" alt="Priority Banner" width="100%" ></body></html>',
+      },
     });
 
     FirebaseFirestore.instance
@@ -1188,16 +1197,16 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
       PetshopApp.sharedPreferences.setString(PetshopApp.simboloMoneda,
           dataSnapshot.data()[PetshopApp.simboloMoneda]);
     });
-    sendEmail(fUser.email, _nameTextEditingController.text.trim());
+    // sendEmail(fUser.email, _nameTextEditingController.text.trim());
     if (referidos.contains(fUser.email)) {
       givePetPoints(fUser.email);
     }
   }
 
-  sendEmail(_email, nombreCompleto) async {
-    await http.get(Uri.parse(
-        'https://us-central1-priority-pet.cloudfunctions.net/sendWelcomeEmailDuenos?dest=$_email&username=$nombreCompleto'));
-  }
+  // sendEmail(_email, nombreCompleto) async {
+  //   await http.get(Uri.parse(
+  //       'https://us-central1-priority-pet.cloudfunctions.net/sendWelcomeEmailDuenos?dest=$_email&username=$nombreCompleto'));
+  // }
 
   void loginUser() async {
     // showDialog(

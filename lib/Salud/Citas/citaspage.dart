@@ -86,9 +86,14 @@ class _CitasPageState extends State<CitasPage> {
     getCiudades(PetshopApp.sharedPreferences.getString(PetshopApp.userPais));
     MastersList();
     getLatLong();
+
     if (widget.tituloCat != null) {
-      _searchTextEditingController.value =
-          TextEditingValue(text: widget.tituloCat);
+      setState(() {
+        print('vamooooooooo${widget.tituloCat}');
+        _searchTextEditingController.value =
+            TextEditingValue(text: widget.tituloCat);
+        _searchTextEditingController.text = widget.tituloCat;
+      });
     }
     _scrollController.addListener(_onScrollEvent);
   }
@@ -107,7 +112,7 @@ class _CitasPageState extends State<CitasPage> {
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        userLatLong = (dataSnapshot.data()["location"]);
+        userLatLong = (dataSnapshot["location"]);
       });
     });
   }
@@ -411,7 +416,7 @@ class _CitasPageState extends State<CitasPage> {
                                       );
                                     }
                                     return Container(
-                                      height: 55,
+                                      height: 57,
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         border: Border.all(
@@ -436,7 +441,7 @@ class _CitasPageState extends State<CitasPage> {
                                           border: InputBorder.none,
                                         ),
                                         mode: Mode.BOTTOM_SHEET,
-                                        maxHeight: 300,
+                                        maxHeight: 400,
 
                                         // searchBoxController:
                                         //     _searchTextEditingController,
@@ -445,11 +450,12 @@ class _CitasPageState extends State<CitasPage> {
                                         //   fillColor: Colors.blue,
                                         // ),
                                         hint: "Buscar servicio",
+                                        selectedItem: widget.tituloCat,
                                         showSearchBox: true,
                                         showSelectedItem: true,
                                         // showClearButton: true,
                                         items: list,
-                                        // label: "Buscar servicio",
+                                        // label: widget.tituloCat,
 
                                         popupItemDisabled: (String s) =>
                                             s.startsWith('I'),
@@ -459,8 +465,7 @@ class _CitasPageState extends State<CitasPage> {
                                                 value;
                                           });
                                         },
-                                        selectedItem:
-                                        _searchTextEditingController.text,
+                                        // selectedItem: _searchTextEditingController.text,
                                       ),
                                     );
                                   }
@@ -549,92 +554,186 @@ class _CitasPageState extends State<CitasPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+
                             Padding(
-                              padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: _screenWidth * 0.9,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            border: Border.all(
-                                              color: Colors.transparent,
-                                              width: 1.0,
-                                            ),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(10.0)),
-                                          ),
-                                          padding: EdgeInsets.all(0.0),
-                                          margin: EdgeInsets.all(5.0),
-                                          child: DropdownButtonHideUnderline(
-                                            child: Stack(
-                                              children: <Widget>[
-                                                DropdownButton(
-                                                    hint: Padding(
-                                                      padding: const EdgeInsets
-                                                          .fromLTRB(
-                                                          50, 0, 0, 0),
-                                                      child: Text(
-                                                        'Ciudad',
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .bold),
-                                                      ),
-                                                    ),
-                                                    items: ciudades
-                                                        .map((dynamic value) {
-                                                      return DropdownMenuItem<
-                                                          dynamic>(
-                                                        value: value,
-                                                        child: Padding(
-                                                          padding:
-                                                          const EdgeInsets
-                                                              .fromLTRB(
-                                                              40, 0, 0, 0),
-                                                          child: Text(value),
-                                                        ),
-                                                      );
-                                                    }).toList(),
-                                                    isExpanded: true,
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        _categoria = value;
-                                                        ciudad = value;
-                                                        _allResults = [];
-                                                        _resultsList = [];
-                                                        _pagResults = [];
-                                                        MastersList();
-                                                      });
-                                                    },
-                                                    value: _categoria),
-                                                Container(
-                                                  width: 20,
-                                                  margin: EdgeInsets.symmetric(
-                                                      vertical: 15,
-                                                      horizontal: 10),
-                                                  child: Image.asset(
-                                                    'diseñador/drawable/Grupo197.png',
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                              padding: const EdgeInsets.all(2.0),
+                              child: Container(
+                                height: 57,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    color: Colors.transparent,
+                                    width: 1.0,
                                   ),
-                                ],
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0)),
+                                ),
+                                padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                margin: EdgeInsets.all(5.0),
+                                child: Stack(
+                                  children: <Widget>[
+                                    DropdownSearch<dynamic>(
+
+
+                                      dropdownSearchDecoration:
+                                      InputDecoration(
+                                        hintStyle: TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.bold
+                                          // color: Color(0xFF7f9d9D)
+                                        ),
+                                        disabledBorder: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        enabled: true,
+                                        border: InputBorder.none,
+                                      ),
+                                      mode: Mode.BOTTOM_SHEET,
+                                      maxHeight: 400,
+
+                                      // searchBoxController:
+                                      //     _searchTextEditingController,
+                                      // searchBoxDecoration: InputDecoration(
+                                      //   fillColor: Colors.blue,
+                                      // ),
+                                      hint: "            Ciudad",
+
+                                      showSearchBox: true,
+                                      // showSelectedItem: true,
+                                      showClearButton: true,
+
+                                      items: ciudades,
+                                      //     .map((dynamic value){
+                                      //   return DropdownMenuItem<dynamic>(
+                                      //     value: value,
+                                      //     child: Padding(
+                                      //       padding:
+                                      //       const EdgeInsets.fromLTRB(
+                                      //           40, 0, 0, 0),
+                                      //       child: Text(value),
+                                      //     ),
+                                      //   );
+                                      //
+                                      // }).toList(),
+                                      // popupItemDisabled: (String s) => s.startsWith('I'),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _categoria = value;
+                                          ciudad = value;
+                                          _resultsList = [];
+                                          _allResults = [];
+                                          _pagResults = [];
+                                          MastersList();
+                                        });
+                                      },
+                                      // selectedItem: _categoria != null ? '           ${_categoria}' : '           Ciudad',
+                                    ),
+                                    _categoria == null ?
+                                    Container(
+                                      width: 20,
+                                      margin: EdgeInsets.symmetric(
+                                          vertical: 15, horizontal: 10),
+                                      child: Image.asset(
+                                        'diseñador/drawable/Grupo197.png',
+                                      ),
+                                    ):
+                                    Container(),
+                                  ],
+                                ),
                               ),
                             ),
+
+                            // Padding(
+                            //   padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                            //   child: Row(
+                            //     mainAxisAlignment: MainAxisAlignment.center,
+                            //     crossAxisAlignment: CrossAxisAlignment.start,
+                            //     children: [
+                            //       Container(
+                            //         width: _screenWidth * 0.9,
+                            //         child: Column(
+                            //           crossAxisAlignment:
+                            //           CrossAxisAlignment.start,
+                            //           children: [
+                            //             Container(
+                            //               decoration: BoxDecoration(
+                            //                 color: Colors.white,
+                            //                 border: Border.all(
+                            //                   color: Colors.transparent,
+                            //                   width: 1.0,
+                            //                 ),
+                            //                 borderRadius: BorderRadius.all(
+                            //                     Radius.circular(10.0)),
+                            //               ),
+                            //               padding: EdgeInsets.all(0.0),
+                            //               margin: EdgeInsets.all(5.0),
+                            //               child: DropdownButtonHideUnderline(
+                            //                 child: Stack(
+                            //                   children: <Widget>[
+                            //                     DropdownButton(
+                            //                         hint: Padding(
+                            //                           padding: const EdgeInsets
+                            //                               .fromLTRB(
+                            //                               50, 0, 0, 0),
+                            //                           child: Text(
+                            //                             'Ciudad',
+                            //                             style: TextStyle(
+                            //                                 color: Colors.black,
+                            //                                 fontWeight:
+                            //                                 FontWeight
+                            //                                     .bold),
+                            //                           ),
+                            //                         ),
+                            //                         items: ciudades
+                            //                             .map((dynamic value) {
+                            //                           return DropdownMenuItem<
+                            //                               dynamic>(
+                            //                             value: value,
+                            //                             child: Padding(
+                            //                               padding:
+                            //                               const EdgeInsets
+                            //                                   .fromLTRB(
+                            //                                   40, 0, 0, 0),
+                            //                               child: Text(value),
+                            //                             ),
+                            //                           );
+                            //                         }).toList(),
+                            //                         isExpanded: true,
+                            //                         onChanged: (value) {
+                            //                           setState(() {
+                            //                             _categoria = value;
+                            //                             ciudad = value;
+                            //                             _allResults = [];
+                            //                             _resultsList = [];
+                            //                             _pagResults = [];
+                            //                             MastersList();
+                            //                           });
+                            //                         },
+                            //                         value: _categoria),
+                            //                     Container(
+                            //                       width: 20,
+                            //                       margin: EdgeInsets.symmetric(
+                            //                           vertical: 15,
+                            //                           horizontal: 10),
+                            //                       child: Image.asset(
+                            //                         'diseñador/drawable/Grupo197.png',
+                            //                       ),
+                            //                     ),
+                            //                   ],
+                            //                 ),
+                            //               ),
+                            //             ),
+                            //           ],
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
+
+
+
+
+
+
                             SizedBox(
                               height: 5.0,
                             ),
@@ -915,7 +1014,7 @@ class _CitasPageState extends State<CitasPage> {
                                 ) {
                               AliadoModel aliado = AliadoModel.fromJson(
                                   dataSnapshot.data.docs[index].data());
-                              return GestureDetector(
+                              return aliado.isApproved? GestureDetector(
                                 onTap: () {
                                   Navigator.push(
                                     context,
@@ -1163,7 +1262,7 @@ class _CitasPageState extends State<CitasPage> {
                                       )),
 
                                 ),
-                              );
+                              ) : Container();
                             });
                       });
                 });

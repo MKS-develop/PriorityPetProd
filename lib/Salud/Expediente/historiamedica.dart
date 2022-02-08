@@ -180,61 +180,61 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
         .doc(widget.petModel.mid);
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        _actividadFisica = (dataSnapshot.data()["actividadFisica"]);
+        _actividadFisica = (dataSnapshot["actividadFisica"]);
         _convivenTextEditingController.text =
-            (dataSnapshot.data()["convivenciaAnimales"]);
+             (dataSnapshot["convivenciaAnimales"]);
         _dondeViveTextEditingController.text =
-            (dataSnapshot.data()["dondeVivido"]);
+             (dataSnapshot["dondeVivido"]);
         _lugarNacTextEditingController.text =
-            (dataSnapshot.data()["lugarNacimiento"]);
-        _tipoVivienda = (dataSnapshot.data()["tipoVivienda"]);
+             (dataSnapshot["lugarNacimiento"]);
+        _tipoVivienda =  (dataSnapshot["tipoVivienda"]);
 
-        _value = (dataSnapshot.data()["antePadresValues"]["cancerPadre"]);
-        _value2 = (dataSnapshot.data()["antePadresValues"]["cancerMadre"]);
-        _value3 = (dataSnapshot.data()["antePadresValues"]["diabetesPadre"]);
-        _value4 = (dataSnapshot.data()["antePadresValues"]["diabetesMadre"]);
+        _value =  (dataSnapshot["antePadresValues"]["cancerPadre"]);
+        _value2 =  (dataSnapshot["antePadresValues"]["cancerMadre"]);
+        _value3 =  (dataSnapshot["antePadresValues"]["diabetesPadre"]);
+        _value4 =  (dataSnapshot["antePadresValues"]["diabetesMadre"]);
         _value5 =
-            (dataSnapshot.data()["antePadresValues"]["cardiopatiasPadre"]);
+             (dataSnapshot["antePadresValues"]["cardiopatiasPadre"]);
         _value6 =
-            (dataSnapshot.data()["antePadresValues"]["cardiopatiasMadre"]);
+             (dataSnapshot["antePadresValues"]["cardiopatiasMadre"]);
         _value7 =
-            (dataSnapshot.data()["antePadresValues"]["aparatoLocomotorPadre"]);
+             (dataSnapshot["antePadresValues"]["aparatoLocomotorPadre"]);
         _value8 =
-            (dataSnapshot.data()["antePadresValues"]["aparatoLocomotorMadre"]);
+             (dataSnapshot["antePadresValues"]["aparatoLocomotorMadre"]);
         _value9 =
-            (dataSnapshot.data()["antePadresValues"]["sistemaNerviosoPadre"]);
-        _value10 = (dataSnapshot.data()["antePadresValues"]["cancerPadre"]);
+             (dataSnapshot["antePadresValues"]["sistemaNerviosoPadre"]);
+        _value10 =  (dataSnapshot["antePadresValues"]["cancerPadre"]);
         _otrosAntecedentesTextEditingController.text =
-            (dataSnapshot.data()["antePadresValues"]["otras"]);
+             (dataSnapshot["antePadresValues"]["otras"]);
 
-        _agua = (dataSnapshot.data()["anteFisiologicosValues"]["tomaAgua"]);
+        _agua =  (dataSnapshot["anteFisiologicosValues"]["tomaAgua"]);
         _evacuaciones =
-            (dataSnapshot.data()["anteFisiologicosValues"]["defecacion"]);
+             (dataSnapshot["anteFisiologicosValues"]["defecacion"]);
         _castrado =
-            (dataSnapshot.data()["anteFisiologicosValues"]["castracion"]);
-        _miccion = (dataSnapshot.data()["anteFisiologicosValues"]["diuresis"]);
+             (dataSnapshot["anteFisiologicosValues"]["castracion"]);
+        _miccion =  (dataSnapshot["anteFisiologicosValues"]["diuresis"]);
         _suenoTextEditingController.text =
-            (dataSnapshot.data()["anteFisiologicosValues"]["sueno"]);
+             (dataSnapshot["anteFisiologicosValues"]["sueno"]);
 
         _intensidadCelos =
-            (dataSnapshot.data()["anteFisiologicosValues"]["frecuenciaCelos"]);
+             (dataSnapshot["anteFisiologicosValues"]["frecuenciaCelos"]);
         _cirugiaTextEditingController.text =
-            (dataSnapshot.data()["anteFisiologicosValues"]["cirugiaEstetica"]);
+             (dataSnapshot["anteFisiologicosValues"]["cirugiaEstetica"]);
         _cirugiaComenTextEditingController.text = (dataSnapshot
-            .data()["anteFisiologicosValues"]["comentarioCirugia"]);
+            ["anteFisiologicosValues"]["comentarioCirugia"]);
 
         _tipoAlimentacion =
-            (dataSnapshot.data()["anteAlimenticioValues"]["cacera"]);
+             (dataSnapshot["anteAlimenticioValues"]["cacera"]);
         _alimentoCantidadTextEditingController.text =
-            (dataSnapshot.data()["anteAlimenticioValues"]["cantidad"]);
+             (dataSnapshot["anteAlimenticioValues"]["cantidad"]);
         _frecuenciaAlimento =
-            (dataSnapshot.data()["anteAlimenticioValues"]["frecuencia"]);
+             (dataSnapshot["anteAlimenticioValues"]["frecuencia"]);
         _alimentoMarcaTextEditingController.text =
-            (dataSnapshot.data()["anteAlimenticioValues"]["marca"]);
+             (dataSnapshot["anteAlimenticioValues"]["marca"]);
         _tipoAlimentacion =
-            (dataSnapshot.data()["anteAlimenticioValues"]["tipoAlimenticio"]);
+             (dataSnapshot["anteAlimenticioValues"]["tipoAlimenticio"]);
         fecha = DateTime.fromMicrosecondsSinceEpoch(dataSnapshot
-            .data()["anteFisiologicosValues"]["fechaUltimoEstrogeno"]
+            ["anteFisiologicosValues"]["fechaUltimoEstrogeno"]
             .microsecondsSinceEpoch);
       });
       if (_castrado == true) {
@@ -1071,14 +1071,8 @@ class _HistoriaMedicaState extends State<HistoriaMedica> {
                                                 } else {
                                                   List<DropdownMenuItem>
                                                       alergiasItems = [];
-                                                  for (int i = 0;
-                                                      i <
-                                                          snapshot.data
-                                                              .docs.length;
-                                                      i++) {
-                                                    DocumentSnapshot snap =
-                                                        snapshot
-                                                            .data.docs[i];
+                                                  for (int i = 0; i < snapshot.data.docs.length; i++) {
+                                                    DocumentSnapshot snap = snapshot.data.docs[i];
                                                     alergiasItems.add(
                                                       DropdownMenuItem(
                                                         child: Text(

@@ -159,7 +159,7 @@ class _ApadrinarConfirmarState extends State<ApadrinarConfirmar> {
                             Padding(
                               padding: const EdgeInsets.all(3.0),
                               child: Text(
-                                  "¡Importante! Si continúas con este proceso, te comprometes a cumplir con el aporte mensual establecido que será utilizado para mis alimentos, salud y cuidados."),
+                                  "¡Importante! Si continúas con este proceso, te comprometes a cumplir con el aporte mensual establecido que será utilizado para mis alimentos, salud y cuidados. A su vez puedes desafiliarte cuando desees."),
                             ),
                             // Padding(
                             //   padding: const EdgeInsets.all(3.0),

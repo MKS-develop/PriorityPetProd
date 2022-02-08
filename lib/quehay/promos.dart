@@ -65,6 +65,7 @@ class _PromoHomeState extends State<PromoHome> {
         .where("pais",
         isEqualTo:
         PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
+        .where("isApproved", isEqualTo: true)
         .snapshots()
         .listen(createListofServices);
   }
@@ -101,7 +102,7 @@ class _PromoHomeState extends State<PromoHome> {
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        userLatLong = (dataSnapshot.data()["location"]);
+        userLatLong = (dataSnapshot["location"]);
       });
     });
   }
@@ -227,8 +228,11 @@ class _PromoHomeState extends State<PromoHome> {
                             stream: FirebaseFirestore.instance
                                 .collection("Promociones")
                                 .where("pais",
-                                    isEqualTo: PetshopApp.sharedPreferences
-                                        .getString(PetshopApp.userPais))
+                                isEqualTo: PetshopApp.sharedPreferences
+                                    .getString(PetshopApp.userPais))
+
+                                .where('isApproved', isEqualTo: true)
+                                .orderBy('createdOn', descending: true)
                                 .snapshots(),
                             builder: (context, dataSnapshot) {
                               if (!dataSnapshot.hasData) {

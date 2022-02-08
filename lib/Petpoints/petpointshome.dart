@@ -44,7 +44,7 @@ class _PetPointsHomeState extends State<PetPointsHome> {
         .doc("Precio");
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        ppvalor = (dataSnapshot.data()["petpointPE"]);
+        ppvalor = (dataSnapshot["petpointPE"]);
       });
       print('Valor PetPoint: $ppvalor');
     });
@@ -305,7 +305,7 @@ class _PetPointsHomeState extends State<PetPointsHome> {
                         width: 10,
                       ),
                       Text(
-                        (pp.ppAcumulados - pp.ppCanjeados).toString(),
+                        (pp.ppAcumulados).toString(),
                         style: TextStyle(
                             fontSize: 20,
                             color: Colors.orange,
@@ -334,7 +334,7 @@ class _PetPointsHomeState extends State<PetPointsHome> {
                         width: 10,
                       ),
                       Text(
-                        ((pp.ppAcumulados - pp.ppCanjeados) * ppvalor)
+                        ((pp.ppAcumulados) * ppvalor)
                             .toStringAsPrecision(2),
                         style: TextStyle(
                             fontSize: 20,

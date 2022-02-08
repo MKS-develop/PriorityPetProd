@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
+import 'package:http/http.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_shop/Config/config.dart';
@@ -15,6 +19,7 @@ import 'package:pet_shop/Store/storehome.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
 import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
+import 'package:http/http.dart' as http;
 
 import 'newordeneshome.dart';
 
@@ -47,7 +52,129 @@ class _ConfirmCancelState extends State<ConfirmCancel> {
   bool _value4 = false;
   bool _value5 = false;
   bool _value6 = false;
+  bool _value7 = true;
+  bool _value8 = false;
   bool _isChecked = false;
+  String username = 'TPP3-EC-SERVER';
+  String secretKey = 'JdXTDl2d0o0B8ANZ1heJOq7tf62PC6';
+  dynamic time;
+  String basicAuth;
+  String uniq;
+
+
+  @override
+  void initState() {
+    super.initState();
+    // _getOrderStatus();
+    setState(() {
+      var timestamp = DateTime.now().toUtc().millisecondsSinceEpoch;
+      time = timestamp.toString();
+
+
+      print('el tiempoooooo $time');
+
+      uniq = sha256.convert(utf8.encode(secretKey+time)).toString();
+      basicAuth = base64Encode(utf8.encode('$username;$time;$uniq'));
+      print(basicAuth);
+    });
+
+  }
+
+  refundPaymentezCard() async {
+    try {
+      var json = '{"transaction": {"id": "${widget.orderModel.pagoId}"},"more_info": true}';
+      var url =
+      ("https://ccapi-stg.paymentez.com/v2/transaction/refund/");
+      Map<String, String> headers = {
+        "Content-type": "application/json",
+        "Auth-Token": basicAuth,
+      };
+      Response res =
+      await http.post(Uri.parse(url), headers: headers, body: json);
+      int statusCode = await res.statusCode;
+      var nuevo = await jsonDecode(res.body);
+
+
+      setState(() {
+        // response = statusCode.toString();
+        // clientes = res.body;
+        print(statusCode);
+        print('el cuerpo es ${res.body}');
+
+
+      });
+
+
+      if (nuevo['status'] == 'success') {
+
+        FirebaseFirestore.instance
+            .collection('Ordenes')
+            .doc(widget.orderModel.oid)
+            .update({"status": "Cancelada"}).then((result) {
+          print("Orden Cancelada");
+        }).catchError((onError) {
+          print("onError");
+        });
+
+        Navigator.of(context, rootNavigator: true).pop();
+        // 'Se ha eliminado tu tarjeta ${selectedobscurecard}'
+        var orden = widget.orderModel.oid;
+        var precio = widget.orderModel.precio;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => NewOrdenesHome(
+                defaultChoiceIndex: widget.defaultChoiceIndex,
+                petModel: widget.petModel,
+              )),
+        );
+        showDialog(
+          builder: (context) => AlertDialog(
+            // title: Text('Su pago ha sido aprobado.'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.91,
+                    decoration: BoxDecoration(
+                        color: Color(0xFF57419D),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: Color(0xFFBDD7D6),
+                        )),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Text(
+                              'Tu Orden N.$orden por ${PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda)}$precio ha sido CANCELADA. En las próximas horas recibirás tu devolución del monto.',
+                              style:
+                              TextStyle(color: Colors.white, fontSize: 14)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          context: context,
+        );
+      }
+      else{
+        ErrorMessage(context, nuevo['error']['type']);
+
+      }
+
+      // }
+
+    } catch (e) {
+      print(e.message);
+      return null;
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -263,6 +390,65 @@ class _ConfirmCancelState extends State<ConfirmCancel> {
                                   }),
                             ],
                           ),
+
+
+
+
+
+                          PetshopApp.sharedPreferences.getString(PetshopApp.userPais) == 'Ecuador' ?
+                          Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: 30,
+                                  ),
+                                  Expanded(
+                                      child: Text(
+                                          '4) ¿Quieres la devolución en Pet Points para futuras compras ó la devolución del dinero a tu tarjeta?',
+                                          style: TextStyle(fontSize: 16))),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text('Pet Points',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold)),
+                                  Checkbox(
+                                      value: _value7,
+                                      activeColor: Color(0xFF57419D),
+                                      onChanged: (bool value) {
+                                        setState(() {
+                                          _value7 = value;
+                                          if (value == true) {
+                                            _value8 = false;
+                                          } else {}
+                                        });
+                                      }),
+                                  Text('Devolución de dinero',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold)),
+                                  Checkbox(
+                                      value: _value8,
+                                      activeColor: Color(0xFF57419D),
+                                      onChanged: (bool value) {
+                                        setState(() {
+                                          _value8 = value;
+                                          if (value == true) {
+                                            _value7 = false;
+                                          } else {}
+                                        });
+                                      }),
+                                ],
+                              ),
+                            ],
+                          ) : Container(),
+
+
                         ],
                       ),
                     ],
@@ -277,8 +463,15 @@ class _ConfirmCancelState extends State<ConfirmCancel> {
                     onPressed: () {
                       if ((_value == true || _value2 == true) &&
                           (_value3 == true || _value4 == true) &&
-                          (_value5 == true || _value6 == true)) {
-                        CancelOrden();
+                          (_value5 == true || _value6 == true)&&
+                          (_value7 == true || _value8 == true)) {
+                        if(_value7== true){
+                          CancelOrden();
+                        }
+                        if(_value8== true){
+                          refundPaymentezCard();
+                        }
+
                       } else {
                         ErrorMessage(
                             context, 'Por favor seleccione todos los campos');
@@ -368,6 +561,14 @@ class _ConfirmCancelState extends State<ConfirmCancel> {
       });
       var orden = widget.orderModel.oid;
       var precio = widget.orderModel.precio;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => NewOrdenesHome(
+              defaultChoiceIndex: widget.defaultChoiceIndex,
+              petModel: widget.petModel,
+            )),
+      );
       showDialog(
         builder: (context) => AlertDialog(
           // title: Text('Su pago ha sido aprobado.'),
@@ -401,14 +602,6 @@ class _ConfirmCancelState extends State<ConfirmCancel> {
         context: context,
       );
     });
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => NewOrdenesHome(
-                defaultChoiceIndex: widget.defaultChoiceIndex,
-                petModel: widget.petModel,
-              )),
-    );
   }
 
   confirmaCancel() {

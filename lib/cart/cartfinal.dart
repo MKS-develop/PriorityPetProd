@@ -41,8 +41,8 @@ class _CartFinalState extends State<CartFinal> {
   dynamic sum = 0;
   dynamic totalsum = 0;
   dynamic ppvalor = 0;
-  int ppAcumulados = 0;
-  int ppCanjeados = 0;
+  dynamic ppAcumulados = 0;
+  dynamic ppCanjeados = 0;
   bool procesando = false;
   final db = FirebaseFirestore.instance;
   String productId = DateTime.now().millisecondsSinceEpoch.toString();
@@ -65,7 +65,7 @@ class _CartFinalState extends State<CartFinal> {
         .doc("Precio");
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        ppvalor = (dataSnapshot.data()["petpointPE"]);
+        ppvalor = (dataSnapshot["petpointPE"]);
       });
       print('Valor PetPoint: $ppvalor');
     });
@@ -81,8 +81,8 @@ class _CartFinalState extends State<CartFinal> {
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        ppAcumulados = (dataSnapshot.data()["ppAcumulados"]);
-        ppCanjeados = (dataSnapshot.data()["ppCanjeados"]);
+        ppAcumulados = (dataSnapshot["ppAcumulados"]);
+        ppCanjeados = (dataSnapshot["ppCanjeados"]);
       });
       print('Valor Acumulado: $ppAcumulados');
       print('Valor canjeados: $ppCanjeados');
@@ -97,7 +97,7 @@ class _CartFinalState extends State<CartFinal> {
         .doc(aliadoId);
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        sumaTotal = (dataSnapshot.data()["sumaTotal"]);
+        sumaTotal = (dataSnapshot["sumaTotal"]);
       });
 
       borrarTotal(aliadoId, precio, iTd);
@@ -199,10 +199,18 @@ class _CartFinalState extends State<CartFinal> {
         child: Container(
           width: MediaQuery.of(context).size.width * 0.91,
           decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.shade200,
+                  blurRadius: 1.0,
+                  spreadRadius: 1.0,
+                  // offset: Offset(2.0, 2.0), // shadow direction: bottom right
+                ),
+              ],
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                color: Colors.grey,
+                color: Colors.white,
               )),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
@@ -579,7 +587,7 @@ class _CartFinalState extends State<CartFinal> {
                                               color: Colors.white,
                                               padding: EdgeInsets.all(0.0),
                                               child: Text(
-                                                  (ppAcumulados - ppCanjeados)
+                                                  (ppAcumulados)
                                                       .toString(),
                                                   style: TextStyle(
                                                       fontFamily:
@@ -629,8 +637,7 @@ class _CartFinalState extends State<CartFinal> {
                                                           FontWeight.bold)),
                                               Text(
                                                   (ppvalor *
-                                                          (ppAcumulados -
-                                                              ppCanjeados))
+                                                          (ppAcumulados))
                                                       .toStringAsPrecision(3),
                                                   style: TextStyle(
                                                       fontFamily:
@@ -662,8 +669,7 @@ class _CartFinalState extends State<CartFinal> {
                                               _value = value;
                                               if (value) {
                                                 totalPet = ppvalor *
-                                                    (ppAcumulados -
-                                                        ppCanjeados);
+                                                    (ppAcumulados);
                                                 setState(() {
                                                   _value = true;
                                                 });
@@ -914,8 +920,10 @@ class _CartFinalState extends State<CartFinal> {
                                           Text(
                                             (cart.sumaTotal -
                                                     totalPet +
-                                                    delivery)
-                                                .toStringAsFixed(2),
+                                                    delivery) <= 0 ? 0.toStringAsFixed(2) :
+                                            (cart.sumaTotal -
+                                                totalPet +
+                                                delivery).toStringAsFixed(2),
                                             style: TextStyle(
                                                 fontSize: 18.0,
                                                 color: Color(0xFF57419D),
@@ -1049,7 +1057,7 @@ class _CartFinalState extends State<CartFinal> {
       int localDelivery,
       bool value,
       bool value2) async {
-    int petPoints = 0;
+    dynamic petPoints = 0;
 
     String estadoOrden;
     if (estadoPago == PagoEnum.pagoAprobado) {

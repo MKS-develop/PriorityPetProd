@@ -11,6 +11,7 @@ import 'package:pet_shop/Store/storehome.dart';
 import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
+import 'package:pet_shop/Widgets/ktitle.dart';
 import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 
@@ -223,6 +224,57 @@ class _AdoptarConfirmarState extends State<AdoptarConfirmar> {
                         )),
                     SizedBox(
                       height: 15,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Monto a pagar al momento de adoptar:",
+                            style: TextStyle(
+                                fontFamily: 'Product Sans',
+                                color: primaryColor,
+                                fontSize: 15.0)),
+                        SizedBox(
+                          width: 100.0,
+                          child: RaisedButton(
+                            onPressed: () {},
+                            shape: RoundedRectangleBorder(
+                              // side: BorderSide(color: primaryColor),
+                                borderRadius:
+                                BorderRadius.circular(5)),
+                            color: textColor.withOpacity(0.09),
+                            padding: EdgeInsets.all(0.0),
+                            child: Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.center,
+                              children: [
+                                widget.petModel.costoAdulto == 'Cachorro' ?
+                            Text(
+                            '${PetshopApp.sharedPreferences
+                                .getString(PetshopApp
+                                .simboloMoneda)} ${widget.petModel.costoCachorro}',
+                              style: TextStyle(
+                                  fontFamily:
+                                  'Product Sans',
+                                  color: Color(0xFF57419D),
+                                  fontSize: 18.0,
+                                  fontWeight:
+                                  FontWeight.bold)): Text(
+                                    '${PetshopApp.sharedPreferences
+                                        .getString(PetshopApp
+                                        .simboloMoneda)} ${widget.petModel.costoAdulto}',
+                                    style: TextStyle(
+                                        fontFamily:
+                                        'Product Sans',
+                                        color: Color(0xFF57419D),
+                                        fontSize: 18.0,
+                                        fontWeight:
+                                        FontWeight.bold)),
+
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     Container(
                       width: 200,

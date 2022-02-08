@@ -27,14 +27,24 @@ class PushNotificationsProvider {
     //
     // });
 
-
+    // FirebaseMessaging.onMessage.listen((event) {
+    //   // fetchRideInfo(getRideID(message), context);
+    //   final argumento = event.data['data'];
+    //   print("Argumento: $argumento");
+    //   _mensajesStreamController.sink.add(argumento);
+    // });
 
     _firebaseMessaging.configure(
         onMessage: onMessage,
         onBackgroundMessage: Platform.isIOS ? null : onBackgroundMessage,
         onLaunch: onLaunch,
         onResume: onResume);
+
+
+
   }
+
+
 
   Future<dynamic> onMessage(Map<String, dynamic> message) async {
     print("==== onMessage =====");
@@ -85,7 +95,7 @@ class PushNotificationsProvider {
         .doc(aliadoid)
         .get()
         .then((DocumentSnapshot documentSnapshot) {
-      token = documentSnapshot.data()['token'];
+      token = documentSnapshot['token'];
     });
 
     await http.post(Uri.parse(

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/Models/clinicas.dart';
@@ -20,6 +21,7 @@ double width;
 class ClinicasPage extends StatefulWidget {
   final PetModel petModel;
   final int defaultChoiceIndex;
+
 
   ClinicasPage({this.petModel, this.defaultChoiceIndex});
 
@@ -58,6 +60,7 @@ class _ClinicasPageState extends State<ClinicasPage> {
   void initState() {
     super.initState();
     changePet(widget.petModel);
+
     _searchTextEditingController.addListener(_onSearchChanged);
     // getAllSnapshots();
     MastersList();
@@ -80,11 +83,13 @@ class _ClinicasPageState extends State<ClinicasPage> {
   MastersList() {
     FirebaseFirestore.instance
         .collection("Aliados")
-        .where('tipoAliado', isEqualTo: "Clinica")
+        .where('isApproved', isEqualTo: true)
+        .where('tipoAliado', isEqualTo: "Clínica")
         .where("pais",
             isEqualTo:
                 PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
         .where("ciudad", isEqualTo: _categoria)
+
         .snapshots()
         .listen(createListofServices);
   }
@@ -276,91 +281,97 @@ class _ClinicasPageState extends State<ClinicasPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: _screenWidth * 0.9,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            border: Border.all(
-                                              // color: Color(0xFF7f9d9D),
-                                              color: Colors.transparent,
-                                              width: 1.0,
-                                            ),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(10.0)),
-                                          ),
-                                          padding: EdgeInsets.all(0.0),
-                                          margin: EdgeInsets.all(5.0),
-                                          child: DropdownButtonHideUnderline(
-                                            child: Stack(
-                                              children: <Widget>[
-                                                DropdownButton(
-                                                    hint: Padding(
-                                                      padding: const EdgeInsets
-                                                              .fromLTRB(
-                                                          50, 0, 0, 0),
-                                                      child: Text(
-                                                        'Ciudad',
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ),
-                                                    items: ciudades
-                                                        .map((dynamic value) {
-                                                      return DropdownMenuItem<
-                                                          dynamic>(
-                                                        value: value,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .fromLTRB(
-                                                                  40, 0, 0, 0),
-                                                          child: Text(value),
-                                                        ),
-                                                      );
-                                                    }).toList(),
-                                                    isExpanded: true,
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        _categoria = value;
-                                                        ciudad = value;
-                                                        _allResults = [];
-                                                        MastersList();
-                                                      });
-                                                    },
-                                                    value: _categoria),
-                                                Container(
-                                                  width: 20,
-                                                  margin: EdgeInsets.symmetric(
-                                                      vertical: 15,
-                                                      horizontal: 10),
-                                                  child: Image.asset(
-                                                    'diseñador/drawable/Grupo197.png',
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+
+
+
+
+
+                            // Padding(
+                            //   padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                            //   child: Row(
+                            //     mainAxisAlignment: MainAxisAlignment.center,
+                            //     crossAxisAlignment: CrossAxisAlignment.start,
+                            //     children: [
+                            //       Container(
+                            //         width: _screenWidth * 0.9,
+                            //         child: Column(
+                            //           crossAxisAlignment:
+                            //               CrossAxisAlignment.start,
+                            //           children: [
+                            //             Container(
+                            //               decoration: BoxDecoration(
+                            //                 color: Colors.white,
+                            //                 border: Border.all(
+                            //                   // color: Color(0xFF7f9d9D),
+                            //                   color: Colors.transparent,
+                            //                   width: 1.0,
+                            //                 ),
+                            //                 borderRadius: BorderRadius.all(
+                            //                     Radius.circular(10.0)),
+                            //               ),
+                            //               padding: EdgeInsets.all(0.0),
+                            //               margin: EdgeInsets.all(5.0),
+                            //               child: DropdownButtonHideUnderline(
+                            //                 child: Stack(
+                            //                   children: <Widget>[
+                            //                     DropdownButton(
+                            //                         hint: Padding(
+                            //                           padding: const EdgeInsets
+                            //                                   .fromLTRB(
+                            //                               50, 0, 0, 0),
+                            //                           child: Text(
+                            //                             'Ciudad',
+                            //                             style: TextStyle(
+                            //                                 color: Colors.black,
+                            //                                 fontWeight:
+                            //                                     FontWeight
+                            //                                         .bold),
+                            //                           ),
+                            //                         ),
+                            //                         items: ciudades
+                            //                             .map((dynamic value) {
+                            //                           return DropdownMenuItem<
+                            //                               dynamic>(
+                            //                             value: value,
+                            //                             child: Padding(
+                            //                               padding:
+                            //                                   const EdgeInsets
+                            //                                           .fromLTRB(
+                            //                                       40, 0, 0, 0),
+                            //                               child: Text(value),
+                            //                             ),
+                            //                           );
+                            //                         }).toList(),
+                            //                         isExpanded: true,
+                            //                         onChanged: (value) {
+                            //                           setState(() {
+                            //                             _categoria = value;
+                            //                             ciudad = value;
+                            //                             _allResults = [];
+                            //                             MastersList();
+                            //                           });
+                            //                         },
+                            //                         value: _categoria),
+                            //                     Container(
+                            //                       width: 20,
+                            //                       margin: EdgeInsets.symmetric(
+                            //                           vertical: 15,
+                            //                           horizontal: 10),
+                            //                       child: Image.asset(
+                            //                         'diseñador/drawable/Grupo197.png',
+                            //                       ),
+                            //                     ),
+                            //                   ],
+                            //                 ),
+                            //               ),
+                            //             ),
+                            //           ],
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
+
                             // StreamBuilder<QuerySnapshot>(
                             //     stream: FirebaseFirestore.instance
                             //         .collection("Ciudades")
@@ -446,25 +457,107 @@ class _ClinicasPageState extends State<ClinicasPage> {
                             //         );
                             //       }
                             //     }),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Container(
+                                height: 57,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    color: Colors.transparent,
+                                    width: 1.0,
+                                  ),
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0)),
+                                ),
+                                padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                margin: EdgeInsets.all(5.0),
+                                child: Stack(
+                                  children: <Widget>[
+                                    DropdownSearch<dynamic>(
 
+
+                                      dropdownSearchDecoration:
+                                      InputDecoration(
+                                        hintStyle: TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.bold
+                                          // color: Color(0xFF7f9d9D)
+                                        ),
+                                        disabledBorder: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        enabled: true,
+                                        border: InputBorder.none,
+                                      ),
+                                      mode: Mode.BOTTOM_SHEET,
+                                      maxHeight: 400,
+
+                                      // searchBoxController:
+                                      //     _searchTextEditingController,
+                                      // searchBoxDecoration: InputDecoration(
+                                      //   fillColor: Colors.blue,
+                                      // ),
+                                      hint: "            Ciudad",
+
+                                      showSearchBox: true,
+                                      // showSelectedItem: true,
+                                      showClearButton: true,
+
+                                      items: ciudades,
+                                      //     .map((dynamic value){
+                                      //   return DropdownMenuItem<dynamic>(
+                                      //     value: value,
+                                      //     child: Padding(
+                                      //       padding:
+                                      //       const EdgeInsets.fromLTRB(
+                                      //           40, 0, 0, 0),
+                                      //       child: Text(value),
+                                      //     ),
+                                      //   );
+                                      //
+                                      // }).toList(),
+                                      // popupItemDisabled: (String s) => s.startsWith('I'),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _categoria = value;
+                                          ciudad = value;
+                                          _resultsList = [];
+                                          _allResults = [];
+                                          // _pagResults = [];
+                                          MastersList();
+                                        });
+                                      },
+                                      // selectedItem: _categoria != null ? '           ${_categoria}' : '           Ciudad',
+                                    ),
+                                    _categoria == null ?
+                                    Container(
+                                      width: 20,
+                                      margin: EdgeInsets.symmetric(
+                                          vertical: 15, horizontal: 10),
+                                      child: Image.asset(
+                                        'diseñador/drawable/Grupo197.png',
+                                      ),
+                                    ):
+                                    Container(),
+                                  ],
+                                ),
+                              ),
+                            ),
                             SizedBox(
                               height: 5.0,
                             ),
                             Container(
-                              height: 99 *
-                                  double.parse(_resultsList.length.toString()),
+                              height:  _screenHeight * 0.51,
                               width: _screenWidth,
-                              child: Container(
-                                child: ListView.builder(
-                                    itemCount: _resultsList.length,
-                                    shrinkWrap: true,
-                                    itemBuilder: (
-                                      BuildContext context,
-                                      int index,
-                                    ) =>
-                                        sourceInfo(
-                                            context, _resultsList[index])),
-                              ),
+                              child: ListView.builder(
+                                  itemCount: _resultsList.length,
+                                  shrinkWrap: true,
+                                  itemBuilder: (
+                                    BuildContext context,
+                                    int index,
+                                  ) =>
+                                      sourceInfo(
+                                          context, _resultsList[index])),
                             ),
                           ],
                         ),
@@ -494,7 +587,7 @@ class _ClinicasPageState extends State<ClinicasPage> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          height: 100.0,
+          height: 115.0,
           width: MediaQuery.of(context).size.width,
           child: GestureDetector(
             onTap: () {
@@ -504,6 +597,8 @@ class _ClinicasPageState extends State<ClinicasPage> {
                     builder: (context) => ClinicasDetalle(
                           petModel: model,
                           clinicasModel: clinica,
+                      defaultChoiceIndex:
+                      widget.defaultChoiceIndex,
                         )),
               );
             },

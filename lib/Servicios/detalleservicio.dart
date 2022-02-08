@@ -237,6 +237,14 @@ class _DetallesServicioState extends State<DetallesServicio> {
                 Container(
                   width: MediaQuery.of(context).size.width * 0.91,
                   decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.shade200,
+                          blurRadius: 1.0,
+                          spreadRadius: 1.0,
+                          // offset: Offset(2.0, 2.0), // shadow direction: bottom right
+                        ),
+                      ],
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
@@ -282,7 +290,7 @@ class _DetallesServicioState extends State<DetallesServicio> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Flexible(
-                                child: Text(widget.serviceModel.descripcion,
+                                child: Text(widget.serviceModel.descripcion != null ? widget.serviceModel.descripcion : '',
                                     style: TextStyle(
                                       fontSize: 16,
                                     ),
@@ -311,7 +319,7 @@ class _DetallesServicioState extends State<DetallesServicio> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Flexible(
-                                child: Text(widget.serviceModel.condiciones,
+                                child: Text(widget.serviceModel.condiciones != null ? widget.serviceModel.condiciones : '',
                                     style: TextStyle(fontSize: 16),
                                     textAlign: TextAlign.left)),
                           ],

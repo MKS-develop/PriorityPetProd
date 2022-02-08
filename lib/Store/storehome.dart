@@ -81,6 +81,20 @@ class _StoreHomeState extends State<StoreHome> {
 
   @override
   void initState() {
+    User user = FirebaseAuth.instance.currentUser;
+    DocumentReference documentReference = FirebaseFirestore.instance
+        .collection("Dueños")
+        .doc(user.uid);
+    documentReference.get().then((dataSnapshot) {
+      setState(() {
+        userLatLong = (dataSnapshot["location"]);
+        bienvenida = (dataSnapshot["bienvenida"]);
+
+      });
+      bienvenidaNueva(bienvenida);
+      print('la bienvenida esta en: $bienvenida');
+    });
+
     _getUserData();
     _getQuality();
     _getOrderStatus();
@@ -100,17 +114,6 @@ class _StoreHomeState extends State<StoreHome> {
     });
     print(
         'la clave del usuario esssssss ${PetshopApp.sharedPreferences.getString(PetshopApp.userUID)}');
-    DocumentReference documentReference = FirebaseFirestore.instance
-        .collection("Dueños")
-        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
-    documentReference.get().then((dataSnapshot) {
-      setState(() {
-        userLatLong = (dataSnapshot.data()["location"]);
-        bienvenida = (dataSnapshot.data()["bienvenida"]);
-        bienvenidaNueva(bienvenida);
-      });
-      print('la bienvenida esta en: $bienvenida');
-    });
 
 
     // if(model !=null){
@@ -167,7 +170,7 @@ class _StoreHomeState extends State<StoreHome> {
         .doc('3yqqjyVkTHHkg8yDIdS1');
     documentReference.get().then((dataSnapshot) {
 
-      quality = (dataSnapshot.data()["quality"]);
+      quality = (dataSnapshot["quality"]);
     });
   }
 
@@ -185,34 +188,34 @@ class _StoreHomeState extends State<StoreHome> {
       await documentReference.get().then((dataSnapshot) {
         setState(() {
           PetshopApp.sharedPreferences.setString(
-              PetshopApp.userDocId, dataSnapshot.data()[PetshopApp.userDocId]);
+              PetshopApp.userDocId, dataSnapshot[PetshopApp.userDocId]);
           PetshopApp.sharedPreferences.setString(PetshopApp.userApellido,
-              dataSnapshot.data()[PetshopApp.userApellido]);
+              dataSnapshot[PetshopApp.userApellido]);
           PetshopApp.sharedPreferences.setString(PetshopApp.userNombre,
-              dataSnapshot.data()[PetshopApp.userNombre]);
+              dataSnapshot[PetshopApp.userNombre]);
           PetshopApp.sharedPreferences.setString(PetshopApp.userAvatarUrl,
-              dataSnapshot.data()[PetshopApp.userAvatarUrl]);
+              dataSnapshot[PetshopApp.userAvatarUrl]);
 
           PetshopApp.sharedPreferences.setString(PetshopApp.userTelefono,
-              dataSnapshot.data()[PetshopApp.userTelefono]);
+              dataSnapshot[PetshopApp.userTelefono]);
           PetshopApp.sharedPreferences.setString(PetshopApp.userDireccion,
-              dataSnapshot.data()[PetshopApp.userDireccion]);
+              dataSnapshot[PetshopApp.userDireccion]);
           PetshopApp.sharedPreferences.setString(
-              PetshopApp.userPais, dataSnapshot.data()[PetshopApp.userPais]);
+              PetshopApp.userPais, dataSnapshot[PetshopApp.userPais]);
           PetshopApp.sharedPreferences.setString(PetshopApp.userGenero,
-              dataSnapshot.data()[PetshopApp.userGenero]);
+              dataSnapshot[PetshopApp.userGenero]);
           PetshopApp.sharedPreferences.setString(
-              PetshopApp.userToken, dataSnapshot.data()[PetshopApp.userToken]);
+              PetshopApp.userToken, dataSnapshot[PetshopApp.userToken]);
           PetshopApp.sharedPreferences.setString(
-              PetshopApp.userCulqi, dataSnapshot.data()[PetshopApp.userCulqi]);
+              PetshopApp.userCulqi, dataSnapshot[PetshopApp.userCulqi]);
 
-          if (dataSnapshot.data()[(PetshopApp.userFechaNac)] != null) {
+          if (dataSnapshot[(PetshopApp.userFechaNac)] != null) {
             Timestamp time; //from firebase
 
             PetshopApp.sharedPreferences.setString(
                 PetshopApp.userFechaNac,
                 DateTime.fromMicrosecondsSinceEpoch(dataSnapshot
-                        .data()[(PetshopApp.userFechaNac)]
+                        [(PetshopApp.userFechaNac)]
                         .microsecondsSinceEpoch)
                     .toString());
 
@@ -220,7 +223,7 @@ class _StoreHomeState extends State<StoreHome> {
 
           }
           PetshopApp.sharedPreferences.setString(
-              PetshopApp.userName, dataSnapshot.data()[PetshopApp.userName]);
+              PetshopApp.userName, dataSnapshot[PetshopApp.userName]);
           FirebaseFirestore.instance
               .collection("Ciudades")
               .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
@@ -240,8 +243,8 @@ class _StoreHomeState extends State<StoreHome> {
     print('La vaina es $model');
   }
 
-  bienvenidaNueva(bienvenida) {
-    if (bienvenida == true) {
+  bienvenidaNueva(bienve) {
+    if (bienve == true) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => SignUpHelpScreen()),
@@ -462,7 +465,7 @@ class _StoreHomeState extends State<StoreHome> {
           .doc(aliadoId);
       documentReference.get().then((dataSnapshot) {
         setState(() {
-          nombreComercial = (dataSnapshot.data()["nombreComercial"]);
+          nombreComercial = (dataSnapshot["nombreComercial"]);
         });
 
 
@@ -1448,6 +1451,7 @@ class _StoreHomeState extends State<StoreHome> {
                                         .where("pais",
                                         isEqualTo: PetshopApp.sharedPreferences
                                             .getString(PetshopApp.userPais))
+                                        .where("isApproved", isEqualTo: true)
                                         .orderBy('createdOn', descending: true)
                                         .snapshots(),
                                     builder: (context, dataSnapshot) {
@@ -2129,7 +2133,9 @@ class _StoreHomeState extends State<StoreHome> {
                     ) {
                       AliadoModel aliado = AliadoModel.fromJson(
                           dataSnapshot.data.docs[index].data());
-                      return GestureDetector(
+                      return
+                        aliado.isApproved?
+                      GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
@@ -2183,7 +2189,7 @@ class _StoreHomeState extends State<StoreHome> {
                             ),
                           ),
                         ),
-                      );
+                      ):Container();
                     }),
               );
             }));
@@ -2245,7 +2251,7 @@ class _StoreHomeState extends State<StoreHome> {
                                   LocationModel location =
                                   LocationModel.fromJson(
                                       dataSnapshot.data.docs[index].data());
-                          return GestureDetector(
+                          return aliado.isApproved? GestureDetector(
                             onTap: () {
                               if (model == null) {
                                 {
@@ -2402,7 +2408,7 @@ class _StoreHomeState extends State<StoreHome> {
                                 ),
                               ),
                             ),
-                          );
+                          ) :Container();
                         }
                       );
                     });
@@ -2433,6 +2439,9 @@ class _StoreHomeState extends State<StoreHome> {
                         stream: FirebaseFirestore.instance
                             .collection('Aliados')
                             .doc(model.aliadoId)
+
+
+
                             .snapshots(),
                         builder: (context, dataSnapshot) {
                           if (!dataSnapshot.hasData) {
@@ -2448,7 +2457,7 @@ class _StoreHomeState extends State<StoreHome> {
                                   index,) {
                                 AliadoModel ali = AliadoModel.fromJson(
                                     dataSnapshot.data.data());
-                                return GestureDetector(
+                                return ali.isApproved? GestureDetector(
                                   onTap: () {
                                     var likeRef = db.collection("Mascotas").doc(model.mid);
                                     likeRef.update({
@@ -2633,7 +2642,7 @@ class _StoreHomeState extends State<StoreHome> {
                                       ),
                                     ],
                                   ),
-                                );
+                                ): Container();
                               }
                           );
                         }),
@@ -2704,7 +2713,7 @@ class _StoreHomeState extends State<StoreHome> {
                                 rating =
                                     aliado.totalRatings / aliado.countRatings;
                               }
-                              return GestureDetector(
+                              return aliado.isApproved? GestureDetector(
                                 onTap: () {
                                   if (model == null) {
                                     {
@@ -2907,7 +2916,7 @@ class _StoreHomeState extends State<StoreHome> {
                                     ),
                                   ),
                                 ),
-                              );
+                              ): Container();
                             });
                       });
                 });
@@ -2976,7 +2985,7 @@ class _StoreHomeState extends State<StoreHome> {
                                     }
 
                                     // var totalD = 0;
-                                    return GestureDetector(
+                                    return ali.isApproved? GestureDetector(
                                       onTap: () {
                                         Navigator.push(
                                             context,
@@ -3027,7 +3036,7 @@ class _StoreHomeState extends State<StoreHome> {
                                               Column(
                                                 children: [
                                                   Container(
-                                                    height: 91.0,
+                                                    height: 110.0,
                                                     width:
                                                     MediaQuery
                                                         .of(context)
@@ -3175,7 +3184,7 @@ class _StoreHomeState extends State<StoreHome> {
                                           ),
                                         ),
                                       ),
-                                    );
+                                    ):Container();
                                   }
                               );
                             });

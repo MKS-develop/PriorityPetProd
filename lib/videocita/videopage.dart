@@ -734,7 +734,7 @@ class _VideoPageState extends State<VideoPage> {
                                 ) {
                               AliadoModel aliado = AliadoModel.fromJson(
                                   dataSnapshot.data.docs[index].data());
-                              return GestureDetector(
+                              return aliado.isApproved? GestureDetector(
                                 onTap: () {
                                   Navigator.push(
                                     context,
@@ -925,7 +925,7 @@ class _VideoPageState extends State<VideoPage> {
                                         ),
                                       )),
                                 ),
-                              );
+                              ) : Container();
                             });
                       });
                 });

@@ -954,8 +954,7 @@ class _VideoAgendaState extends State<VideoAgenda> {
   }
 
   sendEmail(_email, nombreCompleto, orderId, aliadoAvatar) async {
-    await http.get(
-        'https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=$_email&username=$nombreCompleto&orderId=$orderId&logoAliado=$aliadoAvatar');
+    await http.get(Uri.parse('https://us-central1-priority-pet.cloudfunctions.net/sendOrderDuenoEmail?dest=$_email&username=$nombreCompleto&orderId=$orderId&logoAliado=$aliadoAvatar'));
     print('$_email $nombreCompleto $orderId $aliadoAvatar');
   }
 

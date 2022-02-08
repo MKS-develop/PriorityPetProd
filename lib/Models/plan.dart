@@ -1,20 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PlanModel {
-  int descuento, montoAnual, montoMensual, codigoplan;
-  String planid;
+  dynamic descuento, montoAnual, montoMensual, codigoplan;
+  String planId, codigo, nombrePlan;
   List<dynamic> detallesBasicos;
   List<dynamic> detallesCompletos;
+  List<dynamic> coberturas;
 
 
   PlanModel(
       {this.descuento,
         this.montoAnual,
         this.montoMensual,
-        this.planid,
+        this.planId,
         this.codigoplan,
         this.detallesBasicos,
         this.detallesCompletos,
+        this.coberturas,
+        this.codigo,
+        this.nombrePlan,
 
         });
 
@@ -22,10 +26,13 @@ class PlanModel {
     descuento = json['descuento'];
     montoAnual = json['montoAnual'];
     montoMensual = json['montoMensual'];
-    planid = json['planid'];
+    planId = json['planId'];
     codigoplan = json['codigoplan'];
     detallesBasicos = json['detallesBasicos'];
     detallesCompletos = json['detallesCompletos'];
+    coberturas = json['coberturas'];
+    codigo = json['codigo'];
+    nombrePlan = json['nombrePlan'];
 
 
   }
@@ -35,10 +42,13 @@ class PlanModel {
     data['descuento'] = this.descuento;
     data['montoAnual'] = this.montoAnual;
     data['montoMensual'] = this.montoMensual;
-    data['planid'] = this.planid;
+    data['planId'] = this.planId;
     data['codigoplan'] = this.codigoplan;
     data['detallesBasicos'] = this.detallesBasicos;
     data['detallesCompletos'] = this.detallesCompletos;
+    data['coberturas'] = this.coberturas;
+    data['codigo'] = this.codigo;
+    data['nombrePlan'] = this.nombrePlan;
 
 
     return data;

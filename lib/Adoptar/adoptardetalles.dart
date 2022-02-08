@@ -100,7 +100,7 @@ class _AdoptarDetallesState extends State<AdoptarDetalles>
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        check = (dataSnapshot.data()["like"]);
+        check = (dataSnapshot["like"]);
       });
 
       print(check);

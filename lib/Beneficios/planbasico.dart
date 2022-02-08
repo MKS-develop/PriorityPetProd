@@ -3,12 +3,14 @@ import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/Config/enums.dart';
 import 'package:pet_shop/Models/plan.dart';
 import 'package:pet_shop/Payment/payment.dart';
+import 'package:pet_shop/Store/pdf2.dart';
 import 'package:pet_shop/Store/storehome.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
+import 'package:pet_shop/Widgets/ktitle.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import '../Widgets/myDrawer.dart';
 
@@ -71,14 +73,15 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
         ),
         body: Container(
           height: MediaQuery.of(context).size.height,
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              colorFilter: new ColorFilter.mode(
-                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
-              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
+          color: Color(0xFFf4f6f8),
+          // decoration: new BoxDecoration(
+          //   image: new DecorationImage(
+          //     colorFilter: new ColorFilter.mode(
+          //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16.0,
           ),
@@ -97,7 +100,7 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
                     Padding(
                       padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
                       child: Text(
-                        widget.planModel.planid,
+                        widget.planModel.nombrePlan,
                         style: TextStyle(
                           color: Color(0xFF57419D),
                           fontSize: 20,
@@ -114,10 +117,10 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 10,),
-                    Text('Por favor indica tu opción de pago', style: TextStyle(
-                      fontFamily: 'Product Sans',
-                      fontSize: 18.0)),
-                      SizedBox(height: 50,),
+                    // Text('Por favor indica tu opción de pago', style: TextStyle(
+                    //   fontFamily: 'Product Sans',
+                    //   fontSize: 18.0)),
+
                       // Padding(
                       //   padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
                       //   child: ListView.builder(
@@ -303,86 +306,86 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
                 //             )),
                 //       )
                 //     : Container(),
-                widget.planModel.planid != 'Plan Gratis'
+                widget.planModel.planId != 'Plan Gratis'
                     ? Column(
                       children: [
-                      GestureDetector(onTap: (){
-                        _totalPrice = widget
-                            .planModel
-                            .montoMensual
-                            .toInt();
-                        _tituloCategoriaOrden =
-                        'Plan Mensual';
-                        Navigator
-                            .push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  PaymentPage(
-                                    petModel: model,
-                                    planModel: plan,
-                                    tituloCategoria: _tituloCategoriaOrden,
-                                    totalPrice: _totalPrice,
-                                    defaultChoiceIndex: widget.defaultChoiceIndex,
-                                    onSuccess: _respuestaPago,
-                                  )),
-                        );
-                      },
-                        child: Container(
-                          height: 130,
-                          width: _screenWidth * 0.9,
-                          decoration: new BoxDecoration(
-                            image: new DecorationImage(
-                              // colorFilter: new ColorFilter.mode(
-                              //     Colors.white.withOpacity(0.3), BlendMode.dstATop),
-                              image: new AssetImage("images/rectamorado.png"),
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(20.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                          "Pago mensual",
-                                          style: TextStyle(
-                                              fontFamily: 'Product Sans',
-                                              color: Colors.white,
-                                              fontSize: 15.0)),
-                                      Text(
-                                         '${PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda)}${widget.planModel.montoMensual.toString()}' ,
-                                          style: TextStyle(fontFamily: 'Product Sans', color: Colors.white, fontSize: 22.0, fontWeight: FontWeight.bold)),
-                                      Text(
-                                          "Contratar este plan",
-                                          style: TextStyle(
-                                              fontFamily: 'Product Sans',
-                                              color: Colors.white,
-                                              fontSize: 15.0)),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Image.asset("images/patadobla.png",
-                                  // height: 10,
-                                  width: 40,),
-                                ),
-                                // SizedBox(width: 10,),
-                              ],
-                            )
-
-                        ),
-                      ),
+                      // GestureDetector(onTap: (){
+                      //   _totalPrice = widget
+                      //       .planModel
+                      //       .montoMensual
+                      //       .toInt();
+                      //   _tituloCategoriaOrden =
+                      //   'Plan Mensual';
+                      //   Navigator
+                      //       .push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) =>
+                      //             PaymentPage(
+                      //               petModel: model,
+                      //               planModel: plan,
+                      //               tituloCategoria: _tituloCategoriaOrden,
+                      //               totalPrice: _totalPrice,
+                      //               defaultChoiceIndex: widget.defaultChoiceIndex,
+                      //               onSuccess: _respuestaPago,
+                      //             )),
+                      //   );
+                      // },
+                      //   child: Container(
+                      //     height: 130,
+                      //     width: _screenWidth * 0.9,
+                      //     decoration: new BoxDecoration(
+                      //       image: new DecorationImage(
+                      //         // colorFilter: new ColorFilter.mode(
+                      //         //     Colors.white.withOpacity(0.3), BlendMode.dstATop),
+                      //         image: new AssetImage("images/rectamorado.png"),
+                      //         fit: BoxFit.fill,
+                      //       ),
+                      //     ),
+                      //     child: Row(
+                      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //         children: [
+                      //           Padding(
+                      //             padding: const EdgeInsets.all(20.0),
+                      //             child: Column(
+                      //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //               crossAxisAlignment: CrossAxisAlignment.start,
+                      //               children: [
+                      //                 Text(
+                      //                     "Pago mensual",
+                      //                     style: TextStyle(
+                      //                         fontFamily: 'Product Sans',
+                      //                         color: Colors.white,
+                      //                         fontSize: 15.0)),
+                      //                 Text(
+                      //                    '${PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda)}${widget.planModel.montoMensual.toString()}' ,
+                      //                     style: TextStyle(fontFamily: 'Product Sans', color: Colors.white, fontSize: 22.0, fontWeight: FontWeight.bold)),
+                      //                 Text(
+                      //                     "Contratar este plan",
+                      //                     style: TextStyle(
+                      //                         fontFamily: 'Product Sans',
+                      //                         color: Colors.white,
+                      //                         fontSize: 15.0)),
+                      //               ],
+                      //             ),
+                      //           ),
+                      //           Padding(
+                      //             padding: const EdgeInsets.all(10.0),
+                      //             child: Image.asset("images/patadobla.png",
+                      //             // height: 10,
+                      //             width: 40,),
+                      //           ),
+                      //           // SizedBox(width: 10,),
+                      //         ],
+                      //       )
+                      //
+                      //   ),
+                      // ),
                         GestureDetector(onTap: (){
                           _totalPrice = widget
                               .planModel
                               .montoAnual
-                              .toInt();
+                              ;
                           _tituloCategoriaOrden =
                           'Plan Anual';
                           Navigator
@@ -401,53 +404,149 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
 
                         },
                           child: Container(
-                              height: 130,
+                              height: 400,
                               width: _screenWidth * 0.9,
                               decoration: new BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
                                 image: new DecorationImage(
                                   // colorFilter: new ColorFilter.mode(
                                   //     Colors.white.withOpacity(0.3), BlendMode.dstATop),
+
                                   image: new AssetImage("images/rectanaranja.png"),
                                   fit: BoxFit.fill,
                                 ),
                               ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(19.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  // crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                        "¡Aprovecha esta promoción!",
+                                        style: TextStyle(
+                                            fontFamily: 'Product Sans',
+                                            color: Colors.white,
+                                            fontSize: 17.0)),
+                                    Text(
+                                        "Pago anual",
+                                        style: TextStyle(
+                                            fontFamily: 'Product Sans',
+                                            color: Colors.white,
+                                            fontSize: 27.0, fontWeight: FontWeight.bold)),
+
+                                    Text(
+                                        "Paga una vez y disfruta todo el año\n de los beneficios que tenemos para\n tu consentido.",
+                                        style: TextStyle(
+                                            fontFamily: 'Product Sans',
+                                            color: Colors.white,
+                                            fontSize: 17.0)),
+
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text('Antes', style: TextStyle(fontSize: 17,color: Colors.white, ),),
+                                              SizedBox(height: 8,),
+                                              Text('${PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda)}${468}', style: TextStyle(decoration: TextDecoration.lineThrough, fontSize: 24,color: textColor, fontWeight: FontWeight.bold ),),
+                                            ],
+                                          ),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text('Ahora', style: TextStyle(fontSize: 17,color: Colors.white, ),),
+                                              SizedBox(height: 8,),
+                                              Text('${PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda)}${plan.montoAnual}', style: TextStyle(fontSize: 27,color: Colors.white, fontWeight: FontWeight.bold ),),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                  ],
+                                ),
+                              )
+
+                          ),
+                        ),
+
+
+                        Container(
+                          width: _screenWidth * 0.81,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                            child: RaisedButton(
+                              onPressed: () {
+                                _totalPrice = widget
+                                    .planModel
+                                    .montoAnual
+                                ;
+                                _tituloCategoriaOrden =
+                                'Plan Anual';
+                                Navigator
+                                    .push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          PaymentPage(
+                                            petModel: widget.petModel,
+                                            planModel: widget.planModel,
+                                            tituloCategoria: _tituloCategoriaOrden,
+                                            totalPrice: _totalPrice,
+                                            onSuccess: _respuestaPago,
+                                          )),
+                                );
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(builder: (context) => PlanBasicoHome()),
+                                // );
+                              },
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              color: primaryColor,
+                              padding: EdgeInsets.fromLTRB(18, 18, 18, 18),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                            "Pago anual",
-                                            style: TextStyle(
-                                                fontFamily: 'Product Sans',
-                                                color: Colors.white,
-                                                fontSize: 15.0)),
-                                        Text(
-                                            '${PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda)}${widget.planModel.montoAnual.toString()}' ,
-                                            style: TextStyle(fontFamily: 'Product Sans', color: Colors.white, fontSize: 22.0, fontWeight: FontWeight.bold)),
-                                        Text(
-                                            "Contratar este plan",
-                                            style: TextStyle(
-                                                fontFamily: 'Product Sans',
-                                                color: Colors.white,
-                                                fontSize: 15.0)),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Image.asset("images/patadobla.png",
-                                      // height: 10,
-                                      width: 40,),
-                                  ),
-                                  // SizedBox(width: 10,),
+                                  Text('Contratar este plan',
+                                      style: TextStyle(
+                                          fontFamily: 'Product Sans',
+                                          color: Colors.white,
+                                          // fontWeight: FontWeight.bold,
+                                          fontSize: 17.0)),
+                                  // Row(
+                                  //   children: [
+                                  //     Text(plan.descuento.toString(),
+                                  //         style: TextStyle(
+                                  //             fontFamily: 'Product Sans', fontSize: 17.0)),
+                                  //     Text("% Desct.",
+                                  //         style: TextStyle(
+                                  //             fontFamily: 'Product Sans', fontSize: 17.0)),
+                                  //   ],
+                                  // ),
+                                  // Row(
+                                  //   children: [
+                                  //     Text("S/",
+                                  //         style: TextStyle(
+                                  //             fontFamily: 'Product Sans',
+                                  //             color: Colors.white,
+                                  //             fontWeight: FontWeight.bold,
+                                  //             fontSize: 17.0)),
+                                  //     Text(plan.montoMensual.toString(),
+                                  //         style: TextStyle(
+                                  //             fontFamily: 'Product Sans',
+                                  //             color: Colors.white,
+                                  //             fontWeight: FontWeight.bold,
+                                  //             fontSize: 17.0)),
+                                  //   ],
+                                  // ),
                                 ],
-                              )
-
+                              ),
+                            ),
                           ),
                         ),
                         // Row(
@@ -685,6 +784,39 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
                         //       ),
                         //     ],
                         //   ),
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(0),
+                              alignment: Alignment.center,
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.info_outline,
+                                ),
+                                iconSize: 30,
+                                color: Color(0xFF57419D),
+                                splashColor: Color(0xFF57419D),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MyApp2()),
+                                  );
+
+                                  // showDialog(
+                                  //     builder: (context) => new ChoosePetAlertDialog(
+                                  //       message:
+                                  //           "Se reserva el derecho de editar, actualizar, modificar, suspender, eliminar o finalizar los servicios ofrecidos por la Aplicación, incluyendo todo o parte de su contenido, sin necesidad de previo aviso, así como de modificar la forma o tipo de acceso a esta.",
+                                  //     ), context: context);
+                                },
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('Ver términos y condiciones', style: TextStyle(color: primaryColor),),
+                            ),
+                          ],
+                        ),
                       ],
                     )
                     : Padding(
@@ -740,7 +872,7 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
       "status": 'Activo',
       "precio": _totalPrice,
       "createdOn": DateTime.now(),
-      "tipoPlan": widget.planModel.planid,
+      "tipoPlan": widget.planModel.planId,
       "oid": productId,
       "mid": widget.petModel.mid,
       "vigencia_desde": DateTime.now(),
@@ -755,7 +887,7 @@ class _PlanBasicoHomeState extends State<PlanBasicoHome> {
       "status": estadoOrden,
       "tipoOrden": 'Plan',
       'createdOn': DateTime.now(),
-      "tipoPlan": widget.planModel.planid,
+      "tipoPlan": widget.planModel.planId,
       "mid": widget.petModel.mid,
       "vigencia_desde": DateTime.now(),
       "vigencia_hasta":

@@ -152,7 +152,7 @@ class _ClinicasDetalleState extends State<ClinicasDetalle> {
                     Padding(
                       padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
                       child: Text(
-                        "Clinicas",
+                        "Clínicas",
                         style: TextStyle(
                           color: Color(0xFF57419D),
                           fontSize: 20,
@@ -357,7 +357,8 @@ class _ClinicasDetalleState extends State<ClinicasDetalle> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => CitasPage(
-                                            petModel: widget.petModel)),
+                                            petModel: widget.petModel, defaultChoiceIndex:
+                                        widget.defaultChoiceIndex, tituloCat: _categoria, clinicasModel: widget.clinicasModel,)),
                                   );
                                 },
                                 // uploading ? null : ()=> uploadImageAndSavePetInfo(),

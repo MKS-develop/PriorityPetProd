@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:pet_shop/Payment/AikonsPay/apcrearpago.dart';
 import 'package:pet_shop/Store/storehome.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
+import 'package:pet_shop/Widgets/ktitle.dart';
 import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import 'package:http/http.dart' as http;
@@ -66,7 +67,7 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
     FirebaseFirestore.instance.collection("Culqi").doc("Priv");
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        _prk = (dataSnapshot.data()["prk"]);
+        _prk = (dataSnapshot["prk"]);
       });
       // deleteUser();
     });
@@ -151,7 +152,7 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         widget.orderModel.tipoOrden == 'Servicio' ||
-                                widget.orderModel.tipoOrden == 'Plan' || widget.orderModel.tipoOrden == 'Donación' || widget.orderModel.tipoOrden == 'Apadrinar' || widget.orderModel.tipoOrden == 'Adopción' || widget.orderModel.tipoOrden == 'Videoconsulta'
+                                 widget.orderModel.tipoOrden == 'Donación' || widget.orderModel.tipoOrden == 'Apadrinar' || widget.orderModel.tipoOrden == 'Adopción' || widget.orderModel.tipoOrden == 'Videoconsulta'
                             ? StreamBuilder(
                                 stream: FirebaseFirestore.instance
                                     .collection('Mascotas')
@@ -601,22 +602,28 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                             ? _btnRegistrarNuevoPago(context)
                             : Container(height: 0.0, width: 0.0),
                         SizedBox(height: 15),
-                        widget.orderModel.status != 'Cancelada'
+                        widget.orderModel.status != 'Cancelada' && widget.orderModel.status != 'Entregado'
                             ? SizedBox(
                                 width: 120,
                                 height: 30,
                                 child: RaisedButton(
                                   onPressed: () {
                                     if(widget.orderModel.tipoOrden == 'Apadrinar'){
-                                      popUp('¿Estas seguro que deseas cancelar la orden?');
+                                      popUp('¿Estas seguro que deseas cancelar tu suscripción de apadrinado?');
                                     }
-                                    if(widget.orderModel.date != null){
+                                    if(widget.orderModel.tipoOrden == 'Producto'){
+                                      popUp('¿Estas seguro que deseas cancelar tu orden de productos?');
+                                    }
+                                    else if(widget.orderModel.date != null){
                                       Timestamp stamp = widget.orderModel.date;
                                       DateTime date = stamp.toDate();
                                       DateTime now =
                                       DateTime.now(); // current time
                                       if (now.isBefore(date)) {
-                                        popUp('¿Estas seguro que deseas cancelar tu suscripción de apadrinaje?');
+                                        popUp('¿Estas seguro que deseas cancelar la orden?');
+                                      }
+                                      else{
+                                        elseMessage('Ya paso la fecha para la cancelación de la orden.');
                                       }
                                     }
 
@@ -724,19 +731,25 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                         Text(msg,
                           style: TextStyle(fontWeight: FontWeight.bold)),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.3,
+                              width: MediaQuery.of(context).size.width * 0.25,
                               child: RaisedButton(
                                 onPressed: () {
+
                                   // confirmaCancel();
                                   // showConfirmationDialog(context);
                                   if(widget.orderModel.tipoOrden == 'Apadrinar'){
                                     deleteSubscription();
+
                                   }
                                   else{
+                                    print('Confirma');
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pop();
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -750,8 +763,7 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
 
                                   }
 
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop();
+
                                 },
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5)),
@@ -772,7 +784,7 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.3,
+                              width: MediaQuery.of(context).size.width * 0.25,
                               child: RaisedButton(
                                 onPressed: () {
                                   // AddOrder(productId, context, widget.planModel.montoAnual, widget.planModel.planid);
@@ -806,6 +818,8 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
 
 
   deleteSubscription() async {
+    Navigator.of(context, rootNavigator: true)
+        .pop();
     try {
       var url =
       ("https://api.culqi.com/v2/subscriptions/${widget.orderModel.pagoId}");
@@ -855,6 +869,40 @@ class _NewOrdenesDetalleState extends State<NewOrdenesDetalle> {
                     SizedBox(height: 20.0),
                     Text(
                       error,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 17.0,
+                          fontWeight: FontWeight.w300),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+  Future<void> elseMessage(String text) async {
+    // Navigator.of(context, rootNavigator: true).pop();
+    return showDialog(
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.3),
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)), //this right here
+            child: Container(
+              height: 400,
+              child: Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.info_outline, color: primaryColor, size: 55.0),
+                    SizedBox(height: 20.0),
+                    Text(
+                      text,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Colors.black,

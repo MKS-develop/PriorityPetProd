@@ -48,7 +48,7 @@ class PetshopApp {
   static final String orderTime = 'orderTime';
   static final String isSuccess = 'isSuccess';
 
-  static final List<String> pasarelasHabilitadas = ["Venezuela", "Perú"];
+  static final List<String> pasarelasHabilitadas = ["Venezuela", "Perú", "Ecuador"];
 
   static bool pasarelaDisponible() {
     return pasarelasHabilitadas.indexOf(PetshopApp.sharedPreferences.getString(PetshopApp.userPais)) != -1;
@@ -64,5 +64,8 @@ class PetshopApp {
 
   static bool esColombia() {
     return PetshopApp.sharedPreferences.getString(PetshopApp.userPais) == "Colombia";
+  }
+  static bool esEcuador() {
+    return PetshopApp.sharedPreferences.getString(PetshopApp.userPais) == "Ecuador";
   }
 }

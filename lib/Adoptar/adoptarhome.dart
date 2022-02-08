@@ -65,6 +65,7 @@ class _AdoptarHomeState extends State<AdoptarHome> {
             .getString(PetshopApp.userPais))
         .where("apadrinadoStatus", isEqualTo: false)
         .where("adoptadoStatus", isEqualTo: false)
+        .orderBy('createdOn', descending: true)
         .snapshots()
         .listen(createListofServices);
   }
@@ -173,7 +174,8 @@ class _AdoptarHomeState extends State<AdoptarHome> {
                 Column(
                   children: [
                     Container(
-                        height: _screenHeight * 0.73,
+                      // color: Colors.blue,
+                        height: _screenHeight * 0.7,
                       // color: Colors.blue,
                       // width: _screenWidth,
                       child: GridView.builder(
@@ -245,7 +247,7 @@ class _AdoptarHomeState extends State<AdoptarHome> {
                 index,) {
               AliadoModel ali = AliadoModel.fromJson(
                   dataSnapshot.data.data());
-              return GestureDetector(
+              return ali.isApproved? GestureDetector(
                 onTap: () {
                   var likeRef = db.collection("Mascotas").doc(model.mid);
                   likeRef.update({
@@ -429,7 +431,7 @@ class _AdoptarHomeState extends State<AdoptarHome> {
                     ),
                   ],
                 ),
-              );
+              ) : Container();
             }
         );
       }),

@@ -21,7 +21,8 @@
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDmb3pc-t9K9aC_mKnZBfIPQ7Il4OClCN0"/>
 
-
+<!--        <key>io.flutter.embedded_views_preview</key>-->
+<!--        <string>YES</string>-->
 
         <activity
             android:name=".MainActivity"

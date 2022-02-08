@@ -16,6 +16,7 @@ class AliadoModel {
   String geolocation;
   String direccion;
   dynamic totalRatings, countRatings, sumaTotal, delivery;
+  bool isApproved;
 
  AliadoModel(
       {    this.aliadoId,
@@ -36,6 +37,7 @@ class AliadoModel {
         this.direccion,
         this.sumaTotal,
         this.delivery,
+        this.isApproved,
 
 
       });
@@ -59,6 +61,7 @@ class AliadoModel {
     direccion = json['direccion'];
     sumaTotal = json['sumaTotal'];
     delivery = json['delivery'];
+    isApproved = json['isApproved'];
 
 
   }
@@ -84,6 +87,7 @@ class AliadoModel {
       countRatings: data['countRatings'],
       direccion: data['direccion'],
       sumaTotal: data['sumaTotal'],
+      isApproved: data['isApproved'],
 
     );
   }
@@ -108,6 +112,7 @@ class AliadoModel {
     data['direccion'] = this.direccion;
     data['sumaTotal'] = this.sumaTotal;
     data['delivery'] = this.delivery;
+    data['isApproved'] = this.isApproved;
 
     return data;
   }

@@ -74,8 +74,10 @@ class _AddCreditCardPageState extends State<AddCreditCardPage> {
   String ccToken = '';
   String culqiId;
   String cardBrand = '';
+  String merchantMessage = '';
   String _publicKey;
   String _prk;
+  String clientes;
 
   String productId = DateTime.now().millisecondsSinceEpoch.toString();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -248,6 +250,8 @@ class _AddCreditCardPageState extends State<AddCreditCardPage> {
     );
   }
 
+
+
   addCreditCardToDatabase(ccToken) async {
     try {
       var json =
@@ -270,15 +274,25 @@ class _AddCreditCardPageState extends State<AddCreditCardPage> {
         // response = statusCode.toString();
         culqiId = culqi.id;
         cardBrand = nuevo['source']['iin']['card_brand'];
+        merchantMessage = res.body;
         print(culqi.id);
         print(cardBrand);
         print(statusCode);
+        print('el bodyyyyyyyy ${res.body}');
       });
 
       // Navigator.of(context, rootNavigator: true).pop();
       print('la marca de tarjeta es $cardBrand');
     } catch (e) {
-      print(e.message);
+        print(merchantMessage);
+
+      showDialog(
+          builder: (context) => new ChoosePetAlertDialog(
+            message:   "La operación ha sido denegada por la entidad emisora de tu tarjeta. Contáctate con el banco para conocer el motivo de la denegación o intenta nuevamente con otra tarjeta."
+            ,
+          ),
+          context: context);
+      print(merchantMessage);
       return null;
     }
 
@@ -339,7 +353,7 @@ class _AddCreditCardPageState extends State<AddCreditCardPage> {
     } else if (result is CulqiError) {
       print('buenaaaaaaaa');
       print(result);
-      Message(context, result.errorMessage);
+      Message(context, 'Tarjeta invalida, intente nuevamente');
     }
   }
 
@@ -401,7 +415,7 @@ class _AddCreditCardPageState extends State<AddCreditCardPage> {
         FirebaseFirestore.instance.collection("Culqi").doc("Priv");
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        _prk = (dataSnapshot.data()["prk"]);
+        _prk = (dataSnapshot["prk"]);
       });
     });
   }
@@ -411,7 +425,7 @@ class _AddCreditCardPageState extends State<AddCreditCardPage> {
         FirebaseFirestore.instance.collection("Culqi").doc("Pub");
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        _publicKey = (dataSnapshot.data()["puk"]);
+        _publicKey = (dataSnapshot["puk"]);
       });
     });
   }

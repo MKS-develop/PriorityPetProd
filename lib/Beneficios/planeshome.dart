@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
+import 'package:pet_shop/Widgets/ktitle.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import '../Widgets/myDrawer.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -39,7 +40,7 @@ class _PlanesHomeState extends State<PlanesHome> {
   void initState() {
     super.initState();
     changePet(widget.petModel);
-    // _statusPlan();
+    _statusPlan();
     _getPetpoints();
     //initializeDateFormatting("es_VE", null).then((_) {});
   }
@@ -54,15 +55,15 @@ class _PlanesHomeState extends State<PlanesHome> {
         .collection("Dueños")
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID))
         .collection("Plan")
-        .doc(widget.petModel.mid);
+        .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
     documentReference.get().then((dataSnapshot) {
       setState(() {
         var formatter = DateFormat.yMd('es_VE');
 
-        status = (dataSnapshot.data()["status"]);
-        tipoPlan = (dataSnapshot.data()["tipoPlan"]);
-        vigenciaDesde = (dataSnapshot.data()["vigencia_desde"]);
-        vigenciaHasta = (dataSnapshot.data()["vigencia_hasta"]);
+        status = (dataSnapshot["status"]);
+        tipoPlan = (dataSnapshot["tipoPlan"]);
+        vigenciaDesde = (dataSnapshot["vigencia_desde"]);
+        vigenciaHasta = (dataSnapshot["vigencia_hasta"]);
         formattedDesde = formatter.format(vigenciaDesde.toDate());
         formattedHasta = formatter.format(vigenciaHasta.toDate());
       });
@@ -77,8 +78,8 @@ class _PlanesHomeState extends State<PlanesHome> {
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        ppAcumulados = (dataSnapshot.data()["ppAcumulados"]);
-        ppCanjeados = (dataSnapshot.data()["ppCanjeados"]);
+        ppAcumulados = (dataSnapshot["ppAcumulados"]);
+        ppCanjeados = (dataSnapshot["ppCanjeados"]);
       });
       print('Valor Acumulado: $ppAcumulados');
       print('Valor canjeados: $ppCanjeados');
@@ -105,14 +106,15 @@ class _PlanesHomeState extends State<PlanesHome> {
         ),
         body: Container(
           height: MediaQuery.of(context).size.height,
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              colorFilter: new ColorFilter.mode(
-                  Colors.white.withOpacity(0.3), BlendMode.dstATop),
-              image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
+          color: Color(0xFFf4f6f8),
+          // decoration: new BoxDecoration(
+          //   image: new DecorationImage(
+          //     colorFilter: new ColorFilter.mode(
+          //         Colors.white.withOpacity(0.3), BlendMode.dstATop),
+          //     image: new AssetImage("diseñador/drawable/fondohuesitos.png"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16.0,
           ),
@@ -134,7 +136,7 @@ class _PlanesHomeState extends State<PlanesHome> {
                               Padding(
                                 padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
                                 child: Text(
-                                  "Planes",
+                                  "Plan",
                                   style: TextStyle(
                                     color: Color(0xFF57419D),
                                     fontSize: 20,
@@ -258,14 +260,29 @@ class _PlanesHomeState extends State<PlanesHome> {
                                               // )
                                             ),
                                           ),
+
+                                              Container(
+                                                height: MediaQuery.of(context).size.height*0.25,
+                                                width: _screenWidth,
+                                                decoration: new BoxDecoration(
+                                                  image: new DecorationImage(
+                                                    // colorFilter: new ColorFilter.mode(
+                                                    //     Colors.white.withOpacity(0.3), BlendMode.dstATop),
+                                                    image: new AssetImage("diseñador/drawable/Grupo629.png"),
+                                                    fit: BoxFit.fitHeight,
+                                                  ),
+                                                ),
+                                                padding: const EdgeInsets.symmetric(
+                                                  horizontal: 16.0,
+                                                ),
+                                              ),
                                           SizedBox(
-                                            height: 160,
+                                            height: 30,
                                           ),
                                           StreamBuilder<QuerySnapshot>(
                                               stream: FirebaseFirestore.instance
                                                   .collection("Planes")
-                                                  .orderBy('descuento',
-                                                      descending: false)
+                                                  .where('nombrePlan', isEqualTo: 'Premium')
                                                   .snapshots(),
                                               builder: (context, dataSnapshot) {
                                                 if (!dataSnapshot.hasData) {
@@ -317,7 +334,7 @@ class _PlanesHomeState extends State<PlanesHome> {
                               Padding(
                                 padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
                                 child: Text(
-                                  "Beneficios",
+                                  "Mi plan y beneficios",
                                   style: TextStyle(
                                     color: Color(0xFF57419D),
                                     fontSize: 20,
@@ -333,7 +350,7 @@ class _PlanesHomeState extends State<PlanesHome> {
                           StreamBuilder<QuerySnapshot>(
                               stream: FirebaseFirestore.instance
                                   .collection("Planes")
-                                  .where('planid', isEqualTo: tipoPlan)
+                                  .where('nombrePlan', isEqualTo: 'Premium')
                                   .snapshots(),
                               builder: (context, dataSnapshot) {
                                 if (!dataSnapshot.hasData) {
@@ -356,38 +373,38 @@ class _PlanesHomeState extends State<PlanesHome> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.end,
                                           children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      0, 0, 20, 10),
-                                              child: RaisedButton(
-                                                onPressed: () {
-                                                  _planModalBottomSheet(
-                                                      context, plan);
-                                                },
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
-                                                color: Color(0xFFEB9448),
-                                                padding: EdgeInsets.fromLTRB(
-                                                    18, 0, 18, 0),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    Text("Ver plan",
-                                                        style: TextStyle(
-                                                            fontFamily:
-                                                                'Product Sans',
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 18.0)),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
+                                            // Padding(
+                                            //   padding:
+                                            //       const EdgeInsets.fromLTRB(
+                                            //           0, 0, 20, 10),
+                                            //   child: RaisedButton(
+                                            //     onPressed: () {
+                                            //       _planModalBottomSheet(
+                                            //           context, plan);
+                                            //     },
+                                            //     shape: RoundedRectangleBorder(
+                                            //         borderRadius:
+                                            //             BorderRadius.circular(
+                                            //                 5)),
+                                            //     color: Color(0xFFEB9448),
+                                            //     padding: EdgeInsets.fromLTRB(
+                                            //         18, 0, 18, 0),
+                                            //     child: Column(
+                                            //       mainAxisAlignment:
+                                            //           MainAxisAlignment.start,
+                                            //       children: [
+                                            //         Text("Ver plan",
+                                            //             style: TextStyle(
+                                            //                 fontFamily:
+                                            //                     'Product Sans',
+                                            //                 color: Colors.white,
+                                            //                 fontWeight:
+                                            //                     FontWeight.bold,
+                                            //                 fontSize: 18.0)),
+                                            //       ],
+                                            //     ),
+                                            //   ),
+                                            // ),
                                           ],
                                         ),
                                         Row(
@@ -398,96 +415,96 @@ class _PlanesHomeState extends State<PlanesHome> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      plan.planid,
-                                                      style: TextStyle(
-                                                          fontSize: 17.0,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                  ],
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    SizedBox(
-                                                      width: 160.0,
-                                                      child: FlatButton(
-                                                          onPressed: () {},
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5)),
-                                                          color:
-                                                              Color(0xFF57419D),
-                                                          child: Text(
-                                                            "1 mascota",
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 15.0,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                            ),
-                                                          )),
-                                                    ),
-                                                  ],
-                                                ),
+                                                // Row(
+                                                //   mainAxisAlignment:
+                                                //       MainAxisAlignment.start,
+                                                //   children: [
+                                                //     Text(
+                                                //       plan.nombrePlan,
+                                                //       style: TextStyle(
+                                                //           fontSize: 17.0,
+                                                //           fontWeight:
+                                                //               FontWeight.bold),
+                                                //     ),
+                                                //   ],
+                                                // ),
+                                                // Row(
+                                                //   mainAxisAlignment:
+                                                //       MainAxisAlignment.start,
+                                                //   children: [
+                                                //     SizedBox(
+                                                //       width: 160.0,
+                                                //       child: FlatButton(
+                                                //           onPressed: () {},
+                                                //           shape: RoundedRectangleBorder(
+                                                //               borderRadius:
+                                                //                   BorderRadius
+                                                //                       .circular(
+                                                //                           5)),
+                                                //           color:
+                                                //               Color(0xFF57419D),
+                                                //           child: Text(
+                                                //             "1 mascota",
+                                                //             style: TextStyle(
+                                                //               color:
+                                                //                   Colors.white,
+                                                //               fontSize: 15.0,
+                                                //               fontWeight:
+                                                //                   FontWeight
+                                                //                       .w400,
+                                                //             ),
+                                                //           )),
+                                                //     ),
+                                                //   ],
+                                                // ),
                                               ],
                                             ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      'Tienes disponibles',
-                                                      style: TextStyle(
-                                                          fontSize: 15.0),
-                                                    ),
-                                                  ],
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    SizedBox(
-                                                      width: 160.0,
-                                                      child: FlatButton(
-                                                          onPressed: () {},
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5)),
-                                                          color:
-                                                              Color(0xFF57419D),
-                                                          child: Text(
-                                                            "$ppAcumulados pet points",
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 15.0,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                            ),
-                                                          )),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
+                                            // Column(
+                                            //   crossAxisAlignment:
+                                            //       CrossAxisAlignment.start,
+                                            //   children: [
+                                            //     Row(
+                                            //       mainAxisAlignment:
+                                            //           MainAxisAlignment.start,
+                                            //       children: [
+                                            //         Text(
+                                            //           'Tienes disponibles',
+                                            //           style: TextStyle(
+                                            //               fontSize: 15.0),
+                                            //         ),
+                                            //       ],
+                                            //     ),
+                                            //     Row(
+                                            //       mainAxisAlignment:
+                                            //           MainAxisAlignment.start,
+                                            //       children: [
+                                            //         SizedBox(
+                                            //           width: 160.0,
+                                            //           child: FlatButton(
+                                            //               onPressed: () {},
+                                            //               shape: RoundedRectangleBorder(
+                                            //                   borderRadius:
+                                            //                       BorderRadius
+                                            //                           .circular(
+                                            //                               5)),
+                                            //               color:
+                                            //                   Color(0xFF57419D),
+                                            //               child: Text(
+                                            //                 "$ppAcumulados pet points",
+                                            //                 style: TextStyle(
+                                            //                   color:
+                                            //                       Colors.white,
+                                            //                   fontSize: 15.0,
+                                            //                   fontWeight:
+                                            //                       FontWeight
+                                            //                           .w400,
+                                            //                 ),
+                                            //               )),
+                                            //         ),
+                                            //       ],
+                                            //     ),
+                                            //   ],
+                                            // ),
                                           ],
                                         ),
                                         SizedBox(
@@ -499,65 +516,186 @@ class _PlanesHomeState extends State<PlanesHome> {
                                                   .width *
                                               0.91,
                                           decoration: BoxDecoration(
-                                              color: Color(0xFFF4F6F8),
+                                              color: primaryColor,
                                               borderRadius:
                                                   BorderRadius.circular(10),
                                               border: Border.all(
-                                                color: Color(0xFFBDD7D6),
+                                                color: primaryColor,
                                               )),
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
                                                   children: [
-                                                    Text(
-                                                      'Vigencia desde: ',
-                                                      style: TextStyle(
-                                                          color:
-                                                              Color(0xFF57419D),
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 16),
+                                                    Container(
+                                                      width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                          0.6,
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                        children: [
+                                                          Text(
+                                                            'Plan',
+                                                            style: TextStyle(
+                                                                color: textColor,
+                                                                // fontWeight:
+                                                                //     FontWeight.bold,
+                                                                fontSize: 16),
+                                                          ),
+                                                          Text(
+                                                            plan.nombrePlan,
+                                                            style: TextStyle(
+                                                                color: Colors.white,
+                                                                fontWeight:
+                                                                FontWeight.bold,
+                                                                fontSize: 16),
+                                                          ),
+
+
+                                                        ],
+                                                      ),
                                                     ),
-                                                    Text(
-                                                      '$formattedDesde',
-                                                      style: TextStyle(
-                                                          fontWeight:
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          'Monto',
+                                                          style: TextStyle(
+                                                              color: textColor,
+                                                              // fontWeight:
+                                                              // FontWeight.bold,
+                                                              fontSize: 16),
+                                                        ),
+                                                        Text(
+                                                          plan.montoAnual.toString(),
+                                                          style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontWeight:
                                                               FontWeight.bold,
-                                                          fontSize: 16),
+                                                              fontSize: 16),
+                                                        ),
+
+
+                                                      ],
                                                     ),
                                                   ],
                                                 ),
-                                                SizedBox(
-                                                  height: 6,
-                                                ),
+                                                SizedBox(height: 12,),
                                                 Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
                                                   children: [
-                                                    Text(
-                                                      'Vigencia hasta: ',
-                                                      style: TextStyle(
-                                                          color:
-                                                              Color(0xFF57419D),
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 16),
+                                                    Container(
+                                                      width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                          0.6,
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment.start,
+                                                        children: [
+                                                          Text(
+                                                            'Vigencia',
+                                                            style: TextStyle(
+                                                                color: textColor,
+                                                                // fontWeight:
+                                                                //     FontWeight.bold,
+                                                                fontSize: 16),
+                                                          ),
+                                                          Text(
+                                                            '$formattedDesde - $formattedHasta',
+                                                            style: TextStyle(
+                                                              color: Colors.white,
+                                                                fontWeight:
+                                                                    FontWeight.bold,
+                                                                fontSize: 16),
+                                                          ),
+
+
+                                                        ],
+                                                      ),
                                                     ),
-                                                    Text(
-                                                      '$formattedHasta',
-                                                      style: TextStyle(
-                                                          fontWeight:
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          'Status',
+                                                          style: TextStyle(
+                                                              color: textColor,
+                                                              // fontWeight:
+                                                              // FontWeight.bold,
+                                                              fontSize: 16),
+                                                        ),
+                                                        Text(
+                                                          '$status',
+                                                          style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontWeight:
                                                               FontWeight.bold,
-                                                          fontSize: 16),
+                                                              fontSize: 16),
+                                                        ),
+
+
+                                                      ],
                                                     ),
                                                   ],
                                                 ),
                                               ],
                                             ),
                                           ),
-                                        )
+                                        ),
+
+
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(2, 4, 0, 10),
+                                          child: ListView.builder(
+                                            physics: NeverScrollableScrollPhysics(),
+                                              shrinkWrap: true,
+                                              itemCount: plan.coberturas.length,
+                                              itemBuilder: (BuildContext context, int i) {
+                                                return
+                                                  Padding(
+                                                    padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+                                                    child: Container(
+                                                      width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                          0.91,
+                                                      height: 60,
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          borderRadius:
+                                                          BorderRadius.circular(10),
+                                                          border: Border.all(
+                                                            color: Colors.white,
+                                                          )),
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: [
+                                                            // Container(width: MediaQuery.of(context).size.width * 0.28, child: Text(plan.coberturas[i]['tipo'], style: TextStyle(fontSize: 15,color: primaryColor, ),),),
+                                                            Icon(Icons.check_circle, color: secondaryColor, size: 30,),
+                                                            SizedBox(width: 8,),
+                                                            Container(width: MediaQuery.of(context).size.width * 0.6, child: Text(plan.coberturas[i]['producto'] != null ? plan.coberturas[i]['producto'].toString() : plan.coberturas[i]['servicio'].toString(), style: TextStyle(fontSize: 15,color: primaryColor, fontWeight: FontWeight.bold),)),
+                                                            Container(width: MediaQuery.of(context).size.width * 0.1, child: Text(plan.coberturas[i]['tipo'] != 'Eventos' ? '${plan.coberturas[i]['porcentaje']}%' : plan.coberturas[i]['cantidad'].toString(), style: TextStyle(fontSize: 15,color: primaryColor,fontWeight: FontWeight.bold),)),
+
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+
+
+                                              }),
+                                        ),
+
+
                                       ]);
                                     });
                               }),
@@ -591,16 +729,16 @@ class _PlanesHomeState extends State<PlanesHome> {
               },
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
-              color: Color(0xFFEB9448),
-              padding: EdgeInsets.fromLTRB(18, 13, 18, 13),
+              color: primaryColor,
+              padding: EdgeInsets.fromLTRB(18, 18, 18, 18),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(plan.planid,
+                  Text(plan.nombrePlan,
                       style: TextStyle(
                           fontFamily: 'Product Sans',
-                          color: Color(0xFF1A3E4D),
-                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          // fontWeight: FontWeight.bold,
                           fontSize: 17.0)),
                   // Row(
                   //   children: [
@@ -640,113 +778,203 @@ class _PlanesHomeState extends State<PlanesHome> {
   void _planModalBottomSheet(BuildContext context, PlanModel plan) {
     showModalBottomSheet(
         context: context,
+        isScrollControlled: true,
         builder: (BuildContext bc) {
-          return Container(
-              height: MediaQuery.of(context).size.height * .60,
-              color:
-                  Color(0xFF737373), //could change this to Color(0xFF737373),
-              //so you don't have to change MaterialApp canvasColor
+          return Wrap(
+              children: <Widget>[
+            Container(
+                // height: MediaQuery.of(context).size.height * 0.9,
+                color:
+                    Color(0xFF737373), //could change this to Color(0xFF737373),
+                //so you don't have to change MaterialApp canvasColor
 
-              child: Container(
-                  width: 60.0,
-                  decoration: new BoxDecoration(
-                      image: new DecorationImage(
-                        image: new AssetImage("images/bottom.png"),
-                        fit: BoxFit.fill,
-                      ),
-                      color: Color(0xFF737373),
-                      borderRadius: new BorderRadius.only(
-                          topLeft: const Radius.circular(10.0),
-                          topRight: const Radius.circular(10.0))),
-                  child: new Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: new Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                  Stack(
                     children: [
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: SizedBox(
-                               width: 70.0,
-                              height: 5.0,
-                              child: Image.asset(
-                                'diseñador/drawable/Rectangulo308.png',
-                              ),
-                            ),
+                      Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height * 0.83,
+                      decoration: new BoxDecoration(
+                          image: new DecorationImage(
+                            image: new AssetImage("assets/images/membresia.jpg"),
+                            fit: BoxFit.fill,
                           ),
-                          Text(plan.planid,
-                              style: TextStyle(
-                                  fontFamily: 'Product Sans',
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 27.0)),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: plan.detallesBasicos.length,
-                            itemBuilder: (BuildContext context, int i) {
-                              return Padding(
-                                padding: const EdgeInsets.all(3.0),
-                                child: Text(plan.detallesBasicos[i],
-                                    style: TextStyle(
-                                        fontFamily: 'Product Sans',
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18.0)),
-                              );
-                            }),
-                      ),
-                      // Padding(
-                      //   padding: const EdgeInsets.all(8.0),
-                      //   child: Row(
-                      //     mainAxisAlignment: MainAxisAlignment.center,
-                      //     children: [
-                      //       Text("S/",
-                      //           style: TextStyle(
-                      //               fontFamily: 'Product Sans',
-                      //               fontWeight: FontWeight.bold,
-                      //               fontSize: 42.0)),
-                      //       Text(plan.montoMensual.toString(),
-                      //           style: TextStyle(
-                      //               fontFamily: 'Product Sans',
-                      //               fontWeight: FontWeight.bold,
-                      //               fontSize: 42.0)),
-                      //     ],
-                      //   ),
-                      // ),
-                      plan.planid != 'Plan Freemium - Free' ?
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PlanBasicoHome(
-                                    petModel: model,
-                                    planModel: plan,
-                                    defaultChoiceIndex:
-                                        widget.defaultChoiceIndex)),
-                          );
-                        },
-                        child: Container(
-                          height: 60,
-                          width: double.infinity,
-                          color: Colors.yellow,
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
-                            child: Center(
-                              child: Text("Seleccionar plan",
-                                  style: TextStyle(
-                                      fontFamily: 'Product Sans',
-                                      color: Color(0xFF57419D),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20.0)),
-                            ),
+                          color: Color(0xFF737373),
+                          borderRadius: new BorderRadius.only(
+                              topLeft: const Radius.circular(10.0),
+                              topRight: const Radius.circular(10.0))),),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: SizedBox(
+                                   width: 70.0,
+                                  height: 5.0,
+                                  child: Image.asset(
+                                    'diseñador/drawable/Rectangulo308.png',
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                    ],
+                  ),
+                    // Column(
+                    //   children: [
+                    //     Padding(
+                    //       padding: const EdgeInsets.all(10.0),
+                    //       child: SizedBox(
+                    //          width: 70.0,
+                    //         height: 5.0,
+                    //         child: Image.asset(
+                    //           'diseñador/drawable/Rectangulo308.png',
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     Text(plan.nombrePlan,
+                    //         style: TextStyle(
+                    //             fontFamily: 'Product Sans',
+                    //             color: Colors.white,
+                    //             fontWeight: FontWeight.bold,
+                    //             fontSize: 27.0)),
+                    //   ],
+                    // ),
+
+                    // Column(
+                    //   children: [
+                    //     Padding(
+                    //       padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                    //       child: Divider(color: textColor,),
+                    //     ),
+                    //     Padding(
+                    //       padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                    //       child: Row(
+                    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //         children: [
+                    //           Container(width: MediaQuery.of(context).size.width * 0.28, child: Text('Cobertura', style: TextStyle(fontSize: 15,color: primaryColor, fontWeight: FontWeight.bold),)),
+                    //           Container(width: MediaQuery.of(context).size.width * 0.45, child: Text('Categoría', style: TextStyle(fontSize: 15,color: primaryColor, fontWeight: FontWeight.bold),)),
+                    //           Container(width: MediaQuery.of(context).size.width * 0.1, child: Text('Cant.', style: TextStyle(fontSize: 15,color: primaryColor, fontWeight: FontWeight.bold),)),
+                    //
+                    //         ],
+                    //       ),
+                    //     ),
+                    //     Padding(
+                    //       padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                    //       child: Divider(color: textColor,),
+                    //     ),
+                    //     Padding(
+                    //       padding: const EdgeInsets.fromLTRB(15, 0, 0, 10),
+                    //       child: ListView.builder(
+                    //           shrinkWrap: true,
+                    //           itemCount: plan.coberturas.length,
+                    //           itemBuilder: (BuildContext context, int i) {
+                    //             return
+                    //               Padding(
+                    //                 padding: const EdgeInsets.fromLTRB(0, 3, 15, 0),
+                    //                 child: Row(
+                    //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //                   children: [
+                    //                     Container(width: MediaQuery.of(context).size.width * 0.28, child: Text(plan.coberturas[i]['tipo'], style: TextStyle(fontSize: 15,color: primaryColor, ),),),
+                    //                     Container(width: MediaQuery.of(context).size.width * 0.45, child: Text(plan.coberturas[i]['producto'] != null ? plan.coberturas[i]['producto'] : plan.coberturas[i]['servicio'], style: TextStyle(fontSize: 15,color: primaryColor, ),)),
+                    //                     Container(width: MediaQuery.of(context).size.width * 0.1, child: Text(plan.coberturas[i]['tipo'] != 'Eventos' ? '${plan.coberturas[i]['porcentaje']}%' : plan.coberturas[i]['cantidad'], style: TextStyle(fontSize: 15,color: primaryColor,),)),
+                    //
+                    //                   ],
+                    //                 ),
+                    //               );
+                    //
+                    //             //
+                    //             //   Padding(
+                    //             //   padding: const EdgeInsets.all(3.0),
+                    //             //   child: Text(plan.coberturas[i]['cantidad'],
+                    //             //       style: TextStyle(
+                    //             //           fontFamily: 'Product Sans',
+                    //             //           fontWeight: FontWeight.bold,
+                    //             //           fontSize: 18.0)),
+                    //             // );
+                    //           }),
+                    //     ),
+                    //
+                    //     Padding(
+                    //       padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                    //       child: Row(
+                    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //         children: [
+                    //           Column(
+                    //             crossAxisAlignment: CrossAxisAlignment.start,
+                    //             children: [
+                    //               Text('Antes', style: TextStyle(fontSize: 17,color: primaryColor, ),),
+                    //               SizedBox(height: 8,),
+                    //               Text('${PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda)}${468}', style: TextStyle(decoration: TextDecoration.lineThrough, fontSize: 24,color: textColor, fontWeight: FontWeight.bold ),),
+                    //             ],
+                    //           ),
+                    //           Column(
+                    //             crossAxisAlignment: CrossAxisAlignment.start,
+                    //             children: [
+                    //               Text('Ahora', style: TextStyle(fontSize: 17,color: primaryColor, ),),
+                    //               SizedBox(height: 8,),
+                    //               Text('${PetshopApp.sharedPreferences.getString(PetshopApp.simboloMoneda)}${plan.montoAnual}', style: TextStyle(fontSize: 24,color: primaryColor, fontWeight: FontWeight.bold ),),
+                    //             ],
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     )
+                    //   ],
+                    // ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.center,
+                    //     children: [
+                    //       Text("S/",
+                    //           style: TextStyle(
+                    //               fontFamily: 'Product Sans',
+                    //               fontWeight: FontWeight.bold,
+                    //               fontSize: 42.0)),
+                    //       Text(plan.montoMensual.toString(),
+                    //           style: TextStyle(
+                    //               fontFamily: 'Product Sans',
+                    //               fontWeight: FontWeight.bold,
+                    //               fontSize: 42.0)),
+                    //     ],
+                    //   ),
+                    // ),
+                    plan.planId != 'Plan Freemium - Free' ?
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PlanBasicoHome(
+                                  petModel: model,
+                                  planModel: plan,
+                                  defaultChoiceIndex:
+                                      widget.defaultChoiceIndex)),
+                        );
+                      },
+                      child: Container(
+                        height: 60,
+                        width: double.infinity,
+                        color: Colors.yellow,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
+                          child: Center(
+                            child: Text("Seleccionar plan",
+                                style: TextStyle(
+                                    fontFamily: 'Product Sans',
+                                    color: Color(0xFF57419D),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20.0)),
                           ),
                         ),
-                      ): Container(),
-                    ],
-                  )));
+                      ),
+                    ): Container(),
+                  ],
+                ))
+          ],
+          );
         });
   }
 

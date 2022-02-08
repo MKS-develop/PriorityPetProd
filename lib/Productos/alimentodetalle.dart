@@ -78,7 +78,7 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
         .doc(widget.productoModel.aliadoId);
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        sumaTotal = (dataSnapshot.data()["sumaTotal"]);
+        sumaTotal = (dataSnapshot["sumaTotal"]);
       });
 
       print('Suma Total: $sumaTotal');
@@ -91,7 +91,7 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        userLatLong = (dataSnapshot.data()["location"]);
+        userLatLong = (dataSnapshot["location"]);
       });
     });
   }
@@ -104,7 +104,7 @@ class _AlimentoDetalleState extends State<AlimentoDetalle> {
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        check = (dataSnapshot.data()["like"]);
+        check = (dataSnapshot["like"]);
       });
 
       print(check);

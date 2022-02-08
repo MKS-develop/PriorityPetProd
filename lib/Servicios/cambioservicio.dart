@@ -96,7 +96,7 @@ class _CambioServicioState extends State<CambioServicio> {
         .doc("Precio");
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        ppvalor = (dataSnapshot.data()["petpointPE"]);
+        ppvalor = (dataSnapshot["petpointPE"]);
       });
     });
   }

@@ -52,7 +52,7 @@ class _ProductosHomeState extends State<ProductosHome> {
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        userLatLong = (dataSnapshot.data()["location"]);
+        userLatLong = (dataSnapshot["location"]);
       });
     });
   }
@@ -652,7 +652,7 @@ class _ProductosHomeState extends State<ProductosHome> {
                                     }
 
                                     // var totalD = 0;
-                                    return GestureDetector(
+                                    return ali.isApproved? GestureDetector(
                                       onTap: () {
                                         Navigator.push(
                                             context,
@@ -815,7 +815,7 @@ class _ProductosHomeState extends State<ProductosHome> {
                                           ),
                                         ),
                                       ),
-                                    );
+                                    ): Container();
                                   }
                               );
                             });

@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:http/http.dart';
 
 import 'package:pet_shop/Config/config.dart';
+import 'package:pet_shop/Models/PaymentezCard.dart';
 
 import 'package:pet_shop/Models/Producto.dart';
 import 'package:pet_shop/Models/Cart.dart';
@@ -14,9 +16,11 @@ import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_shop/Store/storehome.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
+import 'package:pet_shop/Widgets/ktitle.dart';
 import 'package:pet_shop/Widgets/myDrawer.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import 'package:http/http.dart' as http;
+// import 'package:webview_flutter/webview_flutter.dart';
 
 class NotificacionesPage extends StatefulWidget {
   final PetModel petModel;
@@ -47,6 +51,11 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
   bool carrito = false;
   String _prk;
   String clientes;
+  String username = 'TPP3-EC-SERVER';
+  String secretKey = 'JdXTDl2d0o0B8ANZ1heJOq7tf62PC6';
+  dynamic time;
+  String basicAuth;
+  String uniq;
 
   final db = FirebaseFirestore.instance;
 
@@ -54,7 +63,19 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
   void initState() {
     super.initState();
     // _getOrderStatus();
-    _getprK();
+    setState(() {
+      var timestamp = DateTime.now().toUtc().millisecondsSinceEpoch;
+      time = timestamp.toString();
+
+
+      print('el tiempoooooo $time');
+
+      uniq = sha256.convert(utf8.encode(secretKey+time)).toString();
+      basicAuth = base64Encode(utf8.encode('$username;$time;$uniq'));
+      print(basicAuth);
+    });
+    // showCards();
+    // _getprK();
     // deleteUser();
     // initState calificarAliado();
 
@@ -75,29 +96,64 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
     // }
   }
 
-  deleteUser() async {
+  // deleteUser() async {
+  //   try {
+  //     var url =
+  //         ("https://api.culqi.com/v2/customers");
+  //     Map<String, String> headers = {
+  //       "Content-type": "application/json",
+  //       "Authorization": _prk
+  //     };
+  //     Response res = await http.get(Uri.parse(url), headers: headers);
+  //     int statusCode = await res.statusCode;
+  //
+  //     setState(() {
+  //        // response = statusCode.toString();
+  //       clientes = res.body;
+  //       print(statusCode);
+  //       print('el cuerpo es ${res.body}');
+  //     });
+  //   } catch (e) {
+  //     print(e.message);
+  //     return null;
+  //   }
+  // }
+
+  showCards() async {
     try {
       var url =
-          ("https://api.culqi.com/v2/customers");
+          ("https://ccapi-stg.paymentez.com/v2/card/list?uid=${PetshopApp.sharedPreferences.getString(PetshopApp.userUID)}");
       Map<String, String> headers = {
         "Content-type": "application/json",
-        "Authorization": _prk
+        "Auth-Token": basicAuth,
       };
       Response res = await http.get(Uri.parse(url), headers: headers);
       int statusCode = await res.statusCode;
+      var nuevo = await jsonDecode(res.body);
+      PaymentezCardModel card = await PaymentezCardModel.fromJson(nuevo);
 
+      Map<String, dynamic> data = jsonDecode(res.body);
       setState(() {
          // response = statusCode.toString();
         clientes = res.body;
         print(statusCode);
         print('el cuerpo es ${res.body}');
+        print('Tarjetaaaa ${data['cards'][0]['bin']}');
+        // print(card.cards[0].status);
       });
+
+      // for (int i = 0; i < card.result_size; i++) {
+      //   print(card.cards[i].status);
+        allResults.add(PaymentezCardModel.fromJson(data));
+
+      // }
+
+
     } catch (e) {
       print(e.message);
       return null;
     }
   }
-
   // calificarAliado() {
   //
   //   StreamBuilder<QuerySnapshot>(
@@ -132,9 +188,9 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
         FirebaseFirestore.instance.collection("Culqi").doc("Priv");
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        _prk = (dataSnapshot.data()["prk"]);
+        _prk = (dataSnapshot["prk"]);
       });
-       deleteUser();
+       // deleteUser();
     });
   }
 
@@ -164,7 +220,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
     var docs = snapshot.docs;
     for (var Doc in docs) {
       setState(() {
-        allResults.add(OrderModel.fromJson(Doc.data()));
+        // allResults.add(OrderModel.fromJson(Doc.data()));
         OrderModel order = OrderModel.fromJson(Doc.data());
         ordenes.add(order);
       });
@@ -322,6 +378,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
   Widget build(BuildContext context) {
     double _screenWidth = MediaQuery.of(context).size.width,
         _screenHeight = MediaQuery.of(context).size.height;
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -380,72 +437,80 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
                     ),
                   ],
                 ),
+              // SizedBox(
+              //   height: _screenHeight*3,
+              //   width: _screenWidth,
+              //   child: WebView(
+              //     initialUrl: 'https://checkout-demo.paguelofacil.com/M_2V7NUXZ',
+              //     javascriptMode: JavascriptMode.unrestricted,
+              //     // gestureNavigationEnabled: true,
+              //   ),
+              // ),
 
 
+                // FlatButton(onPressed: ()
+                // async {
+                //   var json =
+                //       '{"description" : "Pago Mesa 2 Orden ABC","amount" : 10.0,"discount" : 0.0,"idPaymentStation" : 1, "CCLW" : "9497C860F73CA2C6D5AFF3703DBFD8AFD1CEA3E476B258BFAE9870D638077BFD4E9497EFF6D7851DA039B59D64E187EC0AD627A3C05AB07E52F9D2C3FFA2F398"}';
+                //   var url = ("https://api-sand.pfserver.net/");
+                //   Map<String, String> headers = {
+                //     "Content-type": "application/json",
+                //     "Authorization": "brEyQRSzMm2UwQa5v0NsobRa3U8nH5xT|DIReF7R5uATe87Qig7ykat8oi"
+                //   };
+                //
+                //   Response res =
+                //       await http.post(Uri.parse(url), headers: headers, body: json);
+                //   int statusCode = res.statusCode;
+                //   var nuevo = await jsonDecode(res.body);
+                //   print(res.body);
+                //
+                //   setState(() {
+                //
+                //   });
+                // }, shape: RoundedRectangleBorder(
+                //     borderRadius:
+                //     BorderRadius
+                //         .circular(
+                //         5)),
+                //   color:
+                //   Color(0xFFEB9448),
+                //   padding:
+                //   EdgeInsets.all(
+                //       10.0),
+                //   child: Column(
+                //     crossAxisAlignment:
+                //     CrossAxisAlignment
+                //         .center,
+                //     children: [
+                //       Text("PAAAAGA",
+                //           style: TextStyle(
+                //               fontFamily:
+                //               'Product Sans',
+                //               color: Colors
+                //                   .white,
+                //               fontSize:
+                //               16.0)),
+                //     ],
+                //   ),
+                // ),
 
-                FlatButton(onPressed: () async {
-                  var json =
-                      '{"description" : "Pago Mesa 2 Orden ABC","amount" : 10.0,"discount" : 0.0,"idPaymentStation" : 4}';
-                  var url = ("https://sandbox.paguelofacil.com/PFManagementServices/api/v1/Activities/");
-                  Map<String, String> headers = {
-                    "Content-type": "application/json",
-                    "Authorization": "brEyQRSzMm2UwQa5v0NsobRa3U8nH5xT|DIRndyS9jCeZDDoKsVP4wRTRm"
-                  };
 
-                  Response res =
-                      await http.post(Uri.parse(url), headers: headers, body: json);
-                  int statusCode = res.statusCode;
-                  var nuevo = await jsonDecode(res.body);
-                  //
-                  // CulqiUserModel culqi = await CulqiUserModel.fromJson(nuevo);
-                  print(res.body);
-                  print(nuevo['outcome']['type']);
+// Text(clientes),
+                Container(
 
-                  // print(culqi.state);
-                  // print(culqi.object);
-                  // print('la marca de tarjeta es ${culqi.card_brand}');
-                  setState(() {
-                    // response = statusCode.toString();
-                    // pagoId = culqi.id;
-                    // type = nuevo['source']['source']['type'];
-                    // cardType = nuevo['source']['source']['iin']['card_type'];
-                    // cardBrand = nuevo['source']['source']['iin']['card_brand'];
-                    //
-                    // outcomeMsg = nuevo['outcome']['user_message'];
-                    // outcomeMsgError = nuevo['user_message'];
-
-                    print(statusCode);
-                  });
-                }, shape: RoundedRectangleBorder(
-                    borderRadius:
-                    BorderRadius
-                        .circular(
-                        5)),
-                  color:
-                  Color(0xFFEB9448),
-                  padding:
-                  EdgeInsets.all(
-                      10.0),
-                  child: Column(
-                    crossAxisAlignment:
-                    CrossAxisAlignment
-                        .center,
-                    children: [
-                      Text("PAAAAGA",
-                          style: TextStyle(
-                              fontFamily:
-                              'Product Sans',
-                              color: Colors
-                                  .white,
-                              fontSize:
-                              16.0)),
-                    ],
-                  ),
+                  height: _screenHeight * 0.51,
+                  // width: _screenWidth,
+                  child: ListView.builder(
+                      // controller: _scrollController,
+                      // physics: NeverScrollableScrollPhysics(),
+                      itemCount: allResults.length,
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return sourceInfo2(
+                            allResults[index], context);
+                      }),
                 ),
-
-
-Text(clientes),
-
 
 
               ],
@@ -453,6 +518,53 @@ Text(clientes),
           ),
         ),
       ),
+    );
+  }
+  Widget sourceInfo2(PaymentezCardModel card, BuildContext context) {
+    dynamic totalD = 0;
+    double rating = 0;
+
+    return InkWell(
+        child: ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: card.result_size,
+            itemBuilder: (BuildContext context, int i) {
+              return
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+                  child: Container(
+                    width: MediaQuery.of(context)
+                        .size
+                        .width *
+                        0.91,
+                    height: 60,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius:
+                        BorderRadius.circular(10),
+                        border: Border.all(
+                          color: Colors.white,
+                        )),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          // Container(width: MediaQuery.of(context).size.width * 0.28, child: Text(plan.coberturas[i]['tipo'], style: TextStyle(fontSize: 15,color: primaryColor, ),),),
+                          Icon(Icons.check_circle, color: secondaryColor, size: 30,),
+                          SizedBox(width: 8,),
+                          Container(width: MediaQuery.of(context).size.width * 0.6, child: Text(card.cards[i].status, style: TextStyle(fontSize: 15,color: primaryColor, fontWeight: FontWeight.bold),)),
+
+
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+
+
+            }),
     );
   }
 }

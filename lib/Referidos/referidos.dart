@@ -470,16 +470,16 @@ class _ReferidosPageState extends State<ReferidosPage> {
         .doc(user.uid)
         .get()
         .then((DocumentSnapshot datasnapshot) {
-      if (datasnapshot.data().containsKey("codigoReferido")) {
+      if (datasnapshot["codigoReferido"].notnull) {
         print("Si contiene codigo");
         setState(() {
-          aliadoCodigo = datasnapshot.data()['codigoReferido'];
+          aliadoCodigo = datasnapshot['codigoReferido'];
         });
       } else {
         print("No contiene codigo");
         var rng = new Random();
         var n = rng.nextInt(1000);
-        var a = datasnapshot.data()['nombre'].toLowerCase();
+        var a = datasnapshot['nombre'].toLowerCase();
         var b = a.replaceAll(" ", "");
         setState(() {
           aliadoCodigo = b + n.toString();

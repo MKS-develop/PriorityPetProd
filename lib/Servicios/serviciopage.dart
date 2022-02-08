@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:pet_shop/Config/config.dart';
 import 'package:pet_shop/Models/Servicio.dart';
 import 'package:pet_shop/Models/alidados.dart';
+
 import 'package:pet_shop/Models/location.dart';
 import 'package:pet_shop/Models/service.dart';
 import 'package:pet_shop/Servicios/detalleservicio.dart';
@@ -31,11 +32,11 @@ class ServicioPage extends StatefulWidget {
 
   ServicioPage(
       {this.petModel,
-      this.servicioModel,
-      this.serviceModel,
-      this.defaultChoiceIndex,
-      Key key,
-      @required this.tituloDetalle})
+        this.servicioModel,
+        this.serviceModel,
+        this.defaultChoiceIndex,
+        Key key,
+        @required this.tituloDetalle})
       : super(key: key);
 
   @override
@@ -56,8 +57,8 @@ class _ServicioPageState extends State<ServicioPage> {
 
   DateTime selectedDate = DateTime.now();
   String _categoria;
-  TextEditingController _searchTextEditingController =
-      new TextEditingController();
+  TextEditingController _searchTextEditingController = new TextEditingController();
+  TextEditingController _searchCityTextEditingController = new TextEditingController();
 
   ServiceModel servicio;
   PetModel model;
@@ -93,7 +94,7 @@ class _ServicioPageState extends State<ServicioPage> {
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        userLatLong = (dataSnapshot.data()["location"]);
+        userLatLong = (dataSnapshot["location"]);
       });
     });
   }
@@ -116,8 +117,8 @@ class _ServicioPageState extends State<ServicioPage> {
         .collection("Localidades")
         .where("serviciosContiene", isEqualTo: true)
         .where("pais",
-            isEqualTo:
-                PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
+        isEqualTo:
+        PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
         .where("ciudad", isEqualTo: categoria)
         .get()
         .then((val) => val.docs);
@@ -166,9 +167,9 @@ class _ServicioPageState extends State<ServicioPage> {
       cargado = 0;
     });
     if(_resultsList.length<10)
-      {
-        func(0, _resultsList.length);
-      }
+    {
+      func(0, _resultsList.length);
+    }
     else{
       func(0, 10);
     }
@@ -288,8 +289,8 @@ class _ServicioPageState extends State<ServicioPage> {
                                     .doc(widget.tituloDetalle)
                                     .collection('Servicios')
                                     .where('categoriaId',
-                                        isEqualTo: widget.tituloDetalle)
-                                    // .orderBy('createdOn', descending: false)
+                                    isEqualTo: widget.tituloDetalle)
+                                // .orderBy('createdOn', descending: false)
                                     .snapshots(),
                                 builder: (context, dataSnapshot) {
                                   if (!dataSnapshot.hasData) {
@@ -299,16 +300,16 @@ class _ServicioPageState extends State<ServicioPage> {
                                   } else {
                                     List<String> list = [];
                                     for (int i = 0;
-                                        i < dataSnapshot.data.docs.length;
-                                        i++) {
+                                    i < dataSnapshot.data.docs.length;
+                                    i++) {
                                       DocumentSnapshot razas =
-                                          dataSnapshot.data.docs[i];
+                                      dataSnapshot.data.docs[i];
                                       list.add(
                                         razas.id,
                                       );
                                     }
                                     return Container(
-                                      height: 55,
+                                      height: 57,
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         border: Border.all(
@@ -322,7 +323,7 @@ class _ServicioPageState extends State<ServicioPage> {
                                       margin: EdgeInsets.all(5.0),
                                       child: DropdownSearch<String>(
                                         dropdownSearchDecoration:
-                                            InputDecoration(
+                                        InputDecoration(
                                           hintStyle: TextStyle(
                                             fontSize: 16.0,
                                             // color: Color(0xFF7f9d9D)
@@ -333,7 +334,7 @@ class _ServicioPageState extends State<ServicioPage> {
                                           border: InputBorder.none,
                                         ),
                                         mode: Mode.BOTTOM_SHEET,
-                                        maxHeight: 300,
+                                        maxHeight: 400,
 
                                         // searchBoxController:
                                         //     _searchTextEditingController,
@@ -345,7 +346,7 @@ class _ServicioPageState extends State<ServicioPage> {
                                         hint: "Buscar servicio",
                                         showSearchBox: true,
                                         showSelectedItem: true,
-                                        // showClearButton: true,
+                                        showClearButton: true,
                                         items: list,
                                         // label: "Buscar servicio",
 
@@ -357,8 +358,7 @@ class _ServicioPageState extends State<ServicioPage> {
                                                 print;
                                           });
                                         },
-                                        selectedItem:
-                                            _searchTextEditingController.text,
+                                        // selectedItem: _searchTextEditingController.text != '' ? _searchTextEditingController.text : 'Buscar servicio',
                                       ),
                                     );
                                   }
@@ -488,85 +488,182 @@ class _ServicioPageState extends State<ServicioPage> {
                 //   ),
                 // ),
 
+
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: _screenWidth * 0.9,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: Colors.transparent,
-                                  // color: Color(0xFF7f9d9D),
-                                  width: 1.0,
-                                ),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
-                              ),
-                              padding: EdgeInsets.all(0.0),
-                              margin: EdgeInsets.all(5.0),
-                              child: DropdownButtonHideUnderline(
-                                child: Stack(
-                                  children: <Widget>[
-                                    DropdownButton(
-                                        hint: Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              50, 0, 0, 0),
-                                          child: Text(
-                                            'Ciudad',
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        items: ciudades.map((dynamic value) {
-                                          return DropdownMenuItem<dynamic>(
-                                            value: value,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      40, 0, 0, 0),
-                                              child: Text(value),
-                                            ),
-                                          );
-                                        }).toList(),
-                                        isExpanded: true,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            _categoria = value;
-                                            ciudad = value;
-                                            _resultsList = [];
-                                            _allResults = [];
-                                            _pagResults = [];
-                                            MastersList(value);
-                                          });
-                                        },
-                                        value: ciudad),
-                                    Container(
-                                      width: 20,
-                                      margin: EdgeInsets.symmetric(
-                                          vertical: 15, horizontal: 10),
-                                      child: Image.asset(
-                                        'diseñador/drawable/Grupo197.png',
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                  padding: const EdgeInsets.all(2.0),
+                  child: Container(
+                    height: 57,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.transparent,
+                        width: 1.0,
                       ),
-                    ],
-                  ),
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(10.0)),
+                    ),
+                    padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                    margin: EdgeInsets.all(5.0),
+                    child: Stack(
+                      children: <Widget>[
+                        DropdownSearch<dynamic>(
+
+
+                          dropdownSearchDecoration:
+                          InputDecoration(
+                            hintStyle: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold
+                              // color: Color(0xFF7f9d9D)
+                            ),
+                            disabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabled: true,
+                            border: InputBorder.none,
+                          ),
+                          mode: Mode.BOTTOM_SHEET,
+                          maxHeight: 400,
+
+                          // searchBoxController:
+                          //     _searchTextEditingController,
+                          // searchBoxDecoration: InputDecoration(
+                          //   fillColor: Colors.blue,
+                          // ),
+                          hint: "            Ciudad",
+
+                          showSearchBox: true,
+                          // showSelectedItem: true,
+                          showClearButton: true,
+
+                          items: ciudades,
+                          //     .map((dynamic value){
+                          //   return DropdownMenuItem<dynamic>(
+                          //     value: value,
+                          //     child: Padding(
+                          //       padding:
+                          //       const EdgeInsets.fromLTRB(
+                          //           40, 0, 0, 0),
+                          //       child: Text(value),
+                          //     ),
+                          //   );
+                          //
+                          // }).toList(),
+                          // popupItemDisabled: (String s) => s.startsWith('I'),
+                          onChanged: (value) {
+                            setState(() {
+                              _categoria = value;
+                              ciudad = value;
+                              _resultsList = [];
+                              _allResults = [];
+                              _pagResults = [];
+                              MastersList(value);
+                            });
+                          },
+                          // selectedItem: _categoria != null ? '           ${_categoria}' : '           Ciudad',
+                        ),
+                        _categoria == null ?
+                        Container(
+                          width: 20,
+                          margin: EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 10),
+                          child: Image.asset(
+                            'diseñador/drawable/Grupo197.png',
+                          ),
+                        ):
+                        Container(),
+                      ],
+                    ),
+                    ),
                 ),
+
+
+
+                // Padding(
+                //   padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: [
+                //       Container(
+                //         width: _screenWidth * 0.9,
+                //         child: Column(
+                //           crossAxisAlignment: CrossAxisAlignment.start,
+                //           children: [
+                //             Container(
+                //               decoration: BoxDecoration(
+                //                 color: Colors.white,
+                //                 border: Border.all(
+                //                   color: Colors.transparent,
+                //                   // color: Color(0xFF7f9d9D),
+                //                   width: 1.0,
+                //                 ),
+                //                 borderRadius:
+                //                 BorderRadius.all(Radius.circular(10.0)),
+                //               ),
+                //               padding: EdgeInsets.all(0.0),
+                //               margin: EdgeInsets.all(5.0),
+                //               child: DropdownButtonHideUnderline(
+                //                 child: Stack(
+                //                   children: <Widget>[
+                //                     DropdownButton(
+                //                         hint: Padding(
+                //                           padding: const EdgeInsets.fromLTRB(
+                //                               50, 0, 0, 0),
+                //                           child: Text(
+                //                             'Ciudad',
+                //                             style: TextStyle(
+                //                                 color: Colors.black,
+                //                                 fontWeight: FontWeight.bold),
+                //                           ),
+                //                         ),
+                //                         items: ciudades.map((dynamic value) {
+                //                           return DropdownMenuItem<dynamic>(
+                //                             value: value,
+                //                             child: Padding(
+                //                               padding:
+                //                               const EdgeInsets.fromLTRB(
+                //                                   40, 0, 0, 0),
+                //                               child: Text(value),
+                //                             ),
+                //                           );
+                //                         }).toList(),
+                //                         isExpanded: true,
+                //                         onChanged: (value) {
+                //                           setState(() {
+                //                             _categoria = value;
+                //                             ciudad = value;
+                //                             _resultsList = [];
+                //                             _allResults = [];
+                //                             _pagResults = [];
+                //                             MastersList(value);
+                //                           });
+                //                         },
+                //                         value: ciudad),
+                //                     Container(
+                //                       width: 20,
+                //                       margin: EdgeInsets.symmetric(
+                //                           vertical: 15, horizontal: 10),
+                //                       child: Image.asset(
+                //                         'diseñador/drawable/Grupo197.png',
+                //                       ),
+                //                     ),
+                //                   ],
+                //                 ),
+                //               ),
+                //             ),
+                //           ],
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+
+
+
+
+
+
+
                 // Padding(
                 //     padding: EdgeInsets.symmetric(horizontal: 10.0),
                 //     child: Column(
@@ -654,48 +751,48 @@ class _ServicioPageState extends State<ServicioPage> {
                 ),
                 _pagResults.length == 0
                     ? Column(
-                        children: [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Container(
-                            height: _screenHeight * 0.3,
-                            decoration: new BoxDecoration(
-                              image: new DecorationImage(
-                                image:
-                                    new AssetImage("images/perritotriste.png"),
-                                fit: BoxFit.fitHeight,
-                              ),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                            ),
-                          ),
-                          Text(
-                            'No disponible',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      )
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      height: _screenHeight * 0.3,
+                      decoration: new BoxDecoration(
+                        image: new DecorationImage(
+                          image:
+                          new AssetImage("images/perritotriste.png"),
+                          fit: BoxFit.fitHeight,
+                        ),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                      ),
+                    ),
+                    Text(
+                      'No disponible',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                )
                     : Container(
 
-                        height: _screenHeight * 0.51,
-                        // width: _screenWidth,
-                        child: ListView.builder(
-                            controller: _scrollController,
-                            // physics: NeverScrollableScrollPhysics(),
-                            itemCount: _pagResults.length,
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return sourceInfo2(
-                                  _pagResults[index], context);
-                            }),
-                      ),
+                  height: _screenHeight * 0.51,
+                  // width: _screenWidth,
+                  child: ListView.builder(
+                      controller: _scrollController,
+                      // physics: NeverScrollableScrollPhysics(),
+                      itemCount: _pagResults.length,
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return sourceInfo2(
+                            _pagResults[index], context);
+                      }),
+                ),
               ],
             ),
           ),
@@ -725,9 +822,9 @@ class _ServicioPageState extends State<ServicioPage> {
                 itemCount: 1,
                 shrinkWrap: true,
                 itemBuilder: (
-                  context,
-                  index,
-                ) {
+                    context,
+                    index,
+                    ) {
                   LocationModel location = LocationModel.fromJson(
                       dataSnapshot.data.docs[index].data());
 
@@ -747,18 +844,18 @@ class _ServicioPageState extends State<ServicioPage> {
                             itemCount: 1,
                             shrinkWrap: true,
                             itemBuilder: (
-                              context,
-                              index,
-                            ) {
+                                context,
+                                index,
+                                ) {
                               AliadoModel aliado = AliadoModel.fromJson(
                                   dataSnapshot.data.docs[index].data());
                               if (userLatLong != null &&
                                   location.location != null) {
                                 totalD = Geolocator.distanceBetween(
-                                        userLatLong.latitude,
-                                        userLatLong.longitude,
-                                        location.location.latitude,
-                                        location.location.longitude) /
+                                    userLatLong.latitude,
+                                    userLatLong.longitude,
+                                    location.location.latitude,
+                                    location.location.longitude) /
                                     1000;
                               }
                               // var p = 0.017453292519943295;
@@ -772,7 +869,8 @@ class _ServicioPageState extends State<ServicioPage> {
                                 rating =
                                     aliado.totalRatings / aliado.countRatings;
                               }
-                              return GestureDetector(
+                              return aliado.isApproved?
+                              GestureDetector(
                                 onTap: () {
                                   Navigator.push(
                                     context,
@@ -782,14 +880,14 @@ class _ServicioPageState extends State<ServicioPage> {
                                             serviceModel: servicio,
                                             aliadoModel: aliado,
                                             defaultChoiceIndex:
-                                                widget.defaultChoiceIndex,
+                                            widget.defaultChoiceIndex,
                                             locationModel: location,
                                             userLatLong: userLatLong)),
                                   );
                                 },
                                 child: Padding(
                                   padding:
-                                      const EdgeInsets.fromLTRB(2, 4, 2, 4),
+                                  const EdgeInsets.fromLTRB(2, 4, 2, 4),
                                   child: Container(
                                     width: MediaQuery.of(context).size.width,
                                     decoration: BoxDecoration(
@@ -801,7 +899,7 @@ class _ServicioPageState extends State<ServicioPage> {
                                       padding: const EdgeInsets.all(5.0),
                                       child: Row(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                        CrossAxisAlignment.center,
                                         children: [
                                           Center(
                                             child: Container(
@@ -815,7 +913,7 @@ class _ServicioPageState extends State<ServicioPage> {
                                                     spreadRadius: 0.0,
                                                     offset: Offset(2.0,
                                                         2.0), // shadow direction: bottom right
-                                                  )
+                                                  ),
                                                 ],
                                               ),
                                               child: Image.network(
@@ -833,21 +931,21 @@ class _ServicioPageState extends State<ServicioPage> {
                                           ),
                                           Container(
                                             width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
+                                                .size
+                                                .width *
                                                 0.51,
                                             height: 85,
                                             child: Column(
                                               crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              CrossAxisAlignment.start,
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceBetween,
                                               children: [
                                                 Column(
                                                   crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.start,
                                                   mainAxisAlignment:
-                                                      MainAxisAlignment.start,
+                                                  MainAxisAlignment.start,
                                                   children: [
                                                     Text(servicio.titulo,
                                                         maxLines: 1,
@@ -873,45 +971,45 @@ class _ServicioPageState extends State<ServicioPage> {
                                                         TextAlign.left),
                                                     location.mapAddress != null
                                                         ? Text(
-                                                            location.mapAddress,
-                                                            maxLines: 2,
+                                                        location.mapAddress,
+                                                        maxLines: 2,
                                                         overflow: TextOverflow.ellipsis,
-                                                            style: TextStyle(
-                                                              fontSize: 13,
-                                                            ),
-                                                            textAlign:
-                                                                TextAlign.left)
+                                                        style: TextStyle(
+                                                          fontSize: 13,
+                                                        ),
+                                                        textAlign:
+                                                        TextAlign.left)
                                                         : Text(
-                                                            location.mapAddress !=
-                                                                    null
-                                                                ? location
-                                                                    .mapAddress
-                                                                : location
-                                                                    .direccionLocalidad,
-                                                            maxLines: 2,
+                                                        location.mapAddress !=
+                                                            null
+                                                            ? location
+                                                            .mapAddress
+                                                            : location
+                                                            .direccionLocalidad,
+                                                        maxLines: 2,
                                                         overflow: TextOverflow.ellipsis,
-                                                            style: TextStyle(
-                                                              fontSize: 13,
-                                                            ),
-                                                            textAlign:
-                                                                TextAlign.left),
+                                                        style: TextStyle(
+                                                          fontSize: 13,
+                                                        ),
+                                                        textAlign:
+                                                        TextAlign.left),
                                                   ],
                                                 ),
                                                 Row(
                                                   mainAxisAlignment:
-                                                      MainAxisAlignment.end,
+                                                  MainAxisAlignment.end,
                                                   children: [
                                                     Text(
                                                         rating.toString() != 'NaN'
                                                             ? rating
-                                                                .toStringAsPrecision(
-                                                                    1)
+                                                            .toStringAsPrecision(
+                                                            1)
                                                             : '0',
                                                         style: TextStyle(
                                                             fontSize: 16,
                                                             color: Colors.orange),
                                                         textAlign:
-                                                            TextAlign.left),
+                                                        TextAlign.left),
                                                     SizedBox(
                                                       width: 8,
                                                     ),
@@ -927,40 +1025,40 @@ class _ServicioPageState extends State<ServicioPage> {
                                           ),
                                           totalD != 0
                                               ? SizedBox(
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.center,
-                                                    children: [
-                                                      SizedBox(
-                                                        height: 9,
-                                                      ),
-                                                      Icon(
-                                                        Icons.location_on_rounded,
-                                                        color: secondaryColor,
-                                                      ),
-                                                      SizedBox(
-                                                        height: 3,
-                                                      ),
-                                                      Text(
-                                                          totalD < 500
-                                                              ? '${totalD.toStringAsFixed(1)} Km'
-                                                              : '+500 Km',
-                                                          overflow: TextOverflow.ellipsis,
-                                                          style: TextStyle(
-                                                            fontSize: 11,
-                                                          ),
-                                                          textAlign:
-                                                              TextAlign.center),
-                                                    ],
-                                                  ),
-                                                )
+                                            child: Column(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                              children: [
+                                                SizedBox(
+                                                  height: 9,
+                                                ),
+                                                Icon(
+                                                  Icons.location_on_rounded,
+                                                  color: secondaryColor,
+                                                ),
+                                                SizedBox(
+                                                  height: 3,
+                                                ),
+                                                Text(
+                                                    totalD < 500
+                                                        ? '${totalD.toStringAsFixed(1)} Km'
+                                                        : '+500 Km',
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      fontSize: 11,
+                                                    ),
+                                                    textAlign:
+                                                    TextAlign.center),
+                                              ],
+                                            ),
+                                          )
                                               : Container(),
                                         ],
                                       ),
                                     ),
                                   ),
                                 ),
-                              );
+                              ): Container();
                             });
                       });
                 });
@@ -989,16 +1087,16 @@ class _ServicioPageState extends State<ServicioPage> {
       await FirebaseFirestore.instance
           .collection('Ciudades')
           .where("paisId",
-              isEqualTo:
-                  PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
+          isEqualTo:
+          PetshopApp.sharedPreferences.getString(PetshopApp.userPais))
           .get()
           .then((QuerySnapshot querySnapshot) => {
-                querySnapshot.docs.forEach((paisA) {
-                  setState(() {
-                    ciudades = paisA["ciudades"].toList();
-                  });
-                })
-              });
+        querySnapshot.docs.forEach((paisA) {
+          setState(() {
+            ciudades = paisA["ciudades"].toList();
+          });
+        })
+      });
       ciudades.sort();
       print(ciudades.length);
     } catch (e) {
@@ -1007,123 +1105,123 @@ class _ServicioPageState extends State<ServicioPage> {
     return ciudades;
   }
 
-  // Widget sourceInfo(BuildContext context, DocumentSnapshot document) {
-  //   final servicio = ServicioModel.fromSnapshot(document);
-  //
-  //   return InkWell(
-  //     child: Column(
-  //       children: [
-  //         Container(
-  //           height: 70.0,
-  //           width: MediaQuery.of(context).size.width,
-  //           child: GestureDetector(
-  //             onTap: () {
-  //               Navigator.push(
-  //                   context,
-  //                   MaterialPageRoute(
-  //                     builder: (context) => ServicioDetalle(
-  //                         petModel: model, servicioModel: servicio),
-  //                   ));
-  //             },
-  //             child: Container(
-  //               child: Row(
-  //                 children: [
-  //                   Container(
-  //                     height: 70,
-  //                     width: 70,
-  //                     decoration: BoxDecoration(
-  //                       boxShadow: [
-  //                         BoxShadow(
-  //                           color: Colors.grey,
-  //                           blurRadius: 1.0,
-  //                           spreadRadius: 0.0,
-  //                           offset: Offset(
-  //                               2.0, 2.0), // shadow direction: bottom right
-  //                         )
-  //                       ],
-  //                     ),
-  //                     child: Image.network(
-  //                       servicio.urlImagen,
-  //                       fit: BoxFit.cover,
-  //                       errorBuilder: (context, object, stacktrace) {
-  //                         return Container();
-  //                       },
-  //                     ),
-  //                   ),
-  //                   SizedBox(
-  //                     width: 8.0,
-  //                   ),
-  //                   Container(
-  //                     height: 90.0,
-  //                     width: MediaQuery.of(context).size.width * 0.7,
-  //                     child: Column(
-  //                       mainAxisAlignment: MainAxisAlignment.start,
-  //                       crossAxisAlignment: CrossAxisAlignment.start,
-  //                       children: [
-  //                         Text(servicio.titulo,
-  //                             style: TextStyle(
-  //                                 fontSize: 15,
-  //                                 color: Color(0xFF57419D),
-  //                                 fontWeight: FontWeight.bold),
-  //                             textAlign: TextAlign.left),
-  //                         SizedBox(height: 8.0),
-  //                       ],
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //         SizedBox(height: 20.0),
-  //       ],
-  //     ),
-  //   );
-  // }
-  // Widget sourceInfo(ProductModel product, BuildContext context,
-  //     ) {
-  //   return InkWell(
-  //     child: Row(
-  //       children: [
-  //         Container(
-  //           height: 180.0,
-  //           width: 100.0,
-  //           child: Column(
-  //             children: [
-  //               Container(
-  //                 height: 80,
-  //                 child: Image.network(
-  //                   product.urlImagen, fit: BoxFit.cover,),
-  //               ),
-  //               SizedBox(height: 3.0,),
-  //               Container(
-  //                 height: 90.0,
-  //                 width: 100.0,
-  //                 child: Column(
-  //                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-  //                   crossAxisAlignment: CrossAxisAlignment.start,
-  //                   children: [
-  //                     Flexible(child: Text(product.titulo, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold), textAlign: TextAlign.left)),
-  //                     Flexible(child: Text(product.dirigido, style: TextStyle(fontSize: 12), textAlign: TextAlign.left)),
-  //                     SizedBox(height: 8.0),
-  //                     Row(
-  //                       children: [
-  //                         Text('\$', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold), textAlign: TextAlign.left),
-  //                         Text(product.precio.toString(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold), textAlign: TextAlign.left),
-  //                       ],
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //         SizedBox(width: 10.0),
-  //       ],
-  //     ),
-  //   );
-  // }
-  //
-  //
+// Widget sourceInfo(BuildContext context, DocumentSnapshot document) {
+//   final servicio = ServicioModel.fromSnapshot(document);
+//
+//   return InkWell(
+//     child: Column(
+//       children: [
+//         Container(
+//           height: 70.0,
+//           width: MediaQuery.of(context).size.width,
+//           child: GestureDetector(
+//             onTap: () {
+//               Navigator.push(
+//                   context,
+//                   MaterialPageRoute(
+//                     builder: (context) => ServicioDetalle(
+//                         petModel: model, servicioModel: servicio),
+//                   ));
+//             },
+//             child: Container(
+//               child: Row(
+//                 children: [
+//                   Container(
+//                     height: 70,
+//                     width: 70,
+//                     decoration: BoxDecoration(
+//                       boxShadow: [
+//                         BoxShadow(
+//                           color: Colors.grey,
+//                           blurRadius: 1.0,
+//                           spreadRadius: 0.0,
+//                           offset: Offset(
+//                               2.0, 2.0), // shadow direction: bottom right
+//                         )
+//                       ],
+//                     ),
+//                     child: Image.network(
+//                       servicio.urlImagen,
+//                       fit: BoxFit.cover,
+//                       errorBuilder: (context, object, stacktrace) {
+//                         return Container();
+//                       },
+//                     ),
+//                   ),
+//                   SizedBox(
+//                     width: 8.0,
+//                   ),
+//                   Container(
+//                     height: 90.0,
+//                     width: MediaQuery.of(context).size.width * 0.7,
+//                     child: Column(
+//                       mainAxisAlignment: MainAxisAlignment.start,
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Text(servicio.titulo,
+//                             style: TextStyle(
+//                                 fontSize: 15,
+//                                 color: Color(0xFF57419D),
+//                                 fontWeight: FontWeight.bold),
+//                             textAlign: TextAlign.left),
+//                         SizedBox(height: 8.0),
+//                       ],
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ),
+//         ),
+//         SizedBox(height: 20.0),
+//       ],
+//     ),
+//   );
+// }
+// Widget sourceInfo(ProductModel product, BuildContext context,
+//     ) {
+//   return InkWell(
+//     child: Row(
+//       children: [
+//         Container(
+//           height: 180.0,
+//           width: 100.0,
+//           child: Column(
+//             children: [
+//               Container(
+//                 height: 80,
+//                 child: Image.network(
+//                   product.urlImagen, fit: BoxFit.cover,),
+//               ),
+//               SizedBox(height: 3.0,),
+//               Container(
+//                 height: 90.0,
+//                 width: 100.0,
+//                 child: Column(
+//                   mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     Flexible(child: Text(product.titulo, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold), textAlign: TextAlign.left)),
+//                     Flexible(child: Text(product.dirigido, style: TextStyle(fontSize: 12), textAlign: TextAlign.left)),
+//                     SizedBox(height: 8.0),
+//                     Row(
+//                       children: [
+//                         Text('\$', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold), textAlign: TextAlign.left),
+//                         Text(product.precio.toString(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold), textAlign: TextAlign.left),
+//                       ],
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//         SizedBox(width: 10.0),
+//       ],
+//     ),
+//   );
+// }
+//
+//
 
 }

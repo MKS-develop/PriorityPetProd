@@ -104,10 +104,10 @@ class _APCrearPagoState extends State<APCrearPago> {
         FirebaseFirestore.instance.collection("Aikonspay").doc("config");
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        _apiKey = dataSnapshot.data()["key"];
-        _serviceUrl = (dataSnapshot.data()["ruta"]);
-        _titularCuenta = (dataSnapshot.data()["titular"]);
-        _correoCuenta = (dataSnapshot.data()["correo"]);
+        _apiKey = dataSnapshot["key"];
+        _serviceUrl = (dataSnapshot["ruta"]);
+        _titularCuenta = (dataSnapshot["titular"]);
+        _correoCuenta = (dataSnapshot["correo"]);
       });
     });
   }
@@ -588,9 +588,7 @@ class _APCrearPagoState extends State<APCrearPago> {
 
   void _mostrarMensaje(String mensaje, String textoBoton, bool success) async {
     await showDialog(
-      context: context,
-      barrierColor: Colors.white.withOpacity(0),
-      child: AlertDialog(
+      builder: (context) => AlertDialog(
         // title: Text('Su pago ha sido aprobado.'),
         content: SingleChildScrollView(
           child: ListBody(
@@ -625,7 +623,8 @@ class _APCrearPagoState extends State<APCrearPago> {
             ],
           ),
         ),
-      ),
+      ), context: context,
+      barrierColor: Colors.white.withOpacity(0),
     ).then((result) {
       if (success) widget.onSuccess(_referencia, PagoEnum.pagoPendiente, 0);
     });

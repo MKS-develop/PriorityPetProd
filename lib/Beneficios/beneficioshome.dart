@@ -541,8 +541,8 @@ class _BeneficiosHomeState extends State<BeneficiosHome> {
         .collection("planes")
         .doc("Basico");
     documentReference.get().then((dataSnapshot) {
-      print(dataSnapshot.data()["id"]);
-      String Pid = dataSnapshot.data()["id"];
+      print(dataSnapshot["id"]);
+      String Pid = dataSnapshot["id"];
       print(pid);
       return Pid;
     });

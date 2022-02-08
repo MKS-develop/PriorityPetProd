@@ -19,6 +19,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pet_shop/Models/pet.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_shop/Widgets/AppBarCustomAvatar.dart';
+import 'package:pet_shop/Widgets/ktitle.dart';
 import 'package:pet_shop/Widgets/navbar.dart';
 import '../Widgets/myDrawer.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -58,6 +59,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
   int _2defaultChoiceIndex;
   bool _value = false;
   bool _value2 = false;
+  bool _value3 = false;
   AliadoModel ali;
   LocationModel location;
   DateTime selectedDate = DateTime.now();
@@ -70,8 +72,8 @@ class _ContratoServicioState extends State<ContratoServicio> {
   String petImageUrl = "";
   String downloadUrl = "";
   BuildContext dialogContext;
-  int ppAcumulados = 0;
-  int ppCanjeados = 0;
+  dynamic ppAcumulados = 0;
+  dynamic ppCanjeados = 0;
   double ppvalor = 0;
   String tituloCategoria = "Servicio";
   dynamic _totalPrice;
@@ -100,7 +102,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
         .doc("Precio");
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        ppvalor = (dataSnapshot.data()["petpointPE"]);
+        ppvalor = (dataSnapshot["petpointPE"]);
       });
       print('Valor PetPoint: $ppvalor');
     });
@@ -125,8 +127,8 @@ class _ContratoServicioState extends State<ContratoServicio> {
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        ppAcumulados = (dataSnapshot.data()["ppAcumulados"]);
-        ppCanjeados = (dataSnapshot.data()["ppCanjeados"]);
+        ppAcumulados = (dataSnapshot["ppAcumulados"]);
+        ppCanjeados = (dataSnapshot["ppCanjeados"]);
       });
       print('Valor Acumulado: $ppAcumulados');
       print('Valor canjeados: $ppCanjeados');
@@ -306,7 +308,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                     .getString(PetshopApp.simboloMoneda),
                                 style: TextStyle(
                                   color: Color(0xFF57419D),
-                                  fontSize: 22,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -613,12 +615,219 @@ class _ContratoServicioState extends State<ContratoServicio> {
                         ),
                       )
                     : Container(),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Sub total de la consulta',
+                      style: TextStyle(
+                        color: Color(0xFF57419D),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          PetshopApp.sharedPreferences
+                              .getString(PetshopApp.simboloMoneda),
+                          style: TextStyle(
+                            color: Color(0xFF57419D),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          (widget.serviceModel.precio)
+                              .toStringAsFixed(2),
+                          style: TextStyle(
+                            color: Color(0xFF57419D),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment:
+                    MainAxisAlignment.spaceAround,
+                    children: [
+                      Column(
+                        mainAxisAlignment:
+                        MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            'Pet Points',
+                            style: TextStyle(
+                                fontSize: 16.0,
+                                color: Color(0xFF57419D),
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            width: 70.0,
+                            child: RaisedButton(
+                              onPressed: () {},
+                              shape: RoundedRectangleBorder(
+                                  side: BorderSide(color: secondaryColor),
+                                  borderRadius:
+                                  BorderRadius.circular(5)),
+                              color: Colors.white,
+                              padding: EdgeInsets.all(0.0),
+                              child: Text(
+                                  (ppAcumulados)
+                                      .toString(),
+                                  style: TextStyle(
+                                      fontFamily:
+                                      'Product Sans',
+                                      color: Color(0xFF57419D),
+                                      fontSize: 18.0,
+                                      fontWeight:
+                                      FontWeight.bold)),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(13.0),
+                        child: Text(
+                          '=',
+                          style: TextStyle(
+                              fontSize: 18.0,
+                              color: Color(0xFF57419D),
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 90.0,
+                        child: RaisedButton(
+                          onPressed: () {},
+                          shape: RoundedRectangleBorder(
+                              side: BorderSide(color: secondaryColor),
+                              borderRadius:
+                              BorderRadius.circular(5)),
+                          color: Colors.white,
+                          padding: EdgeInsets.all(0.0),
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                  PetshopApp.sharedPreferences
+                                      .getString(PetshopApp
+                                      .simboloMoneda),
+                                  style: TextStyle(
+                                      fontFamily:
+                                      'Product Sans',
+                                      color: Color(0xFF57419D),
+                                      fontSize: 18.0,
+                                      fontWeight:
+                                      FontWeight.bold)),
+                              Text(
+                                  (ppvalor *
+                                      (ppAcumulados))
+                                      .toStringAsPrecision(3),
+                                  style: TextStyle(
+                                      fontFamily:
+                                      'Product Sans',
+                                      color: Color(0xFF57419D),
+                                      fontSize: 18.0,
+                                      fontWeight:
+                                      FontWeight.bold)),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                            3, 14, 0, 14),
+                        child: Text(
+                          '¿Aplicar?',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              color: Color(0xFF57419D),
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Checkbox(
+                          value: _value3,
+                          activeColor: Color(0xFF57419D),
+                          onChanged: (bool value) {
+                            setState(() {
+                              _value3 = value;
+                              if (value) {
+                                totalPet = ppvalor *
+                                    (ppAcumulados);
+                                setState(() {
+                                  _value3 = true;
+                                });
+                              } else {
+                                // _value2 = false;
+                                totalPet = 0;
+                              }
+                            });
+                          }),
+                    ],
+                  ),
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Monto total',
+                      style: TextStyle(
+                        color: Color(0xFF57419D),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          PetshopApp.sharedPreferences
+                              .getString(PetshopApp.simboloMoneda),
+                          style: TextStyle(
+                            color: Color(0xFF57419D),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          ((widget.serviceModel.precio +
+                              recojo +
+                              delivery -
+                              totalPet) <= 0 ? 0.toStringAsFixed(2) : (widget.serviceModel.precio +
+                              recojo +
+                              delivery -
+                              totalPet)
+                              .toStringAsFixed(2)),
+                          style: TextStyle(
+                            color: Color(0xFF57419D),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 6),
                 PetshopApp.pasarelaDisponible()
                     ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SizedBox(
-                            width: 200.0,
+                            width: _screenWidth*0.8,
                             child: RaisedButton(
                               onPressed: () {
                                 if (fecha == null &&
@@ -662,6 +871,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                                   widget.locationModel,
                                               tituloCategoria: tituloCategoria,
                                               totalPrice: _totalPrice,
+                                              value3: _value3,
                                               hora: hora,
                                               fecha: fecha,
                                               recojo: recojo,
@@ -745,6 +955,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
                                                 recojo: recojo,
                                                 delivery: delivery,
                                                 value2: _value2,
+                                                value3: _value3,
                                                 value: _value,
                                                 date: date,
                                                 defaultChoiceIndex:
@@ -757,7 +968,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
                               },
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5)),
-                              color: Color(0xFFEB9448),
+                              color: primaryColor,
                               padding: EdgeInsets.all(10.0),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -771,31 +982,7 @@ class _ContratoServicioState extends State<ContratoServicio> {
                               ),
                             ),
                           ),
-                          Row(
-                            children: [
-                              Text(
-                                PetshopApp.sharedPreferences
-                                    .getString(PetshopApp.simboloMoneda),
-                                style: TextStyle(
-                                  color: Color(0xFF57419D),
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                (widget.serviceModel.precio +
-                                        recojo +
-                                        delivery -
-                                        totalPet)
-                                    .toStringAsFixed(2),
-                                style: TextStyle(
-                                  color: Color(0xFF57419D),
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
+
                         ],
                       )
                     : Container(),

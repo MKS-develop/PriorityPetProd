@@ -89,7 +89,7 @@ class _ContratoPromosState extends State<ContratoPromos> {
         .doc("Precio");
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        ppvalor = (dataSnapshot.data()["petpointPE"]);
+        ppvalor = (dataSnapshot["petpointPE"]);
       });
       print('Valor PetPoint: $ppvalor');
     });
@@ -105,8 +105,8 @@ class _ContratoPromosState extends State<ContratoPromos> {
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        ppAcumulados = (dataSnapshot.data()["ppAcumulados"]);
-        ppCanjeados = (dataSnapshot.data()["ppCanjeados"]);
+        ppAcumulados = (dataSnapshot["ppAcumulados"]);
+        ppCanjeados = (dataSnapshot["ppCanjeados"]);
       });
       print('Valor Acumulado: $ppAcumulados');
       print('Valor canjeados: $ppCanjeados');

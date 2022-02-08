@@ -62,7 +62,8 @@ class _MyAppState extends State<MyApp> {
           fontFamily: 'Product Sans',
           primaryColor: Color(0xFF57419D),
         ),
-        home: SplashScreen());
+        home: SplashScreen()
+    );
 
   }
 }

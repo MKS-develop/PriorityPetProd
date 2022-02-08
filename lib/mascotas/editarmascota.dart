@@ -859,6 +859,8 @@ class _EditarMascotaState extends State<EditarMascota>
                               width: MediaQuery.of(context).size.width * 0.2,
                               child: RaisedButton(
                                 onPressed: () {
+                                  // Navigator.of(context, rootNavigator: true).pop();
+                                  Navigator.pop(context);
                                   setState(() {
                                     FirebaseFirestore.instance
                                         .collection('Mascotas')
@@ -873,8 +875,8 @@ class _EditarMascotaState extends State<EditarMascota>
                                             defaultChoiceIndex:
                                                 widget.defaultChoiceIndex)),
                                   );
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop();
+                                  // Navigator.of(context, rootNavigator: true)
+                                  //     .pop();
                                   Message(context,
                                       'Se ha eliminado el registro existosamente.');
                                 },
@@ -902,8 +904,7 @@ class _EditarMascotaState extends State<EditarMascota>
                                 onPressed: () {
                                   // AddOrder(productId, context, widget.planModel.montoAnual, widget.planModel.planid);
 
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop();
+                                  Navigator.of(context, rootNavigator: true).pop();
                                 },
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5)),

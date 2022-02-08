@@ -54,7 +54,7 @@ class _ServiciosHomeState extends State<ServiciosHome> {
         .doc(PetshopApp.sharedPreferences.getString(PetshopApp.userUID));
     documentReference.get().then((dataSnapshot) {
       setState(() {
-        userLatLong = (dataSnapshot.data()["location"]);
+        userLatLong = (dataSnapshot["location"]);
       });
     });
   }
@@ -265,7 +265,7 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(25.0)),
                             ),
-                            padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                            padding: EdgeInsets.fromLTRB(15, 0, 5, 0),
                             margin: EdgeInsets.all(5.0),
                             child: TextField(
                               controller: _searchTextEditingController,
@@ -685,7 +685,7 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                                 rating =
                                     aliado.totalRatings / aliado.countRatings;
                               }
-                              return GestureDetector(
+                              return aliado.isApproved? GestureDetector(
                                 onTap: () {
                                   Navigator.push(
                                     context,
@@ -862,7 +862,7 @@ class _ServiciosHomeState extends State<ServiciosHome> {
                                     ),
                                   ),
                                 ),
-                              );
+                              ) : Container();
                             });
                       });
                 });
